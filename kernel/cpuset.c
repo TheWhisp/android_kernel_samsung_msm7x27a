@@ -1378,6 +1378,13 @@ static int cpuset_can_attach(struct cgroup *cgrp, struct cgroup_taskset *tset)
 	struct task_struct *task;
 	int ret;
 
+	if ((current != task) && (!capable(CAP_SYS_ADMIN))) {
+		const struct cred *cred = current_cred(), *tcred;
+
+		if (cred->euid != tcred->uid && cred->euid != tcred->suid)
+			return -EPERM;
+	}
+ 
 	if (cpumask_empty(cs->cpus_allowed) || nodes_empty(cs->mems_allowed))
 		return -ENOSPC;
 
