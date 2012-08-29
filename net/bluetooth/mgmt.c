@@ -2546,6 +2546,21 @@ int mgmt_powered(u16 index, u8 powered)
 	if (!powered) {
 		u8 status = ENETDOWN;
 		mgmt_pending_foreach(0, index, cmd_status_rsp, &status);
+		if (scan)
+			hci_send_cmd(hdev, HCI_OP_WRITE_SCAN_ENABLE, 1, &scan);
+
+		if (test_bit(HCI_SSP_ENABLED, &hdev->dev_flags)) {
+			u8 ssp = 1;
+
+			hci_send_cmd(hdev, HCI_OP_WRITE_SSP_MODE, 1, &ssp);
+		}
+
+		update_class(hdev);
+		update_name(hdev, hdev->dev_name);
+		update_eir(hdev);
+	} else {
+		u8 status = MGMT_STATUS_NOT_POWERED;
+		mgmt_pending_foreach(0, hdev, cmd_status_rsp, &status);
 	}
 
 	ev.val = powered;
