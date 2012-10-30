@@ -202,6 +202,8 @@ static int kgsl_pwrctrl_thermal_pwrlevel_store(struct device *dev,
 	if (device->pwrscale.policy == NULL ||
 		pwr->thermal_pwrlevel > pwr->active_pwrlevel)
 		kgsl_pwrctrl_pwrlevel_change(device, pwr->thermal_pwrlevel);
+	else if (!max || (NULL == device->pwrscale.policy))
+		kgsl_pwrctrl_pwrlevel_change(device, i);
 
 	mutex_unlock(&device->mutex);
 
