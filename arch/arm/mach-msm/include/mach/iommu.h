@@ -15,16 +15,12 @@
 
 #include <linux/interrupt.h>
 #include <linux/clk.h>
+#include <mach/socinfo.h>
 
-/* Sharability attributes of MSM IOMMU mappings */
-#define MSM_IOMMU_ATTR_NON_SH		0x0
-#define MSM_IOMMU_ATTR_SH		0x4
+extern pgprot_t     pgprot_kernel;
 
-/* Cacheability attributes of MSM IOMMU mappings */
-#define MSM_IOMMU_ATTR_NONCACHED	0x0
-#define MSM_IOMMU_ATTR_CACHED_WB_WA	0x1
-#define MSM_IOMMU_ATTR_CACHED_WB_NWA	0x2
-#define MSM_IOMMU_ATTR_CACHED_WT	0x3
+/* Domain attributes */
+#define MSM_IOMMU_DOMAIN_PT_CACHEABLE	0x1
 
 /* Mask for the cache policy attribute */
 #define MSM_IOMMU_CP_MASK		0x03
@@ -100,17 +96,38 @@ struct msm_iommu_ctx_drvdata {
 };
 
 /*
- * Look up an IOMMU context device by its context name. NULL if none found.
- * Useful for testing and drivers that do not yet fully have IOMMU stuff in
- * their platform devices.
- */
-struct device *msm_iommu_get_ctx(const char *ctx_name);
-
-/*
  * Interrupt handler for the IOMMU context fault interrupt. Hooking the
  * interrupt is not supported in the API yet, but this will print an error
  * message and dump useful IOMMU registers.
  */
 irqreturn_t msm_iommu_fault_handler(int irq, void *dev_id);
 
+#ifdef CONFIG_MSM_IOMMU
+/*
+ * Look up an IOMMU context device by its context name. NULL if none found.
+ * Useful for testing and drivers that do not yet fully have IOMMU stuff in
+ * their platform devices.
+ */
+struct device *msm_iommu_get_ctx(const char *ctx_name);
+#else
+static inline struct device *msm_iommu_get_ctx(const char *ctx_name)
+{
+	return NULL;
+}
 #endif
+
+#endif
+
+static inline int msm_soc_version_supports_iommu(void)
+{
+	if (cpu_is_msm8960() &&
+	    SOCINFO_VERSION_MAJOR(socinfo_get_version()) < 2)
+		return 0;
+
+	if (cpu_is_msm8x60() &&
+	    (SOCINFO_VERSION_MAJOR(socinfo_get_version()) != 2 ||
+	    SOCINFO_VERSION_MINOR(socinfo_get_version()) < 1))	{
+		return 0;
+	}
+	return 1;
+}

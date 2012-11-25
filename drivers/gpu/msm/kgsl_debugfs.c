@@ -62,7 +62,7 @@ void kgsl_device_debugfs_init(struct kgsl_device *device)
 	device->ctxt_log = KGSL_LOG_LEVEL_DEFAULT;
 	device->drv_log = KGSL_LOG_LEVEL_DEFAULT;
 	device->mem_log = KGSL_LOG_LEVEL_DEFAULT;
-	device->pwr_log = KGSL_LOG_LEVEL_MAX;
+	device->pwr_log = KGSL_LOG_LEVEL_DEFAULT;
 
 	debugfs_create_file("log_level_cmd", 0644, device->d_debugfs, device,
 			    &cmd_log_fops);
@@ -79,4 +79,9 @@ void kgsl_device_debugfs_init(struct kgsl_device *device)
 void kgsl_core_debugfs_init(void)
 {
 	kgsl_debugfs_dir = debugfs_create_dir("kgsl", 0);
+}
+
+void kgsl_core_debugfs_close(void)
+{
+	debugfs_remove_recursive(kgsl_debugfs_dir);
 }

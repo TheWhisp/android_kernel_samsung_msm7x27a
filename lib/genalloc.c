@@ -27,11 +27,11 @@ struct gen_pool {
 struct gen_pool_chunk {
 	spinlock_t lock;		/* protects bits */
 	struct list_head next_chunk;	/* next chunk in pool */
+	phys_addr_t phys_addr;		/* physical starting address of memory chunk */
 	unsigned long start;		/* start of memory chunk */
 	unsigned long size;		/* number of bits */
 	unsigned long bits[0];		/* bitmap for allocating memory chunk */
 };
-
 
 /**
  * gen_pool_create() - create a new special memory pool
@@ -61,21 +61,26 @@ struct gen_pool *__must_check gen_pool_create(unsigned order, int nid)
 EXPORT_SYMBOL(gen_pool_create);
 
 /**
- * gen_pool_add() - add a new chunk of special memory to the pool
- * @pool:	Pool to add new memory chunk to.
- * @addr:	Starting address of memory chunk to add to pool.
- * @size:	Size in bytes of the memory chunk to add to pool.
+ * gen_pool_add_virt - add a new chunk of special memory to the pool
+ * @pool: pool to add new memory chunk to
+ * @virt: virtual starting address of memory chunk to add to pool
+ * @phys: physical starting address of memory chunk to add to pool
+ * @size: size in bytes of the memory chunk to add to pool
+ * @nid: node id of the node the chunk structure and bitmap should be
+ *       allocated on, or -1
  *
  * Add a new chunk of special memory to the specified pool.
+ *
+ * Returns 0 on success or a -ve errno on failure.
  */
-int __must_check
-gen_pool_add(struct gen_pool *pool, unsigned long addr, size_t size, int nid)
+int __must_check gen_pool_add_virt(struct gen_pool *pool, unsigned long virt, phys_addr_t phys,
+		 size_t size, int nid)
 {
 	struct gen_pool_chunk *chunk;
 	size_t nbytes;
 
-	if (WARN_ON(!addr || addr + size < addr ||
-		    (addr & ((1 << pool->order) - 1))))
+	if (WARN_ON(!virt || virt + size < virt ||
+	    (virt & ((1 << pool->order) - 1))))
 		return -EINVAL;
 
 	size = size >> pool->order;
@@ -88,7 +93,8 @@ gen_pool_add(struct gen_pool *pool, unsigned long addr, size_t size, int nid)
 		return -ENOMEM;
 
 	spin_lock_init(&chunk->lock);
-	chunk->start = addr >> pool->order;
+	chunk->phys_addr = phys;
+	chunk->start = virt >> pool->order;
 	chunk->size  = size;
 
 	write_lock(&pool->lock);
@@ -97,7 +103,33 @@ gen_pool_add(struct gen_pool *pool, unsigned long addr, size_t size, int nid)
 
 	return 0;
 }
-EXPORT_SYMBOL(gen_pool_add);
+EXPORT_SYMBOL(gen_pool_add_virt);
+
+/**
+ * gen_pool_virt_to_phys - return the physical address of memory
+ * @pool: pool to allocate from
+ * @addr: starting address of memory
+ *
+ * Returns the physical address on success, or -1 on error.
+ */
+phys_addr_t gen_pool_virt_to_phys(struct gen_pool *pool, unsigned long addr)
+{
+	struct list_head *_chunk;
+	struct gen_pool_chunk *chunk;
+
+	read_lock(&pool->lock);
+	list_for_each(_chunk, &pool->chunks) {
+		chunk = list_entry(_chunk, struct gen_pool_chunk, next_chunk);
+
+		if (addr >= chunk->start &&
+		    addr < (chunk->start + chunk->size))
+			return chunk->phys_addr + addr - chunk->start;
+	}
+	read_unlock(&pool->lock);
+
+	return -1;
+}
+EXPORT_SYMBOL(gen_pool_virt_to_phys);
 
 /**
  * gen_pool_destroy() - destroy a special memory pool

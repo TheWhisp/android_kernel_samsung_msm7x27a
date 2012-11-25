@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2012, Code Aurora Forum. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -42,7 +42,7 @@ static struct kgsl_pwrscale_policy *kgsl_pwrscale_policies[] = {
 #ifdef CONFIG_MSM_SCM
 	&kgsl_pwrscale_policy_tz,
 #endif
-#ifdef CONFIG_MSM_SLEEP_STATS
+#ifdef CONFIG_MSM_SLEEP_STATS_DEVICE
 	&kgsl_pwrscale_policy_idlestats,
 #endif
 	NULL
@@ -90,7 +90,7 @@ static ssize_t pwrscale_policy_show(struct kgsl_device *device, char *buf)
 	return ret;
 }
 
-PWRSCALE_ATTR(policy, 0644, pwrscale_policy_show, pwrscale_policy_store);
+PWRSCALE_ATTR(policy, 0664, pwrscale_policy_show, pwrscale_policy_store);
 
 static ssize_t pwrscale_avail_policies_show(struct kgsl_device *device,
 					    char *buf)
@@ -224,13 +224,17 @@ EXPORT_SYMBOL(kgsl_pwrscale_wake);
 void kgsl_pwrscale_busy(struct kgsl_device *device)
 {
 	if (device->pwrscale.policy && device->pwrscale.policy->busy)
-		device->pwrscale.policy->busy(device, &device->pwrscale);
+		if (!device->pwrscale.gpu_busy)
+			device->pwrscale.policy->busy(device,
+					&device->pwrscale);
+	device->pwrscale.gpu_busy = 1;
 }
 
 void kgsl_pwrscale_idle(struct kgsl_device *device)
 {
 	if (device->pwrscale.policy && device->pwrscale.policy->idle)
 		device->pwrscale.policy->idle(device, &device->pwrscale);
+	device->pwrscale.gpu_busy = 0;
 }
 EXPORT_SYMBOL(kgsl_pwrscale_idle);
 
@@ -263,13 +267,15 @@ void kgsl_pwrscale_policy_remove_files(struct kgsl_device *device,
 	sysfs_remove_group(&pwrscale->kobj, attr_group);
 	kobject_del(&pwrscale->kobj);
 	kobject_put(&pwrscale->kobj);
-	pwrscale->kobj.state_initialized = 0;
 }
 
 static void _kgsl_pwrscale_detach_policy(struct kgsl_device *device)
 {
-	if (device->pwrscale.policy != NULL)
+	if (device->pwrscale.policy != NULL) {
 		device->pwrscale.policy->close(device, &device->pwrscale);
+		kgsl_pwrctrl_pwrlevel_change(device,
+				device->pwrctrl.thermal_pwrlevel);
+	}
 	device->pwrscale.policy = NULL;
 }
 
@@ -290,6 +296,11 @@ int kgsl_pwrscale_attach_policy(struct kgsl_device *device,
 
 	if (device->pwrscale.policy == policy)
 		goto done;
+
+	if (device->pwrctrl.num_pwrlevels < 3) {
+		ret = -EINVAL;
+		goto done;
+	}
 
 	if (device->pwrscale.policy != NULL)
 		_kgsl_pwrscale_detach_policy(device);

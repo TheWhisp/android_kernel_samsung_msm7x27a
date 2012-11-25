@@ -1,29 +1,13 @@
-/* Copyright (c) 2002,2007-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2002,2007-2012, Code Aurora Forum. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- *       copyright notice, this list of conditions and the following
- *       disclaimer in the documentation and/or other materials provided
- *       with the distribution.
- *     * Neither the name of Code Aurora Forum, Inc. nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
- * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  */
 #ifndef __A200_REG_H
@@ -323,10 +307,6 @@ union reg_cp_rb_cntl {
 
 #define REG_MASTER_INT_SIGNAL            0x03B7
 
-#define REG_MH_ARBITER_CONFIG            0x0A40
-#define REG_MH_CLNT_INTF_CTRL_CONFIG1    0x0A54
-#define REG_MH_CLNT_INTF_CTRL_CONFIG2    0x0A55
-
 #define REG_PA_CL_VPORT_XSCALE           0x210F
 #define REG_PA_CL_VPORT_ZOFFSET          0x2114
 #define REG_PA_CL_VPORT_ZSCALE           0x2113
@@ -384,6 +364,7 @@ union reg_cp_rb_cntl {
 #define REG_SQ_CF_BOOLEANS               0x4900
 #define REG_SQ_CF_LOOP                   0x4908
 #define REG_SQ_GPR_MANAGEMENT            0x0D00
+#define REG_SQ_FLOW_CONTROL              0x0D01
 #define REG_SQ_INST_STORE_MANAGMENT      0x0D02
 #define REG_SQ_INT_ACK                   0x0D36
 #define REG_SQ_INT_CNTL                  0x0D34
@@ -415,10 +396,57 @@ union reg_cp_rb_cntl {
 #define REG_SQ_CONSTANT_0                0x4000
 #define REG_SQ_FETCH_0                   0x4800
 
-#define REG_MH_DEBUG_CTRL                0xA4E
-#define REG_MH_DEBUG_DATA                0xA4F
 #define REG_COHER_BASE_PM4               0xA2A
 #define REG_COHER_STATUS_PM4             0xA2B
 #define REG_COHER_SIZE_PM4               0xA29
+
+/*registers added in adreno220*/
+#define REG_A220_PC_INDX_OFFSET          REG_VGT_INDX_OFFSET
+#define REG_A220_PC_VERTEX_REUSE_BLOCK_CNTL REG_VGT_VERTEX_REUSE_BLOCK_CNTL
+#define REG_A220_PC_MAX_VTX_INDX         REG_VGT_MAX_VTX_INDX
+#define REG_A220_RB_LRZ_VSC_CONTROL	 0x2209
+#define REG_A220_GRAS_CONTROL            0x2210
+#define REG_A220_VSC_BIN_SIZE            0x0C01
+#define REG_A220_VSC_PIPE_DATA_LENGTH_7  0x0C1D
+
+/*registers added in adreno225*/
+#define REG_A225_RB_COLOR_INFO3          0x2005
+#define REG_A225_PC_MULTI_PRIM_IB_RESET_INDX 0x2103
+#define REG_A225_GRAS_UCP0X              0x2340
+#define REG_A225_GRAS_UCP5W              0x2357
+#define REG_A225_GRAS_UCP_ENABLED        0x2360
+
+/* Debug registers used by snapshot */
+#define REG_PA_SU_DEBUG_CNTL            0x0C80
+#define REG_PA_SU_DEBUG_DATA            0x0C81
+#define REG_RB_DEBUG_CNTL               0x0F26
+#define REG_RB_DEBUG_DATA               0x0F27
+#define REG_PC_DEBUG_CNTL               0x0C38
+#define REG_PC_DEBUG_DATA               0x0C39
+#define REG_GRAS_DEBUG_CNTL             0x0C80
+#define REG_GRAS_DEBUG_DATA             0x0C81
+#define REG_SQ_DEBUG_MISC               0x0D05
+#define REG_SQ_DEBUG_INPUT_FSM          0x0DAE
+#define REG_SQ_DEBUG_CONST_MGR_FSM      0x0DAF
+#define REG_SQ_DEBUG_EXP_ALLOC          0x0DB3
+#define REG_SQ_DEBUG_FSM_ALU_0          0x0DB1
+#define REG_SQ_DEBUG_FSM_ALU_1          0x0DB2
+#define REG_SQ_DEBUG_PTR_BUFF           0x0DB4
+#define REG_SQ_DEBUG_GPR_VTX            0x0DB5
+#define REG_SQ_DEBUG_GPR_PIX            0x0DB6
+#define REG_SQ_DEBUG_TB_STATUS_SEL      0x0DB7
+#define REG_SQ_DEBUG_VTX_TB_0           0x0DB8
+#define REG_SQ_DEBUG_VTX_TB_1           0x0DB9
+#define REG_SQ_DEBUG_VTX_TB_STATE_MEM   0x0DBB
+#define REG_SQ_DEBUG_TP_FSM             0x0DB0
+#define REG_SQ_DEBUG_VTX_TB_STATUS_REG  0x0DBA
+#define REG_SQ_DEBUG_PIX_TB_0           0x0DBC
+#define REG_SQ_DEBUG_PIX_TB_STATUS_REG_0 0x0DBD
+#define REG_SQ_DEBUG_PIX_TB_STATUS_REG_1 0x0DBE
+#define REG_SQ_DEBUG_PIX_TB_STATUS_REG_2 0x0DBF
+#define REG_SQ_DEBUG_PIX_TB_STATUS_REG_3 0x0DC0
+#define REG_SQ_DEBUG_PIX_TB_STATE_MEM   0x0DC1
+#define REG_SQ_DEBUG_MISC_0             0x2309
+#define REG_SQ_DEBUG_MISC_1             0x230A
 
 #endif /* __A200_REG_H */

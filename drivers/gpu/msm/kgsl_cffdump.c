@@ -20,10 +20,14 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/sched.h>
+#include <mach/socinfo.h>
 
 #include "kgsl.h"
 #include "kgsl_cffdump.h"
 #include "kgsl_debugfs.h"
+#include "kgsl_log.h"
+#include "kgsl_sharedmem.h"
+#include "adreno_pm4types.h"
 
 static struct rchan	*chan;
 static struct dentry	*dir;
@@ -49,7 +53,7 @@ struct cff_op_write_reg {
 	unsigned char op;
 	uint addr;
 	uint value;
-} __attribute__((packed));
+} __packed;
 
 #define CFF_OP_POLL_REG         0x00000004
 struct cff_op_poll_reg {
@@ -57,14 +61,13 @@ struct cff_op_poll_reg {
 	uint addr;
 	uint value;
 	uint mask;
-} __attribute__((packed));
+} __packed;
 
 #define CFF_OP_WAIT_IRQ         0x00000005
 struct cff_op_wait_irq {
 	unsigned char op;
-} __attribute__((packed));
+} __packed;
 
-#define CFF_OP_VERIFY_MEM_FILE  0x00000007
 #define CFF_OP_RMW              0x0000000a
 
 #define CFF_OP_WRITE_MEM        0x0000000b
@@ -72,7 +75,7 @@ struct cff_op_write_mem {
 	unsigned char op;
 	uint addr;
 	uint value;
-} __attribute__((packed));
+} __packed;
 
 #define CFF_OP_WRITE_MEMBUF     0x0000000c
 struct cff_op_write_membuf {
@@ -80,12 +83,36 @@ struct cff_op_write_membuf {
 	uint addr;
 	ushort count;
 	uint buffer[MEMBUF_SIZE];
-} __attribute__((packed));
+} __packed;
+
+#define CFF_OP_MEMORY_BASE	0x0000000d
+struct cff_op_memory_base {
+	unsigned char op;
+	uint base;
+	uint size;
+	uint gmemsize;
+} __packed;
+
+#define CFF_OP_HANG		0x0000000e
+struct cff_op_hang {
+	unsigned char op;
+} __packed;
 
 #define CFF_OP_EOF              0xffffffff
 struct cff_op_eof {
 	unsigned char op;
-} __attribute__((packed));
+} __packed;
+
+#define CFF_OP_VERIFY_MEM_FILE  0x00000007
+#define CFF_OP_WRITE_SURFACE_PARAMS 0x00000011
+struct cff_op_user_event {
+	unsigned char op;
+	unsigned int op1;
+	unsigned int op2;
+	unsigned int op3;
+	unsigned int op4;
+	unsigned int op5;
+} __packed;
 
 
 static void b64_encodeblock(unsigned char in[3], unsigned char out[4], int len)
@@ -188,12 +215,15 @@ static void cffdump_membuf(int id, unsigned char *out_buf, int out_bufsize)
 }
 
 static void cffdump_printline(int id, uint opcode, uint op1, uint op2,
-	uint op3)
+	uint op3, uint op4, uint op5)
 {
 	struct cff_op_write_reg cff_op_write_reg;
 	struct cff_op_poll_reg cff_op_poll_reg;
 	struct cff_op_wait_irq cff_op_wait_irq;
+	struct cff_op_memory_base cff_op_memory_base;
+	struct cff_op_hang cff_op_hang;
 	struct cff_op_eof cff_op_eof;
+	struct cff_op_user_event cff_op_user_event;
 	unsigned char out_buf[sizeof(cff_op_write_membuf)/3*4 + 16];
 	void *data;
 	int len = 0, out_size;
@@ -201,8 +231,6 @@ static void cffdump_printline(int id, uint opcode, uint op1, uint op2,
 
 	spin_lock(&cffdump_lock);
 	if (opcode == CFF_OP_WRITE_MEM) {
-		if (op1 < 0x40000000 || op1 >= 0x60000000)
-			KGSL_CORE_ERR("addr out-of-range: op1=%08x", op1);
 		if ((cff_op_write_membuf.addr != op1 &&
 			cff_op_write_membuf.count)
 			|| (cff_op_write_membuf.count == MEMBUF_SIZE))
@@ -240,10 +268,37 @@ static void cffdump_printline(int id, uint opcode, uint op1, uint op2,
 		len = sizeof(cff_op_wait_irq);
 		break;
 
+	case CFF_OP_MEMORY_BASE:
+		cff_op_memory_base.op = opcode;
+		cff_op_memory_base.base = op1;
+		cff_op_memory_base.size = op2;
+		cff_op_memory_base.gmemsize = op3;
+		data = &cff_op_memory_base;
+		len = sizeof(cff_op_memory_base);
+		break;
+
+	case CFF_OP_HANG:
+		cff_op_hang.op = opcode;
+		data = &cff_op_hang;
+		len = sizeof(cff_op_hang);
+		break;
+
 	case CFF_OP_EOF:
 		cff_op_eof.op = opcode;
 		data = &cff_op_eof;
 		len = sizeof(cff_op_eof);
+		break;
+
+	case CFF_OP_WRITE_SURFACE_PARAMS:
+	case CFF_OP_VERIFY_MEM_FILE:
+		cff_op_user_event.op = opcode;
+		cff_op_user_event.op1 = op1;
+		cff_op_user_event.op2 = op2;
+		cff_op_user_event.op3 = op3;
+		cff_op_user_event.op4 = op4;
+		cff_op_user_event.op5 = op5;
+		data = &cff_op_user_event;
+		len = sizeof(cff_op_user_event);
 		break;
 	}
 
@@ -271,7 +326,7 @@ void kgsl_cffdump_init()
 	cpumask_t mask;
 
 	cpumask_clear(&mask);
-	cpumask_set_cpu(1, &mask);
+	cpumask_set_cpu(0, &mask);
 	sched_setaffinity(0, &mask);
 #endif
 	if (!debugfs_dir || IS_ERR(debugfs_dir)) {
@@ -303,11 +358,32 @@ void kgsl_cffdump_destroy()
 
 void kgsl_cffdump_open(enum kgsl_deviceid device_id)
 {
+	kgsl_cffdump_memory_base(device_id, KGSL_PAGETABLE_BASE,
+			CONFIG_MSM_KGSL_PAGE_TABLE_SIZE, SZ_256K);
+}
+
+void kgsl_cffdump_memory_base(enum kgsl_deviceid device_id, unsigned int base,
+			      unsigned int range, unsigned gmemsize)
+{
+	cffdump_printline(device_id, CFF_OP_MEMORY_BASE, base,
+			range, gmemsize, 0, 0);
+}
+
+void kgsl_cffdump_hang(enum kgsl_deviceid device_id)
+{
+	cffdump_printline(device_id, CFF_OP_HANG, 0, 0, 0, 0, 0);
 }
 
 void kgsl_cffdump_close(enum kgsl_deviceid device_id)
 {
-	cffdump_printline(device_id, CFF_OP_EOF, 0, 0, 0);
+	cffdump_printline(device_id, CFF_OP_EOF, 0, 0, 0, 0, 0);
+}
+
+void kgsl_cffdump_user_event(unsigned int cff_opcode, unsigned int op1,
+		unsigned int op2, unsigned int op3,
+		unsigned int op4, unsigned int op5)
+{
+	cffdump_printline(-1, cff_opcode, op1, op2, op3, op4, op5);
 }
 
 void kgsl_cffdump_syncmem(struct kgsl_device_private *dev_priv,
@@ -315,7 +391,6 @@ void kgsl_cffdump_syncmem(struct kgsl_device_private *dev_priv,
 	bool clean_cache)
 {
 	const void *src;
-	uint physaddr;
 
 	if (!kgsl_cff_dump_enable)
 		return;
@@ -335,8 +410,6 @@ void kgsl_cffdump_syncmem(struct kgsl_device_private *dev_priv,
 		}
 		memdesc = &entry->memdesc;
 	}
-	physaddr = kgsl_get_realaddr(memdesc) + (gpuaddr - memdesc->gpuaddr);
-
 	src = (uint *)kgsl_gpuaddr_to_vaddr(memdesc, gpuaddr);
 	if (memdesc->hostptr == NULL) {
 		KGSL_CORE_ERR("no kernel mapping for "
@@ -351,21 +424,20 @@ void kgsl_cffdump_syncmem(struct kgsl_device_private *dev_priv,
 
 		mb();
 
-		kgsl_cache_range_op(memdesc->hostptr, memdesc->size,
-				    memdesc->type, KGSL_CACHE_OP_INV);
+		kgsl_cache_range_op((struct kgsl_memdesc *)memdesc,
+				KGSL_CACHE_OP_INV);
 	}
 
-	BUG_ON(physaddr > 0x66000000 && physaddr < 0x66ffffff);
 	while (sizebytes > 3) {
-		cffdump_printline(-1, CFF_OP_WRITE_MEM, physaddr, *(uint *)src,
-			0);
-		physaddr += 4;
+		cffdump_printline(-1, CFF_OP_WRITE_MEM, gpuaddr, *(uint *)src,
+			0, 0, 0);
+		gpuaddr += 4;
 		src += 4;
 		sizebytes -= 4;
 	}
 	if (sizebytes > 0)
-		cffdump_printline(-1, CFF_OP_WRITE_MEM, physaddr, *(uint *)src,
-			0);
+		cffdump_printline(-1, CFF_OP_WRITE_MEM, gpuaddr, *(uint *)src,
+			0, 0, 0);
 }
 
 void kgsl_cffdump_setmem(uint addr, uint value, uint sizebytes)
@@ -373,16 +445,17 @@ void kgsl_cffdump_setmem(uint addr, uint value, uint sizebytes)
 	if (!kgsl_cff_dump_enable)
 		return;
 
-	BUG_ON(addr > 0x66000000 && addr < 0x66ffffff);
 	while (sizebytes > 3) {
 		/* Use 32bit memory writes as long as there's at least
 		 * 4 bytes left */
-		cffdump_printline(-1, CFF_OP_WRITE_MEM, addr, value, 0);
+		cffdump_printline(-1, CFF_OP_WRITE_MEM, addr, value,
+				0, 0, 0);
 		addr += 4;
 		sizebytes -= 4;
 	}
 	if (sizebytes > 0)
-		cffdump_printline(-1, CFF_OP_WRITE_MEM, addr, value, 0);
+		cffdump_printline(-1, CFF_OP_WRITE_MEM, addr, value,
+				0, 0, 0);
 }
 
 void kgsl_cffdump_regwrite(enum kgsl_deviceid device_id, uint addr,
@@ -391,7 +464,8 @@ void kgsl_cffdump_regwrite(enum kgsl_deviceid device_id, uint addr,
 	if (!kgsl_cff_dump_enable)
 		return;
 
-	cffdump_printline(device_id, CFF_OP_WRITE_REG, addr, value, 0);
+	cffdump_printline(device_id, CFF_OP_WRITE_REG, addr, value,
+			0, 0, 0);
 }
 
 void kgsl_cffdump_regpoll(enum kgsl_deviceid device_id, uint addr,
@@ -400,7 +474,8 @@ void kgsl_cffdump_regpoll(enum kgsl_deviceid device_id, uint addr,
 	if (!kgsl_cff_dump_enable)
 		return;
 
-	cffdump_printline(device_id, CFF_OP_POLL_REG, addr, value, mask);
+	cffdump_printline(device_id, CFF_OP_POLL_REG, addr, value,
+			mask, 0, 0);
 }
 
 void kgsl_cffdump_slavewrite(uint addr, uint value)
@@ -408,7 +483,7 @@ void kgsl_cffdump_slavewrite(uint addr, uint value)
 	if (!kgsl_cff_dump_enable)
 		return;
 
-	cffdump_printline(-1, CFF_OP_WRITE_REG, addr, value, 0);
+	cffdump_printline(-1, CFF_OP_WRITE_REG, addr, value, 0, 0, 0);
 }
 
 int kgsl_cffdump_waitirq(void)
@@ -416,7 +491,7 @@ int kgsl_cffdump_waitirq(void)
 	if (!kgsl_cff_dump_enable)
 		return 0;
 
-	cffdump_printline(-1, CFF_OP_WAIT_IRQ, 0, 0, 0);
+	cffdump_printline(-1, CFF_OP_WAIT_IRQ, 0, 0, 0, 0, 0);
 
 	return 1;
 }
@@ -433,8 +508,8 @@ static bool kgsl_cffdump_handle_type3(struct kgsl_device_private *dev_priv,
 	static uint size_stack[ADDRESS_STACK_SIZE];
 
 	switch (GET_PM4_TYPE3_OPCODE(hostaddr)) {
-	case PM4_INDIRECT_BUFFER_PFD:
-	case PM4_INDIRECT_BUFFER:
+	case CP_INDIRECT_BUFFER_PFD:
+	case CP_INDIRECT_BUFFER:
 	{
 		/* traverse indirect buffers */
 		int i;
@@ -502,10 +577,9 @@ bool kgsl_cffdump_parse_ibs(struct kgsl_device_private *dev_priv,
 		}
 		memdesc = &entry->memdesc;
 	}
-
-	hostaddr = (uint *)kgsl_gpuaddr_to_vaddr(memdesc, gpuaddr);	
+	hostaddr = (uint *)kgsl_gpuaddr_to_vaddr(memdesc, gpuaddr);
 	if (hostaddr == NULL) {
-		KGSL_CORE_ERR("no kernel mapping for "		
+		KGSL_CORE_ERR("no kernel mapping for "
 			"gpuaddr: 0x%08x\n", gpuaddr);
 		return true;
 	}
@@ -514,15 +588,9 @@ bool kgsl_cffdump_parse_ibs(struct kgsl_device_private *dev_priv,
 
 	level++;
 
-	if (!memdesc->physaddr) {
-		KGSL_CORE_ERR("no physaddr");
-		return true;
-	} else {
-		mb();
-		kgsl_cache_range_op(memdesc->hostptr, memdesc->size,
-				    memdesc->type, KGSL_CACHE_OP_INV);
-	}
-
+	mb();
+	kgsl_cache_range_op((struct kgsl_memdesc *)memdesc,
+				KGSL_CACHE_OP_INV);
 #ifdef DEBUG
 	pr_info("kgsl: cffdump: ib: gpuaddr:0x%08x, wc:%d, hptr:%p\n",
 		gpuaddr, sizedwords, hostaddr);
