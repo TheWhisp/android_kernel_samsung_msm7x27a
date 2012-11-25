@@ -354,8 +354,8 @@ err_ptpool_remove:
 int kgsl_gpummu_pt_equal(struct kgsl_pagetable *pt,
 					unsigned int pt_base)
 {
-	struct kgsl_gpummu_pt *gpummu_pt = pt->priv;
-	return pt && pt_base && (gpummu_pt->base.gpuaddr == pt_base);
+	struct kgsl_gpummu_pt *gpummu_pt = pt ? pt->priv : NULL;
+	return gpummu_pt && pt_base && (gpummu_pt->base.gpuaddr == pt_base);
 }
 
 void kgsl_gpummu_destroy_pagetable(void *mmu_specific_pt)
@@ -398,14 +398,14 @@ static unsigned int kgsl_gpummu_pt_get_flags(struct kgsl_pagetable *pt,
 				enum kgsl_deviceid id)
 {
 	unsigned int result = 0;
-	struct kgsl_gpummu_pt *gpummu_pt; 
+	struct kgsl_gpummu_pt *gpummu_pt;
 
 	if (pt == NULL)
 		return 0;
 	gpummu_pt = pt->priv;
 
 	spin_lock(&pt->lock);
-	if (gpummu_pt->tlb_flags && (1<<id)) {
+	if (gpummu_pt->tlb_flags & (1<<id)) {
 		result = KGSL_MMUFLAGS_TLBFLUSH;
 		gpummu_pt->tlb_flags &= ~(1<<id);
 	}
