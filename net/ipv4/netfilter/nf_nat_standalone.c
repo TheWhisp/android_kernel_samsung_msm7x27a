@@ -143,7 +143,7 @@ nf_nat_fn(unsigned int hooknum,
 	default:
 		/* ESTABLISHED */
 		NF_CT_ASSERT(ctinfo == IP_CT_ESTABLISHED ||
-			     ctinfo == IP_CT_ESTABLISHED_REPLY);
+			     ctinfo == (IP_CT_ESTABLISHED_REPLY));
 	}
 
 	return nf_nat_packet(ct, ctinfo, hooknum, skb);
