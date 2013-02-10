@@ -106,7 +106,7 @@ static int secmark_tg_check(const struct xt_tgchk_param *par)
 	}
 
 	err = checkentry_lsm(info);
-	if (err)
+	if (err <= 0)
 		return err;
 
 	if (!mode)
