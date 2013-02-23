@@ -616,37 +616,9 @@ static int lcdc_trebon_panel_off(struct platform_device *pdev)
 static void lcdc_trebon_set_backlight(struct msm_fb_data_type *mfd)
 {
 	int bl_value = mfd->bl_level;
-	static int lockup_count;
 
-	up(&backlight_sem);
-	DPRINT("[BACKLIGHT] : %d\n", bl_value);
-	if (!bl_value) {
-		/*  Turn off Backlight, don't check disp_initialized value */
-		lcd_prf = 1;
-
-	} else {
-		if (lcd_prf)
-			return;
-
-		while (!disp_state.disp_initialized) {
-			msleep(100);
-			lockup_count++;
-
-			if (lockup_count > 50) {
-				printk(KERN_ERR "Prevent infinite loop(wait for 5s)\n");
-				printk(KERN_ERR "LCD can't initialize"
-					" with in %d ms\n", lockup_count*100);
-				lockup_count = 0;
-
-				down(&backlight_sem);
-				return;
-			}
-		}
-	}
 
 	backlight_ic_set_brightness(bl_value);
-
-	down(&backlight_sem);
 }
 
 #ifdef ESD_RECOVERY
