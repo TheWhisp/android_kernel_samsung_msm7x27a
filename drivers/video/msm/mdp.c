@@ -1,3 +1,4 @@
+
 /* Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -62,6 +63,8 @@ uint32 mdp_lcdc_underflow_cnt;
 
 boolean mdp_current_clk_on = FALSE;
 boolean mdp_is_in_isr = FALSE;
+
+struct vsync vsync_cntrl;
 
 #if defined(CONFIG_MACH_JENA)
 /* Add a global flag to indicate supporting of the feature:
@@ -375,6 +378,12 @@ hist_err:
 	return ret;
 }
 #endif
+
+/* vsync_isr_handler: Called from isr context*/
+static void vsync_isr_handler(void)
+{
+  vsync_cntrl.vsync_time = ktime_get();
+}
 
 /* Returns < 0 on error, 0 on timeout, or > 0 on successful wait */
 
@@ -726,6 +735,9 @@ irqreturn_t mdp_isr(int irq, void *ptr)
 	uint32 mdp_interrupt = 0;
 	struct mdp_dma_data *dma;
 
+	int vsync_isr, disabled_clocks;
+	unsigned long flag;
+
 	mdp_is_in_isr = TRUE;
 	do {
 		mdp_interrupt = inp32(MDP_INTR_STATUS);
@@ -740,6 +752,30 @@ irqreturn_t mdp_isr(int irq, void *ptr)
 
 		if (!mdp_interrupt)
 			break;
+
+		/*Primary Vsync interrupt*/
+        if (mdp_interrupt & MDP_PRIM_RDPTR) {
+          spin_lock_irqsave(&mdp_spin_lock, flag);
+          vsync_isr = vsync_cntrl.vsync_irq_enabled;
+          disabled_clocks = vsync_cntrl.disabled_clocks;
+          if ((!vsync_isr && !vsync_cntrl.disabled_clocks)
+            || (!vsync_isr && vsync_cntrl.vsync_dma_enabled)) {
+            mdp_intr_mask &= ~MDP_PRIM_RDPTR;
+            outp32(MDP_INTR_ENABLE, mdp_intr_mask);
+            mdp_disable_irq_nosync(MDP_VSYNC_TERM);
+            vsync_cntrl.disabled_clocks = 1;
+          } else if (vsync_isr) {
+            vsync_isr_handler();
+          }
+          vsync_cntrl.vsync_dma_enabled = 0;
+          spin_unlock_irqrestore(&mdp_spin_lock, flag);
+
+          complete(&vsync_cntrl.vsync_comp);
+          if (!vsync_isr && !disabled_clocks)
+            mdp_pipe_ctrl(MDP_CMD_BLOCK,
+              MDP_BLOCK_POWER_OFF, TRUE);
+          complete_all(&vsync_cntrl.vsync_wait);
+        }
 
 		/* DMA3 TV-Out Start */
 		if (mdp_interrupt & TV_OUT_DMA3_START) {
@@ -790,15 +826,31 @@ irqreturn_t mdp_isr(int irq, void *ptr)
 		}
 		/* LCDC Frame Start */
 		if (mdp_interrupt & LCDC_FRAME_START) {
-			/* let's disable LCDC interrupt */
-			mdp_intr_mask &= ~LCDC_FRAME_START;
-			outp32(MDP_INTR_ENABLE, mdp_intr_mask);
 
 			dma = &dma2_data;
+			spin_lock_irqsave(&mdp_spin_lock, flag);
+      		vsync_isr = vsync_cntrl.vsync_irq_enabled;
+			disabled_clocks = vsync_cntrl.disabled_clocks;
+      		/* let's disable LCDC interrupt */
 			if (dma->waiting) {
 				dma->waiting = FALSE;
 				complete(&dma->comp);
 			}
+			if (!vsync_isr && !disabled_clocks) {
+        		mdp_intr_mask &= ~LCDC_FRAME_START;
+        		outp32(MDP_INTR_ENABLE, mdp_intr_mask);
+       			mdp_disable_irq_nosync(MDP_VSYNC_TERM);
+        		vsync_cntrl.disabled_clocks = 1;
+      		} else {
+        		vsync_isr_handler();
+      		}
+      		spin_unlock_irqrestore(&mdp_spin_lock, flag);
+
+      		if (!vsync_isr  && !disabled_clocks)
+       		 	mdp_pipe_ctrl(MDP_CMD_BLOCK,
+          			MDP_BLOCK_POWER_OFF, TRUE);
+
+      		complete_all(&vsync_cntrl.vsync_wait);
 		}
 
 		/* DMA2 LCD-Out Complete */
@@ -897,6 +949,7 @@ static void mdp_drv_init(void)
 	dma2_data.waiting = FALSE;
 	init_completion(&dma2_data.comp);
 	init_completion(&dma2_data.dmap_comp);
+	init_completion(&vsync_cntrl.vsync_comp);
 	sema_init(&dma2_data.mutex, 1);
 	mutex_init(&dma2_data.ov_mutex);
 
@@ -925,6 +978,10 @@ static void mdp_drv_init(void)
 	for (i = 0; i < MDP_MAX_BLOCK; i++) {
 		atomic_set(&mdp_block_power_cnt[i], 0);
 	}
+
+	vsync_cntrl.disabled_clocks = 1;
+  	init_completion(&vsync_cntrl.vsync_wait);
+  	atomic_set(&vsync_cntrl.vsync_resume, 1);
 
 #ifdef MSM_FB_ENABLE_DBGFS
 	{
@@ -1008,6 +1065,10 @@ static int mdp_off(struct platform_device *pdev)
 {
 	int ret = 0;
 	mdp_histogram_ctrl(FALSE);
+
+	atomic_set(&vsync_cntrl.suspend, 1);
+  	atomic_set(&vsync_cntrl.vsync_resume, 0);
+  	complete_all(&vsync_cntrl.vsync_wait);
 
 	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
 	ret = panel_next_off(pdev);
@@ -1336,6 +1397,7 @@ static int mdp_probe(struct platform_device *pdev)
 
 	/* link to the latest pdev */
 	mfd->pdev = msm_fb_dev;
+	mfd->vsync_init = NULL;
 
 	/* add panel data */
 	if (platform_device_add_data
@@ -1515,6 +1577,9 @@ static int mdp_probe(struct platform_device *pdev)
 		}
 #else
 		mfd->dma = &dma2_data;
+		mfd->vsync_init = mdp_dma_lcdc_vsync_init;
+    	mfd->vsync_ctrl = mdp_dma_lcdc_vsync_ctrl;
+    	mfd->vsync_show = mdp_dma_lcdc_show_event;
 		spin_lock_irqsave(&mdp_spin_lock, flag);
 		mdp_intr_mask &= ~MDP_DMA_P_DONE;
 		outp32(MDP_INTR_ENABLE, mdp_intr_mask);
@@ -1575,9 +1640,32 @@ static int mdp_probe(struct platform_device *pdev)
 
 	pdev_list[pdev_list_cnt++] = pdev;
 	mdp4_extn_disp = 0;
+
+	if (mfd->vsync_init != NULL) {
+		mfd->vsync_init(0);
+
+    	if (!mfd->vsync_sysfs_created) {
+    	 	mfd->dev_attr.attr.name = "vsync_event";
+      		mfd->dev_attr.attr.mode = S_IRUGO;
+      		mfd->dev_attr.show = mfd->vsync_show;
+      		sysfs_attr_init(&mfd->dev_attr.attr);
+      		rc = sysfs_create_file(&mfd->fbi->dev->kobj,
+              &mfd->dev_attr.attr);
+
+      		if (rc) {
+        		pr_err("%s: sysfs creation failed, ret=%d\n",
+          			__func__, rc);
+        		return rc;
+      		}
+      		kobject_uevent(&mfd->fbi->dev->kobj, KOBJ_ADD);
+      		pr_debug("%s: kobject_uevent(KOBJ_ADD)\n", __func__);
+     		mfd->vsync_sysfs_created = 1;
+    	}
+	}	
+
 	return 0;
 
-      mdp_probe_err:
+	mdp_probe_err:
 	platform_device_put(msm_fb_dev);
 #ifdef CONFIG_MSM_BUS_SCALING
 	if (mdp_pdata && mdp_pdata->mdp_bus_scale_table &&
@@ -1685,3 +1773,4 @@ static int __init mdp_driver_init(void)
 }
 
 module_init(mdp_driver_init);
+
