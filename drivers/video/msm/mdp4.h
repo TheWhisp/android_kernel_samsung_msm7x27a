@@ -235,7 +235,7 @@ enum {
 #define MDP4_PIPE_PER_MIXER	2
 
 #define MDP4_MAX_PLANE		4
-
+#define VSYNC_PERIOD            16
 
 struct mdp4_overlay_pipe {
 	uint32 pipe_used;
