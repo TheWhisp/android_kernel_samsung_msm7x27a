@@ -91,6 +91,23 @@ struct mdp_table_entry {
 extern struct mdp_ccs mdp_ccs_yuv2rgb ;
 extern struct mdp_ccs mdp_ccs_rgb2yuv ;
 
+struct vsync {
+  	ktime_t vsync_time;
+  	struct completion vsync_comp;
+ 	struct device *dev;
+  	struct work_struct vsync_work;
+  	int vsync_irq_enabled;
+  	int vsync_dma_enabled;
+  	int disabled_clocks;
+  	struct completion vsync_wait;
+  	atomic_t suspend;
+  	atomic_t vsync_resume;
+  	int sysfs_created;
+};
+
+extern struct vsync vsync_cntrl;
+
+
 /*
  * MDP Image Structure
  */
@@ -240,6 +257,7 @@ struct mdp_dma_data {
 #define MDP_OVERLAY1_TERM 0x40
 #endif
 #define MDP_HISTOGRAM_TERM 0x80
+#define MDP_VSYNC_TERM 0x1000
 
 #define ACTIVE_START_X_EN BIT(31)
 #define ACTIVE_START_Y_EN BIT(31)
@@ -259,6 +277,7 @@ struct mdp_dma_data {
 #define MDP_PPP_DONE 				BIT(0)
 #define TV_OUT_DMA3_DONE    BIT(6)
 #define TV_ENC_UNDERRUN     BIT(7)
+#define MDP_PRIM_RDPTR      BIT(8)
 #define TV_OUT_DMA3_START   BIT(13)
 #define MDP_HIST_DONE       BIT(20)
 
@@ -708,6 +727,12 @@ unsigned long mdp_perf_level2clk_rate(uint32 perf_level);
 #ifdef CONFIG_MSM_BUS_SCALING
 int mdp_bus_scale_update_request(uint32_t index);
 #endif
+
+void mdp_dma_lcdc_vsync_init(int cndx);
+void mdp_dma_vsync_ctrl(int enable);
+void mdp_dma_lcdc_vsync_ctrl(int enable);
+ssize_t mdp_dma_lcdc_show_event(struct device *dev,
+    struct device_attribute *attr, char *buf);
 
 #ifdef MDP_HW_VSYNC
 void mdp_hw_vsync_clk_enable(struct msm_fb_data_type *mfd);

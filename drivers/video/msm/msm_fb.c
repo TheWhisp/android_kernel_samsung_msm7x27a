@@ -363,6 +363,7 @@ static int msm_fb_probe(struct platform_device *pdev)
 	if (pdev_list_cnt >= MSM_FB_MAX_DEV_LIST)
 		return -ENOMEM;
 
+	vsync_cntrl.dev = mfd->fbi->dev;
 	mfd->panel_info.frame_count = 0;
 	mfd->bl_level = 0;
 #ifdef CONFIG_FB_MSM_OVERLAY
@@ -2476,6 +2477,27 @@ static int msmfb_blit(struct fb_info *info, void __user *p)
 	return 0;
 }
 
+static int msmfb_vsync_ctrl(struct fb_info *info, void __user *argp)
+{
+	int enable, ret;
+	struct msm_fb_data_type *mfd = (struct msm_fb_data_type *)info->par;
+
+	ret = copy_from_user(&enable, argp, sizeof(enable));
+	if (ret) {
+		pr_err("%s:msmfb_overlay_vsync ioctl failed", __func__);
+		return ret;
+	}
+
+	if (mfd->vsync_ctrl)
+		mfd->vsync_ctrl(enable);
+	else {
+		pr_err("%s: Vsync IOCTL not supported", __func__);
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
 #ifdef CONFIG_FB_MSM_OVERLAY
 static int msmfb_overlay_get(struct fb_info *info, void __user *p)
 {
@@ -2727,6 +2749,25 @@ static int msmfb_notify_update(struct fb_info *info, unsigned long *argp)
 	return 0;
 }
 
+static int msmfb_handle_metadata_ioctl(struct msm_fb_data_type *mfd,
+				struct msmfb_metadata *metadata_ptr)
+{
+	int ret;
+	switch (metadata_ptr->op) {
+#ifdef CONFIG_FB_MSM_MDP40
+	case metadata_op_base_blend:
+		ret = mdp4_update_base_blend(mfd,
+					&metadata_ptr->data.blend_cfg);
+		break;
+#endif
+	default:
+		pr_warn("Unsupported request to MDP META IOCTL.\n");
+		ret = -EINVAL;
+		break;
+	}
+	return ret;
+}
+
 static int msm_fb_ioctl(struct fb_info *info, unsigned int cmd,
 			unsigned long arg)
 {
@@ -2739,6 +2780,7 @@ static int msm_fb_ioctl(struct fb_info *info, unsigned int cmd,
 	struct mdp_ccs ccs_matrix;
 #endif
 	struct mdp_page_protection fb_page_protection;
+	struct msmfb_metadata mdp_metadata;
 	int ret = 0;
 
 	switch (cmd) {
@@ -2784,6 +2826,15 @@ static int msm_fb_ioctl(struct fb_info *info, unsigned int cmd,
 		up(&msm_fb_ioctl_ppp_sem);
 		break;
 #endif
+	case MSMFB_VSYNC_CTRL:
+	case MSMFB_OVERLAY_VSYNC_CTRL:
+		down(&msm_fb_ioctl_ppp_sem);
+		if (mdp_rev >= MDP_REV_40)
+			ret = -1; //ret = msmfb_overlay_vsync_ctrl(info, argp);
+		else
+			ret = msmfb_vsync_ctrl(info, argp);
+		up(&msm_fb_ioctl_ppp_sem);
+		break;
 	case MSMFB_BLIT:
 		down(&msm_fb_ioctl_ppp_sem);
 		ret = msmfb_blit(info, argp);
@@ -2969,6 +3020,13 @@ static int msm_fb_ioctl(struct fb_info *info, unsigned int cmd,
 		 */
 		ret = -EINVAL;
 #endif
+		break;
+
+	case MSMFB_METADATA_SET:
+		ret = copy_from_user(&mdp_metadata, argp, sizeof(mdp_metadata));
+		if (ret)
+			return ret;
+		ret = msmfb_handle_metadata_ioctl(mfd, &mdp_metadata);
 		break;
 
 	default:
