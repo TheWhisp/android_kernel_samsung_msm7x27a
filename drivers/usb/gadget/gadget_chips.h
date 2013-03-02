@@ -45,26 +45,6 @@
 #define	gadget_is_goku(g)	0
 #endif
 
-/* SH3 UDC -- not yet ported 2.4 --> 2.6 */
-#ifdef CONFIG_USB_GADGET_SUPERH
-#define	gadget_is_sh(g)		!strcmp("sh_udc", (g)->name)
-#else
-#define	gadget_is_sh(g)		0
-#endif
-
-/* not yet stable on 2.6 (would help "original Zaurus") */
-#ifdef CONFIG_USB_GADGET_SA1100
-#define	gadget_is_sa1100(g)	!strcmp("sa1100_udc", (g)->name)
-#else
-#define	gadget_is_sa1100(g)	0
-#endif
-
-#ifdef CONFIG_USB_GADGET_LH7A40X
-#define	gadget_is_lh7a40x(g)	!strcmp("lh7a40x_udc", (g)->name)
-#else
-#define	gadget_is_lh7a40x(g)	0
-#endif
-
 #ifdef CONFIG_USB_GADGET_OMAP
 #define	gadget_is_omap(g)	!strcmp("omap_udc", (g)->name)
 #else
@@ -140,12 +120,6 @@
 #define gadget_is_ci13xxx_pci(g)	0
 #endif
 
-#ifdef CONFIG_USB_GADGET_MSM_72K
-#define	gadget_is_msm72k(g)	!strcmp("msm72k_udc", (g)->name)
-#else
-#define	gadget_is_msm72k(g)	0
-#endif
-
 // CONFIG_USB_GADGET_SX2
 // CONFIG_USB_GADGET_AU1X00
 // ...
@@ -162,6 +136,12 @@
 #define gadget_is_s3c_hsotg(g)    0
 #endif
 
+#ifdef CONFIG_USB_S3C_HSUDC
+#define gadget_is_s3c_hsudc(g) (!strcmp("s3c-hsudc", (g)->name))
+#else
+#define gadget_is_s3c_hsudc(g) 0
+#endif
+
 #ifdef CONFIG_USB_GADGET_EG20T
 #define	gadget_is_pch(g)	(!strcmp("pch_udc", (g)->name))
 #else
@@ -172,6 +152,12 @@
 #define gadget_is_ci13xxx_msm(g)	(!strcmp("ci13xxx_msm", (g)->name))
 #else
 #define gadget_is_ci13xxx_msm(g)	0
+#endif
+
+#ifdef CONFIG_USB_GADGET_RENESAS_USBHS
+#define	gadget_is_renesas_usbhs(g) (!strcmp("renesas_usbhs_udc", (g)->name))
+#else
+#define	gadget_is_renesas_usbhs(g) 0
 #endif
 
 /**
@@ -201,8 +187,6 @@ static inline int usb_gadget_controller_number(struct usb_gadget *gadget)
 		return 0x06;
 	else if (gadget_is_omap(gadget))
 		return 0x08;
-	else if (gadget_is_lh7a40x(gadget))
-		return 0x09;
 	else if (gadget_is_pxa27x(gadget))
 		return 0x11;
 	else if (gadget_is_s3c2410(gadget))
@@ -235,8 +219,11 @@ static inline int usb_gadget_controller_number(struct usb_gadget *gadget)
 		return 0x27;
 	else if (gadget_is_ci13xxx_msm(gadget))
 		return 0x28;
-else if (gadget_is_msm72k(gadget))
+	else if (gadget_is_renesas_usbhs(gadget))
 		return 0x29;
+	else if (gadget_is_s3c_hsudc(gadget))
+		return 0x30;
+
 	return -ENOENT;
 }
 

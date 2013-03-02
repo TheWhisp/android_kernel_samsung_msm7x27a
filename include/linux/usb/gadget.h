@@ -429,8 +429,8 @@ struct usb_gadget_ops {
 	int	(*vbus_draw) (struct usb_gadget *, unsigned mA);
 	int	(*pullup) (struct usb_gadget *, int is_on);
 	int	(*ioctl)(struct usb_gadget *,
-				unsigned code, unsigned long param);
-#ifdef CONFIG_USB_MSM_72K
+	unsigned code, unsigned long param);
+#ifdef CONFIG_USB_SAMSUNG_VBUS_CHECK
 	int    (*get_vbus_state)(struct usb_gadget *);
 #endif 
 };
@@ -709,6 +709,11 @@ static inline int usb_gadget_disconnect(struct usb_gadget *gadget)
  * struct usb_gadget_driver - driver for usb 'slave' devices
  * @function: String describing the gadget's function
  * @speed: Highest speed the driver handles.
+ * @bind: Invoked when the driver is bound to a gadget, usually
+ *	after registering the driver.
+ *	At that point, ep0 is fully initialized, and ep_list holds
+ *	the currently-available endpoints.
+ *	Called in a context that permits sleeping.
  * @setup: Invoked for ep0 control requests that aren't handled by
  *	the hardware level driver. Most calls must be handled by
  *	the gadget driver, including descriptor and configuration
@@ -773,6 +778,7 @@ static inline int usb_gadget_disconnect(struct usb_gadget *gadget)
 struct usb_gadget_driver {
 	char			*function;
 	enum usb_device_speed	speed;
+	int			(*bind)(struct usb_gadget *);
 	void			(*unbind)(struct usb_gadget *);
 	int			(*setup)(struct usb_gadget *,
 					const struct usb_ctrlrequest *);
@@ -783,17 +789,6 @@ struct usb_gadget_driver {
 	/* FIXME support safe rmmod */
 	struct device_driver	driver;
 };
-
-
-
-/*-------------------------------------------------------------------------*/
-
-/* driver modules register and unregister, as usual.
- * these calls must be made in a context that can sleep.
- *
- * these will usually be implemented directly by the hardware-dependent
- * usb bus interface driver, which will only support a single driver.
- */
 
 /**
  * usb_gadget_probe_driver - probe a gadget driver
@@ -808,7 +803,30 @@ struct usb_gadget_driver {
  * be in init sections.
  */
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
-		int (*bind)(struct usb_gadget *));
+                int (*bind)(struct usb_gadget *));
+
+
+/*-------------------------------------------------------------------------*/
+
+/* driver modules register and unregister, as usual.
+ * these calls must be made in a context that can sleep.
+ *
+ * these will usually be implemented directly by the hardware-dependent
+ * usb bus interface driver, which will only support a single driver.
+ */
+
+/**
+ * usb_gadget_register_driver - register a gadget driver
+ * @driver:the driver being registered
+ * Context: can sleep
+ *
+ * Call this in your gadget driver's module initialization function,
+ * to tell the underlying usb controller driver about your driver.
+ * The driver's bind() function will be called to bind it to a
+ * gadget before this registration call returns.  It's expected that
+ * the bind() functions will be in init sections.
+ */
+int usb_gadget_register_driver(struct usb_gadget_driver *driver);
 
 /**
  * usb_gadget_unregister_driver - unregister a gadget driver
