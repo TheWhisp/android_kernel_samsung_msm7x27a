@@ -122,4 +122,4 @@ obj-y				+= ieee802154/
 obj-y				+= clk/
 obj-y				+= sensors/
 obj-$(CONFIG_DPRAM)	+= dpram/
-
+obj-$(CONFIG_ZRAM)	+= zram/

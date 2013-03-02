@@ -2373,10 +2373,16 @@ CONFIG_ANDROID_LOW_MEMORY_KILLER=y
 # CONFIG_LINE6_USB is not set
 # CONFIG_VT6656 is not set
 # CONFIG_IIO is not set
-# CONFIG_ZRAM is not set
 # CONFIG_FB_SM7XX is not set
 
 #
+# ZRAM support
+#
+CONFIG_ZRAM=y
+# CONFIG_ZRAM_DEBUG is not set
+#
+#
+
 # Texas Instruments shared transport line discipline
 #
 # CONFIG_ST_BT is not set
