@@ -24,10 +24,9 @@
 #include <mach/usb_gadget_fserial.h>
 #include <mach/msm_memtypes.h>
 #include <mach/msm_serial_hs.h>
-//#include <linux/usb/android_composite.h>
-#include <linux/slab.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
+#include <linux/slab.h>
 //#include <mach/gpio-v1.h>
 #ifdef CONFIG_MACH_JENA
 #include <mach/gpio_jena.h>
@@ -65,6 +64,11 @@
 #include <mach/rpc_server_handset.h>
 #include <mach/socinfo.h>
 
+#ifdef CONFIG_USB_G_ANDROID
+#include <linux/usb/android.h>
+#include <mach/usbdiag.h>
+#endif
+
 #include <linux/fsaxxxx_usbsw.h>
 #ifdef CONFIG_PROXIMITY_SENSOR
 #include <linux/gp2a.h>
@@ -95,11 +99,6 @@
 #define FUEL_I2C_SCL 78
 #define FUEL_I2C_SDA 79
 #endif
-#endif
-
-#ifdef CONFIG_USB_G_ANDROID
-#include <linux/usb/android.h>
-#include <mach/usbdiag.h>
 #endif
 
 int charging_boot;
@@ -3865,7 +3864,7 @@ static struct platform_device *surf_ffa_devices[] __initdata = {
 	&msm_device_otg,
 	&msm_device_gadget_peripheral,
 	#ifdef CONFIG_USB_G_ANDROID
-       &android_usb_device,
+    &android_usb_device,
 	#endif
 	&android_pmem_device,
 	&android_pmem_adsp_device,
