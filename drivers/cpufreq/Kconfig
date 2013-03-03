@@ -206,4 +206,19 @@ config CPU_FREQ_GOV_CONSERVATIVE
 
 	  If in doubt, say N.
 
+config CPU_FREQ_GOV_SAVAGEDZEN
+	tristate "'savagedzen' cpufreq policy governor"
+	help
+	  'savagedzen' - SavagedZen is a governor based on the Smartass governor.
+	  With tweaks to paramaters which control how much and how fast cpu ramps
+	  up/down. Main difference versus Smartass is that cpu ramps down not in
+	  fixed steps, but based on cpu load heuristics, i.e. when cpu load falls
+	  below threshold (min_cpu_load), cpu immediately ramps down to a frequency
+	  derived from the measured load. (By jsseidel@XDA)
+
+config CPU_FREQ_GOV_SMARTASS2
+	tristate "'smartass2' cpufreq policy governor"
+	help
+	  'smartass2' - smartass2 governor.
+
 endif	# CPU_FREQ
