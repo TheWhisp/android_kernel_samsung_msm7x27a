@@ -1,6 +1,6 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
-   Copyright (c) 2000-2001, 2010-2011 Code Aurora Forum.  All rights reserved.
+   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation.  All rights reserved.
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -60,7 +60,7 @@ static void hci_tx_task(unsigned long arg);
 
 static DEFINE_RWLOCK(hci_task_lock);
 
-static int enable_smp;
+static int enable_smp = 1;
 
 /* HCI device list */
 LIST_HEAD(hci_dev_list);
@@ -193,6 +193,7 @@ static void hci_reset_req(struct hci_dev *hdev, unsigned long opt)
 
 	/* Reset device */
 	set_bit(HCI_RESET, &hdev->flags);
+	memset(&hdev->features, 0, sizeof(hdev->features));
 	hci_send_cmd(hdev, HCI_OP_RESET, 0, NULL);
 }
 
@@ -304,6 +305,12 @@ static void hci_le_init_req(struct hci_dev *hdev, unsigned long opt)
 
 	/* Read LE buffer size */
 	hci_send_cmd(hdev, HCI_OP_LE_READ_BUFFER_SIZE, 0, NULL);
+
+	/* Read LE clear white list */
+	hci_send_cmd(hdev, HCI_OP_LE_CLEAR_WHITE_LIST, 0, NULL);
+
+	/* Read LE white list size */
+	hci_send_cmd(hdev, HCI_OP_LE_READ_WHITE_LIST_SIZE, 0, NULL);
 }
 
 static void hci_scan_req(struct hci_dev *hdev, unsigned long opt)
@@ -542,6 +549,11 @@ int hci_dev_open(__u16 dev)
 
 	hci_req_lock(hdev);
 
+	if (test_bit(HCI_UNREGISTER, &hdev->flags)) {
+		ret = -ENODEV;
+		goto done;
+	}
+
 	if (hdev->rfkill && rfkill_blocked(hdev->rfkill)) {
 		ret = -ERFKILL;
 		goto done;
@@ -558,6 +570,19 @@ int hci_dev_open(__u16 dev)
 	if (hdev->open(hdev)) {
 		ret = -EIO;
 		goto done;
+	}
+
+	if (!skb_queue_empty(&hdev->cmd_q)) {
+		BT_ERR("command queue is not empty, purging");
+		skb_queue_purge(&hdev->cmd_q);
+	}
+	if (!skb_queue_empty(&hdev->rx_q)) {
+		BT_ERR("rx queue is not empty, purging");
+		skb_queue_purge(&hdev->rx_q);
+	}
+	if (!skb_queue_empty(&hdev->raw_q)) {
+		BT_ERR("raw queue is not empty, purging");
+		skb_queue_purge(&hdev->raw_q);
 	}
 
 	if (!test_bit(HCI_RAW, &hdev->flags)) {
@@ -579,8 +604,12 @@ int hci_dev_open(__u16 dev)
 		hci_dev_hold(hdev);
 		set_bit(HCI_UP, &hdev->flags);
 		hci_notify(hdev, HCI_DEV_UP);
-		if (!test_bit(HCI_SETUP, &hdev->flags))
+		if (!test_bit(HCI_SETUP, &hdev->flags) &&
+				hdev->dev_type == HCI_BREDR) {
+			hci_dev_lock_bh(hdev);
 			mgmt_powered(hdev->id, 1);
+			hci_dev_unlock_bh(hdev);
+		}
 	} else {
 		/* Init failed, cleanup */
 		tasklet_kill(&hdev->rx_task);
@@ -608,8 +637,10 @@ done:
 	return ret;
 }
 
-static int hci_dev_do_close(struct hci_dev *hdev)
+static int hci_dev_do_close(struct hci_dev *hdev, u8 is_process)
 {
+	unsigned long keepflags = 0;
+
 	BT_DBG("%s %p", hdev->name, hdev);
 
 	hci_req_cancel(hdev, ENODEV);
@@ -627,10 +658,16 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 
 	hci_dev_lock_bh(hdev);
 	inquiry_cache_flush(hdev);
-	hci_conn_hash_flush(hdev);
+	hci_conn_hash_flush(hdev, is_process);
 	hci_dev_unlock_bh(hdev);
 
 	hci_notify(hdev, HCI_DEV_DOWN);
+
+	if (hdev->dev_type == HCI_BREDR) {
+		hci_dev_lock_bh(hdev);
+		mgmt_powered(hdev->id, 0);
+		hci_dev_unlock_bh(hdev);
+	}
 
 	if (hdev->flush)
 		hdev->flush(hdev);
@@ -664,10 +701,15 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 	 * and no tasks are scheduled. */
 	hdev->close(hdev);
 
-	mgmt_powered(hdev->id, 0);
+	/* Clear only non-persistent flags */
+	if (test_bit(HCI_MGMT, &hdev->flags))
+		set_bit(HCI_MGMT, &keepflags);
+	if (test_bit(HCI_LINK_KEYS, &hdev->flags))
+		set_bit(HCI_LINK_KEYS, &keepflags);
+	if (test_bit(HCI_DEBUG_KEYS, &hdev->flags))
+		set_bit(HCI_DEBUG_KEYS, &keepflags);
 
-	/* Clear flags */
-	hdev->flags = 0;
+	hdev->flags = keepflags;
 
 	hci_req_unlock(hdev);
 
@@ -683,7 +725,7 @@ int hci_dev_close(__u16 dev)
 	hdev = hci_dev_get(dev);
 	if (!hdev)
 		return -ENODEV;
-	err = hci_dev_do_close(hdev);
+	err = hci_dev_do_close(hdev, 1);
 	hci_dev_put(hdev);
 	return err;
 }
@@ -709,7 +751,7 @@ int hci_dev_reset(__u16 dev)
 
 	hci_dev_lock_bh(hdev);
 	inquiry_cache_flush(hdev);
-	hci_conn_hash_flush(hdev);
+	hci_conn_hash_flush(hdev, 0);
 	hci_dev_unlock_bh(hdev);
 
 	if (hdev->flush)
@@ -922,7 +964,7 @@ static int hci_rfkill_set_block(void *data, bool blocked)
 	if (!blocked)
 		return 0;
 
-	hci_dev_do_close(hdev);
+	hci_dev_do_close(hdev, 0);
 
 	return 0;
 }
@@ -959,17 +1001,21 @@ EXPORT_SYMBOL(hci_free_dev);
 static void hci_power_on(struct work_struct *work)
 {
 	struct hci_dev *hdev = container_of(work, struct hci_dev, power_on);
+	int err;
 
 	BT_DBG("%s", hdev->name);
 
-	if (hci_dev_open(hdev->id) < 0)
+	err = hci_dev_open(hdev->id);
+	if (err && err != -EALREADY)
 		return;
 
-	if (test_bit(HCI_AUTO_OFF, &hdev->flags))
+	if (test_bit(HCI_AUTO_OFF, &hdev->flags) &&
+				hdev->dev_type == HCI_BREDR)
 		mod_timer(&hdev->off_timer,
 				jiffies + msecs_to_jiffies(AUTO_OFF_TIMEOUT));
 
-	if (test_and_clear_bit(HCI_SETUP, &hdev->flags))
+	if (test_and_clear_bit(HCI_SETUP, &hdev->flags) &&
+				hdev->dev_type == HCI_BREDR)
 		mgmt_index_added(hdev->id);
 }
 
@@ -1059,7 +1105,7 @@ struct link_key *hci_find_ltk(struct hci_dev *hdev, __le16 ediv, u8 rand[8])
 
 		k = list_entry(p, struct link_key, list);
 
-		if (k->type != KEY_TYPE_LTK)
+		if (k->key_type != KEY_TYPE_LTK)
 			continue;
 
 		if (k->dlen != sizeof(*id))
@@ -1085,7 +1131,7 @@ struct link_key *hci_find_link_key_type(struct hci_dev *hdev,
 
 		k = list_entry(p, struct link_key, list);
 
-		if ((k->type == type) && (bacmp(bdaddr, &k->bdaddr) == 0))
+		if ((k->key_type == type) && (bacmp(bdaddr, &k->bdaddr) == 0))
 			return k;
 	}
 
@@ -1097,11 +1143,13 @@ int hci_add_link_key(struct hci_dev *hdev, int new_key, bdaddr_t *bdaddr,
 						u8 *val, u8 type, u8 pin_len)
 {
 	struct link_key *key, *old_key;
+	struct hci_conn *conn;
 	u8 old_key_type;
+	u8 bonded = 0;
 
 	old_key = hci_find_link_key(hdev, bdaddr);
 	if (old_key) {
-		old_key_type = old_key->type;
+		old_key_type = old_key->key_type;
 		key = old_key;
 	} else {
 		old_key_type = 0xff;
@@ -1115,52 +1163,74 @@ int hci_add_link_key(struct hci_dev *hdev, int new_key, bdaddr_t *bdaddr,
 
 	bacpy(&key->bdaddr, bdaddr);
 	memcpy(key->val, val, 16);
-	key->type = type;
+	key->auth = 0x01;
+	key->key_type = type;
 	key->pin_len = pin_len;
 
+	conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, bdaddr);
+	/* Store the link key persistently if one of the following is true:
+	 * 1. the remote side is using dedicated bonding since in that case
+	 *    also the local requirements are set to dedicated bonding
+	 * 2. the local side had dedicated bonding as a requirement
+	 * 3. this is a legacy link key
+	 * 4. this is a changed combination key and there was a previously
+	 *    stored one
+	 * If none of the above match only keep the link key around for
+	 * this connection and set the temporary flag for the device.
+	*/
+
+	if (conn) {
+		if ((conn->remote_auth > 0x01) ||
+			(conn->auth_initiator && conn->auth_type > 0x01) ||
+			(key->key_type < 0x03) ||
+			(key->key_type == 0x06 && old_key_type != 0xff))
+			bonded = 1;
+	}
+
 	if (new_key)
-		mgmt_new_key(hdev->id, key, old_key_type);
+		mgmt_new_key(hdev->id, key, bonded);
 
 	if (type == 0x06)
-		key->type = old_key_type;
+		key->key_type = old_key_type;
 
 	return 0;
 }
 
 int hci_add_ltk(struct hci_dev *hdev, int new_key, bdaddr_t *bdaddr,
-			u8 key_size, __le16 ediv, u8 rand[8], u8 ltk[16])
+			u8 addr_type, u8 key_size, u8 auth,
+			__le16 ediv, u8 rand[8], u8 ltk[16])
 {
 	struct link_key *key, *old_key;
 	struct key_master_id *id;
-	u8 old_key_type;
 
-	BT_DBG("%s addr %s", hdev->name, batostr(bdaddr));
+	BT_DBG("%s Auth: %2.2X addr %s type: %d", hdev->name, auth,
+						batostr(bdaddr), addr_type);
 
 	old_key = hci_find_link_key_type(hdev, bdaddr, KEY_TYPE_LTK);
 	if (old_key) {
 		key = old_key;
-		old_key_type = old_key->type;
 	} else {
 		key = kzalloc(sizeof(*key) + sizeof(*id), GFP_ATOMIC);
 		if (!key)
 			return -ENOMEM;
 		list_add(&key->list, &hdev->link_keys);
-		old_key_type = 0xff;
 	}
 
 	key->dlen = sizeof(*id);
 
 	bacpy(&key->bdaddr, bdaddr);
+	key->addr_type = addr_type;
 	memcpy(key->val, ltk, sizeof(key->val));
-	key->type = KEY_TYPE_LTK;
+	key->key_type = KEY_TYPE_LTK;
 	key->pin_len = key_size;
+	key->auth = auth;
 
 	id = (void *) &key->data;
 	id->ediv = ediv;
 	memcpy(id->rand, rand, sizeof(id->rand));
 
 	if (new_key)
-		mgmt_new_key(hdev->id, key, old_key_type);
+		mgmt_new_key(hdev->id, key, auth & 0x01);
 
 	return 0;
 }
@@ -1243,6 +1313,7 @@ int hci_adv_entries_clear(struct hci_dev *hdev)
 {
 	struct list_head *p, *n;
 
+	BT_DBG("");
 	write_lock_bh(&hdev->adv_entries_lock);
 
 	list_for_each_safe(p, n, &hdev->adv_entries) {
@@ -1264,6 +1335,7 @@ struct adv_entry *hci_find_adv_entry(struct hci_dev *hdev, bdaddr_t *bdaddr)
 	struct list_head *p;
 	struct adv_entry *res = NULL;
 
+	BT_DBG("");
 	read_lock_bh(&hdev->adv_entries_lock);
 
 	list_for_each(p, &hdev->adv_entries) {
@@ -1317,15 +1389,32 @@ int hci_add_adv_entry(struct hci_dev *hdev,
 					struct hci_ev_le_advertising_info *ev)
 {
 	struct adv_entry *entry;
+	u8 flags = 0;
+	int i;
+
+	BT_DBG("");
 
 	if (!is_connectable_adv(ev->evt_type))
 		return -EINVAL;
 
+	if (ev->data && ev->length) {
+		for (i = 0; (i + 2) < ev->length; i++)
+			if (ev->data[i+1] == 0x01) {
+				flags = ev->data[i+2];
+				BT_DBG("flags: %2.2x", flags);
+				break;
+			} else {
+				i += ev->data[i];
+			}
+	}
+
 	entry = hci_find_adv_entry(hdev, &ev->bdaddr);
 	/* Only new entries should be added to adv_entries. So, if
 	 * bdaddr was found, don't add it. */
-	if (entry)
+	if (entry) {
+		entry->flags = flags;
 		return 0;
+	}
 
 	entry = kzalloc(sizeof(*entry), GFP_ATOMIC);
 	if (!entry)
@@ -1333,6 +1422,7 @@ int hci_add_adv_entry(struct hci_dev *hdev,
 
 	bacpy(&entry->bdaddr, &ev->bdaddr);
 	entry->bdaddr_type = ev->bdaddr_type;
+	entry->flags = flags;
 
 	write_lock(&hdev->adv_entries_lock);
 	list_add(&entry->list, &hdev->adv_entries);
@@ -1353,13 +1443,15 @@ static struct crypto_blkcipher *alloc_cypher(void)
 int hci_register_dev(struct hci_dev *hdev)
 {
 	struct list_head *head = &hci_dev_list, *p;
-	int i, id = 0;
+	int i, id;
 
 	BT_DBG("%p name %s bus %d owner %p", hdev, hdev->name,
 						hdev->bus, hdev->owner);
 
 	if (!hdev->open || !hdev->close || !hdev->destruct)
 		return -EINVAL;
+
+	id = (hdev->dev_type == HCI_BREDR) ? 0 : 1;
 
 	write_lock_bh(&hci_dev_list_lock);
 
@@ -1396,6 +1488,10 @@ int hci_register_dev(struct hci_dev *hdev)
 	skb_queue_head_init(&hdev->raw_q);
 
 	setup_timer(&hdev->cmd_timer, hci_cmd_timer, (unsigned long) hdev);
+	setup_timer(&hdev->disco_timer, mgmt_disco_timeout,
+						(unsigned long) hdev);
+	setup_timer(&hdev->disco_le_timer, mgmt_disco_le_timeout,
+						(unsigned long) hdev);
 
 	for (i = 0; i < NUM_REASSEMBLY; i++)
 		hdev->reassembly[i] = NULL;
@@ -1474,18 +1570,24 @@ int hci_unregister_dev(struct hci_dev *hdev)
 
 	BT_DBG("%p name %s bus %d", hdev, hdev->name, hdev->bus);
 
+	set_bit(HCI_UNREGISTER, &hdev->flags);
+
 	write_lock_bh(&hci_dev_list_lock);
 	list_del(&hdev->list);
 	write_unlock_bh(&hci_dev_list_lock);
 
-	hci_dev_do_close(hdev);
+	hci_dev_do_close(hdev, 0);
 
 	for (i = 0; i < NUM_REASSEMBLY; i++)
 		kfree_skb(hdev->reassembly[i]);
 
 	if (!test_bit(HCI_INIT, &hdev->flags) &&
-					!test_bit(HCI_SETUP, &hdev->flags))
+				!test_bit(HCI_SETUP, &hdev->flags) &&
+				hdev->dev_type == HCI_BREDR) {
+		hci_dev_lock_bh(hdev);
 		mgmt_index_removed(hdev->id);
+		hci_dev_unlock_bh(hdev);
+	}
 
 	if (!IS_ERR(hdev->tfm))
 		crypto_free_blkcipher(hdev->tfm);
@@ -1499,8 +1601,12 @@ int hci_unregister_dev(struct hci_dev *hdev)
 
 	hci_unregister_sysfs(hdev);
 
+	/* Disable all timers */
 	hci_del_off_timer(hdev);
 	del_timer(&hdev->adv_timer);
+	del_timer(&hdev->cmd_timer);
+	del_timer(&hdev->disco_timer);
+	del_timer(&hdev->disco_le_timer);
 
 	destroy_workqueue(hdev->workqueue);
 

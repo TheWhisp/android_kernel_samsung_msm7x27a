@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2010-2011 Code Aurora Forum.  All rights reserved.
+   Copyright (c) 2010-2011 The Linux Foundation.  All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License version 2 and
@@ -16,7 +16,7 @@
 
 /* AMP defaults */
 
-#define A2MP_RSP_TIMEOUT        (20000)  /*  20 seconds */
+#define A2MP_RSP_TIMEOUT        (8000)  /*  8 seconds */
 
 /* A2MP Protocol */
 
@@ -44,9 +44,6 @@ struct a2mp_cmd_hdr {
 struct a2mp_cmd_rej {
 	__le16     reason;
 } __packed;
-
-#define HCI_A2MP_ID(id)     ((id)+0x10)  /* convert HCI dev index to AMP ID */
-#define A2MP_HCI_ID(id)     ((id)-0x10)  /* convert AMP ID to HCI dev index */
 
 struct a2mp_discover_req {
 	__le16     mtu;

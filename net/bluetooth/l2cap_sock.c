@@ -1,6 +1,6 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
-   Copyright (C) 2000-2001 Qualcomm Incorporated
+   Copyright (c) 2000-2001, 2011-2012 The Linux Foundation.  All rights reserved.
    Copyright (C) 2009-2010 Gustavo F. Padovan <gustavo@padovan.org>
    Copyright (C) 2010 Google Inc.
 
@@ -76,6 +76,37 @@ void l2cap_sock_clear_timer(struct sock *sk)
 {
 	BT_DBG("sock %p state %d", sk, sk->sk_state);
 	sk_stop_timer(sk, &sk->sk_timer);
+}
+
+int l2cap_sock_le_params_valid(struct bt_le_params *le_params)
+{
+	if (!le_params || le_params->latency > BT_LE_LATENCY_MAX ||
+			le_params->scan_window > BT_LE_SCAN_WINDOW_MAX ||
+			le_params->scan_interval < BT_LE_SCAN_INTERVAL_MIN ||
+			le_params->scan_window > le_params->scan_interval ||
+			le_params->interval_min < BT_LE_CONN_INTERVAL_MIN ||
+			le_params->interval_max > BT_LE_CONN_INTERVAL_MAX ||
+			le_params->interval_min > le_params->interval_max ||
+			le_params->supervision_timeout < BT_LE_SUP_TO_MIN ||
+			le_params->supervision_timeout > BT_LE_SUP_TO_MAX) {
+		return 0;
+	}
+
+	return 1;
+}
+
+int l2cap_sock_le_conn_update_params_valid(struct bt_le_params *le_params)
+{
+	if (!le_params || le_params->latency > BT_LE_LATENCY_MAX ||
+			le_params->interval_min < BT_LE_CONN_INTERVAL_MIN ||
+			le_params->interval_max > BT_LE_CONN_INTERVAL_MAX ||
+			le_params->interval_min > le_params->interval_max ||
+			le_params->supervision_timeout < BT_LE_SUP_TO_MIN ||
+			le_params->supervision_timeout > BT_LE_SUP_TO_MAX) {
+		return 0;
+	}
+
+	return 1;
 }
 
 static struct sock *__l2cap_get_sock_by_addr(__le16 psm, bdaddr_t *src)
@@ -545,6 +576,17 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname, ch
 			err = -EFAULT;
 		break;
 
+	case BT_LE_PARAMS:
+		if (l2cap_pi(sk)->scid != L2CAP_CID_LE_DATA) {
+			err = -EINVAL;
+			break;
+		}
+
+		if (copy_to_user(optval, (char *) &bt_sk(sk)->le_params,
+						sizeof(bt_sk(sk)->le_params)))
+			err = -EFAULT;
+		break;
+
 	default:
 		err = -ENOPROTOOPT;
 		break;
@@ -611,8 +653,16 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __us
 		case L2CAP_MODE_BASIC:
 			l2cap_pi(sk)->conf_state &= ~L2CAP_CONF_STATE2_DEVICE;
 			break;
-		case L2CAP_MODE_ERTM:
 		case L2CAP_MODE_STREAMING:
+			if (!disable_ertm) {
+				/* No fallback to ERTM or Basic mode */
+				l2cap_pi(sk)->conf_state |=
+						L2CAP_CONF_STATE2_DEVICE;
+				break;
+			}
+			err = -EINVAL;
+			break;
+		case L2CAP_MODE_ERTM:
 			if (!disable_ertm)
 				break;
 			/* fall through */
@@ -626,6 +676,7 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __us
 		l2cap_pi(sk)->fcs  = opts.fcs;
 		l2cap_pi(sk)->max_tx = opts.max_tx;
 		l2cap_pi(sk)->tx_win = opts.txwin_size;
+		l2cap_pi(sk)->flush_to = opts.flush_to;
 		break;
 
 	case L2CAP_LM:
@@ -660,6 +711,7 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, ch
 	struct sock *sk = sock->sk;
 	struct bt_security sec;
 	struct bt_power pwr;
+	struct bt_le_params le_params;
 	struct l2cap_conn *conn;
 	int len, err = 0;
 	u32 opt;
@@ -750,7 +802,7 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, ch
 			break;
 		}
 
-		if ((opt > BT_AMP_POLICY_PREFER_BR_EDR) ||
+		if ((opt > BT_AMP_POLICY_PREFER_AMP) ||
 			((l2cap_pi(sk)->mode != L2CAP_MODE_ERTM) &&
 			 (l2cap_pi(sk)->mode != L2CAP_MODE_STREAMING))) {
 			err = -EINVAL;
@@ -761,10 +813,54 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, ch
 		BT_DBG("BT_AMP_POLICY now %d", opt);
 
 		if ((sk->sk_state == BT_CONNECTED) &&
-			(l2cap_pi(sk)->amp_move_role == L2CAP_AMP_MOVE_NONE) &&
-			(l2cap_pi(sk)->conn->fc_mask & L2CAP_FC_A2MP))
+			(l2cap_pi(sk)->amp_move_role == L2CAP_AMP_MOVE_NONE))
 			l2cap_amp_move_init(sk);
 
+		break;
+
+	case BT_FLUSHABLE:
+		if (get_user(opt, (u32 __user *) optval)) {
+			err = -EFAULT;
+			break;
+		}
+		l2cap_pi(sk)->flushable = opt;
+
+		break;
+
+	case BT_LE_PARAMS:
+		if (l2cap_pi(sk)->scid != L2CAP_CID_LE_DATA) {
+			err = -EINVAL;
+			break;
+		}
+
+		if (copy_from_user((char *) &le_params, optval,
+					sizeof(struct bt_le_params))) {
+			err = -EFAULT;
+			break;
+		}
+
+		conn = l2cap_pi(sk)->conn;
+		if (!conn || !conn->hcon ||
+				l2cap_pi(sk)->scid != L2CAP_CID_LE_DATA) {
+			memcpy(&bt_sk(sk)->le_params, &le_params,
+							sizeof(le_params));
+			break;
+		}
+
+		if (!conn->hcon->out ||
+				!l2cap_sock_le_conn_update_params_valid(
+					&le_params)) {
+			err = -EINVAL;
+			break;
+		}
+
+		memcpy(&bt_sk(sk)->le_params, &le_params, sizeof(le_params));
+
+		hci_le_conn_update(conn->hcon,
+				le_params.interval_min,
+				le_params.interval_max,
+				le_params.latency,
+				le_params.supervision_timeout);
 		break;
 
 	default:
@@ -948,7 +1044,8 @@ static int l2cap_sock_recvmsg(struct kiocb *iocb, struct socket *sock, struct ms
 	else
 		err = bt_sock_recvmsg(iocb, sock, msg, len, flags);
 
-	l2cap_ertm_recv_done(sk);
+	if (err >= 0)
+		l2cap_ertm_recv_done(sk);
 
 	return err;
 }
@@ -1087,12 +1184,23 @@ static int l2cap_sock_shutdown(struct socket *sock, int how)
 static int l2cap_sock_release(struct socket *sock)
 {
 	struct sock *sk = sock->sk;
+	struct sock *srv_sk = NULL;
 	int err;
 
 	BT_DBG("sock %p, sk %p", sock, sk);
 
 	if (!sk)
 		return 0;
+
+	/* If this is an ATT Client socket, find the matching Server */
+	if (l2cap_pi(sk)->scid == L2CAP_CID_LE_DATA && !l2cap_pi(sk)->incoming)
+		srv_sk = l2cap_find_sock_by_fixed_cid_and_dir(L2CAP_CID_LE_DATA,
+					&bt_sk(sk)->src, &bt_sk(sk)->dst, 1);
+
+	/* If server socket found, request tear down */
+	BT_DBG("client:%p server:%p", sk, srv_sk);
+	if (srv_sk)
+		l2cap_sock_set_timer(srv_sk, 1);
 
 	err = l2cap_sock_shutdown(sock, 2);
 
@@ -1114,8 +1222,6 @@ static void l2cap_sock_destruct(struct sock *sk)
 static void set_default_config(struct l2cap_conf_prm *conf_prm)
 {
 	conf_prm->fcs = L2CAP_FCS_CRC16;
-	conf_prm->retrans_timeout = 0;
-	conf_prm->monitor_timeout = 0;
 	conf_prm->flush_to = L2CAP_DEFAULT_FLUSH_TO;
 }
 
@@ -1177,14 +1283,6 @@ void l2cap_sock_init(struct sock *sk, struct sock *parent)
 	pi->extended_control = 0;
 
 	pi->local_conf.fcs = pi->fcs;
-	if (pi->mode == L2CAP_MODE_BASIC) {
-		pi->local_conf.retrans_timeout = 0;
-		pi->local_conf.monitor_timeout = 0;
-	} else {
-		pi->local_conf.retrans_timeout = L2CAP_DEFAULT_RETRANS_TO;
-		pi->local_conf.monitor_timeout = L2CAP_DEFAULT_MONITOR_TO;
-	}
-
 	pi->local_conf.flush_to = pi->flush_to;
 
 	set_default_config(&pi->remote_conf);

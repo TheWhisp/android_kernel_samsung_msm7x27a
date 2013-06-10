@@ -1,6 +1,6 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
-   Copyright (c) 2000-2001, 2010-2011 Code Aurora Forum.  All rights reserved.
+   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation.  All rights reserved.
    Copyright (C) 2009-2010 Gustavo F. Padovan <gustavo@padovan.org>
    Copyright (C) 2010 Google Inc.
 
@@ -32,6 +32,7 @@
 #define L2CAP_DEFAULT_MIN_MTU		48
 #define L2CAP_DEFAULT_MAX_SDU_SIZE	0xffff
 #define L2CAP_DEFAULT_FLUSH_TO		0xffff
+#define L2CAP_MAX_FLUSH_TO		0x7ff
 #define L2CAP_DEFAULT_TX_WINDOW		63
 #define L2CAP_DEFAULT_MAX_TX		3
 #define L2CAP_DEFAULT_RETRANS_TO	2000    /* 2 seconds */
@@ -293,8 +294,6 @@ struct l2cap_conf_ext_fs {
 
 struct l2cap_conf_prm {
 	__u8       fcs;
-	__le16     retrans_timeout;
-	__le16     monitor_timeout;
 	__le32     flush_to;
 };
 
@@ -452,15 +451,6 @@ struct l2cap_conn {
 
 	__u8		disc_reason;
 
-	__u8		preq[7]; /* SMP Pairing Request */
-	__u8		prsp[7]; /* SMP Pairing Response */
-	__u8		prnd[16]; /* SMP Pairing Random */
-	__u8		pcnf[16]; /* SMP Pairing Confirm */
-	__u8		tk[16]; /* SMP Temporary Key */
-	__u8		smp_key_size;
-
-	struct timer_list security_timer;
-
 	struct l2cap_chan_list chan_list;
 };
 
@@ -499,6 +489,7 @@ struct l2cap_pinfo {
 	__u8		fixed_channel;
 	__u8		num_conf_req;
 	__u8		num_conf_rsp;
+	__u8		incoming;
 
 	__u8		fcs;
 	__u8		sec_level;
@@ -568,6 +559,8 @@ struct l2cap_pinfo {
 	struct l2cap_conn	*conn;
 	struct l2cap_conf_prm local_conf;
 	struct l2cap_conf_prm remote_conf;
+	struct l2cap_conf_ext_fs local_fs;
+	struct l2cap_conf_ext_fs remote_fs;
 	struct sock		*next_c;
 	struct sock		*prev_c;
 };
@@ -584,6 +577,7 @@ struct l2cap_pinfo {
 #define L2CAP_CONF_LOCKSTEP       0x0200
 #define L2CAP_CONF_LOCKSTEP_PEND  0x0400
 #define L2CAP_CONF_PEND_SENT      0x0800
+#define L2CAP_CONF_EFS_RECV       0x1000
 
 #define L2CAP_CONF_MAX_CONF_REQ 2
 #define L2CAP_CONF_MAX_CONF_RSP 2
@@ -654,6 +648,13 @@ struct l2cap_pinfo {
 #define L2CAP_AMP_STATE_WAIT_PREPARE		11
 #define L2CAP_AMP_STATE_RESEGMENT		12
 
+#define L2CAP_ATT_ERROR				0x01
+#define L2CAP_ATT_MTU_REQ			0x02
+#define L2CAP_ATT_MTU_RSP			0x03
+#define L2CAP_ATT_RESPONSE_BIT			0x01
+#define L2CAP_ATT_INDICATE			0x1D
+#define L2CAP_ATT_NOT_SUPPORTED			0x06
+
 #define __delta_seq(x, y, pi) ((x) >= (y) ? (x) - (y) : \
 				(pi)->tx_win_max + 1 - (y) + (x))
 #define __next_seq(x, pi) ((x + 1) & ((pi)->tx_win_max))
@@ -684,6 +685,7 @@ int l2cap_strm_tx(struct sock *sk, struct sk_buff_head *skbs);
 int l2cap_ertm_tx(struct sock *sk, struct bt_l2cap_control *control,
 			struct sk_buff_head *skbs, u8 event);
 
+int l2cap_sock_le_params_valid(struct bt_le_params *le_params);
 void l2cap_sock_set_timer(struct sock *sk, long timeout);
 void l2cap_sock_clear_timer(struct sock *sk);
 void __l2cap_sock_close(struct sock *sk, int reason);
@@ -691,6 +693,8 @@ void l2cap_sock_kill(struct sock *sk);
 void l2cap_sock_init(struct sock *sk, struct sock *parent);
 struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock,
 							int proto, gfp_t prio);
+struct sock *l2cap_find_sock_by_fixed_cid_and_dir(__le16 cid, bdaddr_t *src,
+						bdaddr_t *dst, int server);
 void l2cap_send_disconn_req(struct l2cap_conn *conn, struct sock *sk, int err);
 void l2cap_chan_del(struct sock *sk, int err);
 int l2cap_do_connect(struct sock *sk);

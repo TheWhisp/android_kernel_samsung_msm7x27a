@@ -5,7 +5,7 @@
  *  protocol extension to H4.
  *
  *  Copyright (C) 2007 Texas Instruments, Inc.
- *  Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+ *  Copyright (c) 2010, The Linux Foundation. All rights reserved.
  *
  *  Acknowledgements:
  *  This file is based on hci_ll.c, which was...
@@ -93,7 +93,7 @@ enum hci_ibs_clock_state_vote_e {
 };
 
 static unsigned long wake_retrans = 1;
-static unsigned long tx_idle_delay = (HZ * 5);
+static unsigned long tx_idle_delay = (HZ * 2);
 
 struct hci_ibs_cmd {
 	u8 cmd;

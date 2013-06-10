@@ -4,7 +4,7 @@
  *
  *  Copyright (C) 2002-2003  Maxim Krasnyansky <maxk@qualcomm.com>
  *  Copyright (C) 2004-2005  Marcel Holtmann <marcel@holtmann.org>
- *  Copyright (c) 2000-2001, 2010-2011, Code Aurora Forum. All rights reserved.
+ *  Copyright (c) 2000-2001, 2010-2011, The Linux Foundation. All rights reserved.
  *
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -237,7 +237,6 @@ static void hci_uart_destruct(struct hci_dev *hdev)
 		return;
 
 	BT_DBG("%s", hdev->name);
-	kfree(hdev->driver_data);
 }
 
 /* ------ LDISC part ------ */
@@ -310,12 +309,13 @@ static void hci_uart_tty_close(struct tty_struct *tty)
 			hci_uart_close(hdev);
 
 		if (test_and_clear_bit(HCI_UART_PROTO_SET, &hu->flags)) {
-			hu->proto->close(hu);
 			if (hdev) {
 				hci_unregister_dev(hdev);
 				hci_free_dev(hdev);
 			}
+			hu->proto->close(hu);
 		}
+		kfree(hu);
 	}
 }
 
@@ -400,7 +400,7 @@ static int hci_uart_register_dev(struct hci_uart *hu)
 	hdev->flush = hci_uart_flush;
 	hdev->send  = hci_uart_send_frame;
 	hdev->destruct = hci_uart_destruct;
-	hdev->parent = hu->tty->dev;
+//	hdev->parent = hu->tty->dev;
 
 	hdev->owner = THIS_MODULE;
 

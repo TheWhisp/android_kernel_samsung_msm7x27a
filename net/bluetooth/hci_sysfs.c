@@ -277,10 +277,10 @@ static ssize_t show_idle_timeout(struct device *dev, struct device_attribute *at
 static ssize_t store_idle_timeout(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-	unsigned int val;
+	unsigned long val;
 	int rv;
 
-	rv = kstrtouint(buf, 0, &val);
+	rv = strict_strtoul(buf, 0, &val);
 	if (rv < 0)
 		return rv;
 
@@ -300,16 +300,17 @@ static ssize_t show_sniff_max_interval(struct device *dev, struct device_attribu
 
 static ssize_t store_sniff_max_interval(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-	struct hci_dev *hdev = dev_get_drvdata(dev);
-	u16 val;
-	int rv;
+ 	struct hci_dev *hdev = dev_get_drvdata(dev);
+	unsigned long val;
 
-	rv = kstrtou16(buf, 0, &val);
-	if (rv < 0)
-		return rv;
-
-	if (val == 0 || val % 2 || val < hdev->sniff_min_interval)
+	if (strict_strtoul(buf, 0, &val) < 0)
 		return -EINVAL;
+ 
+	if (val < 0x0002 || val > 0xFFFE || val % 2)
+		return -EINVAL;
+ 
+	if (val < hdev->sniff_min_interval)
+ 		return -EINVAL;
 
 	hdev->sniff_max_interval = val;
 
@@ -324,16 +325,17 @@ static ssize_t show_sniff_min_interval(struct device *dev, struct device_attribu
 
 static ssize_t store_sniff_min_interval(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-	struct hci_dev *hdev = dev_get_drvdata(dev);
-	u16 val;
-	int rv;
-
-	rv = kstrtou16(buf, 0, &val);
-	if (rv < 0)
-		return rv;
-
-	if (val == 0 || val % 2 || val > hdev->sniff_max_interval)
+ 	struct hci_dev *hdev = dev_get_drvdata(dev);
+	unsigned long val;
+ 
+	if (strict_strtoul(buf, 0, &val) < 0)
 		return -EINVAL;
+
+	if (val < 0x0002 || val > 0xFFFE || val % 2)
+		return -EINVAL;
+ 
+	if (val > hdev->sniff_max_interval)
+ 		return -EINVAL;
 
 	hdev->sniff_min_interval = val;
 
