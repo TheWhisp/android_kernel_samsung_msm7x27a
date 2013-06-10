@@ -66,12 +66,12 @@ struct bt_security {
 
 #define BT_DEFER_SETUP	7
 
-#define BT_POWER	8
+#define BT_POWER	9
 struct bt_power {
 	__u8 force_active;
 };
 
-#define BT_AMP_POLICY          9
+#define BT_AMP_POLICY          10
 
 /* Require BR/EDR (default policy)
  *   AMP controllers cannot be used
