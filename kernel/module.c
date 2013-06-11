@@ -2411,7 +2411,13 @@ static int check_modinfo(struct module *mod, struct load_info *info)
 	} else if (!same_magic(modmagic, vermagic, info->index.vers)) {
 		printk(KERN_ERR "%s: version magic '%s' should be '%s'\n",
 		       mod->name, modmagic, vermagic);
+#ifdef CONFIG_MODULE_FORCE_VERMAGIC
+    err = try_to_force_load(mod, "magic");
+    if (err)
+      goto free_hdr;
+#else
 		return -ENOEXEC;
+#endif
 	}
 
 	if (get_modinfo(info, "staging")) {
