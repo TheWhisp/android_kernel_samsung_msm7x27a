@@ -2477,6 +2477,7 @@ void msm_ipc_router_xprt_notify(struct msm_ipc_router_xprt *xprt,
 	wake_lock(&xprt_info->wakelock);
 	wake_up(&xprt_info->read_wait);
 	mutex_unlock(&xprt_info->rx_lock);
+	queue_work(xprt_info->workqueue, &xprt_info->read_data);
 }
 
 static int __init msm_ipc_router_init(void)
