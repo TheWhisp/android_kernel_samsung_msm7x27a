@@ -26,15 +26,10 @@
 #include <net/tcp.h>
 #include <net/udp.h>
 
-#if defined(CONFIG_IP6_NF_IPTABLES) || defined(CONFIG_IP6_NF_IPTABLES_MODULE)
-#include <linux/netfilter_ipv6/ip6_tables.h>
-#endif
-
 #include <linux/netfilter/xt_socket.h>
 #include "xt_qtaguid_internal.h"
 #include "xt_qtaguid_print.h"
 
-#define pr_warn_once printk
 /*
  * We only use the xt_socket funcs within a similar context to avoid unexpected
  * return values.
@@ -1270,7 +1265,7 @@ static void if_tag_stat_update(const char *ifname, uid_t uid,
 	struct data_counters *uid_tag_counters;
 	struct sock_tag *sock_tag_entry;
 	struct iface_stat *iface_entry;
-	struct tag_stat *new_tag_stat = NULL;
+	struct tag_stat *new_tag_stat;
 	MT_DEBUG("qtaguid: if_tag_stat_update(ifname=%s "
 		"uid=%u sk=%p dir=%d proto=%d bytes=%d)\n",
 		 ifname, uid, sk, direction, proto, bytes);
@@ -1335,19 +1330,8 @@ static void if_tag_stat_update(const char *ifname, uid_t uid,
 	}
 
 	if (acct_tag) {
-		/* Create the child {acct_tag, uid_tag} and hook up parent. */
 		new_tag_stat = create_if_tag_stat(iface_entry, tag);
 		new_tag_stat->parent_counters = uid_tag_counters;
-	} else {
-		/*
-		 * For new_tag_stat to be still NULL here would require:
-		 *  {0, uid_tag} exists
-		 *  and {acct_tag, uid_tag} doesn't exist
-		 *  AND acct_tag == 0.
-		 * Impossible. This reassures us that new_tag_stat
-		 * below will always be assigned.
-		 */
-		BUG_ON(!new_tag_stat);
 	}
 	tag_stat_update(new_tag_stat, direction, proto, bytes);
 	spin_unlock_bh(&iface_entry->tag_stat_list_lock);
@@ -1553,27 +1537,6 @@ static struct sock *qtaguid_find_sk(const struct sk_buff *skb,
 	return sk;
 }
 
-static int ipx_proto(const struct sk_buff *skb,
-		     struct xt_action_param *par)
-{
-	int thoff, tproto;
-
-	switch (par->family) {
-	case NFPROTO_IPV6:
-		tproto = ipv6_find_hdr(skb, &thoff, -1, NULL);
-		if (tproto < 0)
-			MT_DEBUG("%s(): transport header not found in ipv6"
-				 " skb=%p\n", __func__, skb);
-		break;
-	case NFPROTO_IPV4:
-		tproto = ip_hdr(skb)->protocol;
-		break;
-	default:
-		tproto = IPPROTO_RAW;
-	}
-	return tproto;
-}
-
 static void account_for_uid(const struct sk_buff *skb,
 			    const struct sock *alternate_sk, uid_t uid,
 			    struct xt_action_param *par)
@@ -1600,15 +1563,15 @@ static void account_for_uid(const struct sk_buff *skb,
 	} else if (unlikely(!el_dev->name)) {
 		pr_info("qtaguid[%d]: no dev->name?!!\n", par->hooknum);
 	} else {
-		int proto = ipx_proto(skb, par);
-		MT_DEBUG("qtaguid[%d]: dev name=%s type=%d fam=%d proto=%d\n",
-			 par->hooknum, el_dev->name, el_dev->type,
-			 par->family, proto);
+		MT_DEBUG("qtaguid[%d]: dev name=%s type=%d\n",
+			 par->hooknum,
+			 el_dev->name,
+			 el_dev->type);
 
 		if_tag_stat_update(el_dev->name, uid,
 				skb->sk ? skb->sk : alternate_sk,
 				par->in ? IFS_RX : IFS_TX,
-				proto, skb->len);
+				ip_hdr(skb)->protocol, skb->len);
 	}
 }
 
@@ -1653,8 +1616,8 @@ static bool qtaguid_mt(const struct sk_buff *skb, struct xt_action_param *par)
 	} else {
 		atomic64_inc(&qtu_events.match_found_sk);
 	}
-	MT_DEBUG("qtaguid[%d]: sk=%p got_sock=%d fam=%d proto=%d\n",
-		 par->hooknum, sk, got_sock, par->family, ipx_proto(skb, par));
+	MT_DEBUG("qtaguid[%d]: sk=%p got_sock=%d proto=%d\n",
+		par->hooknum, sk, got_sock, ip_hdr(skb)->protocol);
 	if (sk != NULL) {
 		MT_DEBUG("qtaguid[%d]: sk=%p->sk_socket=%p->file=%p\n",
 			par->hooknum, sk, sk->sk_socket,
@@ -2439,9 +2402,8 @@ static int pp_stats_line(struct proc_print_info *ppi, int cnt_set)
 	} else {
 		tag_t tag = ppi->ts_entry->tn.tag;
 		uid_t stat_uid = get_uid_from_tag(tag);
-		/* Detailed tags are not available to everybody */
-		if (get_atag_from_tag(tag)
-		    && !can_read_other_uid_stats(stat_uid)) {
+
+		if (!can_read_other_uid_stats(stat_uid)) {
 			CT_DEBUG("qtaguid: stats line: "
 				 "%s 0x%llx %u: insufficient priv "
 				 "from pid=%u tgid=%u uid=%u\n",
