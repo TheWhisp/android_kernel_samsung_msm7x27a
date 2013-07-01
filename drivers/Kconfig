@@ -126,6 +126,4 @@ source "drivers/sensors/Kconfig"
 
 source "drivers/dpram/Kconfig"
 
-source "drivers/zram/Kconfig"
-
 endmenu
