@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -118,14 +118,16 @@ struct tavarua_device {
 	int pi;
 	/*PS repeatcount for PS Tx */
 	int ps_repeatcount;
-	int enable_optimized_srch_alg;
-	unsigned char spur_table_size;
-	struct fm_spur_data spur_data;
+	/* QC PATCH */
+	int newFMSrchAlg;
 };
 
 /**************************************************************************
  * Module Parameters
  **************************************************************************/
+
+/* beep noise issue when force close */
+static int is_turned_off;
 
 /* Radio Nr */
 static int radio_nr = -1;
@@ -148,10 +150,6 @@ static int tavarua_start(struct tavarua_device *radio,
 			enum radio_state_t state);
 static int tavarua_request_irq(struct tavarua_device *radio);
 static void start_pending_xfr(struct tavarua_device *radio);
-static int update_spur_table(struct tavarua_device *radio);
-static int xfr_rdwr_data(struct tavarua_device *radio, int op, int size,
-	unsigned long offset, unsigned char *buf);
-
 /* work function */
 static void read_int_stat(struct work_struct *work);
 
@@ -703,9 +701,9 @@ FUNCTION:  tavarua_start_xfr
 static void tavarua_start_xfr(struct tavarua_device *radio,
 		enum tavarua_xfr_t pending_id, enum tavarua_xfr_ctrl_t xfr_id)
 {
-		if (radio->xfr_in_progress)
+		if (radio->xfr_in_progress) {
 			radio->pending_xfrs[pending_id] = 1;
-		else {
+		} else {
 			radio->xfr_in_progress = 1;
 			request_read_xfr(radio, xfr_id);
 		}
@@ -1030,35 +1028,6 @@ static void tavarua_handle_interrupts(struct tavarua_device *radio)
 			FMDBG("write PHY_TXGAIN is successful");
 			complete(&radio->sync_req_done);
 			break;
-		case (XFR_POKE_COMPLETE | LSH_DATA(ONE_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(TWO_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(THREE_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(FOUR_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(FIVE_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(SIX_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(SEVEN_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(EIGHT_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(NINE_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(TEN_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(ELEVEN_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(TWELVE_BYTE, 1)):
-		case (XFR_POKE_COMPLETE | LSH_DATA(THIRTEEN_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(ONE_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(TWO_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(THREE_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(FOUR_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(FIVE_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(SIX_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(SEVEN_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(EIGHT_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(NINE_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(TEN_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(ELEVEN_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(TWELVE_BYTE, 1)):
-		case (XFR_PEEK_COMPLETE | LSH_DATA(THIRTEEN_BYTE, 1)):
-			FMDBG("XFR interrupt for PEEK/POKE complete\n");
-			complete(&radio->sync_req_done);
-			break;
 		default:
 			FMDERR("UNKNOWN XFR = %d\n", xfr_status);
 		}
@@ -1198,133 +1167,154 @@ static int tavarua_disable_irq(struct tavarua_device *radio)
 	return 0;
 }
 
-static int optimized_search_algorithm(struct tavarua_device *radio,
-				int region)
+
+static int New_Srch_Alg(struct tavarua_device *radio,
+		int region)
 {
 	unsigned char adie_type_bahma;
 	int retval = 0;
 	unsigned int rdsMask = 0;
-	unsigned char value = 0;
+	unsigned char value;
 
 	adie_type_bahma = is_bahama();
 
+	/* ************************************************************ */
+	/* Debug Section */
+	/* ************************************************************ */
+
 	switch (region) {
 	case TAVARUA_REGION_US:
-	/*
-	Radio band for all the 200KHz channel-spaced regions
-	coming under EUROPE too, have been set as TAVARUA_REGION_US.
-	*/
-	FMDBG("%s: The region selected from APP is"
-		" : TAVARUA_REGION_US", __func__);
-	break;
-	case TAVARUA_REGION_EU:
-	/*
-	Radio band for all the 50KHz channel-spaced regions
-	coming under EUROPE, have been set as TAVARUA_REGION_EU.
-	*/
-	FMDBG("%s: The region selected from APP is : "
-		"TAVARUA_REGION_EU", __func__);
-	break;
-	case TAVARUA_REGION_JAPAN:
-	/*
-	Radio band for the 100KHz channel-spaced JAPAN region
-	has been set as TAVARUA_REGION_JAPAN.
-	*/
-	FMDBG("%s: The region selected from APP is"
-		" : TAVARUA_REGION_JAPAN", __func__);
-	break;
-	case TAVARUA_REGION_JAPAN_WIDE:
-	/*
-	Radio band for the 50KHz channel-spaced JAPAN WIDE region
-	has been set as TAVARUA_REGION_JAPAN_WIDE.
-	*/
-	FMDBG("%s: The region selected from APP is"
-		" : TAVARUA_REGION_JAPAN_WIDE", __func__);
-	break;
-	case TAVARUA_REGION_OTHER:
-	/*
-	Radio band for all the 100KHz channel-spaced regions
-	including those coming under EUROPE have been set as
-	TAVARUA_REGION_OTHER.
-	*/
-	FMDBG("%s: The region selected from APP is"
-		" : TAVARUA_REGION_OTHER", __func__);
-	break;
-	default:
-		pr_err("%s: Should not reach here.", __func__);
+		/*
+		   Radio band for all the 200KHz channel-spaced regions
+		   coming under EUROPE too, have been set as TAVARUA_REGION_US.
+		   */
+
+		printk(KERN_INFO "%s: The region selected from APP is"
+				" : TAVARUA_REGION_US", __func__);
 		break;
 
+	case TAVARUA_REGION_EU:
+		/*
+		   Radio band for all the 50KHz channel-spaced regions
+		   coming under EUROPE, have been set as TAVARUA_REGION_EU.
+		   */
+
+		printk(KERN_INFO "%s: The region selected from APP is : "
+				"TAVARUA_REGION_EU", __func__);
+		break;
+
+	case TAVARUA_REGION_JAPAN:
+		/*
+		   Radio band for the 100KHz channel-spaced JAPAN region
+		   has been set as TAVARUA_REGION_JAPAN.
+		   */
+
+		printk(KERN_INFO "%s: The region selected from APP is"
+				" : TAVARUA_REGION_JAPAN", __func__);
+		break;
+
+	case TAVARUA_REGION_JAPAN_WIDE:
+		/*
+		   Radio band for the 50KHz channel-spaced JAPAN WIDE region
+		   has been set as TAVARUA_REGION_JAPAN_WIDE.
+		   */
+
+		printk(KERN_INFO "%s: The region selected from APP is"
+				" : TAVARUA_REGION_JAPAN_WIDE", __func__);
+		break;
+
+	case TAVARUA_REGION_OTHER:
+		/*
+		   Radio band for all the 100KHz channel-spaced regions
+		   including those coming under EUROPE have been set as
+		   TAVARUA_REGION_OTHER.
+		   */
+
+		printk(KERN_INFO "%s: The region selected from APP is"
+				" : TAVARUA_REGION_OTHER", __func__);
+		break;
+	default:
+		FMDERR("%s: UNKNOWN REGION %d\n", __func__, region);
 	}
 
+	/* *********************************************************************** */
 	/* Enable or Disable the 200KHz enforcer */
+	/* *********************************************************************** */
 	switch (region) {
 	case TAVARUA_REGION_US:
 	case TAVARUA_REGION_JAPAN:
 	case TAVARUA_REGION_OTHER:
-	/*
-	These are the 3 bands for which we need to enable the
-	200KHz enforcer in ADVCTL reg.
-	*/
+		/*
+		   These are the 3 bands for which we need to enable the
+		   200KHz enforcer in ADVCTL reg.
+		   */
 		if (adie_type_bahma) {
 			FMDBG("Adie type : Bahama\n");
-			FMDBG("%s: Enabling the 200KHz enforcer for"
-				" Region : %d", __func__, region);
+			printk(KERN_INFO "%s: Enabling the 200KHz enforcer for"
+					" Region : %d", __func__, region);
 			/*Enable the 200KHz enforcer*/
 			retval = tavarua_read_registers(radio,
-				ADVCTRL, 1);
+					ADVCTRL, 1);
 			if (retval >= 0) {
 				rdsMask = radio->registers[ADVCTRL];
 				SET_REG_FIELD(rdsMask, ENF_SRCH200khz,
-					SRCH200KHZ_OFFSET, SRCH_MASK);
+						SRCH200KHZ_OFFSET, SRCH_MASK);
+				msleep(TAVARUA_DELAY);
 				retval = tavarua_write_register(radio,
-					ADVCTRL, rdsMask);
-			} else
+						ADVCTRL, rdsMask);
+			} else {
 				return retval;
+			}
 		} /* if Marimba do nothing */
 		break;
 	case TAVARUA_REGION_EU:
 	case TAVARUA_REGION_JAPAN_WIDE:
-	/*
-	These are the 2 bands for which we need to disable the
-	200KHz enforcer in ADVCTL reg.
-	Radio band for all the 50KHz channel-spaced regions
-	coming under EUROPE have been set as TAVARUA_REGION_EU.
-	*/
+		/*
+		   These are the 2 bands for which we need to disable the
+		   200KHz enforcer in ADVCTL reg.
+		   Radio band for all the 50KHz channel-spaced regions
+		   coming under EUROPE have been set as TAVARUA_REGION_EU.
+		   */
 		if (adie_type_bahma) {
 			FMDBG("Adie type : Bahama\n");
-			FMDBG("%s: Disabling the 200KHz enforcer for"
-				" Region : %d", __func__, region);
+			printk(KERN_INFO "%s: Disabling the 200KHz enforcer for"
+					" Region : %d", __func__, region);
 			/*
-			Disable 200KHz enforcer for all 50 KHz
-			spaced regions.
-			*/
+			   Disable 200KHz enforcer for all 50 KHz
+			   spaced regions.
+			   */
 			retval = tavarua_read_registers(radio,
-				ADVCTRL, 1);
+					ADVCTRL, 1);
 			if (retval >= 0) {
 				rdsMask = radio->registers[ADVCTRL];
 				SET_REG_FIELD(rdsMask, NO_SRCH200khz,
-					SRCH200KHZ_OFFSET, SRCH_MASK);
+						SRCH200KHZ_OFFSET, SRCH_MASK);
+				msleep(TAVARUA_DELAY);
 				retval = tavarua_write_register(radio,
-					ADVCTRL, rdsMask);
-			} else
+						ADVCTRL, rdsMask);
+			} else {
 				return retval;
+			}
 		} /* if Marimba do nothing */
 		break;
 	default:
-		FMDBG("%s: Defaulting in case of Enabling/Disabling"
-			"the 200KHz Enforcer", __func__);
+		printk(KERN_INFO "%s: Defaulting in case of Enabling/Disabling"
+				"the 200KHz Enforcer", __func__);
 		break;
 	}
 
+	/* *********************************************************************** */
 	/* Set channel spacing */
+	/* *********************************************************************** */
 	switch (region) {
 	case TAVARUA_REGION_US:
 		if (adie_type_bahma) {
 			FMDBG("Adie type : Bahama\n");
 			/*
-			Configuring all 200KHZ spaced regions as 100KHz due to
-			change in the new Bahma FM SoC search algorithm.
-			*/
+			   Configuring all 200KHZ spaced regions as
+			   100KHz due to change in the new Bahma
+			   FM SoC search algorithm.
+			   */
 			value = FM_CH_SPACE_100KHZ;
 		} else {
 			FMDBG("Adie type : Marimba\n");
@@ -1335,12 +1325,14 @@ static int optimized_search_algorithm(struct tavarua_device *radio,
 	case TAVARUA_REGION_OTHER:
 		if (adie_type_bahma) {
 			FMDBG("Adie type : Bahama\n");
-			FMDBG("%s: Configuring the channel-spacing as 50KHz"
-				"for the Region : %d", __func__, region);
+			printk(KERN_INFO "%s: Configuring the channel-"
+					"spacing as 50KHz for the Region : %d",
+					__func__, region);
 			/*
-			Configuring all 100KHZ spaced regions as 50KHz due to
-			change in the new Bahma FM SoC search algorithm.
-			*/
+			   Configuring all 100KHZ spaced regions as
+			   50KHz due to change in the new Bahma
+			   FM SoC search algorithm.
+			   */
 			value = FM_CH_SPACE_50KHZ;
 		} else {
 			FMDBG("Adie type : Marimba\n");
@@ -1352,15 +1344,22 @@ static int optimized_search_algorithm(struct tavarua_device *radio,
 		value = FM_CH_SPACE_50KHZ;
 		break;
 	default:
-		FMDBG("%s: Defualting in case of Channel-Spacing", __func__);
+		/*
+		   Set the channel spacing as configured from
+		   the upper layers.
+		   */
+		printk(KERN_INFO "%s: Defualting in case of Channel-"
+				"Spacing", __func__);
+		value = radio->region_params.spacing;
 		break;
 	}
 
 	SET_REG_FIELD(radio->registers[RDCTRL], value,
-		RDCTRL_CHSPACE_OFFSET, RDCTRL_CHSPACE_MASK);
+			RDCTRL_CHSPACE_OFFSET, RDCTRL_CHSPACE_MASK);
 
 	return retval;
 }
+
 /*************************************************************************
  * fops/IOCTL helper functions
  ************************************************************************/
@@ -1377,10 +1376,11 @@ FUNCTION:  tavarua_search
 
   @return => 0 if successful.
   @return < 0 if failure.
-*/
+  */
 static int tavarua_search(struct tavarua_device *radio, int on, int dir)
 {
 	enum search_t srch = radio->registers[SRCHCTRL] & SRCH_MODE;
+	int retval;
 
 	FMDBG("In tavarua_search\n");
 	if (on) {
@@ -1392,12 +1392,12 @@ static int tavarua_search(struct tavarua_device *radio, int on, int dir)
 		case SCAN_FOR_WEAK:
 			radio->srch_params.get_list = 1;
 			radio->registers[SRCHRDS2] =
-					radio->srch_params.preset_num;
+				radio->srch_params.preset_num;
 			break;
 		case RDS_SEEK_PTY:
 		case RDS_SCAN_PTY:
 			radio->registers[SRCHRDS2] =
-					radio->srch_params.srch_pty;
+				radio->srch_params.srch_pty;
 			break;
 		case RDS_SEEK_PI:
 			radio->registers[SRCHRDS1] =
@@ -1414,12 +1414,16 @@ static int tavarua_search(struct tavarua_device *radio, int on, int dir)
 		radio->srch_params.get_list = 0;
 	}
 	radio->registers[SRCHCTRL] = (dir << 3) |
-				(radio->registers[SRCHCTRL] & 0xF7);
+		(radio->registers[SRCHCTRL] & 0xF7);
 
 	FMDBG("SRCHCTRL <%x>\n", radio->registers[SRCHCTRL]);
 	FMDBG("Search Started\n");
-	return tavarua_write_registers(radio, SRCHRDS1,
-				&radio->registers[SRCHRDS1], 3);
+	retval = tavarua_write_registers(radio, SRCHRDS1,
+			&radio->registers[SRCHRDS1], 3);
+	if (!on)
+		msleep(TAVARUA_DELAY*10);
+
+	return retval;
 }
 
 /*=============================================================================
@@ -1434,9 +1438,9 @@ FUNCTION:  tavarua_set_region
 
   @return => 0 if successful.
   @return < 0 if failure.
-*/
+  */
 static int tavarua_set_region(struct tavarua_device *radio,
-				int req_region)
+		int req_region)
 {
 	int retval = 0;
 	unsigned int rdsMask = 0;
@@ -1451,74 +1455,131 @@ static int tavarua_set_region(struct tavarua_device *radio,
 	adie_type_bahma = is_bahama();
 
 	/* Set freq band */
-	if (region == TAVARUA_REGION_JAPAN)
-		SET_REG_FIELD(radio->registers[RDCTRL], 1,
-			RDCTRL_BAND_OFFSET, RDCTRL_BAND_MASK);
-	else
+	switch (region) {
+	case TAVARUA_REGION_US:
+	case TAVARUA_REGION_EU:
 		SET_REG_FIELD(radio->registers[RDCTRL], 0,
-			RDCTRL_BAND_OFFSET, RDCTRL_BAND_MASK);
+				RDCTRL_BAND_OFFSET, RDCTRL_BAND_MASK);
+		break;
+	case TAVARUA_REGION_JAPAN_WIDE:
+	case TAVARUA_REGION_JAPAN:
+	default:
+		msleep(100); /* Write xfr timeout issue */
+		retval = sync_read_xfr(radio, RADIO_CONFIG, xfr_buf);
+		if (retval < 0) {
+			FMDERR("failed to get RADIO_CONFIG\n");
+			return retval;
+		}
+		msleep(100); /* Write xfr timeout issue */
+		band_low = (radio->region_params.band_low -
+				low_band_limit) / spacing;
+		band_high = (radio->region_params.band_high -
+				low_band_limit) / spacing;
+		FMDBG("low_band: %x, high_band: %x\n", band_low, band_high);
+		xfr_buf[0] = band_low >> 8;
+		xfr_buf[1] = band_low & 0xFF;
+		xfr_buf[2] = band_high >> 8;
+		xfr_buf[3] = band_high & 0xFF;
+		retval = sync_write_xfr(radio, RADIO_CONFIG, xfr_buf);
+		if (retval < 0) {
+			FMDERR("Could not set regional settings\n");
+			return retval;
+		}
+		break;
+	}
+	/* *********************************************************************** */
+	/* set de-emphasis and soft band range*/
+	/* *********************************************************************** */
+	switch (region) {
+	case TAVARUA_REGION_US:
+	case TAVARUA_REGION_JAPAN:
+	case TAVARUA_REGION_JAPAN_WIDE:
+		value = EMP_75;
+		break;
+	case TAVARUA_REGION_EU:
+		value = EMP_50;
+		break;
+	default:
+		value = radio->region_params.emphasis;
+	}
 
-	/* Set De-emphasis and soft band range*/
-	SET_REG_FIELD(radio->registers[RDCTRL], radio->region_params.emphasis,
-		RDCTRL_DEEMPHASIS_OFFSET, RDCTRL_DEEMPHASIS_MASK);
+	SET_REG_FIELD(radio->registers[RDCTRL], value,
+			RDCTRL_DEEMPHASIS_OFFSET, RDCTRL_DEEMPHASIS_MASK);
 
-	/* set RDS standard */
-	SET_REG_FIELD(radio->registers[RDSCTRL], radio->region_params.rds_std,
-		RDSCTRL_STANDARD_OFFSET, RDSCTRL_STANDARD_MASK);
+	/* *********************************************************************** */
+	/* Set RDS standard */
+	/* *********************************************************************** */
+	switch (region) {
+	default:
+		value = radio->region_params.rds_std;
+		break;
+	case TAVARUA_REGION_US:
+		value = RBDS_STD;
+		break;
+	case TAVARUA_REGION_EU:
+		value = RDS_STD;
+		break;
+	}
+	SET_REG_FIELD(radio->registers[RDSCTRL], value,
+			RDSCTRL_STANDARD_OFFSET, RDSCTRL_STANDARD_MASK);
 
 	FMDBG("RDSCTRLL %x\n", radio->registers[RDSCTRL]);
 	retval = tavarua_write_register(radio, RDSCTRL,
-					radio->registers[RDSCTRL]);
-	if (retval < 0) {
-		FMDERR("Failed to set RDS/RBDS standard\n");
+			radio->registers[RDSCTRL]);
+	if (retval < 0)
 		return retval;
-	}
 
-	/* Set the lower and upper band limits*/
-	retval = sync_read_xfr(radio, RADIO_CONFIG, xfr_buf);
-	if (retval < 0) {
-		FMDERR("failed to get RADIO_CONFIG\n");
-		return retval;
-	}
-
-	band_low = (radio->region_params.band_low -
-				low_band_limit) / spacing;
-	band_high = (radio->region_params.band_high -
-				low_band_limit) / spacing;
-
-	xfr_buf[0] = RSH_DATA(band_low, 8);
-	xfr_buf[1] = GET_ABS_VAL(band_low);
-	xfr_buf[2] = RSH_DATA(band_high, 8);
-	xfr_buf[3] = GET_ABS_VAL(band_high);
-	retval = sync_write_xfr(radio, RADIO_CONFIG, xfr_buf);
-	if (retval < 0) {
-		FMDERR("Could not set regional settings\n");
-		return retval;
+	/* *********************************************************************** */
+	/* Setting soft band */
+	/* *********************************************************************** */
+	switch (region) {
+	case TAVARUA_REGION_US:
+	case TAVARUA_REGION_EU:
+		radio->region_params.band_low = 87.5 * FREQ_MUL;
+		radio->region_params.band_high = 108 * FREQ_MUL;
+		break;
+	case TAVARUA_REGION_JAPAN:
+		radio->region_params.band_low = 76 * FREQ_MUL;
+		radio->region_params.band_high = 90 * FREQ_MUL;
+		break;
+	case TAVARUA_REGION_JAPAN_WIDE:
+		radio->region_params.band_low = 90 * FREQ_MUL;
+		radio->region_params.band_high = 108 * FREQ_MUL;
+		break;
+	default:
+		break;
 	}
 	radio->region_params.region = region;
 
+	/* *********************************************************************** */
 	/* Check for the FM Algorithm used */
-	if (radio->enable_optimized_srch_alg) {
-		FMDBG("Optimized Srch Algorithm!!!");
-		optimized_search_algorithm(radio, region);
+	/* *********************************************************************** */
+	if (radio->newFMSrchAlg) {
+		printk(KERN_INFO "New Srch Algorithm!!!");
+		New_Srch_Alg(radio, region);
 	} else {
-		FMDBG("Native Srch Algorithm!!!");
+		printk(KERN_INFO "Old Srch Algorithm!!!");
+
+		/* *********************************************************************** */
 		/* Enable/Disable the 200KHz enforcer */
+		/* *********************************************************************** */
 		switch (region) {
 		case TAVARUA_REGION_US:
 			if (adie_type_bahma) {
 				FMDBG("Adie type : Bahama\n");
 				/*Enable the 200KHz enforcer*/
 				retval = tavarua_read_registers(radio,
-					ADVCTRL, 1);
+						ADVCTRL, 1);
 				if (retval >= 0) {
 					rdsMask = radio->registers[ADVCTRL];
 					SET_REG_FIELD(rdsMask, ENF_SRCH200khz,
-						SRCH200KHZ_OFFSET, SRCH_MASK);
+							SRCH200KHZ_OFFSET, SRCH_MASK);
+					msleep(TAVARUA_DELAY);
 					retval = tavarua_write_register(radio,
-						ADVCTRL, rdsMask);
-				} else
+							ADVCTRL, rdsMask);
+				} else {
 					return retval;
+				}
 			} /* if Marimba do nothing */
 			break;
 		case TAVARUA_REGION_EU:
@@ -1528,53 +1589,71 @@ static int tavarua_set_region(struct tavarua_device *radio,
 			if (adie_type_bahma) {
 				FMDBG("Adie type : Bahama\n");
 				/*
-				Disable 200KHz enforcer for all 100/50 KHz
-				spaced regions.
-				*/
+				   Disable 200KHz enforcer for all 100/50 KHz
+				   spaced regions.
+				   */
 				retval = tavarua_read_registers(radio,
-					ADVCTRL, 1);
+						ADVCTRL, 1);
 				if (retval >= 0) {
 					rdsMask = radio->registers[ADVCTRL];
 					SET_REG_FIELD(rdsMask, NO_SRCH200khz,
-						SRCH200KHZ_OFFSET, SRCH_MASK);
+							SRCH200KHZ_OFFSET, SRCH_MASK);
+					msleep(TAVARUA_DELAY);
 					retval = tavarua_write_register(radio,
-						ADVCTRL, rdsMask);
-				} else
+							ADVCTRL, rdsMask);
+				} else {
 					return retval;
+				}
 			} /* if Marimba do nothing */
 			break;
 		}
 
+
+		/* *********************************************************************** */
 		/* Set channel spacing */
-		if (region == TAVARUA_REGION_US) {
+		/* *********************************************************************** */
+		switch (region) {
+		case TAVARUA_REGION_US:
 			if (adie_type_bahma) {
 				FMDBG("Adie type : Bahama\n");
 				/*
-				Configuring all 200KHZ spaced regions as
-				100KHz due to change in the new Bahma
-				FM SoC search algorithm.
-				*/
+				   Configuring all 200KHZ spaced regions as
+				   100KHz due to change in the new Bahma
+				   FM SoC search algorithm.
+				   */
 				value = FM_CH_SPACE_100KHZ;
 			} else {
 				FMDBG("Adie type : Marimba\n");
 				value = FM_CH_SPACE_200KHZ;
 			}
-		} else {
+			break;
+		case TAVARUA_REGION_JAPAN:
+			value = FM_CH_SPACE_100KHZ;
+			break;
+		case TAVARUA_REGION_EU:
+		case TAVARUA_REGION_JAPAN_WIDE:
+			value = FM_CH_SPACE_50KHZ;
+			break;
+		default:
 			/*
-			Set the channel spacing as configured from
-			the upper layers.
-			*/
+			   Set the channel spacing as configured from
+			   the upper layers.
+			   */
 			value = radio->region_params.spacing;
+			break;
 		}
+
 		SET_REG_FIELD(radio->registers[RDCTRL], value,
-			RDCTRL_CHSPACE_OFFSET, RDCTRL_CHSPACE_MASK);
+				RDCTRL_CHSPACE_OFFSET, RDCTRL_CHSPACE_MASK);
 
 	}
 
+	/* *********************************************************************** */
 	/* Write the config values into RDCTL register */
-	FMDBG("RDCTRL: %x\n", radio->registers[RDCTRL]);
+	/* *********************************************************************** */
+	printk(KERN_INFO "RDCTRL: %x\n", radio->registers[RDCTRL]);
 	retval = tavarua_write_register(radio, RDCTRL,
-					radio->registers[RDCTRL]);
+			radio->registers[RDCTRL]);
 	if (retval < 0) {
 		FMDERR("Could not set region in rdctrl\n");
 		return retval;
@@ -1766,7 +1845,7 @@ static ssize_t tavarua_fops_write(struct file *file, const char __user *data,
 		break;
 	default:
 		FMDERR("%s: Unknown TX mode\n", __func__);
-		return -1;
+		return -EPERM;
 	}
 	retval = sync_write_xfr(radio, radio->tx_mode, tx_data);
 	if (retval < 0)
@@ -1806,7 +1885,7 @@ static ssize_t tavarua_fops_write(struct file *file, const char __user *data,
 		break;
 	default:
 		FMDERR("%s: Unknown TX mode\n", __func__);
-		return -1;
+		return -EPERM;
 	}
 	retval = sync_write_xfr(radio, radio->tx_mode, tx_data);
 	if (retval < 0)
@@ -1852,7 +1931,10 @@ static int tavarua_fops_open(struct file *file)
 	if (retval) {
 		printk(KERN_ERR "%s: failed config gpio & pmic\n", __func__);
 		goto open_err_setup;
+	} else {
+		FMDBG("initializing SoC\n");
 	}
+
 	if (radio->pdata->config_i2s_gpio != NULL) {
 		retval = radio->pdata->config_i2s_gpio(FM_I2S_ON);
 		if (retval) {
@@ -1901,7 +1983,6 @@ static int tavarua_fops_open(struct file *file)
 				__func__);
 			goto open_err_all;
 		}
-
 		/* Check for Bahama V2 variant*/
 		if (bahama_version == 0x09)	{
 
@@ -2064,10 +2145,38 @@ static int tavarua_fops_release(struct file *file)
 		{ 0x04, 0x84 },
 		{ 0x00, 0x80 }
 	};
+	unsigned char dis_buf[XFR_REG_NUM];
 
 	if (!radio) {
 		pr_err("%s: Radio device not available...", __func__);
 		return -ENODEV;
+	}
+
+	if (!is_turned_off) {
+		radio->handle_irq = 1;
+		FMDBG("turning off forcely...\n");
+		tavarua_write_register(radio, RDCTRL, FM_OFF);
+		/* flush the event and work queues */
+		kfifo_reset(&radio->data_buf[TAVARUA_BUF_EVENTS]);
+		flush_workqueue(radio->wqueue);
+		/*
+		   queue the READY event from the host side
+		   in case of FM off
+		   */
+		tavarua_q_event(radio, TAVARUA_EVT_RADIO_READY);
+
+		FMDBG("%s, Disable All Interrupts\n", __func__);
+		/* disable irq */
+		dis_buf[STATUS_REG1] = 0x00;
+		dis_buf[STATUS_REG2] = 0x00;
+		dis_buf[STATUS_REG3] = TRANSFER;
+		retval = sync_write_xfr(radio, INT_CTRL, dis_buf);
+		if (retval < 0) {
+			printk(KERN_ERR "%s: failed to disable Interrupts\n", __func__);
+			return retval;
+		}
+	} else {
+		is_turned_off = 0;
 	}
 
 	FMDBG("In %s", __func__);
@@ -2164,16 +2273,17 @@ static int tavarua_fops_release(struct file *file)
 		printk(KERN_ERR "%s:XO_BUFF_CNTRL write failed\n", __func__);
 		goto exit;
 	}
+
 exit:
 	FMDBG("%s, Calling fm_shutdown\n", __func__);
 	/* teardown gpio and pmic */
 
 	marimba_set_fm_status(radio->marimba, false);
 	radio->pdata->fm_shutdown(radio->pdata);
+
 	if (radio->pdata->config_i2s_gpio != NULL)
 		radio->pdata->config_i2s_gpio(FM_I2S_OFF);
 	radio->handle_irq = 1;
-	radio->spur_table_size = 0;
 	atomic_inc(&radio->users);
 	radio->marimba->mod_id = SLAVE_ID_BAHAMA;
 	return retval;
@@ -2415,12 +2525,6 @@ static struct v4l2_queryctrl tavarua_v4l2_queryctrl[] = {
 		.minimum       = 0,
 		.maximum       = 1,
 	},
-	{	.id	       = V4L2_CID_PRIVATE_SET_NOTCH_FILTER,
-		.type	       = V4L2_CTRL_TYPE_INTEGER,
-		.name	       = "Notch filter",
-		.minimum       = 0,
-		.maximum       = 2,
-	},
 
 };
 
@@ -2497,134 +2601,36 @@ static int tavarua_vidioc_queryctrl(struct file *file, void *priv,
 	return retval;
 }
 
-static int update_spur_table(struct tavarua_device *radio)
+#define PSALL_POKE_MSB	0x00
+#define PSALL_POKE_LSB	0xD5
+
+static int poke_PSALL(struct tavarua_device *radio, unsigned char data)
 {
+	int retval = 0;
 	unsigned char xfr_buf[XFR_REG_NUM];
-	unsigned char size = 0, tbl_size = 0;
-	int index = 0, offset = 0, addr = 0x0, val = 0;
-	int retval = 0, temp = 0, cnt = 0, j = 0;
+	unsigned char size = 0;
 
-	memset(xfr_buf, 0x0, XFR_REG_NUM);
+	FMDERR("Inside poke_PSALL(): request to POKE PSALL : %d", data);
 
-	/* Read the SPUR Table Size */
-	retval = xfr_rdwr_data(radio, XFR_READ, 1, SPUR_TABLE_ADDR, &tbl_size);
+	/*Poking the PSALL register : 0x00D5 */
+	size = 0x01;
+	xfr_buf[0] = (XFR_POKE_MODE | (size << 1));
+	xfr_buf[1] = PSALL_POKE_MSB;
+	xfr_buf[2] = PSALL_POKE_LSB;
+	xfr_buf[3] = data;
+
+	retval = tavarua_write_registers(radio, XFRCTRL, xfr_buf, 4);
 	if (retval < 0) {
-		FMDERR("%s: Failed to read SPUR table size\n", __func__);
+		FMDERR("%s: Failed to configure PSALL value\n", __func__);
 		return retval;
-	}
-
-	/* Calculate the new SPUR Register address */
-	val = addr = (SPUR_TABLE_START_ADDR + (tbl_size * 3));
-
-	/* Save the SPUR Table length configured by user*/
-	temp = radio->spur_table_size;
-
-	/* COnfigure the new spur table length */
-	size = (radio->spur_table_size + tbl_size);
-	retval = xfr_rdwr_data(radio, XFR_WRITE, 1, SPUR_TABLE_ADDR, &size);
-	if (retval < 0) {
-		FMDERR("%s: Failed to configure SPUR table size\n", __func__);
-		return retval;
-	}
-
-	/* Program the spur table entries */
-	for (cnt = 0; cnt < (temp / 4); cnt++) {
-		offset  = 0;
-		for (j = 0; j < 4; j++) {
-			xfr_buf[offset++] = GET_FREQ(COMPUTE_SPUR(
-				radio->spur_data.freq[index]), 1);
-			xfr_buf[offset++] = GET_FREQ(COMPUTE_SPUR(
-				radio->spur_data.freq[index]), 0);
-			xfr_buf[offset++] =
-				radio->spur_data.rmssi[index];
-			index++;
-		}
-		retval = xfr_rdwr_data(radio, XFR_WRITE, (SPUR_DATA_SIZE * 4),
-			addr, xfr_buf);
-		if (retval < 0) {
-			FMDERR("%s: Failed to program SPUR frequencies\n",
-				__func__);
-			return retval;
-		}
-		addr += (SPUR_DATA_SIZE * 4);
-	}
-
-	/* Program the additional SPUR Frequencies */
-	temp = radio->spur_table_size;
-	temp = (temp % 4);
-	if (temp > 0) {
-		offset = 0;
-		for (j = 0; j < temp; j++) {
-			xfr_buf[offset++] = GET_FREQ(COMPUTE_SPUR(
-				radio->spur_data.freq[index]), 1);
-			xfr_buf[offset++] = GET_FREQ(COMPUTE_SPUR(
-				radio->spur_data.freq[index]), 0);
-			xfr_buf[offset++] =
-				radio->spur_data.rmssi[index];
-			index++;
-		}
-		size   = (temp * SPUR_DATA_SIZE);
-		retval = xfr_rdwr_data(radio, XFR_WRITE, size, addr, xfr_buf);
-		if (retval < 0) {
-			FMDERR("%s: Failed to program SPUR frequencies\n",
-				__func__);
-			return retval;
-		}
-	}
-
-	return retval;
-}
-
-static int xfr_rdwr_data(struct tavarua_device *radio, int op, int size,
-	unsigned long offset, unsigned char *buf) {
-
-	unsigned char xfr_buf[XFR_REG_NUM];
-	int retval = 0, temp = 0;
-
-	memset(xfr_buf, 0x0, XFR_REG_NUM);
-	temp = size;
-
-	xfr_buf[XFR_MODE_OFFSET]     = (size << 1);
-	xfr_buf[XFR_ADDR_MSB_OFFSET] = GET_FREQ(offset, 1);
-	xfr_buf[XFR_ADDR_LSB_OFFSET] = GET_FREQ(offset, 0);
-
-	if (op == XFR_READ) {
-		xfr_buf[XFR_MODE_OFFSET] |= (XFR_PEEK_MODE);
-		size = 3;
-	} else if (op == XFR_WRITE) {
-		xfr_buf[XFR_MODE_OFFSET] |= (XFR_POKE_MODE);
-		memcpy(&xfr_buf[XFR_DATA_OFFSET], buf, size);
-		size += 3;
-	}
-
-	retval = tavarua_write_registers(radio, XFRCTRL, xfr_buf, size);
-	if (retval < 0) {
-		FMDERR("%s: Failed to performXFR operation\n", __func__);
-		return retval;
-	}
-
-	size = temp;
+	} else
+		FMDERR("%s: PSALL value configured successfully\n", __func__);
 
 	/*Wait for the XFR interrupt */
-	init_completion(&radio->sync_req_done);
-	if (!wait_for_completion_timeout(&radio->sync_req_done,
-		msecs_to_jiffies(WAIT_TIMEOUT))) {
-		FMDERR("Timeout: No XFR interrupt");
-	}
-
-	if (op == XFR_READ) {
-		retval = tavarua_read_registers(radio, XFRDAT0, size);
-		if (retval < 0) {
-			FMDERR("%s: Failed to read the XFR data\n", __func__);
-			return retval;
-		}
-		if (buf != NULL)
-			memcpy(buf, &radio->registers[XFRDAT0], size);
-	}
+	msleep(TAVARUA_DELAY*5);
 
 	return retval;
 }
-
 static int peek_MPX_DCC(struct tavarua_device *radio)
 {
 	int retval = 0;
@@ -2747,7 +2753,6 @@ static int tavarua_vidioc_g_ctrl(struct file *file, void *priv,
 {
 	struct tavarua_device *radio = video_get_drvdata(video_devdata(file));
 	int retval = 0;
-	int cnt = 0;
 	unsigned char xfr_buf[XFR_REG_NUM];
 	signed char cRmssiThreshold;
 	signed char ioc;
@@ -2852,6 +2857,7 @@ static int tavarua_vidioc_g_ctrl(struct file *file, void *priv,
 			ctrl->value = radio->registers[ADVCTRL];
 		msleep(TAVARUA_DELAY*5);
 		break;
+	/* 0001-radio-tavarua-Added-changes-to-return-the-RMSSI-Delt.patch */
 	case V4L2_CID_PRIVATE_TAVARUA_RSSI_DELTA:
 		retval = sync_read_xfr(radio, RX_CONFIG, xfr_buf);
 		if (retval < 0) {
@@ -2861,6 +2867,7 @@ static int tavarua_vidioc_g_ctrl(struct file *file, void *priv,
 		}
 		ctrl->value = (unsigned char)xfr_buf[4];
 		break;
+	/* 0001-radio-tavarua-Added-changes-to-return-the-RMSSI-Delt.patch */
 	case V4L2_CID_PRIVATE_TAVARUA_RDSD_BUF:
 		retval = sync_read_xfr(radio, RDS_CONFIG, xfr_buf);
 		if (retval > -1)
@@ -2877,69 +2884,6 @@ static int tavarua_vidioc_g_ctrl(struct file *file, void *priv,
 	case V4L2_CID_PRIVATE_TAVARUA_ANTENNA:
 		ctrl->value = GET_REG_FIELD(radio->registers[IOCTRL],
 			IOC_ANTENNA_OFFSET, IOC_ANTENNA_MASK);
-		break;
-	case V4L2_CID_PRIVATE_INTF_LOW_THRESHOLD:
-		size = 0x04;
-		xfr_buf[0] = (XFR_PEEK_MODE | (size << 1));
-		xfr_buf[1] = ON_CHANNEL_TH_MSB;
-		xfr_buf[2] = ON_CHANNEL_TH_LSB;
-		retval = tavarua_write_registers(radio, XFRCTRL, xfr_buf, 3);
-		if (retval < 0) {
-			pr_err("%s: Failed to write\n", __func__);
-			return retval;
-		}
-		/*Wait for the XFR interrupt */
-		msleep(TAVARUA_DELAY*10);
-		retval = tavarua_read_registers(radio, XFRDAT0, 4);
-		if (retval < 0) {
-			pr_err("%s: On Ch. DET: Read failure\n", __func__);
-			return retval;
-		}
-		for (cnt = 0; cnt < 4; cnt++)
-			FMDBG("On-Channel data set is : 0x%x\t",
-				(int)radio->registers[XFRDAT0+cnt]);
-
-		ctrl->value =	LSH_DATA(radio->registers[XFRDAT0],   24) |
-				LSH_DATA(radio->registers[XFRDAT0+1], 16) |
-				LSH_DATA(radio->registers[XFRDAT0+2],  8) |
-				(radio->registers[XFRDAT0+3]);
-		FMDBG("The On Channel Threshold value is : 0x%x", ctrl->value);
-		break;
-	case V4L2_CID_PRIVATE_INTF_HIGH_THRESHOLD:
-		size = 0x04;
-		xfr_buf[0] = (XFR_PEEK_MODE | (size << 1));
-		xfr_buf[1] = OFF_CHANNEL_TH_MSB;
-		xfr_buf[2] = OFF_CHANNEL_TH_LSB;
-		retval = tavarua_write_registers(radio, XFRCTRL, xfr_buf, 3);
-		if (retval < 0) {
-			pr_err("%s: Failed to write\n", __func__);
-			return retval;
-		}
-		/*Wait for the XFR interrupt */
-		msleep(TAVARUA_DELAY*10);
-		retval = tavarua_read_registers(radio, XFRDAT0, 4);
-		if (retval < 0) {
-			pr_err("%s: Off Ch. DET: Read failure\n", __func__);
-			return retval;
-		}
-		for (cnt = 0; cnt < 4; cnt++)
-			FMDBG("Off-channel data set is : 0x%x\t",
-				(int)radio->registers[XFRDAT0+cnt]);
-
-		ctrl->value =	LSH_DATA(radio->registers[XFRDAT0],   24) |
-				LSH_DATA(radio->registers[XFRDAT0+1], 16) |
-				LSH_DATA(radio->registers[XFRDAT0+2],  8) |
-				(radio->registers[XFRDAT0+3]);
-		FMDBG("The Off Channel Threshold value is : 0x%x", ctrl->value);
-		break;
-	/*
-	 * These IOCTL's are place holders to keep the
-	 * driver compatible with change in frame works for IRIS
-	 */
-	case V4L2_CID_PRIVATE_SINR_THRESHOLD:
-	case V4L2_CID_PRIVATE_SINR_SAMPLES:
-	case V4L2_CID_PRIVATE_IRIS_GET_SINR:
-		retval = 0;
 		break;
 	default:
 		retval = -EINVAL;
@@ -3133,69 +3077,82 @@ static int tavarua_vidioc_s_ctrl(struct file *file, void *priv,
 			FMDBG("turning on ..\n");
 			retval = tavarua_start(radio, ctrl->value);
 			if (retval >= 0) {
+				/* FMDBG("Setting audio path ...\n");
+				 * retval = tavarua_set_audio_path(
+				 * TAVARUA_AUDIO_OUT_DIGITAL_ON,
+				 * TAVARUA_AUDIO_OUT_ANALOG_ON);
+				 * if (retval < 0) {
+				 * FMDERR("Error in tavarua_set_audio_path"
+				 * " %d\n", retval);
+				 * }
+				 * |+ Enabling 'SoftMute' and 'SignalBlending' features +|
+				 * value = (radio->registers[IOCTRL] | */
 				/* Enabling 'SoftMute' & 'SignalBlending' */
 				value = (radio->registers[IOCTRL] |
-				    IOC_SFT_MUTE | IOC_SIG_BLND);
+						IOC_SFT_MUTE | IOC_SIG_BLND);
+				/* retval = tavarua_write_register(radio, IOCTRL, value);
+				 * if (retval < 0)
+				 * FMDBG("SMute and SBlending not enabled\n"); */
 				retval = tavarua_write_register(radio,
-					IOCTRL, value);
+						IOCTRL, value);
 				if (retval < 0)
 					FMDBG("SMute and SBlending"
-						"not enabled\n");
+							"not enabled\n");
 			}
 		}
 		/* check if off */
 		else if ((ctrl->value == FM_OFF) && radio->registers[RDCTRL]) {
-			radio->spur_table_size = 0;
 			FMDBG("turning off...\n");
 			tavarua_write_register(radio, RDCTRL, ctrl->value);
 			/* flush the event and work queues */
 			kfifo_reset(&radio->data_buf[TAVARUA_BUF_EVENTS]);
 			flush_workqueue(radio->wqueue);
 			/*
-			 * queue the READY event from the host side
-			 * in case of FM off
-			 */
-			tavarua_q_event(radio, TAVARUA_EVT_RADIO_DISABLED);
+			queue the READY event from the host side
+			in case of FM off
+			*/
+			tavarua_q_event(radio, TAVARUA_EVT_RADIO_READY);
 
 			FMDBG("%s, Disable All Interrupts\n", __func__);
-			/* disable irq */
+ 			/* disable irq */
 			dis_buf[STATUS_REG1] = 0x00;
 			dis_buf[STATUS_REG2] = 0x00;
 			dis_buf[STATUS_REG3] = TRANSFER;
 			retval = sync_write_xfr(radio, INT_CTRL, dis_buf);
-			if (retval < 0) {
-				pr_err("%s: failed to disable"
-						"Interrupts\n", __func__);
-				return retval;
-			}
+ 			if (retval < 0) {
+ 				printk(KERN_ERR "%s: failed to disable Interrupts\n", __func__);
+ 				return retval;
+ 			}
+
+			is_turned_off = 1;
 		}
 		break;
 	case V4L2_CID_PRIVATE_TAVARUA_SET_AUDIO_PATH:
-		FMDBG("Setting audio path ...\n");
+		printk(KERN_INFO "Setting audio path ...\n");
 		if (ctrl->value == FM_DIGITAL_PATH) {
 			FMDBG("Digital audio path enabled ...\n");
 			retval = tavarua_set_audio_path(
-				TAVARUA_AUDIO_OUT_DIGITAL_ON,
-				TAVARUA_AUDIO_OUT_ANALOG_OFF);
+					TAVARUA_AUDIO_OUT_DIGITAL_ON,
+					TAVARUA_AUDIO_OUT_ANALOG_OFF);
 			if (retval < 0) {
 				FMDERR("Error in tavarua_set_audio_path"
-					" %d\n", retval);
+						" %d\n", retval);
 			}
 		} else if (ctrl->value == FM_ANALOG_PATH) {
 			FMDBG("Analog audio path enabled ...\n");
 			retval = tavarua_set_audio_path(
-				TAVARUA_AUDIO_OUT_ANALOG_ON,
-				TAVARUA_AUDIO_OUT_DIGITAL_OFF);
+					TAVARUA_AUDIO_OUT_DIGITAL_OFF,
+					TAVARUA_AUDIO_OUT_ANALOG_ON);
 			if (retval < 0) {
 				FMDERR("Error in tavarua_set_audio_path"
-					" %d\n", retval);
+						" %d\n", retval);
 			}
 		}
 		break;
 	case V4L2_CID_PRIVATE_TAVARUA_SRCH_ALGORITHM:
-		radio->enable_optimized_srch_alg = ctrl->value;
-		FMDBG("V4L2_CID_PRIVATE_TAVARUA_SRCH_ALGORITHM : %d",
-			radio->enable_optimized_srch_alg);
+		radio->newFMSrchAlg = ctrl->value;
+		printk(KERN_INFO "V4L2_CID_PRIVATE_TAVARUA_SRCH_ALGORITHM : %d",
+				radio->newFMSrchAlg);
 		break;
 	case V4L2_CID_PRIVATE_TAVARUA_REGION:
 		retval = tavarua_set_region(radio, ctrl->value);
@@ -3210,6 +3167,7 @@ static int tavarua_vidioc_s_ctrl(struct file *file, void *priv,
 		/* RMSSI Threshold is a signed 8 bit value */
 		xfr_buf[0] = (unsigned char)ctrl->value;
 		xfr_buf[1] = (unsigned char)ctrl->value;
+		/*xfr_buf[4] = 0x01;*/ /* Q patch for RMSSI */
 		retval = sync_write_xfr(radio, RX_CONFIG, xfr_buf);
 		if (retval < 0) {
 			FMDERR("V4L2_CID_PRIVATE_TAVARUA_SIGNAL_TH]\n");
@@ -3253,7 +3211,7 @@ static int tavarua_vidioc_s_ctrl(struct file *file, void *priv,
 		retval = sync_write_xfr(radio, RDS_CONFIG, xfr_buf);
 		break;
 	case V4L2_CID_PRIVATE_TAVARUA_RDSGROUP_PROC:
-		value  = radio->registers[ADVCTRL] | ctrl->value;
+		value  = radio->registers[ADVCTRL] | ctrl->value  ;
 		retval = tavarua_write_register(radio, ADVCTRL, value);
 		break;
 	case V4L2_CID_PRIVATE_TAVARUA_AF_JUMP:
@@ -3295,6 +3253,7 @@ static int tavarua_vidioc_s_ctrl(struct file *file, void *priv,
 		retval = sync_write_xfr(radio, RDS_CONFIG, xfr_buf);
 		break;
 	case V4L2_CID_PRIVATE_TAVARUA_PSALL:
+		#if 0 
 		retval = sync_read_xfr(radio, RDS_CONFIG, xfr_buf);
 		value = ctrl->value & RDS_CONFIG_PSALL;
 		if (retval < 0)
@@ -3302,6 +3261,8 @@ static int tavarua_vidioc_s_ctrl(struct file *file, void *priv,
 		xfr_buf[12] &= ~RDS_CONFIG_PSALL;
 		xfr_buf[12] |= value;
 		retval = sync_write_xfr(radio, RDS_CONFIG, xfr_buf);
+		#endif
+		retval = poke_PSALL(radio, (unsigned char)ctrl->value);
 		break;
 	case V4L2_CID_PRIVATE_TAVARUA_LP_MODE:
 		retval = 0;
@@ -3320,7 +3281,7 @@ static int tavarua_vidioc_s_ctrl(struct file *file, void *priv,
 		SET_REG_FIELD(radio->registers[IOCTRL], ctrl->value,
 					IOC_ANTENNA_OFFSET, IOC_ANTENNA_MASK);
 		break;
-	case V4L2_CID_PRIVATE_INTF_LOW_THRESHOLD:
+	case V4L2_CID_PRIVATE_TAVARUA_ON_CHANNEL_THRESHOLD:
 		size = 0x04;
 		/* Poking the value of ON Channel Threshold value */
 		xfr_buf[0] = (XFR_POKE_MODE | (size << 1));
@@ -3333,20 +3294,46 @@ static int tavarua_vidioc_s_ctrl(struct file *file, void *priv,
 		xfr_buf[6] = (ctrl->value & 0x000000FF);
 
 		for (cnt = 3; cnt < 7; cnt++) {
-			FMDBG("On-channel data to be poked is : %d",
+			printk(KERN_INFO "On-channel data to be poked is : %d",
 				(int)xfr_buf[cnt]);
 		}
 
 		retval = tavarua_write_registers(radio, XFRCTRL,
 				xfr_buf, size+3);
 		if (retval < 0) {
-			pr_err("%s: Failed to write\n", __func__);
+			FMDBG("Failed to write\n");
+			return retval;
+		}
+		/*Wait for the XFR interrupt */
+		msleep(TAVARUA_DELAY*15);
+
+		for (cnt = 0; cnt < 5; cnt++) {
+			xfr_buf[cnt] = 0;
+			radio->registers[XFRDAT0+cnt] = 0x0;
+		}
+
+		/* Peeking Regs 0x88C2-0x88C4 */
+		size = 0x04;
+		xfr_buf[0] = (XFR_PEEK_MODE | (size << 1));
+		xfr_buf[1] = ON_CHANNEL_TH_MSB;
+		xfr_buf[2] = ON_CHANNEL_TH_LSB;
+		retval = tavarua_write_registers(radio, XFRCTRL, xfr_buf, 3);
+		if (retval < 0) {
+			FMDBG("Failed to write\n");
 			return retval;
 		}
 		/*Wait for the XFR interrupt */
 		msleep(TAVARUA_DELAY*10);
+		retval = tavarua_read_registers(radio, XFRDAT0, 4);
+		if (retval < 0) {
+			printk(KERN_INFO "On Ch. DET: Read failure\n");
+			return retval;
+		}
+		for (cnt = 0; cnt < 4; cnt++)
+			printk(KERN_INFO "On-Channel data set is : 0x%x\t",
+				(int)radio->registers[XFRDAT0+cnt]);
 		break;
-	case V4L2_CID_PRIVATE_INTF_HIGH_THRESHOLD:
+	case V4L2_CID_PRIVATE_TAVARUA_OFF_CHANNEL_THRESHOLD:
 		size = 0x04;
 		/* Poking the value of OFF Channel Threshold value */
 		xfr_buf[0] = (XFR_POKE_MODE | (size << 1));
@@ -3359,18 +3346,44 @@ static int tavarua_vidioc_s_ctrl(struct file *file, void *priv,
 		xfr_buf[6] = (ctrl->value & 0x000000FF);
 
 		for (cnt = 3; cnt < 7; cnt++) {
-			FMDBG("Off-channel data to be poked is : %d",
+			printk(KERN_INFO "Off-channel data to be poked is : %d",
 				(int)xfr_buf[cnt]);
 		}
 
 		retval = tavarua_write_registers(radio, XFRCTRL,
 				xfr_buf, size+3);
 		if (retval < 0) {
-			pr_err("%s: Failed to write\n", __func__);
+			FMDBG("Failed to write\n");
 			return retval;
 		}
 		/*Wait for the XFR interrupt */
 		msleep(TAVARUA_DELAY*10);
+
+		for (cnt = 0; cnt < 5; cnt++) {
+			xfr_buf[cnt] = 0;
+			radio->registers[XFRDAT0+cnt] = 0x0;
+		}
+
+		/* Peeking Regs 0x88C2-0x88C4 */
+		size = 0x04;
+		xfr_buf[0] = (XFR_PEEK_MODE | (size << 1));
+		xfr_buf[1] = OFF_CHANNEL_TH_MSB;
+		xfr_buf[2] = OFF_CHANNEL_TH_LSB;
+		retval = tavarua_write_registers(radio, XFRCTRL, xfr_buf, 3);
+		if (retval < 0) {
+			FMDBG("Failed to write\n");
+			return retval;
+		}
+		/*Wait for the XFR interrupt */
+		msleep(TAVARUA_DELAY*10);
+		retval = tavarua_read_registers(radio, XFRDAT0, 4);
+		if (retval < 0) {
+			printk(KERN_INFO "Off Ch. DET: Read failure\n");
+			return retval;
+		}
+		for (cnt = 0; cnt < 4; cnt++)
+			printk(KERN_INFO "Off-channel data set is : 0x%x\t",
+				(int)radio->registers[XFRDAT0+cnt]);
 		break;
 	/* TX Controls */
 
@@ -3428,37 +3441,9 @@ static int tavarua_vidioc_s_ctrl(struct file *file, void *priv,
 		if (retval < 0)
 			FMDBG("write failed");
 	} break;
-	/*These IOCTL's are place holders to keep the
-	driver compatible with change in frame works for IRIS */
-	case V4L2_CID_PRIVATE_SOFT_MUTE:
-	case V4L2_CID_PRIVATE_RIVA_ACCS_ADDR:
-	case V4L2_CID_PRIVATE_RIVA_ACCS_LEN:
-	case V4L2_CID_PRIVATE_RIVA_PEEK:
-	case V4L2_CID_PRIVATE_RIVA_POKE:
-	case V4L2_CID_PRIVATE_SSBI_ACCS_ADDR:
-	case V4L2_CID_PRIVATE_SSBI_PEEK:
-	case V4L2_CID_PRIVATE_SSBI_POKE:
-	case V4L2_CID_PRIVATE_TX_TONE:
-	case V4L2_CID_PRIVATE_RDS_GRP_COUNTERS:
-	case V4L2_CID_PRIVATE_SET_NOTCH_FILTER:
-	case V4L2_CID_PRIVATE_TAVARUA_DO_CALIBRATION:
-	case V4L2_CID_PRIVATE_SINR_THRESHOLD:
-	case V4L2_CID_PRIVATE_SINR_SAMPLES:
-	case V4L2_CID_PRIVATE_SPUR_SELECTION:
-		retval = 0;
-		break;
-	case V4L2_CID_PRIVATE_SPUR_FREQ:
-		radio->spur_data.freq[radio->spur_table_size] =
-			ctrl->value;
-		break;
-	case V4L2_CID_PRIVATE_SPUR_FREQ_RMSSI:
-		radio->spur_data.rmssi[radio->spur_table_size++] =
-			ctrl->value;
-		break;
-	case V4L2_CID_PRIVATE_UPDATE_SPUR_TABLE:
-		retval = update_spur_table(radio);
-		break;
+
 	default:
+		printk(KERN_INFO "Undefined Private control\n");
 		retval = -EINVAL;
 	}
 	if (retval < 0)
@@ -4020,7 +4005,6 @@ static int tavarua_resume(struct platform_device *pdev)
 	printk(KERN_INFO DRIVER_NAME "%s: radio resume\n\n", __func__);
 	if (radio) {
 		users = atomic_read(&radio->users);
-
 		if (!users) {
 			retval = tavarua_setup_interrupts(radio,
 			(radio->registers[RDCTRL] & 0x03));
@@ -4152,20 +4136,17 @@ static int  __init tavarua_probe(struct platform_device *pdev)
 
 	/*allocate internal buffers for decoded rds and event buffer*/
 	for (i = 0; i < TAVARUA_BUF_MAX; i++) {
-		int kfifo_alloc_rc=0;
+		int kfifo_alloc_rc = 0;
 		spin_lock_init(&radio->buf_lock[i]);
 
 		if (i == TAVARUA_BUF_RAW_RDS)
 			kfifo_alloc_rc = kfifo_alloc(&radio->data_buf[i],
 				rds_buf*3, GFP_KERNEL);
-		else if (i == TAVARUA_BUF_RT_RDS)
-			kfifo_alloc_rc = kfifo_alloc(&radio->data_buf[i],
-				STD_BUF_SIZE * 2, GFP_KERNEL);
 		else
 			kfifo_alloc_rc = kfifo_alloc(&radio->data_buf[i],
 				STD_BUF_SIZE, GFP_KERNEL);
 
-		if (kfifo_alloc_rc!=0) {
+		if (kfifo_alloc_rc != 0) {
 			printk(KERN_ERR "%s: failed allocating buffers %d\n",
 				__func__, kfifo_alloc_rc);
 			goto err_bufs;
@@ -4320,3 +4301,4 @@ MODULE_VERSION(DRIVER_VERSION);
 
 module_init(radio_module_init);
 module_exit(radio_module_exit);
+
