@@ -96,10 +96,4 @@ extern int android_enable_function(struct usb_function *f, int enable);
 /*Check LPM mode*/
 extern int charging_boot;
 
-/* USB MODE*/
-#define USBSTATUS_KIES		0x1
-#define USBSTATUS_UMS		0x2
-#define USBSTATUS_ADB		0x3
-#define UMS_PRODUCT_ID		0x681D
-
 #endif	/* __LINUX_USB_ANDROID_H */

@@ -2,7 +2,7 @@
  * Diag Function Device - Route ARM9 and ARM11 DIAG messages
  * between HOST and DEVICE.
  * Copyright (C) 2007 Google, Inc.
- * Copyright (c) 2008-2010, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
  * Author: Brian Swetland <swetland@google.com>
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -24,8 +24,8 @@
 
 #include <linux/usb/composite.h>
 #include <linux/usb/gadget.h>
-#include <linux/usb/android_composite.h>
 #include <linux/workqueue.h>
+#include <linux/debugfs.h>
 
 static DEFINE_SPINLOCK(ch_lock);
 static LIST_HEAD(usb_diag_ch_list);
@@ -87,29 +87,8 @@ static struct usb_descriptor_header *hs_diag_desc[] = {
 	NULL,
 };
 
-/* string descriptors: */
-
-#define DIAG_IDX	0
-
-/* static strings, in UTF-8 */
-static struct usb_string diag_string_defs[] = {
-	[DIAG_IDX].s = "Samsung Android DIAG",
-	{  /* ZEROES END LIST */ },
-};
-
-static struct usb_gadget_strings diag_string_table = {
-	.language =		0x0409,	/* en-us */
-	.strings =		diag_string_defs,
-};
-
-static struct usb_gadget_strings *diag_strings[] = {
-	&diag_string_table,
-	NULL,
-};
-
 /**
  * struct diag_context - USB diag function driver private structure
- * @android_function: Used for registering with Android composite driver
  * @function: function structure for USB interface
  * @out: USB OUT endpoint struct
  * @in: USB IN endpoint struct
@@ -122,14 +101,10 @@ static struct usb_gadget_strings *diag_strings[] = {
  *               and serial number to MODEM/IMEM.
  * @lock: Spinlock to proctect read_pool, write_pool lists
  * @cdev: USB composite device struct
- * @pdata: Platform data for this driver
  * @ch: USB diag channel
  *
  */
 struct diag_context {
-#ifdef CONFIG_USB_ANDROID_DIAG
-	struct android_usb_function android_function;
-#endif
 	struct usb_function function;
 	struct usb_ep *out;
 	struct usb_ep *in;
@@ -141,11 +116,16 @@ struct diag_context {
 	spinlock_t lock;
 	unsigned configured;
 	struct usb_composite_dev *cdev;
-	struct usb_diag_platform_data *pdata;
+	int (*update_pid_and_serial_num)(uint32_t, const char *);
 	struct usb_diag_ch ch;
+
+	/* pkt counters */
+	unsigned long dpkts_tolaptop;
+	unsigned long dpkts_tomodem;
+	unsigned dpkts_tolaptop_pending;
 };
 
-static inline struct diag_context *func_to_dev(struct usb_function *f)
+static inline struct diag_context *func_to_diag(struct usb_function *f)
 {
 	return container_of(f, struct diag_context, function);
 }
@@ -161,12 +141,12 @@ static void usb_config_work_func(struct work_struct *work)
 	if (ctxt->ch.notify)
 		ctxt->ch.notify(ctxt->ch.priv, USB_DIAG_CONNECT, NULL);
 
-	if (!ctxt->pdata || !ctxt->pdata->update_pid_and_serial_num)
+	if (!ctxt->update_pid_and_serial_num)
 		return;
 
 	/* pass on product id and serial number to dload */
 	if (!cdev->desc.iSerialNumber) {
-		ctxt->pdata->update_pid_and_serial_num(
+		ctxt->update_pid_and_serial_num(
 					cdev->desc.idProduct, 0);
 		return;
 	}
@@ -179,7 +159,7 @@ static void usb_config_work_func(struct work_struct *work)
 	table = *(cdev->driver->strings);
 	for (s = table->strings; s && s->s; s++)
 		if (s->id == cdev->desc.iSerialNumber) {
-			ctxt->pdata->update_pid_and_serial_num(
+			ctxt->update_pid_and_serial_num(
 					cdev->desc.idProduct, s->s);
 			break;
 		}
@@ -192,9 +172,12 @@ static void diag_write_complete(struct usb_ep *ep,
 	struct diag_request *d_req = req->context;
 	unsigned long flags;
 
+	ctxt->dpkts_tolaptop_pending--;
+
 	if (!req->status) {
 		if ((req->length >= ep->maxpacket) &&
 				((req->length % ep->maxpacket) == 0)) {
+			ctxt->dpkts_tolaptop_pending++;
 			req->length = 0;
 			d_req->actual = req->actual;
 			d_req->status = req->status;
@@ -230,6 +213,8 @@ static void diag_read_complete(struct usb_ep *ep,
 	list_add_tail(&req->list, &ctxt->read_pool);
 	spin_unlock_irqrestore(&ctxt->lock, flags);
 
+	ctxt->dpkts_tomodem++;
+
 	if (ctxt->ch.notify)
 		ctxt->ch.notify(ctxt->ch.priv, USB_DIAG_READ_DONE, d_req);
 }
@@ -249,30 +234,36 @@ struct usb_diag_ch *usb_diag_open(const char *name, void *priv,
 		void (*notify)(void *, unsigned, struct diag_request *))
 {
 	struct usb_diag_ch *ch;
+	struct diag_context *ctxt;
 	unsigned long flags;
 	int found = 0;
 
 	spin_lock_irqsave(&ch_lock, flags);
-
+	/* Check if we already have a channel with this name */
 	list_for_each_entry(ch, &usb_diag_ch_list, list) {
 		if (!strcmp(name, ch->name)) {
 			found = 1;
 			break;
 		}
 	}
+	spin_unlock_irqrestore(&ch_lock, flags);
+
 	if (!found) {
-		ch =  ERR_PTR(-ENOENT);
-		goto out;
-	}
-	if (ch->priv) {
-		ch = ERR_PTR(-EBUSY);
-		goto out;
+		ctxt = kzalloc(sizeof(*ctxt), GFP_KERNEL);
+		if (!ctxt)
+			return ERR_PTR(-ENOMEM);
+
+		ch = &ctxt->ch;
 	}
 
+	ch->name = name;
 	ch->priv = priv;
 	ch->notify = notify;
-out:
+
+	spin_lock_irqsave(&ch_lock, flags);
+	list_add_tail(&ch->list, &usb_diag_ch_list);
 	spin_unlock_irqrestore(&ch_lock, flags);
+
 	return ch;
 }
 EXPORT_SYMBOL(usb_diag_open);
@@ -286,11 +277,18 @@ EXPORT_SYMBOL(usb_diag_open);
  */
 void usb_diag_close(struct usb_diag_ch *ch)
 {
+	struct diag_context *dev = container_of(ch, struct diag_context, ch);
 	unsigned long flags;
 
 	spin_lock_irqsave(&ch_lock, flags);
 	ch->priv = NULL;
 	ch->notify = NULL;
+	/* Free-up the resources if channel is no more active */
+	if (!ch->priv_usb) {
+		list_del(&ch->list);
+		kfree(dev);
+	}
+
 	spin_unlock_irqrestore(&ch_lock, flags);
 }
 EXPORT_SYMBOL(usb_diag_close);
@@ -390,6 +388,9 @@ int usb_diag_read(struct usb_diag_ch *ch, struct diag_request *d_req)
 	unsigned long flags;
 	struct usb_request *req;
 
+	if (!ctxt)
+		return -ENODEV;
+
 	spin_lock_irqsave(&ctxt->lock, flags);
 
 	if (!ctxt->configured) {
@@ -443,6 +444,9 @@ int usb_diag_write(struct usb_diag_ch *ch, struct diag_request *d_req)
 	unsigned long flags;
 	struct usb_request *req = NULL;
 
+	if (!ctxt)
+		return -ENODEV;
+
 	spin_lock_irqsave(&ctxt->lock, flags);
 
 	if (!ctxt->configured) {
@@ -473,13 +477,16 @@ int usb_diag_write(struct usb_diag_ch *ch, struct diag_request *d_req)
 		return -EIO;
 	}
 
+	ctxt->dpkts_tolaptop++;
+	ctxt->dpkts_tolaptop_pending++;
+
 	return 0;
 }
 EXPORT_SYMBOL(usb_diag_write);
 
 static void diag_function_disable(struct usb_function *f)
 {
-	struct diag_context  *dev = func_to_dev(f);
+	struct diag_context  *dev = func_to_diag(f);
 	unsigned long flags;
 
 	DBG(dev->cdev, "diag_function_disable\n");
@@ -502,15 +509,17 @@ static void diag_function_disable(struct usb_function *f)
 static int diag_function_set_alt(struct usb_function *f,
 		unsigned intf, unsigned alt)
 {
-	struct diag_context  *dev = func_to_dev(f);
+	struct diag_context  *dev = func_to_diag(f);
 	struct usb_composite_dev *cdev = f->config->cdev;
 	unsigned long flags;
 	int rc = 0;
 
 	dev->in_desc = ep_choose(cdev->gadget,
-			&hs_bulk_in_desc, &fs_bulk_in_desc);
+			(struct usb_endpoint_descriptor *)f->hs_descriptors[1],
+			(struct usb_endpoint_descriptor *)f->descriptors[1]);
 	dev->out_desc = ep_choose(cdev->gadget,
-			&hs_bulk_out_desc, &fs_bulk_in_desc);
+			(struct usb_endpoint_descriptor *)f->hs_descriptors[2],
+			(struct usb_endpoint_descriptor *)f->descriptors[2]);
 	dev->in->driver_data = dev;
 	rc = usb_ep_enable(dev->in, dev->in_desc);
 	if (rc) {
@@ -528,6 +537,10 @@ static int diag_function_set_alt(struct usb_function *f,
 	}
 	schedule_work(&dev->config_work);
 
+	dev->dpkts_tolaptop = 0;
+	dev->dpkts_tomodem = 0;
+	dev->dpkts_tolaptop_pending = 0;
+
 	spin_lock_irqsave(&dev->lock, flags);
 	dev->configured = 1;
 	spin_unlock_irqrestore(&dev->lock, flags);
@@ -538,7 +551,7 @@ static int diag_function_set_alt(struct usb_function *f,
 static void diag_function_unbind(struct usb_configuration *c,
 		struct usb_function *f)
 {
-	struct diag_context *ctxt = func_to_dev(f);
+	struct diag_context *ctxt = func_to_diag(f);
 
 	if (gadget_is_dualspeed(c->cdev->gadget))
 		usb_free_descriptors(f->hs_descriptors);
@@ -551,17 +564,21 @@ static int diag_function_bind(struct usb_configuration *c,
 		struct usb_function *f)
 {
 	struct usb_composite_dev *cdev = c->cdev;
-	struct diag_context *ctxt = func_to_dev(f);
+	struct diag_context *ctxt = func_to_diag(f);
 	struct usb_ep *ep;
 	int status = -ENODEV;
 
 	intf_desc.bInterfaceNumber =  usb_interface_id(c, f);
 
 	ep = usb_ep_autoconfig(cdev->gadget, &fs_bulk_in_desc);
+	if (!ep)
+		goto fail;
 	ctxt->in = ep;
 	ep->driver_data = ctxt;
 
 	ep = usb_ep_autoconfig(cdev->gadget, &fs_bulk_out_desc);
+	if (!ep)
+		goto fail;
 	ctxt->out = ep;
 	ep->driver_data = ctxt;
 
@@ -589,17 +606,17 @@ fail:
 
 }
 
-int diag_function_add(struct usb_configuration *c)
+int diag_function_add(struct usb_configuration *c, const char *name,
+			int (*update_pid)(uint32_t, const char *))
 {
 	struct diag_context *dev;
 	struct usb_diag_ch *_ch;
-	int found = 0, ret, status;
+	int found = 0, ret;
 
 	DBG(c->cdev, "diag_function_add\n");
 
 	list_for_each_entry(_ch, &usb_diag_ch_list, list) {
-		/* Find an unused channel */
-		if (!_ch->priv_usb) {
+		if (!strcmp(name, _ch->name)) {
 			found = 1;
 			break;
 		}
@@ -610,29 +627,18 @@ int diag_function_add(struct usb_configuration *c)
 	}
 
 	dev = container_of(_ch, struct diag_context, ch);
-
-	/* maybe allocate device-global string IDs, and patch descriptors */
-
-	status = usb_string_id(c->cdev);
-	if (status < 0)
-		return status;
-	diag_string_defs[DIAG_IDX].id = status;
-	intf_desc.iInterface = status;
-
 	/* claim the channel for this USB interface */
 	_ch->priv_usb = dev;
 
+	dev->update_pid_and_serial_num = update_pid; 
 	dev->cdev = c->cdev;
 	dev->function.name = _ch->name;
-	dev->function.strings = diag_strings;
 	dev->function.descriptors = fs_diag_desc;
 	dev->function.hs_descriptors = hs_diag_desc;
 	dev->function.bind = diag_function_bind;
 	dev->function.unbind = diag_function_unbind;
 	dev->function.set_alt = diag_function_set_alt;
 	dev->function.disable = diag_function_disable;
-	/* start disabled */
-	dev->function.disabled= 1;
 	spin_lock_init(&dev->lock);
 	INIT_LIST_HEAD(&dev->read_pool);
 	INIT_LIST_HEAD(&dev->write_pool);
@@ -647,95 +653,109 @@ int diag_function_add(struct usb_configuration *c)
 	return ret;
 }
 
-static struct
-usb_diag_ch *diag_setup(struct usb_diag_platform_data *pdata)
+
+#if defined(CONFIG_DEBUG_FS)
+static char debug_buffer[PAGE_SIZE];
+
+static ssize_t debug_read_stats(struct file *file, char __user *ubuf,
+		size_t count, loff_t *ppos)
 {
+	char *buf = debug_buffer;
+	int temp = 0;
 	struct usb_diag_ch *ch;
-	struct diag_context *ctxt;
-	unsigned long flags;
 
-	ctxt = kzalloc(sizeof(*ctxt), GFP_KERNEL);
-	if (!ctxt)
-		return ERR_PTR(-ENOMEM);
+	list_for_each_entry(ch, &usb_diag_ch_list, list) {
+		struct diag_context *ctxt;
 
-	ctxt->pdata = pdata;
-	ch = &ctxt->ch;
+		ctxt = ch->priv_usb;
 
-	spin_lock_irqsave(&ch_lock, flags);
-	ch->name = pdata->ch_name;
-	list_add_tail(&ch->list, &usb_diag_ch_list);
-	spin_unlock_irqrestore(&ch_lock, flags);
-
-	return ch;
-}
-
-static void diag_cleanup(struct usb_diag_ch *_ch)
-{
-	struct diag_context *dev = container_of(_ch, struct diag_context, ch);
-	unsigned long flags;
-
-	WARN_ON(_ch->priv || _ch->priv_usb);
-
-	spin_lock_irqsave(&ch_lock, flags);
-	list_del(&_ch->list);
-	spin_unlock_irqrestore(&ch_lock, flags);
-
-	kfree(dev);
-
-}
-
-#ifdef CONFIG_USB_ANDROID_DIAG
-static int __init diag_probe(struct platform_device *pdev)
-{
-	struct diag_context *dev;
-	struct usb_diag_ch *_ch;
-	struct android_usb_function *func;
-	struct usb_diag_platform_data *pdata = pdev->dev.platform_data;
-
-	dev_dbg(&pdev->dev, "%s\n", __func__);
-
-	_ch = diag_setup(pdata);
-	if (IS_ERR(_ch)) {
-		dev_err(&pdev->dev, "unable to create diag channel\n");
-		return PTR_ERR(_ch);
+		temp += scnprintf(buf + temp, PAGE_SIZE - temp,
+				"---Name: %s---\n"
+				"endpoints: %s, %s\n"
+				"dpkts_tolaptop: %lu\n"
+				"dpkts_tomodem:  %lu\n"
+				"pkts_tolaptop_pending: %u\n",
+				ch->name,
+				ctxt->in->name, ctxt->out->name,
+				ctxt->dpkts_tolaptop,
+				ctxt->dpkts_tomodem,
+				ctxt->dpkts_tolaptop_pending);
 	}
 
-	platform_set_drvdata(pdev, _ch);
-	dev = container_of(_ch, struct diag_context, ch);
-	func = &dev->android_function;
-	func->name = pdata->ch_name;
-	func->bind_config = diag_function_add;
-
-	android_register_function(func);
-
-	return 0;
+	return simple_read_from_buffer(ubuf, count, ppos, buf, temp);
 }
 
-static int diag_remove(struct platform_device *pdev)
+static ssize_t debug_reset_stats(struct file *file, const char __user *buf,
+				 size_t count, loff_t *ppos)
 {
-	struct usb_diag_ch *ch = platform_get_drvdata(pdev);
+	struct usb_diag_ch *ch;
 
-	diag_cleanup(ch);
+	list_for_each_entry(ch, &usb_diag_ch_list, list) {
+		struct diag_context *ctxt;
 
+		ctxt = ch->priv_usb;
+
+		ctxt->dpkts_tolaptop = 0;
+		ctxt->dpkts_tomodem = 0;
+		ctxt->dpkts_tolaptop_pending = 0;
+	}
+
+	return count;
+}
+
+static int debug_open(struct inode *inode, struct file *file)
+{
 	return 0;
 }
 
-static struct platform_driver usb_diag_driver = {
-	.remove		= diag_remove,
-	.driver = {
-		.name = "usb_diag",
-		.owner = THIS_MODULE,
-	},
-
+static const struct file_operations debug_fdiag_ops = {
+	.open = debug_open,
+	.read = debug_read_stats,
+	.write = debug_reset_stats,
 };
 
-static int __init usb_diag_init(void)
+struct dentry *dent_diag;
+static void fdiag_debugfs_init(void)
 {
-	return platform_driver_probe(&usb_diag_driver, diag_probe);
-}
-module_init(usb_diag_init);
+	dent_diag = debugfs_create_dir("usb_diag", 0);
+	if (IS_ERR(dent_diag))
+		return;
 
-MODULE_LICENSE("GPL v2");
-MODULE_DESCRIPTION("usb diag gadget driver");
-MODULE_VERSION("2.00");
-#endif /* CONFIG_USB_ANDROID_DIAG */
+	debugfs_create_file("status", 0444, dent_diag, 0, &debug_fdiag_ops);
+}
+#else
+static void fdiag_debugfs_init(void)
+{
+	return;
+}
+#endif
+
+static void diag_cleanup(void)
+{
+	struct diag_context *dev;
+	struct list_head *act, *tmp;
+	struct usb_diag_ch *_ch;
+	unsigned long flags;
+
+	debugfs_remove_recursive(dent_diag);
+
+	list_for_each_safe(act, tmp, &usb_diag_ch_list) {
+		_ch = list_entry(act, struct usb_diag_ch, list);
+		dev = container_of(_ch, struct diag_context, ch);
+
+		spin_lock_irqsave(&ch_lock, flags);
+		/* Free if diagchar is not using the channel anymore */
+		if (!_ch->priv) {
+			list_del(&_ch->list);
+			kfree(dev);
+		}
+		spin_unlock_irqrestore(&ch_lock, flags);
+	}
+}
+
+static int diag_setup(void)
+{
+	fdiag_debugfs_init();
+
+	return 0;
+}

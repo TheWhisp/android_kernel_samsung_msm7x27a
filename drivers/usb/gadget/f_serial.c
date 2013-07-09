@@ -13,7 +13,7 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
-#include <linux/usb/android_composite.h>
+#include <mach/usb_gadget_xport.h>
 
 #include "u_serial.h"
 #include "gadget_chips.h"
@@ -27,6 +27,7 @@
  * CDC ACM driver.  However, for many purposes it's just as functional
  * if you can arrange appropriate host side drivers.
  */
+#define GSERIAL_NO_PORTS 2
 
 struct gser_descs {
 	struct usb_endpoint_descriptor	*in;
@@ -44,6 +45,8 @@ struct f_gser {
 	struct gser_descs		fs;
 	struct gser_descs		hs;
 	u8				online;
+	enum transport_type		transport;
+
 #ifdef CONFIG_MODEM_SUPPORT
 	u8				pending;
 	spinlock_t			lock;
@@ -69,6 +72,25 @@ struct f_gser {
 #define ACM_CTRL_DCD		(1 << 0)
 #endif
 };
+
+static unsigned int no_tty_ports;
+static unsigned int no_sdio_ports;
+static unsigned int no_smd_ports;
+static unsigned int no_hsic_sports;
+static unsigned int nr_ports;
+
+static struct port_info {
+	enum transport_type	transport;
+	unsigned		port_num;
+	unsigned		client_port_num;
+} gserial_ports[GSERIAL_NO_PORTS];
+
+static inline bool is_transport_sdio(enum transport_type t)
+{
+	if (t == USB_GADGET_XPORT_SDIO)
+		return 1;
+	return 0;
+}
 
 static inline struct f_gser *func_to_gser(struct usb_function *f)
 {
@@ -145,7 +167,7 @@ static struct usb_endpoint_descriptor gser_fs_notify_desc = {
 };
 #endif
 
-static struct usb_endpoint_descriptor gser_fs_in_desc  = {
+static struct usb_endpoint_descriptor gser_fs_in_desc = {
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 	.bEndpointAddress =	USB_DIR_IN,
@@ -230,6 +252,123 @@ static struct usb_gadget_strings *gser_strings[] = {
 	NULL,
 };
 
+static int gport_setup(struct usb_configuration *c)
+{
+	int ret = 0;
+	int port_idx;
+	int i;
+
+	pr_debug("%s: no_tty_ports: %u no_sdio_ports: %u"
+		" no_smd_ports: %u no_hsic_sports: %u nr_ports: %u\n",
+			__func__, no_tty_ports, no_sdio_ports, no_smd_ports,
+			no_hsic_sports, nr_ports);
+
+	if (no_tty_ports)
+		ret = gserial_setup(c->cdev->gadget, no_tty_ports);
+	if (no_sdio_ports)
+		ret = gsdio_setup(c->cdev->gadget, no_sdio_ports);
+	if (no_smd_ports)
+		ret = gsmd_setup(c->cdev->gadget, no_smd_ports);
+	if (no_hsic_sports) {
+		port_idx = ghsic_data_setup(no_hsic_sports, USB_GADGET_SERIAL);
+		if (port_idx < 0)
+			return port_idx;
+
+		for (i = 0; i < nr_ports; i++) {
+			if (gserial_ports[i].transport ==
+					USB_GADGET_XPORT_HSIC) {
+				gserial_ports[i].client_port_num = port_idx;
+				port_idx++;
+			}
+		}
+
+		/*clinet port num is same for data setup and ctrl setup*/
+		ret = ghsic_ctrl_setup(no_hsic_sports, USB_GADGET_SERIAL);
+		if (ret < 0)
+			return ret;
+		return 0;
+	}
+	return ret;
+}
+
+static int gport_connect(struct f_gser *gser)
+{
+	unsigned	port_num;
+	int		ret;
+
+	pr_debug("%s: transport: %s f_gser: %p gserial: %p port_num: %d\n",
+			__func__, xport_to_str(gser->transport),
+			gser, &gser->port, gser->port_num);
+
+	port_num = gserial_ports[gser->port_num].client_port_num;
+
+	switch (gser->transport) {
+	case USB_GADGET_XPORT_TTY:
+		gserial_connect(&gser->port, port_num);
+		break;
+	case USB_GADGET_XPORT_SDIO:
+		gsdio_connect(&gser->port, port_num);
+		break;
+	case USB_GADGET_XPORT_SMD:
+		gsmd_connect(&gser->port, port_num);
+		break;
+	case USB_GADGET_XPORT_HSIC:
+		ret = ghsic_ctrl_connect(&gser->port, port_num);
+		if (ret) {
+			pr_err("%s: ghsic_ctrl_connect failed: err:%d\n",
+					__func__, ret);
+			return ret;
+		}
+		ret = ghsic_data_connect(&gser->port, port_num);
+		if (ret) {
+			pr_err("%s: ghsic_data_connect failed: err:%d\n",
+					__func__, ret);
+			ghsic_ctrl_disconnect(&gser->port, port_num);
+			return ret;
+		}
+		break;
+	default:
+		pr_err("%s: Un-supported transport: %s\n", __func__,
+				xport_to_str(gser->transport));
+		return -ENODEV;
+	}
+
+	return 0;
+}
+
+static int gport_disconnect(struct f_gser *gser)
+{
+	unsigned port_num;
+
+	pr_debug("%s: transport: %s f_gser: %p gserial: %p port_num: %d\n",
+			__func__, xport_to_str(gser->transport),
+			gser, &gser->port, gser->port_num);
+
+	port_num = gserial_ports[gser->port_num].client_port_num;
+
+	switch (gser->transport) {
+	case USB_GADGET_XPORT_TTY:
+		gserial_disconnect(&gser->port);
+		break;
+	case USB_GADGET_XPORT_SDIO:
+		gsdio_disconnect(&gser->port, port_num);
+		break;
+	case USB_GADGET_XPORT_SMD:
+		gsmd_disconnect(&gser->port, port_num);
+		break;
+	case USB_GADGET_XPORT_HSIC:
+		ghsic_ctrl_disconnect(&gser->port, port_num);
+		ghsic_data_disconnect(&gser->port, port_num);
+		break;
+	default:
+		pr_err("%s: Un-supported transport:%s\n", __func__,
+				xport_to_str(gser->transport));
+		return -ENODEV;
+	}
+
+	return 0;
+}
+
 #ifdef CONFIG_MODEM_SUPPORT
 static void gser_complete_set_line_coding(struct usb_ep *ep,
 		struct usb_request *req)
@@ -254,6 +393,7 @@ static void gser_complete_set_line_coding(struct usb_ep *ep,
 	}
 }
 /*-------------------------------------------------------------------------*/
+
 static int
 gser_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 {
@@ -292,6 +432,13 @@ gser_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 
 		value = 0;
 		gser->port_handshake_bits = w_value;
+		if (gser->port.notify_modem) {
+			unsigned port_num =
+				gserial_ports[gser->port_num].client_port_num;
+
+			gser->port.notify_modem(&gser->port,
+					port_num, w_value);
+		}
 		break;
 
 	default:
@@ -320,7 +467,7 @@ invalid:
 #endif
 static int gser_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 {
-	struct f_gser		 *gser = func_to_gser(f);
+	struct f_gser		*gser = func_to_gser(f);
 	struct usb_composite_dev *cdev = f->config->cdev;
 	int rc = 0;
 
@@ -345,7 +492,7 @@ static int gser_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 
 	if (gser->port.in->driver_data) {
 		DBG(cdev, "reset generic data ttyGS%d\n", gser->port_num);
-		gserial_disconnect(&gser->port);
+		gport_disconnect(gser);
 	} else {
 		DBG(cdev, "activate generic data ttyGS%d\n", gser->port_num);
 	}
@@ -353,7 +500,9 @@ static int gser_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			gser->hs.in, gser->fs.in);
 	gser->port.out_desc = ep_choose(cdev->gadget,
 			gser->hs.out, gser->fs.out);
-	gserial_connect(&gser->port, gser->port_num);
+
+	gport_connect(gser);
+
 	gser->online = 1;
 	return rc;
 }
@@ -364,11 +513,12 @@ static void gser_disable(struct usb_function *f)
 	struct usb_composite_dev *cdev = f->config->cdev;
 
 	DBG(cdev, "generic ttyGS%d deactivated\n", gser->port_num);
-	gserial_disconnect(&gser->port);
+
+	gport_disconnect(gser);
+
 #ifdef CONFIG_MODEM_SUPPORT
 	usb_ep_fifo_flush(gser->notify);
 	usb_ep_disable(gser->notify);
-	gser->notify->driver_data = NULL;
 #endif
 	gser->online = 0;
 }
@@ -527,6 +677,15 @@ static int gser_send_break(struct gserial *port, int duration)
 	gser->serial_state = state;
 	return gser_notify_serial_state(gser);
 }
+
+static int gser_send_modem_ctrl_bits(struct gserial *port, int ctrl_bits)
+{
+	struct f_gser *gser = port_to_gser(port);
+
+	gser->serial_state = ctrl_bits;
+
+	return gser_notify_serial_state(gser);
+}
 #endif
 /*-------------------------------------------------------------------------*/
 
@@ -582,6 +741,9 @@ gser_bind(struct usb_configuration *c, struct usb_function *f)
 	/* copy descriptors, and track endpoint copies */
 	f->descriptors = usb_copy_descriptors(gser_fs_function);
 
+	if (!f->descriptors)
+		goto fail;
+
 	gser->fs.in = usb_find_endpoint(gser_fs_function,
 			f->descriptors, &gser_fs_in_desc);
 	gser->fs.out = usb_find_endpoint(gser_fs_function,
@@ -609,6 +771,9 @@ gser_bind(struct usb_configuration *c, struct usb_function *f)
 		/* copy descriptors, and track endpoint copies */
 		f->hs_descriptors = usb_copy_descriptors(gser_hs_function);
 
+		if (!f->hs_descriptors)
+			goto fail;
+
 		gser->hs.in = usb_find_endpoint(gser_hs_function,
 				f->hs_descriptors, &gser_hs_in_desc);
 		gser->hs.out = usb_find_endpoint(gser_hs_function,
@@ -626,6 +791,8 @@ gser_bind(struct usb_configuration *c, struct usb_function *f)
 	return 0;
 
 fail:
+	if (f->descriptors)
+		usb_free_descriptors(f->descriptors);
 #ifdef CONFIG_MODEM_SUPPORT
 	if (gser->notify_req)
 		gs_free_req(gser->notify, gser->notify_req);
@@ -705,6 +872,7 @@ int gser_bind_config(struct usb_configuration *c, u8 port_num)
 	gser->port.func.unbind = gser_unbind;
 	gser->port.func.set_alt = gser_set_alt;
 	gser->port.func.disable = gser_disable;
+	gser->transport		= gserial_ports[port_num].transport;
 #ifdef CONFIG_MODEM_SUPPORT
 	/* We support only two ports for now */
 	if (port_num == 0)
@@ -717,6 +885,7 @@ int gser_bind_config(struct usb_configuration *c, u8 port_num)
 	gser->port.get_rts = gser_get_rts;
 	gser->port.send_carrier_detect = gser_send_carrier_detect;
 	gser->port.send_ring_indicator = gser_send_ring_indicator;
+	gser->port.send_modem_ctrl_bits = gser_send_modem_ctrl_bits;
 	gser->port.disconnect = gser_disconnect;
 	gser->port.send_break = gser_send_break;
 #endif
@@ -727,43 +896,47 @@ int gser_bind_config(struct usb_configuration *c, u8 port_num)
 	return status;
 }
 
-#ifdef CONFIG_USB_F_SERIAL
-
-int fserial_nmea_bind_config(struct usb_configuration *c)
+/**
+ * gserial_init_port - bind a gserial_port to its transport
+ */
+static int gserial_init_port(int port_num, const char *name)
 {
-	return gser_bind_config(c, 1);
-}
+	enum transport_type transport;
 
-static struct android_usb_function nmea_function = {
-	.name = "nmea",
-	.bind_config = fserial_nmea_bind_config,
-};
+	if (port_num >= GSERIAL_NO_PORTS)
+		return -ENODEV;
 
-int fserial_modem_bind_config(struct usb_configuration *c)
-{
-	int ret;
+	transport = str_to_xport(name);
+	pr_debug("%s, port:%d, transport:%s\n", __func__,
+			port_num, xport_to_str(transport));
 
-	/* See if composite driver can allocate
-	 * serial ports. But for now allocate
-	 * two ports for modem and nmea.
-	 */
-//	ret = gserial_setup(c->cdev->gadget, 2);
-//	if (ret)
-//		return ret;
-	return gser_bind_config(c, 0);
-}
+	gserial_ports[port_num].transport = transport;
+	gserial_ports[port_num].port_num = port_num;
 
-static struct android_usb_function modem_function = {
-	.name = "modem",
-	.bind_config = fserial_modem_bind_config,
-};
+	switch (transport) {
+	case USB_GADGET_XPORT_TTY:
+		gserial_ports[port_num].client_port_num = no_tty_ports;
+		no_tty_ports++;
+		break;
+	case USB_GADGET_XPORT_SDIO:
+		gserial_ports[port_num].client_port_num = no_sdio_ports;
+		no_sdio_ports++;
+		break;
+	case USB_GADGET_XPORT_SMD:
+		gserial_ports[port_num].client_port_num = no_smd_ports;
+		no_smd_ports++;
+		break;
+	case USB_GADGET_XPORT_HSIC:
+		/*client port number will be updated in gport_setup*/
+		no_hsic_sports++;
+		break;
+	default:
+		pr_err("%s: Un-supported transport transport: %u\n",
+				__func__, gserial_ports[port_num].transport);
+		return -ENODEV;
+	}
 
-static int __init init(void)
-{
-	android_register_function(&modem_function);
-	android_register_function(&nmea_function);
+	nr_ports++;
+
 	return 0;
 }
-module_init(init);
-
-#endif /* CONFIG_USB_ANDROID_ACM */

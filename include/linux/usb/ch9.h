@@ -146,9 +146,9 @@
 
 #define USB_ENDPOINT_HALT		0	/* IN/OUT will STALL */
 
-#define OTG_STATUS_SELECTOR		0xF000
-#define THOST_REQ_POLL			2000    /* msec */
-#define HOST_REQUEST_FLAG		0
+#define OTG_STATUS_SELECTOR	0xF000
+#define THOST_REQ_POLL		2000    /* msec */
+#define HOST_REQUEST_FLAG	0
 
 /* Bit array elements as returned by the USB_REQ_GET_STATUS request. */
 #define USB_DEV_STAT_U1_ENABLED		2	/* transition into U1 state */
@@ -583,12 +583,12 @@ struct usb_ss_ep_comp_descriptor {
 
 	__u8  bMaxBurst;
 	__u8  bmAttributes;
-	__u16 wBytesPerInterval;
+	__le16 wBytesPerInterval;
 } __attribute__ ((packed));
 
 #define USB_DT_SS_EP_COMP_SIZE		6
 /* Bits 4:0 of bmAttributes if this is a bulk endpoint */
-#define USB_SS_MAX_STREAMS(p)		(1 << (p & 0x1f))
+#define USB_SS_MAX_STREAMS(p)		(1 << ((p) & 0x1f))
 /* Bits 1:0 of bmAttributes if this is an isoc endpoint */
 #define USB_SS_MULT(p)			(1 + ((p) & 0x3))
 
@@ -611,19 +611,17 @@ struct usb_qualifier_descriptor {
 
 /*-------------------------------------------------------------------------*/
 
-/* USB_DT_OTG (from OTG 2.0 supplement) */
+/* USB_DT_OTG (from OTG 1.0a supplement) */
 struct usb_otg_descriptor {
 	__u8  bLength;
 	__u8  bDescriptorType;
 
-	__u8  bmAttributes;	/* support for HNP, SRP, ADP, etc */
-	__le16 bcdOTG;
+	__u8  bmAttributes;	/* support for HNP, SRP, etc */
 } __attribute__ ((packed));
 
 /* from usb_otg_descriptor.bmAttributes */
 #define USB_OTG_SRP		(1 << 0)
 #define USB_OTG_HNP		(1 << 1)	/* swap host/device roles */
-#define USB_OTG_ADP		(1 << 2)	/* Attach Detection protocol */
 
 /*-------------------------------------------------------------------------*/
 

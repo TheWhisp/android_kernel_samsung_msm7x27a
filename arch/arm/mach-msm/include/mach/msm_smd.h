@@ -1,7 +1,7 @@
 /* linux/include/asm-arm/arch-msm/msm_smd.h
  *
  * Copyright (C) 2007 Google, Inc.
- * Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -18,19 +18,115 @@
 #ifndef __ASM_ARCH_MSM_SMD_H
 #define __ASM_ARCH_MSM_SMD_H
 
+#include <linux/io.h>
+#include <mach/msm_smsm.h>
+
 typedef struct smd_channel smd_channel_t;
 
 #define SMD_MAX_CH_NAME_LEN 20 /* includes null char at end */
-
-/* warning: notify() may be called before open returns */
-int smd_open(const char *name, smd_channel_t **ch, void *priv,
-	     void (*notify)(void *priv, unsigned event));
 
 #define SMD_EVENT_DATA 1
 #define SMD_EVENT_OPEN 2
 #define SMD_EVENT_CLOSE 3
 #define SMD_EVENT_STATUS 4
-#define SMD_EVENT_REOPEN_READY 4
+#define SMD_EVENT_REOPEN_READY 5
+
+/*
+ * SMD Processor ID's.
+ *
+ * For all processors that have both SMSM and SMD clients,
+ * the SMSM Processor ID and the SMD Processor ID will
+ * be the same.  In cases where a processor only supports
+ * SMD, the entry will only exist in this enum.
+ */
+enum {
+	SMD_APPS = SMSM_APPS,
+	SMD_MODEM = SMSM_MODEM,
+	SMD_Q6 = SMSM_Q6,
+	SMD_WCNSS = SMSM_WCNSS,
+	SMD_DSPS = SMSM_DSPS,
+	SMD_MODEM_Q6_FW,
+	NUM_SMD_SUBSYSTEMS,
+};
+
+enum {
+	SMD_APPS_MODEM = 0,
+	SMD_APPS_QDSP,
+	SMD_MODEM_QDSP,
+	SMD_APPS_DSPS,
+	SMD_MODEM_DSPS,
+	SMD_QDSP_DSPS,
+	SMD_APPS_WCNSS,
+	SMD_MODEM_WCNSS,
+	SMD_QDSP_WCNSS,
+	SMD_DSPS_WCNSS,
+	SMD_APPS_Q6FW,
+	SMD_MODEM_Q6FW,
+	SMD_QDSP_Q6FW,
+	SMD_DSPS_Q6FW,
+	SMD_WCNSS_Q6FW,
+	SMD_NUM_TYPE,
+	SMD_LOOPBACK_TYPE = 100,
+
+};
+
+/*
+ * SMD IRQ Configuration
+ *
+ * Used to initialize IRQ configurations from platform data
+ *
+ * @irq_name: irq_name to query platform data
+ * @irq_id: initialized to -1 in platform data, stores actual irq id on
+ *		successful registration
+ * @out_base: if not null then settings used for outgoing interrupt
+ *		initialied from platform data
+ */
+
+struct smd_irq_config {
+	/* incoming interrupt config */
+	const char *irq_name;
+	unsigned long flags;
+	int irq_id;
+	const char *device_name;
+	const void *dev_id;
+
+	/* outgoing interrupt config */
+	uint32_t out_bit_pos;
+	void __iomem *out_base;
+	uint32_t out_offset;
+};
+
+/*
+ * SMD subsystem configurations
+ *
+ * SMD subsystems configurations for platform data. This contains the
+ * M2A and A2M interrupt configurations for both SMD and SMSM per
+ * subsystem.
+ *
+ * @subsys_name: name of subsystem passed to PIL
+ * @irq_config_id: unique id for each subsystem
+ * @edge: maps to actual remote subsystem edge
+ *
+ */
+struct smd_subsystem_config {
+	unsigned irq_config_id;
+	const char *subsys_name;
+	int edge;
+
+	struct smd_irq_config smd_int;
+	struct smd_irq_config smsm_int;
+
+};
+
+struct smd_platform {
+	uint32_t num_ss_configs;
+	struct smd_subsystem_config *smd_ss_configs;
+};
+
+#ifdef CONFIG_MSM_SMD
+/* warning: notify() may be called before open returns */
+int smd_open(const char *name, smd_channel_t **ch, void *priv,
+	     void (*notify)(void *priv, unsigned event));
 
 int smd_close(smd_channel_t *ch);
 
@@ -75,22 +171,8 @@ int smd_wait_until_writable(smd_channel_t *ch, int bytes);
  */
 int smd_tiocmget(smd_channel_t *ch);
 int smd_tiocmset(smd_channel_t *ch, unsigned int set, unsigned int clear);
-
-enum {
-	SMD_APPS_MODEM = 0,
-	SMD_APPS_QDSP,
-	SMD_MODEM_QDSP,
-	SMD_APPS_DSPS,
-	SMD_MODEM_DSPS,
-	SMD_QDSP_DSPS,
-	SMD_APPS_WCNSS,
-	SMD_MODEM_WCNSS,
-	SMD_QDSP_WCNSS,
-	SMD_DSPS_WCNSS,
-	SMD_LOOPBACK_TYPE = 100,
-
-};
-
+int
+smd_tiocmset_from_cb(smd_channel_t *ch, unsigned int set, unsigned int clear);
 int smd_named_open_on_edge(const char *name, uint32_t edge, smd_channel_t **_ch,
 			   void *priv, void (*notify)(void *, unsigned));
 
@@ -153,5 +235,108 @@ int smd_write_segment(smd_channel_t *ch, void *data, int len, int user_buf);
  *      -E2BIG - some ammount of packet is not yet written
  */
 int smd_write_end(smd_channel_t *ch);
+
+#else
+
+static inline int smd_open(const char *name, smd_channel_t **ch, void *priv,
+	     void (*notify)(void *priv, unsigned event))
+{
+	return -ENODEV;
+}
+
+static inline int smd_close(smd_channel_t *ch)
+{
+	return -ENODEV;
+}
+
+static inline int smd_read(smd_channel_t *ch, void *data, int len)
+{
+	return -ENODEV;
+}
+
+static inline int smd_read_from_cb(smd_channel_t *ch, void *data, int len)
+{
+	return -ENODEV;
+}
+
+static inline int smd_read_user_buffer(smd_channel_t *ch, void *data, int len)
+{
+	return -ENODEV;
+}
+
+static inline int smd_write(smd_channel_t *ch, const void *data, int len)
+{
+	return -ENODEV;
+}
+
+static inline int
+smd_write_user_buffer(smd_channel_t *ch, const void *data, int len)
+{
+	return -ENODEV;
+}
+
+static inline int smd_write_avail(smd_channel_t *ch)
+{
+	return -ENODEV;
+}
+
+static inline int smd_read_avail(smd_channel_t *ch)
+{
+	return -ENODEV;
+}
+
+static inline int smd_cur_packet_size(smd_channel_t *ch)
+{
+	return -ENODEV;
+}
+
+static inline int smd_tiocmget(smd_channel_t *ch)
+{
+	return -ENODEV;
+}
+
+static inline int
+smd_tiocmset(smd_channel_t *ch, unsigned int set, unsigned int clear)
+{
+	return -ENODEV;
+}
+
+static inline int
+smd_tiocmset_from_cb(smd_channel_t *ch, unsigned int set, unsigned int clear)
+{
+	return -ENODEV;
+}
+
+static inline int
+smd_named_open_on_edge(const char *name, uint32_t edge, smd_channel_t **_ch,
+			   void *priv, void (*notify)(void *, unsigned))
+{
+	return -ENODEV;
+}
+
+static inline void smd_enable_read_intr(smd_channel_t *ch)
+{
+}
+
+static inline void smd_disable_read_intr(smd_channel_t *ch)
+{
+}
+
+static inline int smd_write_start(smd_channel_t *ch, int len)
+{
+	return -ENODEV;
+}
+
+static inline int
+smd_write_segment(smd_channel_t *ch, void *data, int len, int user_buf)
+{
+	return -ENODEV;
+}
+
+static inline int smd_write_end(smd_channel_t *ch)
+{
+	return -ENODEV;
+}
+#endif
 
 #endif

@@ -1689,11 +1689,15 @@ int smd_tiocmget(smd_channel_t *ch)
 }
 EXPORT_SYMBOL(smd_tiocmget);
 
-int smd_tiocmset(smd_channel_t *ch, unsigned int set, unsigned int clear)
+/* this api will be called while holding smd_lock */
+int
+smd_tiocmset_from_cb(smd_channel_t *ch, unsigned int set, unsigned int clear)
 {
-	unsigned long flags;
+	if (!ch) {
+		pr_err("%s: Invalid channel specified\n", __func__);
+		return -ENODEV;
+	}
 
-	spin_lock_irqsave(&smd_lock, flags);
 	if (set & TIOCM_DTR)
 		ch->send->fDSR = 1;
 
@@ -1709,6 +1713,22 @@ int smd_tiocmset(smd_channel_t *ch, unsigned int set, unsigned int clear)
 	ch->send->fSTATE = 1;
 	barrier();
 	ch->notify_other_cpu();
+
+	return 0;
+}
+EXPORT_SYMBOL(smd_tiocmset_from_cb);
+
+int smd_tiocmset(smd_channel_t *ch, unsigned int set, unsigned int clear)
+{
+	unsigned long flags;
+
+	if (!ch) {
+		pr_err("%s: Invalid channel specified\n", __func__);
+		return -ENODEV;
+	}
+
+	spin_lock_irqsave(&smd_lock, flags);
+	smd_tiocmset_from_cb(ch, set, clear);
 	spin_unlock_irqrestore(&smd_lock, flags);
 
 	return 0;
