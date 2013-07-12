@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -11,7 +11,7 @@
  *
  */
 
-#include "vidc_type.h"
+#include <media/msm/vidc_type.h>
 #include "vidc.h"
 #include "vcd_ddl_utils.h"
 #include "vcd_ddl_metadata.h"
@@ -845,6 +845,12 @@ static u32 ddl_get_frame
 		{
 			frame->frame = VCD_FRAME_NOTCODED;
 			frame->data_len = 0;
+			break;
+		}
+	case VIDC_720P_IDRFRAME:
+		{
+			frame->flags |= VCD_FRAME_FLAG_SYNCFRAME;
+			frame->frame = VCD_FRAME_IDR;
 			break;
 		}
 	default:

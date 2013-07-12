@@ -29,7 +29,6 @@
 #include <linux/clk.h>
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
-#include <mach/clk.h>
 
 #include "msm_fb.h"
 
@@ -131,20 +130,12 @@ static int lcdc_on(struct platform_device *pdev)
 
 	mfd->fbi->var.pixclock = clk_round_rate(pixel_mdp_clk,
 					mfd->fbi->var.pixclock);
-
-#if defined(CONFIG_MACH_TREBON) || defined(CONFIG_MACH_GEIM) \
-						|| defined(CONFIG_MACH_JENA)
 	ret = clk_set_rate(pixel_mdp_clk, mfd->fbi->var.pixclock);
-
-	pr_err("%s:Trebon: set MDP LCDC pixel clock to %u\n",
-		__func__, mfd->fbi->var.pixclock);
-
 	if (ret) {
 		pr_err("%s: Can't set MDP LCDC pixel clock to rate %u\n",
 			__func__, mfd->fbi->var.pixclock);
 		goto out;
 	}
-#endif
 
 	clk_enable(pixel_mdp_clk);
 	clk_enable(pixel_lcdc_clk);

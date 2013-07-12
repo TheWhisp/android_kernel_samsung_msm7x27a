@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -41,6 +41,15 @@ u32 ddl_device_init(struct ddl_init_config *ddl_init_config,
 	}
 	memset(ddl_context, 0, sizeof(struct ddl_context));
 	DDL_BUSY(ddl_context);
+	if (res_trk_get_enable_ion()) {
+		DDL_MSG_LOW("ddl_dev_init:ION framework enabled");
+		ddl_context->video_ion_client  =
+			res_trk_get_ion_client();
+		if (!ddl_context->video_ion_client) {
+			DDL_MSG_ERROR("ION client create failed");
+			return VCD_ERR_ILLEGAL_OP;
+		}
+	}
 	ddl_context->ddl_callback = ddl_init_config->ddl_callback;
 	if (ddl_init_config->interrupt_clr)
 		ddl_context->interrupt_clr =
@@ -79,6 +88,7 @@ u32 ddl_device_init(struct ddl_init_config *ddl_init_config,
 			ddl_context->dram_base_a.align_virtual_addr;
 	}
 	if (!status) {
+		ddl_context->metadata_shared_input.mem_type = DDL_FW_MEM;
 		ptr = ddl_pmem_alloc(&ddl_context->metadata_shared_input,
 			DDL_METADATA_TOTAL_INPUTBUFSIZE,
 			DDL_LINEAR_BUFFER_ALIGN_BYTES);
@@ -127,6 +137,7 @@ u32 ddl_device_release(void *client_data)
 	DDL_MSG_LOW("FW_ENDDONE");
 	ddl_context->core_virtual_base_addr = NULL;
 	ddl_release_context_buffers(ddl_context);
+	ddl_context->video_ion_client = NULL;
 	DDL_IDLE(ddl_context);
 	return VCD_S_SUCCESS;
 }
@@ -153,14 +164,22 @@ u32 ddl_open(u32 **ddl_handle, u32 decoding)
 		DDL_MSG_ERROR("ddl_open:Client_trasac_failed");
 		return status;
 	}
+	if (res_trk_check_for_sec_session())
+		ddl->shared_mem[0].mem_type = DDL_CMD_MEM;
+	else
+		ddl->shared_mem[0].mem_type = DDL_FW_MEM;
 	ptr = ddl_pmem_alloc(&ddl->shared_mem[0],
-			DDL_FW_AUX_HOST_CMD_SPACE_SIZE, sizeof(u32));
+			DDL_FW_AUX_HOST_CMD_SPACE_SIZE, 0);
 	if (!ptr)
 		status = VCD_ERR_ALLOC_FAIL;
 	if (!status && ddl_context->frame_channel_depth
 		== VCD_DUAL_FRAME_COMMAND_CHANNEL) {
+		if (res_trk_check_for_sec_session())
+			ddl->shared_mem[1].mem_type = DDL_CMD_MEM;
+		else
+			ddl->shared_mem[1].mem_type = DDL_FW_MEM;
 		ptr = ddl_pmem_alloc(&ddl->shared_mem[1],
-				DDL_FW_AUX_HOST_CMD_SPACE_SIZE, sizeof(u32));
+				DDL_FW_AUX_HOST_CMD_SPACE_SIZE, 0);
 		if (!ptr) {
 			ddl_pmem_free(&ddl->shared_mem[0]);
 			status = VCD_ERR_ALLOC_FAIL;
@@ -233,13 +252,11 @@ u32 ddl_encode_start(u32 *ddl_handle, void *client_data)
 	void *ptr;
 	u32 status = VCD_S_SUCCESS;
 	DDL_MSG_HIGH("ddl_encode_start");
-	if (vidc_msg_timing) {
-		if (first_time < 2) {
-			ddl_reset_core_time_variables(ENC_OP_TIME);
-			first_time++;
-		 }
-		ddl_set_core_start_time(__func__, ENC_OP_TIME);
-	}
+	if (first_time < 2) {
+		ddl_reset_core_time_variables(ENC_OP_TIME);
+		first_time++;
+	 }
+	ddl_set_core_start_time(__func__, ENC_OP_TIME);
 	ddl_context = ddl_get_context();
 	if (!DDL_IS_INITIALIZED(ddl_context)) {
 		DDL_MSG_ERROR("ddl_enc_start:Not_inited");
@@ -268,22 +285,19 @@ u32 ddl_encode_start(u32 *ddl_handle, void *client_data)
 #ifdef DDL_BUF_LOG
 	ddl_list_buffers(ddl);
 #endif
-	if ((encoder->codec.codec == VCD_CODEC_MPEG4 &&
-		!encoder->short_header.short_header) ||
-		encoder->codec.codec == VCD_CODEC_H264) {
-		ptr = ddl_pmem_alloc(&encoder->seq_header,
-			DDL_ENC_SEQHEADER_SIZE, DDL_LINEAR_BUFFER_ALIGN_BYTES);
-		if (!ptr) {
-			ddl_free_enc_hw_buffers(ddl);
-			DDL_MSG_ERROR("ddl_enc_start:Seq_hdr_alloc_failed");
-			return VCD_ERR_ALLOC_FAIL;
-		}
-	} else {
-		encoder->seq_header.buffer_size = 0;
-		encoder->seq_header.virtual_base_addr = 0;
-		encoder->seq_header.align_physical_addr = 0;
-		encoder->seq_header.align_virtual_addr = 0;
+	encoder->seq_header.mem_type = DDL_MM_MEM;
+	ptr = ddl_pmem_alloc(&encoder->seq_header,
+		DDL_ENC_SEQHEADER_SIZE, DDL_LINEAR_BUFFER_ALIGN_BYTES);
+	if (!ptr) {
+		ddl_free_enc_hw_buffers(ddl);
+		DDL_MSG_ERROR("ddl_enc_start:Seq_hdr_alloc_failed");
+		return VCD_ERR_ALLOC_FAIL;
 	}
+	msm_ion_do_cache_op(ddl_context->video_ion_client,
+				encoder->seq_header.alloc_handle,
+				encoder->seq_header.virtual_base_addr,
+				encoder->seq_header.buffer_size,
+				ION_IOC_CLEAN_INV_CACHES);
 	if (!ddl_take_command_channel(ddl_context, ddl, client_data))
 		return VCD_ERR_BUSY;
 	ddl_vidc_channel_set(ddl);
@@ -300,10 +314,8 @@ u32 ddl_decode_start(u32 *ddl_handle, struct vcd_sequence_hdr *header,
 	u32 status = VCD_S_SUCCESS;
 
 	DDL_MSG_HIGH("ddl_decode_start");
-	if (vidc_msg_timing) {
-		ddl_reset_core_time_variables(DEC_OP_TIME);
-		ddl_reset_core_time_variables(DEC_IP_TIME);
-	}
+	ddl_reset_core_time_variables(DEC_OP_TIME);
+	ddl_reset_core_time_variables(DEC_IP_TIME);
 	ddl_context = ddl_get_context();
 	if (!DDL_IS_INITIALIZED(ddl_context)) {
 		DDL_MSG_ERROR("ddl_dec_start:Not_inited");
@@ -438,8 +450,7 @@ u32 ddl_encode_frame(u32 *ddl_handle,
 	u32 vcd_status = VCD_S_SUCCESS;
 
 	DDL_MSG_HIGH("ddl_encode_frame");
-	if (vidc_msg_timing)
-		ddl_set_core_start_time(__func__, ENC_OP_TIME);
+	ddl_set_core_start_time(__func__, ENC_OP_TIME);
 	ddl_context = ddl_get_context();
 	if (!DDL_IS_INITIALIZED(ddl_context)) {
 		DDL_MSG_ERROR("ddl_enc_frame:Not_inited");
@@ -510,10 +521,8 @@ u32 ddl_decode_end(u32 *ddl_handle, void *client_data)
 	struct ddl_context *ddl_context;
 
 	DDL_MSG_HIGH("ddl_decode_end");
-	if (vidc_msg_timing) {
-		ddl_reset_core_time_variables(DEC_OP_TIME);
-		ddl_reset_core_time_variables(DEC_IP_TIME);
-	}
+	ddl_reset_core_time_variables(DEC_OP_TIME);
+	ddl_reset_core_time_variables(DEC_IP_TIME);
 	ddl_context = ddl_get_context();
 	if (!DDL_IS_INITIALIZED(ddl_context)) {
 		DDL_MSG_ERROR("ddl_dec_end:Not_inited");
@@ -547,8 +556,7 @@ u32 ddl_encode_end(u32 *ddl_handle, void *client_data)
 	struct ddl_context *ddl_context;
 
 	DDL_MSG_HIGH("ddl_encode_end");
-	if (vidc_msg_timing)
-		ddl_reset_core_time_variables(ENC_OP_TIME);
+	ddl_reset_core_time_variables(ENC_OP_TIME);
 	ddl_context = ddl_get_context();
 	if (!DDL_IS_INITIALIZED(ddl_context)) {
 		DDL_MSG_ERROR("ddl_enc_end:Not_inited");
