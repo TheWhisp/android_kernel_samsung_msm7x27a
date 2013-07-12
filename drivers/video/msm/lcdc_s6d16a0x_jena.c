@@ -385,7 +385,7 @@ static void lcdc_s6d16a0x_set_backlight(struct msm_fb_data_type *mfd)
 	up(&backlight_sem);
 	printk("[BACLKIGHT] : %d\n",bl_value);
 	if(!bl_value) {
-		// Turn off Backlight, don't check disp_initialized value */
+		/*  Turn off Backlight, don't check disp_initialized value */
 		lcd_prf = 1;
 
 	} else {

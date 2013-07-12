@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -601,6 +601,10 @@ static struct platform_device this_device = {
 static int __init tvout_init(void)
 {
 	int ret;
+
+	if (msm_fb_detect_client("tvout_msm"))
+		return 0;
+
 	tvout_msm_state = kzalloc(sizeof(*tvout_msm_state), GFP_KERNEL);
 	if (!tvout_msm_state) {
 		DEV_ERR("tvout_msm_init FAILED: out of memory\n");

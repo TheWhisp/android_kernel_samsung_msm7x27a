@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -335,12 +335,10 @@ static int __init lcdc_auo_panel_init(void)
 	int ret;
 	struct msm_panel_info *pinfo;
 
-#ifdef CONFIG_FB_MSM_LCDC_AUTO_DETECT
 	if (msm_fb_detect_client(LCDC_AUO_PANEL_NAME)) {
 		pr_err("%s: detect failed\n", __func__);
 		return 0;
 	}
-#endif
 
 	ret = platform_driver_register(&this_driver);
 	if (ret) {

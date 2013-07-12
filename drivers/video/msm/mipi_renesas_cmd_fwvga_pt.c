@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -57,10 +57,8 @@ static int __init mipi_cmd_renesas_fwvga_pt_init(void)
 {
 	int ret;
 
-#ifdef CONFIG_FB_MSM_MIPI_PANEL_DETECT
 	if (msm_fb_detect_client("mipi_cmd_renesas_fwvga"))
 		return 0;
-#endif
 
 	pinfo.xres = 480;
 	pinfo.yres = 864;
