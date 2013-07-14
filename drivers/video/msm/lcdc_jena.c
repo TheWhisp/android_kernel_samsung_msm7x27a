@@ -40,6 +40,9 @@
 
 /* #define USE_STANDBY_MODE */
 
+static int sl_value = 200; // in ms
+static int use_hack = 1;
+
 static int spi_cs;
 static int spi_sclk;
 static int spi_sdi;
@@ -594,6 +597,8 @@ static void trebon_disp_powerdown(void)
 	msleep(1);
 
 	disp_state.disp_powered_up = FALSE;
+
+	use_hack = 1;
 }
 
 static void trebon_disp_on(void)
@@ -745,6 +750,18 @@ static int lcdc_trebon_panel_off(struct platform_device *pdev)
 
 static void lcdc_trebon_set_backlight(struct msm_fb_data_type *mfd)
 {
+	/* 
+		FIXME
+		With updated MDP and FB, there is a white flash after screen is turned on
+		Use this HACK to light up screen a little later so people don't see it
+		Don't forget to fix it properly!
+	*/
+	if(disp_state.disp_powered_up && use_hack == 1){
+		msleep(sl_value);
+		printk("[lcdc_jena - sleeping for %dms\n", sl_value);
+		use_hack = 0;
+	}
+
 	int bl_value = mfd->bl_level;
 
 	printk("[BACKLIGHT] : %d\n",bl_value);
