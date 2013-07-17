@@ -26,6 +26,7 @@
  */
 
 #include <linux/module.h>
+#include <linux/interrupt.h>
 
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -727,9 +728,9 @@ static int rfcomm_tty_open(struct tty_struct *tty, struct file *filp)
 			break;
 		}
 
-//		tty_unlock();
+		tty_unlock();
 		schedule();
-//		tty_lock();
+		tty_lock();
 	}
 	set_current_state(TASK_RUNNING);
 	remove_wait_queue(&dev->wait, &wait);
