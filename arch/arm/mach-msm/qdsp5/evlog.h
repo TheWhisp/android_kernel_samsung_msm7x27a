@@ -32,7 +32,7 @@ static struct ev_log _name = { \
 }
 
 struct ev_entry {
-	ktime_t when;
+	struct timespec when;
 	uint32_t id;
 	uint32_t arg;
 };
@@ -57,15 +57,15 @@ static ssize_t ev_log_read(struct file *file, char __user *buf,
 	unsigned long flags;
 	int size = 0;
 	unsigned n, id, max;
-	ktime_t now, t;
+	struct timespec now, t;
 	
 	max = log->max;
-	now = ktime_get();
+	getnstimeofday(&now);
 	local_irq_save(flags);
 	n = (log->next - 1) & (max - 1);
 	entry = log->entry;
 	while (n != log->next) {
-		t = ktime_sub(now, entry[n].when);
+		t = timespec_sub(now, entry[n].when);
 		id = entry[n].id;
 		if (id) {
 			const char *str;
@@ -74,8 +74,8 @@ static ssize_t ev_log_read(struct file *file, char __user *buf,
 			else
 				str = "UNKNOWN";
 			size += scnprintf(ev_buf + size, 4096 - size,
-					  "%8d.%03d %08x %s\n",
-					  t.tv.sec, t.tv.nsec / 1000000,
+					  "%lu.%03lu %08x %s\n",
+					  t.tv_sec, t.tv_nsec / 1000000,
 					  entry[n].arg, str);
 		}
 		n = (n - 1) & (max - 1);
@@ -98,7 +98,7 @@ static void ev_log_write(struct ev_log *log, unsigned id, unsigned arg)
 	}
 
 	entry = log->entry + log->next;
-	entry->when = ktime_get();
+	getnstimeofday(&entry->when);
 	entry->id = id;
 	entry->arg = arg;
 	log->next = (log->next + 1) & (log->max - 1);
