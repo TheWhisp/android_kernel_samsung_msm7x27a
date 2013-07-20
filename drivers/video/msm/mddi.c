@@ -1,12 +1,8 @@
-/*
- * MSM MDDI Transport
+/* Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
  *
- * Copyright (C) 2007 Google Incorporated
- * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
- *
- * This software is licensed under the terms of the GNU General Public
- * License version 2, as published by the Free Software Foundation, and
- * may be copied, distributed, and modified under those terms.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -241,8 +237,7 @@ static int mddi_on(struct platform_device *pdev)
 #ifdef ENABLE_FWD_LINK_SKEW_CALIBRATION
 	if (mddi_client_type < 2) {
 		/* For skew calibration, clock should be less than 50MHz */
-		clk_rate = clk_round_rate(mddi_clk, 49000000);
-		if (!clk_set_rate(mddi_clk, clk_rate)) {
+		if (!clk_set_min_rate(mddi_clk, 49000000)) {
 			stat_reg = mddi_host_reg_in(STAT);
 			printk(KERN_DEBUG "\n stat_reg = 0x%x", stat_reg);
 			mddi_host_reg_out(CMD, MDDI_CMD_HIBERNATE);
@@ -254,7 +249,7 @@ static int mddi_on(struct platform_device *pdev)
 			mddi_host_reg_out(CMD, MDDI_CMD_SEND_RTD);
 			mddi_host_reg_out(CMD, MDDI_CMD_HIBERNATE | 1);
 		} else {
-			printk(KERN_ERR "%s: clk_set_rate failed\n",
+			printk(KERN_ERR "%s: clk_set_min_rate failed\n",
 				__func__);
 		}
 	}
@@ -270,9 +265,8 @@ static int mddi_on(struct platform_device *pdev)
 			  "%s: can't select mddi io clk targate rate = %d\n",
 			  __func__, clk_rate);
 
-	clk_rate = clk_round_rate(mddi_clk, clk_rate);
-	if (clk_set_rate(mddi_clk, clk_rate) < 0)
-		printk(KERN_ERR "%s: clk_set_rate failed\n",
+	if (clk_set_min_rate(mddi_clk, clk_rate) < 0)
+		printk(KERN_ERR "%s: clk_set_min_rate failed\n",
 			__func__);
 
 #ifdef CONFIG_MSM_BUS_SCALING
@@ -451,6 +445,9 @@ void mddi_disable(int lock)
 	mddi_pad_ctrl = mddi_host_reg_in(PAD_CTL);
 	mddi_host_reg_out(PAD_CTL, 0x0);
 
+	if (clk_set_min_rate(mddi_clk, 0) < 0)
+		printk(KERN_ERR "%s: clk_set_min_rate failed\n", __func__);
+
 	pmdh_clk_disable();
 
 	if (mddi_pdata && mddi_pdata->mddi_power_save)
@@ -475,6 +472,9 @@ static int mddi_suspend(struct platform_device *pdev, pm_message_t state)
 
 	mddi_pad_ctrl = mddi_host_reg_in(PAD_CTL);
 	mddi_host_reg_out(PAD_CTL, 0x0);
+
+	if (clk_set_min_rate(mddi_clk, 0) < 0)
+		printk(KERN_ERR "%s: clk_set_min_rate failed\n", __func__);
 
 	pmdh_clk_disable();
 
@@ -547,7 +547,6 @@ static int mddi_register_driver(void)
 static int __init mddi_driver_init(void)
 {
 	int ret;
-	unsigned long rate;
 	pmdh_clk_status = 0;
 
 	mddi_clk = clk_get(NULL, "mddi_clk");
@@ -555,10 +554,9 @@ static int __init mddi_driver_init(void)
 		printk(KERN_ERR "can't find mddi_clk\n");
 		return PTR_ERR(mddi_clk);
 	}
-	rate = clk_round_rate(mddi_clk, 49000000);
-	ret = clk_set_rate(mddi_clk, rate);
+	ret = clk_set_min_rate(mddi_clk, 49000000);
 	if (ret)
-		printk(KERN_ERR "Can't set mddi_clk min rate to %lu\n", rate);
+		printk(KERN_ERR "Can't set mddi_clk min rate to 49000000\n");
 
 	printk(KERN_INFO "mddi_clk init rate is %lu\n",
 		clk_get_rate(mddi_clk));

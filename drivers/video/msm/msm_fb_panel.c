@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2010, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2008-2010, Code Aurora Forum. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -113,9 +113,6 @@ struct platform_device *msm_fb_device_alloc(struct msm_fb_panel_data *pdata,
 	case MIPI_VIDEO_PANEL:
 	case MIPI_CMD_PANEL:
 		snprintf(dev_name, sizeof(dev_name), "mipi_dsi");
-		break;
-	case WRITEBACK_PANEL:
-		snprintf(dev_name, sizeof(dev_name), "writeback");
 		break;
 
 	default:

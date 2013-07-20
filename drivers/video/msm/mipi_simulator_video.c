@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -31,8 +31,10 @@ static int __init mipi_video_simulator_init(void)
 {
 	int ret;
 
-	if (msm_fb_detect_client("mipi_video_simulator_vga"))
+#ifdef CONFIG_FB_MSM_MIPI_PANEL_DETECT
+	if (msm_fb_detect_client("mipi_video_simulator"))
 		return 0;
+#endif
 	pinfo.xres = 640;
 	pinfo.yres = 480;
 	pinfo.type = MIPI_VIDEO_PANEL;
@@ -76,7 +78,7 @@ static int __init mipi_video_simulator_init(void)
 	pinfo.mipi.dsi_phy_db = &dsi_video_mode_phy_db;
 
 	ret = mipi_simulator_device_register(&pinfo, MIPI_DSI_PRIM,
-		MIPI_DSI_PANEL_VGA);
+		MIPI_DSI_PANEL_FWVGA_PT);
 	if (ret)
 		pr_err("%s: failed to register device!\n", __func__);
 

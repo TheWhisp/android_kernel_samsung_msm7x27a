@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -126,6 +126,7 @@ static int dtv_on(struct platform_device *pdev)
 		pm_qos_rate = panel_pixclock_freq / 1000 ;
 	else
 		pm_qos_rate = 58000;
+	mdp_set_core_clk(1);
 	mdp4_extn_disp = 1;
 #ifdef CONFIG_MSM_BUS_SCALING
 	if (dtv_bus_scale_handle > 0)
@@ -137,12 +138,6 @@ static int dtv_on(struct platform_device *pdev)
 		clk_enable(ebi1_clk);
 	}
 #endif
-
-	if (dtv_pdata && dtv_pdata->lcdc_power_save)
-		dtv_pdata->lcdc_power_save(1);
-	if (dtv_pdata && dtv_pdata->lcdc_gpio_config)
-		ret = dtv_pdata->lcdc_gpio_config(1);
-
 	mfd = platform_get_drvdata(pdev);
 
 	ret = clk_set_rate(tv_src_clk, mfd->fbi->var.pixclock);
@@ -163,6 +158,11 @@ static int dtv_on(struct platform_device *pdev)
 
 	if (mdp_tv_clk)
 		clk_enable(mdp_tv_clk);
+
+	if (dtv_pdata && dtv_pdata->lcdc_power_save)
+		dtv_pdata->lcdc_power_save(1);
+	if (dtv_pdata && dtv_pdata->lcdc_gpio_config)
+		ret = dtv_pdata->lcdc_gpio_config(1);
 
 	ret = panel_next_on(pdev);
 	return ret;
@@ -224,10 +224,7 @@ static int dtv_probe(struct platform_device *pdev)
 	 * get/set panel specific fb info
 	 */
 	mfd->panel_info = pdata->panel_info;
-	if (hdmi_prim_display)
-		mfd->fb_imgType = MSMFB_DEFAULT_TYPE;
-	else
-		mfd->fb_imgType = MDP_RGB_565;
+	mfd->fb_imgType = MDP_RGB_565;
 
 	fbi = mfd->fbi;
 	fbi->var.pixclock = mfd->panel_info.clk_rate;

@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -78,7 +78,7 @@ static int lcdc_off(struct platform_device *pdev)
 #ifndef CONFIG_MSM_BUS_SCALING
 	if (mfd->ebi1_clk) {
 		if (mdp_rev == MDP_REV_303) {
-			if (clk_set_rate(mfd->ebi1_clk, 0))
+			if (clk_set_min_rate(mfd->ebi1_clk, 0))
 				pr_err("%s: ebi1_lcdc_clk set rate failed\n",
 					__func__);
 		}
@@ -117,7 +117,7 @@ static int lcdc_on(struct platform_device *pdev)
 
 	if (mfd->ebi1_clk) {
 		if (mdp_rev == MDP_REV_303) {
-			if (clk_set_rate(mfd->ebi1_clk, 65000000))
+			if (clk_set_min_rate(mfd->ebi1_clk, 65000000))
 				pr_err("%s: ebi1_lcdc_clk set rate failed\n",
 					__func__);
 		} else {
@@ -127,6 +127,7 @@ static int lcdc_on(struct platform_device *pdev)
 	}
 
 #endif
+
 	mfd = platform_get_drvdata(pdev);
 
 	mfd->fbi->var.pixclock = clk_round_rate(pixel_mdp_clk,
