@@ -1,13 +1,29 @@
-/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 and
- * only version 2 as published by the Free Software Foundation.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ *       copyright notice, this list of conditions and the following
+ *       disclaimer in the documentation and/or other materials provided
+ *       with the distribution.
+ *     * Neither the name of Code Aurora Forum, Inc. nor the names of its
+ *       contributors may be used to endorse or promote products derived
+ *       from this software without specific prior written permission.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
 
@@ -47,7 +63,6 @@
 #define VIDC_SM_LEVEL_VC1_ADV_3  (3)
 #define VIDC_SM_LEVEL_VC1_ADV_4  (4)
 
-#define VIDC_SM_RECOVERY_POINT_SEI  (1)
 enum VIDC_SM_frame_skip {
 	VIDC_SM_FRAME_SKIP_DISABLE      = 0,
 	VIDC_SM_FRAME_SKIP_ENABLE_LEVEL = 1,
@@ -64,18 +79,6 @@ struct ddl_profile_info_type {
 	u32 pic_level;
 	u32 chroma_format_idc;
 	u32 pic_profile;
-};
-
-enum vidc_sm_mpeg4_profileinfo {
-	VIDC_SM_PROFILE_INFO_DISABLE  = 0,
-	VIDC_SM_PROFILE_INFO_SP       = 1,
-	VIDC_SM_PROFILE_INFO_ASP      = 2,
-	VIDC_SM_PROFILE_INFO_MAX      = 0x7fffffff
-};
-
-enum vidc_sm_num_stuff_bytes_consume_info {
-	VIDC_SM_NUM_STUFF_BYTES_CONSUME_ALL  = 0x0,
-	VIDC_SM_NUM_STUFF_BYTES_CONSUME_NONE = 0xffffffff
 };
 
 void vidc_sm_get_extended_decode_status(struct ddl_buf_addr *shared_mem,
@@ -105,8 +108,7 @@ void vidc_sm_get_dec_order_crop_info(
 void vidc_sm_set_extended_encoder_control(
 	struct ddl_buf_addr *shared_mem, u32 hec_enable,
 	enum VIDC_SM_frame_skip  frame_skip_mode, u32 seq_hdr_in_band,
-	u32 vbv_buffer_size, u32 cpcfc_enable, u32 sps_pps_control,
-	u32 closed_gop_enable);
+	u32 vbv_buffer_size);
 void vidc_sm_set_encoder_param_change(struct ddl_buf_addr *shared_mem,
 	u32 bit_rate_chg, u32 frame_rate_chg, u32 i_period_chg);
 void vidc_sm_set_encoder_vop_time(struct ddl_buf_addr *shared_mem,
@@ -168,17 +170,4 @@ void vidc_sm_set_concealment_color(struct ddl_buf_addr *shared_mem,
 	u32 conceal_ycolor, u32 conceal_ccolor);
 void vidc_sm_set_chroma_addr_change(struct ddl_buf_addr *shared_mem,
 	u32 addr_change);
-void vidc_sm_set_mpeg4_profile_override(struct ddl_buf_addr *shared_mem,
-	enum vidc_sm_mpeg4_profileinfo profile_info);
-void vidc_sm_set_decoder_sei_enable(struct ddl_buf_addr *shared_mem,
-	u32 sei_enable);
-void vidc_sm_get_decoder_sei_enable(struct ddl_buf_addr *shared_mem,
-	u32 *sei_enable);
-void vidc_sm_set_decoder_stuff_bytes_consumption(
-	struct ddl_buf_addr *shared_mem,
-	enum vidc_sm_num_stuff_bytes_consume_info consume_info);
-void vidc_sm_set_video_core_timeout_value(struct ddl_buf_addr *shared_mem,
-	u32 timeout);
-void vidc_sm_set_error_concealment_config(struct ddl_buf_addr *shared_mem,
-	u32 inter_slice, u32 intra_slice, u32 conceal_config_enable);
 #endif

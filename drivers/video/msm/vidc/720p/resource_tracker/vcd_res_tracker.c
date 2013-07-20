@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,9 +16,9 @@
 #include <linux/regulator/consumer.h>
 #include <mach/clk.h>
 #include <linux/interrupt.h>
-#include <media/msm/vidc_init.h>
-#include <media/msm/vidc_type.h>
+#include "vidc_type.h"
 #include "vcd_res_tracker.h"
+#include "vidc_init.h"
 
 #define MSM_AXI_QOS_NAME "msm_vidc_reg"
 #define AXI_CLK_SCALING
@@ -277,29 +277,29 @@ static u32 res_trk_enable_videocore(void)
 							__func__, rc);
 
 		resource_context.pclk = clk_get(resource_context.device,
-			"iface_clk");
+			"mfc_pclk");
 
 		if (IS_ERR(resource_context.pclk)) {
-			VCDRES_MSG_ERROR("%s(): iface_clk get failed\n"
+			VCDRES_MSG_ERROR("%s(): mfc_pclk get failed\n"
 							 , __func__);
 			goto disable_regulator;
 		}
 
 		resource_context.hclk = clk_get(resource_context.device,
-			"core_clk");
+			"mfc_clk");
 
 		if (IS_ERR(resource_context.hclk)) {
-			VCDRES_MSG_ERROR("%s(): core_clk get failed\n"
+			VCDRES_MSG_ERROR("%s(): mfc_clk get failed\n"
 							 , __func__);
 
 			goto release_pclk;
 		}
 
 		resource_context.hclk_div2 =
-			clk_get(resource_context.device, "core_div2_clk");
+			clk_get(resource_context.device, "mfc_div2_clk");
 
 		if (IS_ERR(resource_context.hclk_div2)) {
-			VCDRES_MSG_ERROR("%s(): core_div2_clk get failed\n"
+			VCDRES_MSG_ERROR("%s(): mfc_div2_clk get failed\n"
 							 , __func__);
 			goto release_hclk_pclk;
 		}
@@ -407,7 +407,7 @@ u32 res_trk_power_up(void)
 {
 	VCDRES_MSG_MED("\n res_trk_power_up():: "
 		"Calling AXI add requirement\n");
-	ebi1_clk = clk_get(resource_context.device, "mem_clk");
+	ebi1_clk = clk_get(NULL, "ebi1_vcd_clk");
 	if (IS_ERR(ebi1_clk)) {
 		VCDRES_MSG_ERROR("Request AXI bus QOS fails.");
 		return false;
@@ -708,64 +708,3 @@ u32 res_trk_get_core_type(void){
 u32 res_trk_get_mem_type(void){
 	return resource_context.memtype;
 }
-
-u32 res_trk_get_enable_ion(void)
-{
-	return 0;
-}
-
-struct ion_client *res_trk_get_ion_client(void)
-{
-	return NULL;
-}
-
-void res_trk_set_mem_type(enum ddl_mem_area mem_type)
-{
-	return;
-}
-
-u32 res_trk_get_disable_fullhd(void)
-{
-	return 0;
-}
-
-int res_trk_check_for_sec_session()
-{
-	return 0;
-}
-
-void res_trk_secure_unset(void)
-{
-	return;
-}
-
-void res_trk_secure_set(void)
-{
-	return;
-}
-
-int res_trk_open_secure_session()
-{
-	return -EINVAL;
-}
-
-int res_trk_close_secure_session()
-{
-	return 0;
-}
-u32 get_res_trk_perf_level(enum vcd_perf_level perf_level)
-{
-	return -ENOTSUPP;
-}
-u32 res_trk_is_cp_enabled(void)
-{
-	if (resource_context.vidc_platform_data->cp_enabled)
-		return 1;
-	else
-		return 0;
-}
-u32 res_trk_estimate_perf_level(u32 pn_perf_lvl)
-{
-	return 0;
-}
-
