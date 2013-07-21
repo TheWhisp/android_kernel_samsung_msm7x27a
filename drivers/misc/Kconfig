@@ -627,6 +627,11 @@ config PMIC8058_XOADC
 	  PMIC8058. Driver interface to program registers of the ADC over
 	  AMUX channels, devices on programmable MPP's and xotherm.
 
+config FSAXXXX_USBSW
+	bool "Fairchild FSAxxxx USB switch Driver"
+	depends on I2C
+	default n
+
 config TZCOM
 	tristate "Trustzone Communicator driver"
 	default n
@@ -661,6 +666,12 @@ config SEC_DEBUG
 	default n
 	---help---
 	  Samsung debug code
+
+config PN544
+        bool "NXP PN544 NFC Controller Driver"
+        default n
+        help
+          NXP PN544 Near Field Communication controller support.
 
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
