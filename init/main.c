@@ -377,6 +377,10 @@ static noinline void __init_refok rest_init(void)
 	cpu_idle();
 }
 
+unsigned int kernel_uart_flag = 0;
+unsigned int board_hw_revision;
+unsigned int in_recovery_mode = 0;
+
 /* Check for early params. */
 static int __init do_early_param(char *param, char *val)
 {
@@ -392,7 +396,45 @@ static int __init do_early_param(char *param, char *val)
 				       "Malformed early option '%s'\n", param);
 		}
 	}
+
 	/* We accept everything at this stage. */
+    if ((strcmp(param, "console") == 0 ) && (( strcmp(val, "NULL") == 0 ) || (strcmp(val, "null") == 0)))
+		kernel_uart_flag = 1;
+
+	// add board_hw_revision
+	if ( (strcmp(param, "hw") == 0 ) )
+	{
+		if (strcmp(val, "1") == 0)
+			board_hw_revision = 1;
+		else if (strcmp(val, "2") == 0)
+			board_hw_revision = 2;
+		else if (strcmp(val, "3") == 0)
+			board_hw_revision = 3;
+		else if (strcmp(val, "4") == 0)
+			board_hw_revision = 4;
+		else if (strcmp(val, "5") == 0)
+			board_hw_revision = 5;
+		else if (strcmp(val, "6") == 0)
+			board_hw_revision = 6;
+		else if (strcmp(val, "7") == 0)
+			board_hw_revision = 7;
+		else	
+			board_hw_revision = 0;
+
+#if defined(CONFIG_MACH_TREBON)
+		printk("Trebon H/W revision : 0x0%d\n", board_hw_revision);
+#elif defined(CONFIG_MACH_GEIM)
+		printk("Geim H/W revision : 0x0%d\n", board_hw_revision);
+#elif defined(CONFIG_MACH_JENA)
+		printk("Jena H/W revision : 0x0%d\n", board_hw_revision);
+#endif		
+	}
+
+	if ((strcmp(param, "recovery") == 0)) {
+		if (strcmp(val, "1") == 0)
+			in_recovery_mode = 1;
+	}
+
 	return 0;
 }
 
