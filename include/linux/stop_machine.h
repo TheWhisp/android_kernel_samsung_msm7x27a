@@ -27,6 +27,8 @@ struct cpu_stop_work {
 	struct cpu_stop_done	*done;
 };
 
+extern struct mutex stop_cpus_mutex;
+
 int stop_one_cpu(unsigned int cpu, cpu_stop_fn_t fn, void *arg);
 void stop_one_cpu_nowait(unsigned int cpu, cpu_stop_fn_t fn, void *arg,
 			 struct cpu_stop_work *work_buf);
@@ -105,7 +107,7 @@ static inline int try_stop_cpus(const struct cpumask *cpumask,
  * @cpus: the cpus to run the @fn() on (NULL = any online cpu)
  *
  * Description: This causes a thread to be scheduled on every cpu,
- * each of which disables interrupts.  The result is that noone is
+ * each of which disables interrupts.  The result is that no one is
  * holding a spinlock or inside any other preempt-disabled region when
  * @fn() runs.
  *

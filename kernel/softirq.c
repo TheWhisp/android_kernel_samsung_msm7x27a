@@ -29,8 +29,6 @@
 #include <trace/events/irq.h>
 
 #include <asm/irq.h>
-
-#include "../drivers/misc/sec_debug.h"
 /*
    - No shared variables, all the data are CPU local.
    - If a softirq needs serialization, let it serialize itself
@@ -56,11 +54,11 @@ EXPORT_SYMBOL(irq_stat);
 
 static struct softirq_action softirq_vec[NR_SOFTIRQS] __cacheline_aligned_in_smp;
 
-static DEFINE_PER_CPU(struct task_struct *, ksoftirqd);
+DEFINE_PER_CPU(struct task_struct *, ksoftirqd);
 
 char *softirq_to_name[NR_SOFTIRQS] = {
 	"HI", "TIMER", "NET_TX", "NET_RX", "BLOCK", "BLOCK_IOPOLL",
-	"TASKLET", "SCHED", "HRTIMER",	"RCU"
+	"TASKLET", "SCHED", "HRTIMER", "RCU"
 };
 
 /*
@@ -237,10 +235,6 @@ restart:
 			kstat_incr_softirqs_this_cpu(vec_nr);
 
 			trace_softirq_entry(vec_nr);
-#ifdef CONFIG_SEC_DEBUG_SCHED_LOG
-			sec_debug_timer_log(6666, (int)irqs_disabled(),\
-					(void *)h->action);
-#endif /* CONFIG_SEC_DEBUG_SCHED_LOG */
 			h->action(h);
 			trace_softirq_exit(vec_nr);
 			if (unlikely(prev_count != preempt_count())) {
@@ -317,9 +311,29 @@ void irq_enter(void)
 }
 
 #ifdef __ARCH_IRQ_EXIT_IRQS_DISABLED
-# define invoke_softirq()	__do_softirq()
+static inline void invoke_softirq(void)
+{
+	if (!force_irqthreads)
+		__do_softirq();
+	else {
+		__local_bh_disable((unsigned long)__builtin_return_address(0),
+				SOFTIRQ_OFFSET);
+		wakeup_softirqd();
+		__local_bh_enable(SOFTIRQ_OFFSET);
+	}
+}
 #else
-# define invoke_softirq()	do_softirq()
+static inline void invoke_softirq(void)
+{
+	if (!force_irqthreads)
+		do_softirq();
+	else {
+		__local_bh_disable((unsigned long)__builtin_return_address(0),
+				SOFTIRQ_OFFSET);
+		wakeup_softirqd();
+		__local_bh_enable(SOFTIRQ_OFFSET);
+	}
+}
 #endif
 
 /*
@@ -446,13 +460,7 @@ static void tasklet_action(struct softirq_action *a)
 			if (!atomic_read(&t->count)) {
 				if (!test_and_clear_bit(TASKLET_STATE_SCHED, &t->state))
 					BUG();
-#ifdef CONFIG_SEC_DEBUG_SCHED_LOG
-				sec_debug_irq_sched_log(-1, t->func, 3);
-#endif /* CONFIG_SEC_DEBUG_SCHED_LOG */
 				t->func(t->data);
-#ifdef CONFIG_SEC_DEBUG_SCHED_LOG
-				sec_debug_irq_sched_log(-1, t->func, 4);
-#endif /* CONFIG_SEC_DEBUG_SCHED_LOG */
 				tasklet_unlock(t);
 				continue;
 			}
@@ -567,7 +575,7 @@ static void __tasklet_hrtimer_trampoline(unsigned long data)
 /**
  * tasklet_hrtimer_init - Init a tasklet/hrtimer combo for softirq callbacks
  * @ttimer:	 tasklet_hrtimer which is initialized
- * @function:	 hrtimer callback funtion which gets called from softirq context
+ * @function:	 hrtimer callback function which gets called from softirq context
  * @which_clock: clock id (CLOCK_MONOTONIC/CLOCK_REALTIME)
  * @mode:	 hrtimer mode (HRTIMER_MODE_ABS/HRTIMER_MODE_REL)
  */
@@ -733,7 +741,6 @@ static int run_ksoftirqd(void * __bind_cpu)
 {
 	set_current_state(TASK_INTERRUPTIBLE);
 
-	current->flags |= PF_KSOFTIRQD;
 	while (!kthread_should_stop()) {
 		preempt_disable();
 		if (!local_softirq_pending()) {
@@ -750,7 +757,10 @@ static int run_ksoftirqd(void * __bind_cpu)
 			   don't process */
 			if (cpu_is_offline((long)__bind_cpu))
 				goto wait_to_die;
-			do_softirq();
+			local_irq_disable();
+			if (local_softirq_pending())
+				__do_softirq();
+			local_irq_enable();
 			preempt_enable_no_resched();
 			cond_resched();
 			preempt_disable();
@@ -843,7 +853,10 @@ static int __cpuinit cpu_callback(struct notifier_block *nfb,
 	switch (action) {
 	case CPU_UP_PREPARE:
 	case CPU_UP_PREPARE_FROZEN:
-		p = kthread_create(run_ksoftirqd, hcpu, "ksoftirqd/%d", hotcpu);
+		p = kthread_create_on_node(run_ksoftirqd,
+					   hcpu,
+					   cpu_to_node(hotcpu),
+					   "ksoftirqd/%d", hotcpu);
 		if (IS_ERR(p)) {
 			printk("ksoftirqd for %i failed\n", hotcpu);
 			return notifier_from_errno(PTR_ERR(p));

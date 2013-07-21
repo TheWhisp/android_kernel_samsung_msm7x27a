@@ -215,6 +215,9 @@ int arp_mc_map(__be32 addr, u8 *haddr, struct net_device *dev, int dir)
 	case ARPHRD_INFINIBAND:
 		ip_ib_mc_map(addr, dev->broadcast, haddr);
 		return 0;
+	case ARPHRD_IPGRE:
+		ip_ipgre_mc_map(addr, dev->broadcast, haddr);
+		return 0;
 	default:
 		if (dir) {
 			memcpy(haddr, dev->broadcast, dev->addr_len);
@@ -433,14 +436,13 @@ static int arp_ignore(struct in_device *in_dev, __be32 sip, __be32 tip)
 
 static int arp_filter(__be32 sip, __be32 tip, struct net_device *dev)
 {
-	struct flowi fl = { .fl4_dst = sip,
-			    .fl4_src = tip };
 	struct rtable *rt;
 	int flag = 0;
 	/*unsigned long now; */
 	struct net *net = dev_net(dev);
 
-	if (ip_route_output_key(net, &rt, &fl) < 0)
+	rt = ip_route_output(net, sip, tip, 0, 0);
+	if (IS_ERR(rt))
 		return 1;
 	if (rt->dst.dev != dev) {
 		NET_INC_STATS_BH(net, LINUX_MIB_ARPFILTER);
@@ -516,26 +518,32 @@ EXPORT_SYMBOL(arp_find);
 
 /* END OF OBSOLETE FUNCTIONS */
 
+struct neighbour *__arp_bind_neighbour(struct dst_entry *dst, __be32 nexthop)
+{
+	struct net_device *dev = dst->dev;
+
+	if (dev->flags & (IFF_LOOPBACK | IFF_POINTOPOINT))
+		nexthop = 0;
+	return __neigh_lookup_errno(
+#if defined(CONFIG_ATM_CLIP) || defined(CONFIG_ATM_CLIP_MODULE)
+		dev->type == ARPHRD_ATM ?
+		clip_tbl_hook :
+#endif
+		&arp_tbl, &nexthop, dev);
+}
+
 int arp_bind_neighbour(struct dst_entry *dst)
 {
 	struct net_device *dev = dst->dev;
-	struct neighbour *n = dst->neighbour;
+	struct neighbour *n = dst_get_neighbour(dst);
 
 	if (dev == NULL)
 		return -EINVAL;
 	if (n == NULL) {
-		__be32 nexthop = ((struct rtable *)dst)->rt_gateway;
-		if (dev->flags & (IFF_LOOPBACK | IFF_POINTOPOINT))
-			nexthop = 0;
-		n = __neigh_lookup_errno(
-#if defined(CONFIG_ATM_CLIP) || defined(CONFIG_ATM_CLIP_MODULE)
-					 dev->type == ARPHRD_ATM ?
-					 clip_tbl_hook :
-#endif
-					 &arp_tbl, &nexthop, dev);
+		n = __arp_bind_neighbour(dst, ((struct rtable *)dst)->rt_gateway);
 		if (IS_ERR(n))
 			return PTR_ERR(n);
-		dst->neighbour = n;
+		dst_set_neighbour(dst, n);
 	}
 	return 0;
 }
@@ -898,7 +906,8 @@ static int arp_process(struct sk_buff *skb)
 			if (addr_type == RTN_UNICAST  &&
 			    (arp_fwd_proxy(in_dev, dev, rt) ||
 			     arp_fwd_pvlan(in_dev, dev, rt, sip, tip) ||
-			     pneigh_lookup(&arp_tbl, net, &tip, dev, 0))) {
+			     (rt->dst.dev != dev &&
+			      pneigh_lookup(&arp_tbl, net, &tip, dev, 0)))) {
 				n = neigh_event_ns(&arp_tbl, sha, &sip, dev);
 				if (n)
 					neigh_release(n);
@@ -1061,12 +1070,10 @@ static int arp_req_set(struct net *net, struct arpreq *r,
 	if (r->arp_flags & ATF_PERM)
 		r->arp_flags |= ATF_COM;
 	if (dev == NULL) {
-		struct flowi fl = { .fl4_dst = ip,
-				    .fl4_tos = RTO_ONLINK };
-		struct rtable *rt;
-		err = ip_route_output_key(net, &rt, &fl);
-		if (err != 0)
-			return err;
+		struct rtable *rt = ip_route_output(net, ip, 0, RTO_ONLINK, 0);
+
+		if (IS_ERR(rt))
+			return PTR_ERR(rt);
 		dev = rt->dst.dev;
 		ip_rt_put(rt);
 		if (!dev)
@@ -1177,7 +1184,6 @@ static int arp_req_delete_public(struct net *net, struct arpreq *r,
 static int arp_req_delete(struct net *net, struct arpreq *r,
 			  struct net_device *dev)
 {
-	int err;
 	__be32 ip;
 
 	if (r->arp_flags & ATF_PUBL)
@@ -1185,12 +1191,9 @@ static int arp_req_delete(struct net *net, struct arpreq *r,
 
 	ip = ((struct sockaddr_in *)&r->arp_pa)->sin_addr.s_addr;
 	if (dev == NULL) {
-		struct flowi fl = { .fl4_dst = ip,
-				    .fl4_tos = RTO_ONLINK };
-		struct rtable *rt;
-		err = ip_route_output_key(net, &rt, &fl);
-		if (err != 0)
-			return err;
+		struct rtable *rt = ip_route_output(net, ip, 0, RTO_ONLINK, 0);
+		if (IS_ERR(rt))
+			return PTR_ERR(rt);
 		dev = rt->dst.dev;
 		ip_rt_put(rt);
 		if (!dev)

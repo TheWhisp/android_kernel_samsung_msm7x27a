@@ -1,6 +1,6 @@
 /* Qualcomm TrustZone communicator driver
  *
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -28,9 +28,13 @@
 #include <linux/mutex.h>
 #include <linux/android_pmem.h>
 #include <linux/io.h>
+#include <linux/ion.h>
+#include <linux/tzcom.h>
+#include <linux/clk.h>
 #include <mach/scm.h>
 #include <mach/peripheral-loader.h>
-#include <linux/tzcom.h>
+#include <mach/msm_bus.h>
+#include <mach/msm_bus_board.h>
 #include "tzcomi.h"
 
 #define TZCOM_DEV "tzcom"
@@ -45,11 +49,16 @@
 #define PERR(fmt, args...) pr_err("%s(%i, %s): " fmt "\n", \
 		__func__, current->pid, current->comm, ## args)
 
+#undef PWARN
+#define PWARN(fmt, args...) pr_warning("%s(%i, %s): " fmt "\n", \
+		__func__, current->pid, current->comm, ## args)
 
+
+static uint32_t tzcom_perf_client;
 static struct class *driver_class;
 static dev_t tzcom_device_no;
 static struct cdev tzcom_cdev;
-
+struct ion_client *ion_clnt;
 static u8 *sb_in_virt;
 static s32 sb_in_phys;
 static size_t sb_in_length = 20 * SZ_1K;
@@ -63,7 +72,9 @@ static atomic_t svc_instance_ctr = ATOMIC_INIT(0);
 static DEFINE_MUTEX(sb_in_lock);
 static DEFINE_MUTEX(sb_out_lock);
 static DEFINE_MUTEX(send_cmd_lock);
-
+static DEFINE_MUTEX(tzcom_bw_mutex);
+static int tzcom_bw_count;
+static struct clk *tzcom_bus_clk;
 struct tzcom_callback_list {
 	struct list_head      list;
 	struct tzcom_callback callback;
@@ -84,7 +95,50 @@ struct tzcom_data_t {
 	wait_queue_head_t cont_cmd_wq;
 	int               cont_cmd_flag;
 	u32               handled_cmd_svc_instance_id;
+	int               abort;
+	wait_queue_head_t abort_wq;
+	atomic_t          ioctl_count;
 };
+
+static int tzcom_enable_bus_scaling(void)
+{
+	int ret = 0;
+	if (!tzcom_perf_client)
+		return -EINVAL;
+	mutex_lock(&tzcom_bw_mutex);
+	if (!tzcom_bw_count) {
+		ret = msm_bus_scale_client_update_request(
+				tzcom_perf_client, 1);
+		if (ret) {
+			pr_err("Bandwidth request failed (%d)\n", ret);
+		} else {
+			ret = clk_enable(tzcom_bus_clk);
+			if (ret)
+				pr_err("Clock enable failed\n");
+		}
+	}
+	if (ret)
+		msm_bus_scale_client_update_request(tzcom_perf_client, 0);
+	else
+		tzcom_bw_count++;
+	mutex_unlock(&tzcom_bw_mutex);
+	return ret;
+}
+
+static void tzcom_disable_bus_scaling(void)
+{
+	if (!tzcom_perf_client)
+		return ;
+
+	mutex_lock(&tzcom_bw_mutex);
+	if (tzcom_bw_count > 0)
+		if (tzcom_bw_count-- == 1) {
+			msm_bus_scale_client_update_request(tzcom_perf_client,
+								0);
+			clk_disable(tzcom_bus_clk);
+		}
+	mutex_unlock(&tzcom_bw_mutex);
+}
 
 static int tzcom_scm_call(const void *cmd_buf, size_t cmd_len,
 		void *resp_buf, size_t resp_len)
@@ -161,7 +215,7 @@ static int tzcom_register_service(struct tzcom_data_t *data, void __user *argp)
 	ret = copy_from_user(&rcvd_svc, argp, sizeof(rcvd_svc));
 
 	if (ret) {
-		PDEBUG("copy_from_user failed");
+		PERR("copy_from_user failed");
 		return ret;
 	}
 
@@ -169,7 +223,7 @@ static int tzcom_register_service(struct tzcom_data_t *data, void __user *argp)
 			rcvd_svc.svc_id, rcvd_svc.cmd_id_low,
 			rcvd_svc.cmd_id_high);
 	if (!__tzcom_is_svc_unique(data, rcvd_svc)) {
-		PDEBUG("Provided service is not unique");
+		PERR("Provided service is not unique");
 		return -EINVAL;
 	}
 
@@ -177,13 +231,13 @@ static int tzcom_register_service(struct tzcom_data_t *data, void __user *argp)
 
 	ret = copy_to_user(argp, &rcvd_svc, sizeof(rcvd_svc));
 	if (ret) {
-		PDEBUG("copy_to_user failed");
+		PERR("copy_to_user failed");
 		return ret;
 	}
 
 	new_entry = kmalloc(sizeof(*new_entry), GFP_KERNEL);
 	if (!new_entry) {
-		pr_err("%s: kmalloc failed\n", __func__);
+		PERR("kmalloc failed");
 		return -ENOMEM;
 	}
 	memcpy(&new_entry->svc, &rcvd_svc, sizeof(rcvd_svc));
@@ -204,15 +258,16 @@ static int tzcom_unregister_service(struct tzcom_data_t *data,
 	int ret = 0;
 	unsigned long flags;
 	struct tzcom_unregister_svc_op_req req;
-	struct tzcom_registered_svc_list *ptr;
+	struct tzcom_registered_svc_list *ptr, *next;
 	ret = copy_from_user(&req, argp, sizeof(req));
 	if (ret) {
-		PDEBUG("copy_from_user failed");
+		PERR("copy_from_user failed");
 		return ret;
 	}
 
 	spin_lock_irqsave(&data->registered_svc_list_lock, flags);
-	list_for_each_entry(ptr, &data->registered_svc_list_head, list) {
+	list_for_each_entry_safe(ptr, next, &data->registered_svc_list_head,
+			list) {
 		if (req.svc_id == ptr->svc.svc_id &&
 				req.instance_id == ptr->svc.instance_id) {
 			wake_up_all(&ptr->next_cmd_wq);
@@ -226,6 +281,13 @@ static int tzcom_unregister_service(struct tzcom_data_t *data,
 	spin_unlock_irqrestore(&data->registered_svc_list_lock, flags);
 
 	return -EINVAL;
+}
+
+static int __tzcom_is_cont_cmd(struct tzcom_data_t *data)
+{
+	int ret;
+	ret = (data->cont_cmd_flag != 0);
+	return ret || data->abort;
 }
 
 /**
@@ -265,13 +327,13 @@ static int tzcom_unregister_service(struct tzcom_data_t *data,
  *      _________________________________________________________
  *                              OUTPUT SHARED BUFFER
  */
-static int tzcom_send_cmd(struct tzcom_data_t *data, void __user *argp)
+static int __tzcom_send_cmd(struct tzcom_data_t *data,
+			struct tzcom_send_cmd_op_req *req)
 {
 	int ret = 0;
 	unsigned long flags;
 	u32 reqd_len_sb_in = 0;
 	u32 reqd_len_sb_out = 0;
-	struct tzcom_send_cmd_op_req req;
 	struct tzcom_command cmd;
 	struct tzcom_response resp;
 	struct tzcom_callback *next_callback;
@@ -281,29 +343,24 @@ static int tzcom_send_cmd(struct tzcom_data_t *data, void __user *argp)
 	size_t new_entry_len = 0;
 	struct tzcom_registered_svc_list *ptr_svc;
 
-	ret = copy_from_user(&req, argp, sizeof(req));
-	if (ret) {
-		PDEBUG("copy_from_user failed");
-		return ret;
-	}
-
-	if (req.cmd_buf == NULL || req.resp_buf == NULL) {
-		PDEBUG("cmd buffer or response buffer is null");
+	if (req->cmd_buf == NULL || req->resp_buf == NULL) {
+		PERR("cmd buffer or response buffer is null");
 		return -EINVAL;
 	}
 
-	if (req.cmd_len <= 0 || req.resp_len <= 0) {
-		PDEBUG("cmd buffer length or "
+	if (req->cmd_len <= 0 || req->resp_len <= 0 ||
+		req->cmd_len > sb_in_length || req->resp_len > sb_in_length) {
+		PERR("cmd buffer length or "
 				"response buffer length not valid");
 		return -EINVAL;
 	}
 	PDEBUG("received cmd_req.req: 0x%p",
-				req.cmd_buf);
+				req->cmd_buf);
 	PDEBUG("received cmd_req.rsp size: %u, ptr: 0x%p",
-			req.resp_len,
-			req.resp_buf);
+			req->resp_len,
+			req->resp_buf);
 
-	reqd_len_sb_in = req.cmd_len + req.resp_len;
+	reqd_len_sb_in = req->cmd_len + req->resp_len;
 	if (reqd_len_sb_in > sb_in_length) {
 		PDEBUG("Not enough memory to fit cmd_buf and "
 				"resp_buf. Required: %u, Available: %u",
@@ -311,27 +368,35 @@ static int tzcom_send_cmd(struct tzcom_data_t *data, void __user *argp)
 		return -ENOMEM;
 	}
 
-	/* Copy req.cmd_buf to SB in and set req.resp_buf to SB in + cmd_len */
+	/* Copy req->cmd_buf to SB in and set
+	 * req->resp_buf to SB in + cmd_len
+	 */
 	mutex_lock(&sb_in_lock);
 	PDEBUG("Before memcpy on sb_in");
-	memcpy(sb_in_virt, req.cmd_buf, req.cmd_len);
+	memcpy(sb_in_virt, req->cmd_buf, req->cmd_len);
 	PDEBUG("After memcpy on sb_in");
 
 	/* cmd_type will always be a new here */
 	cmd.cmd_type = TZ_SCHED_CMD_NEW;
 	cmd.sb_in_cmd_addr = (u8 *) tzcom_virt_to_phys(sb_in_virt);
-	cmd.sb_in_cmd_len = req.cmd_len;
+	cmd.sb_in_cmd_len = req->cmd_len;
 
 	resp.cmd_status = TZ_SCHED_STATUS_INCOMPLETE;
 	resp.sb_in_rsp_addr = (u8 *) tzcom_virt_to_phys(sb_in_virt +
-			req.cmd_len);
-	resp.sb_in_rsp_len = req.resp_len;
+			req->cmd_len);
+	resp.sb_in_rsp_len = req->resp_len;
 
-	PDEBUG("before call tzcom_scm_call, cmd_id = : %u", req.cmd_id);
+	PDEBUG("before call tzcom_scm_call, cmd_id = : %u", req->cmd_id);
 	PDEBUG("before call tzcom_scm_call, sizeof(cmd) = : %u", sizeof(cmd));
 
-	tzcom_scm_call((const void *) &cmd, sizeof(cmd), &resp, sizeof(resp));
+	ret = tzcom_scm_call((const void *) &cmd, sizeof(cmd),
+			&resp, sizeof(resp));
 	mutex_unlock(&sb_in_lock);
+
+	if (ret) {
+		PERR("tzcom_scm_call failed with err: %d", ret);
+		return ret;
+	}
 
 	while (resp.cmd_status != TZ_SCHED_STATUS_COMPLETE) {
 		/*
@@ -344,11 +409,13 @@ static int tzcom_send_cmd(struct tzcom_data_t *data, void __user *argp)
 		mutex_lock(&sb_out_lock);
 		reqd_len_sb_out = sizeof(*next_callback)
 					+ next_callback->sb_out_cb_data_len;
-		if (reqd_len_sb_out > sb_out_length) {
-			PDEBUG("Not enough memory to"
-					" fit tzcom_callback buffer."
-					" Required: %u, Available: %u",
-					reqd_len_sb_out, sb_out_length);
+		if (reqd_len_sb_out > sb_out_length ||
+			reqd_len_sb_out < sizeof(*next_callback) ||
+			next_callback->sb_out_cb_data_len > sb_out_length) {
+			PERR("Incorrect callback data length"
+					" Required: %u, Available: %u, Min: %u",
+					reqd_len_sb_out, sb_out_length,
+					sizeof(*next_callback));
 			mutex_unlock(&sb_out_lock);
 			return -ENOMEM;
 		}
@@ -366,7 +433,7 @@ static int tzcom_send_cmd(struct tzcom_data_t *data, void __user *argp)
 		cb = &new_entry->callback;
 		cb->cmd_id = next_callback->cmd_id;
 		cb->sb_out_cb_data_len = next_callback->sb_out_cb_data_len;
-		cb->sb_out_cb_data_off = next_callback->sb_out_cb_data_off;
+		cb->sb_out_cb_data_off = sizeof(*cb);
 
 		cb_data = (u8 *)next_callback
 				+ next_callback->sb_out_cb_data_off;
@@ -395,38 +462,54 @@ static int tzcom_send_cmd(struct tzcom_data_t *data, void __user *argp)
 		PDEBUG("waking up next_cmd_wq and "
 				"waiting for cont_cmd_wq");
 		if (wait_event_interruptible(data->cont_cmd_wq,
-					data->cont_cmd_flag != 0)) {
-			PDEBUG("Interrupted: exiting send_cmd loop");
+				__tzcom_is_cont_cmd(data))) {
+			PWARN("Interrupted: exiting send_cmd loop");
 			return -ERESTARTSYS;
+		}
+
+		if (data->abort) {
+			PERR("Aborting driver");
+			return -ENODEV;
 		}
 		data->cont_cmd_flag = 0;
 		cmd.cmd_type = TZ_SCHED_CMD_PENDING;
 		mutex_lock(&sb_in_lock);
-		tzcom_scm_call((const void *) &cmd, sizeof(cmd), &resp,
+		ret = tzcom_scm_call((const void *) &cmd, sizeof(cmd), &resp,
 				sizeof(resp));
 		mutex_unlock(&sb_in_lock);
+		if (ret) {
+			PERR("tzcom_scm_call failed with err: %d", ret);
+			return ret;
+		}
 	}
 
 	mutex_lock(&sb_in_lock);
 	resp.sb_in_rsp_addr = sb_in_virt + cmd.sb_in_cmd_len;
-	resp.sb_in_rsp_len = req.resp_len;
+	resp.sb_in_rsp_len = req->resp_len;
+	memcpy(req->resp_buf, resp.sb_in_rsp_addr, resp.sb_in_rsp_len);
+	/* Zero out memory for security purpose */
+	memset(sb_in_virt, 0, reqd_len_sb_in);
 	mutex_unlock(&sb_in_lock);
 
-	/* Cmd is done now. Copy the response from SB in to user */
-	if (req.resp_len >= resp.sb_in_rsp_len) {
-		PDEBUG("Before memcpy resp_buf");
-		mutex_lock(&sb_in_lock);
-		memcpy(req.resp_buf, resp.sb_in_rsp_addr, resp.sb_in_rsp_len);
-		mutex_unlock(&sb_in_lock);
-	} else {
-		PDEBUG("Provided response buffer is smaller"
-				" than required. Required: %u,"
-				" Provided: %u",
-				resp.sb_in_rsp_len, req.resp_len);
-		ret = -ENOMEM;
-	}
+	return ret;
+}
 
-	PDEBUG("sending cmd_req.rsp "
+
+static int tzcom_send_cmd(struct tzcom_data_t *data, void __user *argp)
+{
+	int ret = 0;
+	struct tzcom_send_cmd_op_req req;
+
+	ret = copy_from_user(&req, argp, sizeof(req));
+	if (ret) {
+		PERR("copy_from_user failed");
+		return ret;
+	}
+	ret = __tzcom_send_cmd(data, &req);
+	if (ret)
+		return ret;
+
+	PDEBUG("sending cmd_req->rsp "
 			"size: %u, ptr: 0x%p", req.resp_len,
 			req.resp_buf);
 	ret = copy_to_user(argp, &req, sizeof(req));
@@ -434,7 +517,99 @@ static int tzcom_send_cmd(struct tzcom_data_t *data, void __user *argp)
 		PDEBUG("copy_to_user failed");
 		return ret;
 	}
+	return ret;
+}
 
+static int __tzcom_send_cmd_req_clean_up(
+			struct tzcom_send_cmd_fd_op_req *req)
+{
+	char *field;
+	uint32_t *update;
+	int ret = 0;
+	int i = 0;
+
+	for (i = 0; i < MAX_ION_FD; i++) {
+		if (req->ifd_data[i].fd != 0) {
+			field = (char *)req->cmd_buf +
+					req->ifd_data[i].cmd_buf_offset;
+			update = (uint32_t *) field;
+			*update = 0;
+		}
+	}
+	return ret;
+}
+
+static int __tzcom_update_with_phy_addr(
+			struct tzcom_send_cmd_fd_op_req *req)
+{
+	struct ion_handle *ihandle;
+	char *field;
+	uint32_t *update;
+	ion_phys_addr_t pa;
+	int ret = 0;
+	int i = 0;
+	uint32_t length;
+
+	for (i = 0; i < MAX_ION_FD; i++) {
+		if (req->ifd_data[i].fd != 0) {
+			/* Get the handle of the shared fd */
+			ihandle = ion_import_fd(ion_clnt, req->ifd_data[i].fd);
+			if (ihandle == NULL) {
+				PERR("Ion client can't retrieve the handle\n");
+				return -ENOMEM;
+			}
+			field = (char *) req->cmd_buf +
+						req->ifd_data[i].cmd_buf_offset;
+			update = (uint32_t *) field;
+
+			/* Populate the cmd data structure with the phys_addr */
+			ret = ion_phys(ion_clnt, ihandle, &pa, &length);
+			if (ret)
+				return -ENOMEM;
+
+			*update = (uint32_t)pa;
+			ion_free(ion_clnt, ihandle);
+		}
+	}
+	return ret;
+}
+
+static int tzcom_send_cmd_with_fd(struct tzcom_data_t *data,
+					void __user *argp)
+{
+	int ret = 0;
+	struct tzcom_send_cmd_fd_op_req req;
+	struct tzcom_send_cmd_op_req send_cmd_req;
+
+	ret = copy_from_user(&req, argp, sizeof(req));
+	if (ret) {
+		PERR("copy_from_user failed");
+		return ret;
+	}
+
+	send_cmd_req.cmd_id = req.cmd_id;
+	send_cmd_req.cmd_buf = req.cmd_buf;
+	send_cmd_req.cmd_len = req.cmd_len;
+	send_cmd_req.resp_buf = req.resp_buf;
+	send_cmd_req.resp_len = req.resp_len;
+
+	ret = __tzcom_update_with_phy_addr(&req);
+	if (ret)
+		return ret;
+	ret = __tzcom_send_cmd(data, &send_cmd_req);
+	__tzcom_send_cmd_req_clean_up(&req);
+
+	if (ret)
+		return ret;
+
+	PDEBUG("sending cmd_req->rsp "
+			"size: %u, ptr: 0x%p", req.resp_len,
+			req.resp_buf);
+	ret = copy_to_user(argp, &req, sizeof(req));
+	if (ret) {
+		PDEBUG("copy_to_user failed");
+		return ret;
+	}
 	return ret;
 }
 
@@ -462,13 +637,13 @@ static int __tzcom_copy_cmd(struct tzcom_data_t *data,
 {
 	int found = 0;
 	int ret = -EAGAIN;
-	struct tzcom_callback_list *entry;
+	struct tzcom_callback_list *entry, *next;
 	struct tzcom_callback *cb;
 
 	PDEBUG("In here");
 	mutex_lock(&data->callback_list_lock);
 	PDEBUG("Before looping through cmd and svc lists.");
-	list_for_each_entry(entry, &data->callback_list_head, list) {
+	list_for_each_entry_safe(entry, next, &data->callback_list_head, list) {
 		cb = &entry->callback;
 		if (req->svc_id == ptr_svc->svc.svc_id &&
 			req->instance_id == ptr_svc->svc.instance_id &&
@@ -486,14 +661,14 @@ static int __tzcom_copy_cmd(struct tzcom_data_t *data,
 					(u8 *)cb + cb->sb_out_cb_data_off,
 					cb->sb_out_cb_data_len);
 				if (ret) {
-					PDEBUG("copy_to_user failed");
+					PERR("copy_to_user failed");
 					break;
 				}
 				list_del(&entry->list);
 				kfree(entry);
 				ret = 0;
 			} else {
-				PDEBUG("callback data buffer is "
+				PERR("callback data buffer is "
 					"larger than provided buffer."
 					"Required: %u, Provided: %u",
 					cb->sb_out_cb_data_len,
@@ -508,6 +683,14 @@ static int __tzcom_copy_cmd(struct tzcom_data_t *data,
 	return ret;
 }
 
+static int __tzcom_is_next_cmd(struct tzcom_data_t *data,
+		struct tzcom_registered_svc_list *svc)
+{
+	int ret;
+	ret = (svc->next_cmd_flag != 0);
+	return ret || data->abort;
+}
+
 static int tzcom_read_next_cmd(struct tzcom_data_t *data, void __user *argp)
 {
 	int ret = 0;
@@ -516,17 +699,17 @@ static int tzcom_read_next_cmd(struct tzcom_data_t *data, void __user *argp)
 
 	ret = copy_from_user(&req, argp, sizeof(req));
 	if (ret) {
-		PDEBUG("copy_from_user failed");
+		PERR("copy_from_user failed");
 		return ret;
 	}
 
 	if (req.instance_id > atomic_read(&svc_instance_ctr)) {
-		PDEBUG("Invalid instance_id for the request");
+		PERR("Invalid instance_id for the request");
 		return -EINVAL;
 	}
 
 	if (!req.req_buf || req.req_len == 0) {
-		PDEBUG("Invalid request buffer or buffer length");
+		PERR("Invalid request buffer or buffer length");
 		return -EINVAL;
 	}
 
@@ -536,10 +719,15 @@ static int tzcom_read_next_cmd(struct tzcom_data_t *data, void __user *argp)
 	while (1) {
 		PDEBUG("Before wait_event next_cmd.");
 		if (wait_event_interruptible(this_svc->next_cmd_wq,
-				this_svc->next_cmd_flag != 0)) {
-			PDEBUG("Interrupted: exiting wait_next_cmd loop");
+				__tzcom_is_next_cmd(data, this_svc))) {
+			PWARN("Interrupted: exiting wait_next_cmd loop");
 			/* woken up for different reason */
 			return -ERESTARTSYS;
+		}
+
+		if (data->abort) {
+			PERR("Aborting driver");
+			return -ENODEV;
 		}
 		PDEBUG("After wait_event next_cmd.");
 		this_svc->next_cmd_flag = 0;
@@ -550,13 +738,13 @@ static int tzcom_read_next_cmd(struct tzcom_data_t *data, void __user *argp)
 			data->handled_cmd_svc_instance_id = req.instance_id;
 			break;
 		} else if (ret == -ENOMEM) {
-			PDEBUG("Not enough memory");
+			PERR("Not enough memory");
 			return ret;
 		}
 	}
 	ret = copy_to_user(argp, &req, sizeof(req));
 	if (ret) {
-		PDEBUG("copy_to_user failed");
+		PERR("copy_to_user failed");
 		return ret;
 	}
 	PDEBUG("copy_to_user is done.");
@@ -569,7 +757,7 @@ static int tzcom_cont_cmd(struct tzcom_data_t *data, void __user *argp)
 	struct tzcom_cont_cmd_op_req req;
 	ret = copy_from_user(&req, argp, sizeof(req));
 	if (ret) {
-		PDEBUG("copy_from_user failed");
+		PERR("copy_from_user failed");
 		return ret;
 	}
 
@@ -578,7 +766,7 @@ static int tzcom_cont_cmd(struct tzcom_data_t *data, void __user *argp)
 	 * can call continue cmd
 	 */
 	if (data->handled_cmd_svc_instance_id != req.instance_id) {
-		PDEBUG("Only the service instance that handled the last "
+		PWARN("Only the service instance that handled the last "
 				"callback can continue cmd. "
 				"Expected: %u, Received: %u",
 				data->handled_cmd_svc_instance_id,
@@ -597,6 +785,41 @@ static int tzcom_cont_cmd(struct tzcom_data_t *data, void __user *argp)
 	return ret;
 }
 
+static int tzcom_abort(struct tzcom_data_t *data)
+{
+	int ret = 0;
+	unsigned long flags;
+	struct tzcom_registered_svc_list *lsvc, *nsvc;
+	if (data->abort) {
+		PERR("Already aborting");
+		return -EINVAL;
+	}
+
+	data->abort = 1;
+
+	PDEBUG("Waking up cont_cmd_wq");
+	wake_up_all(&data->cont_cmd_wq);
+
+	spin_lock_irqsave(&data->registered_svc_list_lock, flags);
+	PDEBUG("Before waking up service wait queues");
+	list_for_each_entry_safe(lsvc, nsvc,
+			&data->registered_svc_list_head, list) {
+		wake_up_all(&lsvc->next_cmd_wq);
+	}
+	spin_unlock_irqrestore(&data->registered_svc_list_lock, flags);
+
+	PDEBUG("ioctl_count before loop: %d", atomic_read(&data->ioctl_count));
+	while (atomic_read(&data->ioctl_count) > 0) {
+		if (wait_event_interruptible(data->abort_wq,
+				atomic_read(&data->ioctl_count) <= 0)) {
+			PERR("Interrupted from abort");
+			ret = -ERESTARTSYS;
+			break;
+		}
+	}
+	return ret;
+}
+
 static long tzcom_ioctl(struct file *file, unsigned cmd,
 		unsigned long arg)
 {
@@ -604,43 +827,83 @@ static long tzcom_ioctl(struct file *file, unsigned cmd,
 	struct tzcom_data_t *tzcom_data = file->private_data;
 	void __user *argp = (void __user *) arg;
 	PDEBUG("enter tzcom_ioctl()");
+	if (tzcom_data->abort) {
+		PERR("Aborting tzcom driver");
+		return -ENODEV;
+	}
+
 	switch (cmd) {
 	case TZCOM_IOCTL_REGISTER_SERVICE_REQ: {
 		PDEBUG("ioctl register_service_req()");
+		atomic_inc(&tzcom_data->ioctl_count);
 		ret = tzcom_register_service(tzcom_data, argp);
+		atomic_dec(&tzcom_data->ioctl_count);
+		wake_up_interruptible(&tzcom_data->abort_wq);
 		if (ret)
-			PDEBUG("failed tzcom_register_service: %d", ret);
+			PERR("failed tzcom_register_service: %d", ret);
 		break;
 	}
 	case TZCOM_IOCTL_UNREGISTER_SERVICE_REQ: {
 		PDEBUG("ioctl unregister_service_req()");
+		atomic_inc(&tzcom_data->ioctl_count);
 		ret = tzcom_unregister_service(tzcom_data, argp);
+		atomic_dec(&tzcom_data->ioctl_count);
+		wake_up_interruptible(&tzcom_data->abort_wq);
 		if (ret)
-			PDEBUG("failed tzcom_unregister_service: %d", ret);
+			PERR("failed tzcom_unregister_service: %d", ret);
 		break;
 	}
 	case TZCOM_IOCTL_SEND_CMD_REQ: {
 		PDEBUG("ioctl send_cmd_req()");
 		/* Only one client allowed here at a time */
 		mutex_lock(&send_cmd_lock);
+		atomic_inc(&tzcom_data->ioctl_count);
 		ret = tzcom_send_cmd(tzcom_data, argp);
+		atomic_dec(&tzcom_data->ioctl_count);
+		wake_up_interruptible(&tzcom_data->abort_wq);
 		mutex_unlock(&send_cmd_lock);
 		if (ret)
-			PDEBUG("failed tzcom_send_cmd: %d", ret);
+			PERR("failed tzcom_send_cmd: %d", ret);
+		break;
+	}
+	case TZCOM_IOCTL_SEND_CMD_FD_REQ: {
+		PDEBUG("ioctl send_cmd_req()");
+		/* Only one client allowed here at a time */
+		mutex_lock(&send_cmd_lock);
+		atomic_inc(&tzcom_data->ioctl_count);
+		ret = tzcom_send_cmd_with_fd(tzcom_data, argp);
+		atomic_dec(&tzcom_data->ioctl_count);
+		wake_up_interruptible(&tzcom_data->abort_wq);
+		mutex_unlock(&send_cmd_lock);
+		if (ret)
+			PERR("failed tzcom_send_cmd: %d", ret);
 		break;
 	}
 	case TZCOM_IOCTL_READ_NEXT_CMD_REQ: {
 		PDEBUG("ioctl read_next_cmd_req()");
+		atomic_inc(&tzcom_data->ioctl_count);
 		ret = tzcom_read_next_cmd(tzcom_data, argp);
+		atomic_dec(&tzcom_data->ioctl_count);
+		wake_up_interruptible(&tzcom_data->abort_wq);
 		if (ret)
-			PDEBUG("failed tzcom_read_next: %d", ret);
+			PERR("failed tzcom_read_next: %d", ret);
 		break;
 	}
 	case TZCOM_IOCTL_CONTINUE_CMD_REQ: {
 		PDEBUG("ioctl continue_cmd_req()");
+		atomic_inc(&tzcom_data->ioctl_count);
 		ret = tzcom_cont_cmd(tzcom_data, argp);
+		atomic_dec(&tzcom_data->ioctl_count);
+		wake_up_interruptible(&tzcom_data->abort_wq);
 		if (ret)
-			PDEBUG("failed tzcom_cont_cmd: %d", ret);
+			PERR("failed tzcom_cont_cmd: %d", ret);
+		break;
+	}
+	case TZCOM_IOCTL_ABORT_REQ: {
+		PDEBUG("ioctl abort_req()");
+		ret = tzcom_abort(tzcom_data);
+		if (ret)
+			PERR("failed tzcom_abort: %d", ret);
 		break;
 	}
 	default:
@@ -651,6 +914,7 @@ static long tzcom_ioctl(struct file *file, unsigned cmd,
 
 static int tzcom_open(struct inode *inode, struct file *file)
 {
+	int ret;
 	long pil_error;
 	struct tz_pr_init_sb_req_s sb_out_init_req;
 	struct tz_pr_init_sb_rsp_s sb_out_init_rsp;
@@ -660,15 +924,18 @@ static int tzcom_open(struct inode *inode, struct file *file)
 	struct tzcom_data_t *tzcom_data;
 
 	PDEBUG("In here");
+
+	ret = tzcom_enable_bus_scaling();
+
 	if (pil == NULL) {
-		pil = pil_get("playrdy");
+		pil = pil_get("tzapps");
 		if (IS_ERR(pil)) {
 			PERR("Playready PIL image load failed");
 			pil_error = PTR_ERR(pil);
 			pil = NULL;
 			return pil_error;
 		}
-		PDEBUG("playrdy image loaded successfully");
+		PDEBUG("tzapps image loaded successfully");
 	}
 
 	sb_out_init_req.pr_cmd = TZ_SCHED_CMD_ID_INIT_SB_OUT;
@@ -693,28 +960,27 @@ static int tzcom_open(struct inode *inode, struct file *file)
 			"sb_in_cmd_len: %u }",
 			cmd.cmd_type, cmd.sb_in_cmd_addr, cmd.sb_in_cmd_len);
 
-	resp.cmd_status = 0;
-	resp.sb_in_rsp_addr = (u8 *)cmd.sb_in_cmd_addr + cmd.sb_in_cmd_len;
-	resp.sb_in_rsp_len = sizeof(sb_out_init_rsp);
-	PDEBUG("tzcom_response before scm { cmd_status: %u, "
-			"sb_in_rsp_addr: %p, sb_in_rsp_len: %u }",
-			resp.cmd_status, resp.sb_in_rsp_addr,
-			resp.sb_in_rsp_len);
+	resp.cmd_status = TZ_SCHED_STATUS_INCOMPLETE;
 
 	PDEBUG("Before scm_call for sb_init");
-	tzcom_scm_call(&cmd, sizeof(cmd), &resp, sizeof(resp));
+	ret = tzcom_scm_call(&cmd, sizeof(cmd), &resp, sizeof(resp));
+	if (ret) {
+		PERR("tzcom_scm_call failed with err: %d", ret);
+		return ret;
+	}
 	PDEBUG("After scm_call for sb_init");
-	PDEBUG("tzcom_response after scm { cmd_status: %u, "
-			"sb_in_rsp_addr: %p, sb_in_rsp_len: %u }",
-			resp.cmd_status, resp.sb_in_rsp_addr,
-			resp.sb_in_rsp_len);
 
-	if (resp.sb_in_rsp_addr) {
+	PDEBUG("tzcom_response after scm cmd_status: %u", resp.cmd_status);
+	if (resp.cmd_status == TZ_SCHED_STATUS_COMPLETE) {
+		resp.sb_in_rsp_addr = (u8 *)cmd.sb_in_cmd_addr +
+				cmd.sb_in_cmd_len;
+		resp.sb_in_rsp_len = sizeof(sb_out_init_rsp);
+		PDEBUG("tzcom_response sb_in_rsp_addr: %p, sb_in_rsp_len: %u",
+				resp.sb_in_rsp_addr, resp.sb_in_rsp_len);
 		rsp_addr_virt = tzcom_phys_to_virt((unsigned long)
 				resp.sb_in_rsp_addr);
 		PDEBUG("Received response phys: %p, virt: %p",
-				resp.sb_in_rsp_addr,
-				rsp_addr_virt);
+				resp.sb_in_rsp_addr, rsp_addr_virt);
 		memcpy(&sb_out_init_rsp, rsp_addr_virt, resp.sb_in_rsp_len);
 	} else {
 		PERR("Error with SB initialization");
@@ -747,6 +1013,9 @@ static int tzcom_open(struct inode *inode, struct file *file)
 	init_waitqueue_head(&tzcom_data->cont_cmd_wq);
 	tzcom_data->cont_cmd_flag = 0;
 	tzcom_data->handled_cmd_svc_instance_id = 0;
+	tzcom_data->abort = 0;
+	init_waitqueue_head(&tzcom_data->abort_wq);
+	atomic_set(&tzcom_data->ioctl_count, 0);
 	return 0;
 }
 
@@ -755,27 +1024,72 @@ static int tzcom_release(struct inode *inode, struct file *file)
 	struct tzcom_data_t *tzcom_data = file->private_data;
 	struct tzcom_callback_list *lcb, *ncb;
 	struct tzcom_registered_svc_list *lsvc, *nsvc;
+	unsigned long flags;
 	PDEBUG("In here");
 
-	wake_up_all(&tzcom_data->cont_cmd_wq);
+	if (!tzcom_data->abort) {
+		PDEBUG("Calling abort");
+		tzcom_abort(tzcom_data);
+	}
 
+	PDEBUG("Before removing callback list");
+	mutex_lock(&tzcom_data->callback_list_lock);
 	list_for_each_entry_safe(lcb, ncb,
 			&tzcom_data->callback_list_head, list) {
 		list_del(&lcb->list);
 		kfree(lcb);
 	}
+	mutex_unlock(&tzcom_data->callback_list_lock);
+	PDEBUG("After removing callback list");
 
+	PDEBUG("Before removing svc list");
+	spin_lock_irqsave(&tzcom_data->registered_svc_list_lock, flags);
 	list_for_each_entry_safe(lsvc, nsvc,
 			&tzcom_data->registered_svc_list_head, list) {
-		wake_up_all(&lsvc->next_cmd_wq);
 		list_del(&lsvc->list);
 		kfree(lsvc);
 	}
-
+	spin_unlock_irqrestore(&tzcom_data->registered_svc_list_lock, flags);
+	PDEBUG("After removing svc list");
+	if (pil != NULL) {
+		pil_put(pil);
+		pil = NULL;
+	}
+	PDEBUG("Freeing tzcom data");
 	kfree(tzcom_data);
+	tzcom_disable_bus_scaling();
 	return 0;
 }
 
+static struct msm_bus_paths tzcom_bw_table[] = {
+	{
+		.vectors = (struct msm_bus_vectors[]){
+			{
+				.src = MSM_BUS_MASTER_SPS,
+				.dst = MSM_BUS_SLAVE_EBI_CH0,
+			},
+		},
+		.num_paths = 1,
+	},
+	{
+		.vectors = (struct msm_bus_vectors[]){
+			{
+				.src = MSM_BUS_MASTER_SPS,
+				.dst = MSM_BUS_SLAVE_EBI_CH0,
+				.ib = (492 * 8) * 1000000UL,
+				.ab = (492 * 8) *  100000UL,
+			},
+		},
+		.num_paths = 1,
+	},
+
+};
+
+static struct msm_bus_scale_pdata tzcom_bus_pdata = {
+	.usecase = tzcom_bw_table,
+	.num_usecases = ARRAY_SIZE(tzcom_bw_table),
+	.name = "tzcom",
+};
 static const struct file_operations tzcom_fops = {
 		.owner = THIS_MODULE,
 		.unlocked_ioctl = tzcom_ioctl,
@@ -824,6 +1138,7 @@ static int __init tzcom_init(void)
 			PMEM_ALIGNMENT_4K);
 	if (IS_ERR((void *)sb_in_phys)) {
 		PERR("could not allocte in kernel pmem buffers for sb_in");
+		sb_in_phys = 0;
 		rc = -ENOMEM;
 		goto class_device_destroy;
 	}
@@ -843,6 +1158,7 @@ static int __init tzcom_init(void)
 			PMEM_ALIGNMENT_4K);
 	if (IS_ERR((void *)sb_out_phys)) {
 		PERR("could not allocte in kernel pmem buffers for sb_out");
+		sb_out_phys = 0;
 		rc = -ENOMEM;
 		goto class_device_destroy;
 	}
@@ -857,9 +1173,22 @@ static int __init tzcom_init(void)
 	}
 	PDEBUG("sb_out virt address: %p, phys address: 0x%x",
 			sb_out_virt, tzcom_virt_to_phys(sb_out_virt));
-
+	ion_clnt = msm_ion_client_create(0x03, "tzcom");
 	/* Initialized in tzcom_open */
 	pil = NULL;
+
+	tzcom_perf_client = msm_bus_scale_register_client(&tzcom_bus_pdata);
+	if (!tzcom_perf_client) {
+		pr_err("Unable to register bus client");
+		BUG();
+	}
+	tzcom_bus_clk = clk_get(class_dev, "bus_clk");
+	if (IS_ERR(tzcom_bus_clk)) {
+		pr_err("unable to get bus clk\n");
+	} else {
+		pr_warn("Enabled clock\n");
+		clk_set_rate(tzcom_bus_clk, 64000000);
+	}
 
 	return 0;
 
@@ -892,12 +1221,17 @@ static void __exit tzcom_exit(void)
 	if (sb_out_phys)
 		pmem_kfree(sb_out_phys);
 	if (pil != NULL) {
-		pil_put("playrdy");
+		pil_put(pil);
 		pil = NULL;
+	}
+	if (!IS_ERR_OR_NULL(tzcom_bus_clk)) {
+		pr_warn("Disabled clock\n");
+		clk_put(tzcom_bus_clk);
 	}
 	device_destroy(driver_class, tzcom_device_no);
 	class_destroy(driver_class);
 	unregister_chrdev_region(tzcom_device_no, 1);
+	ion_client_destroy(ion_clnt);
 }
 
 

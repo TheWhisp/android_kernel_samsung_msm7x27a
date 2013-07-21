@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -172,9 +172,15 @@ enum msm_spi_state {
 
 static char const * const spi_rsrcs[] = {
 	"spi_clk",
-	"spi_cs",
 	"spi_miso",
 	"spi_mosi"
+};
+
+static char const * const spi_cs_rsrcs[] = {
+	"spi_cs",
+	"spi_cs1",
+	"spi_cs2",
+	"spi_cs3",
 };
 
 enum msm_spi_mode {
@@ -182,6 +188,12 @@ enum msm_spi_mode {
 	SPI_BLOCK_MODE = 0x1,  /* 01 */
 	SPI_DMOV_MODE  = 0x2,  /* 10 */
 	SPI_MODE_NONE  = 0xFF, /* invalid value */
+};
+
+/* Structure for SPI CS GPIOs */
+struct spi_cs_gpio {
+	int  gpio_num;
+	bool valid;
 };
 
 /* Structures for Data Mover */
@@ -267,14 +279,14 @@ struct msm_spi {
 	u32                      rx_bytes_remaining;
 	u32                      tx_bytes_remaining;
 	u32                      clock_speed;
-	u32                      irq_in;
+	int                      irq_in;
 	int                      read_xfr_cnt;
 	int                      write_xfr_cnt;
 	int                      write_len;
 	int                      read_len;
 #if defined(CONFIG_SPI_QSD) || defined(CONFIG_SPI_QSD_MODULE)
-	u32                      irq_out;
-	u32                      irq_err;
+	int                      irq_out;
+	int                      irq_err;
 #endif
 	int                      bytes_per_word;
 	bool                     suspended;
@@ -330,8 +342,10 @@ struct msm_spi {
 	struct spi_transfer     *cur_rx_transfer;
 	/* Temporary buffer used for WR-WR or WR-RD transfers */
 	u8                      *temp_buf;
-	/* GPIO pin numbers for SPI clk, cs, miso and mosi */
+	/* GPIO pin numbers for SPI clk, miso and mosi */
 	int                      spi_gpios[ARRAY_SIZE(spi_rsrcs)];
+	/* SPI CS GPIOs for each slave */
+	struct spi_cs_gpio       cs_gpios[ARRAY_SIZE(spi_cs_rsrcs)];
 };
 
 /* Forward declaration */
@@ -635,8 +649,8 @@ static inline int msm_spi_request_gpios(struct msm_spi *dd)
 		if (dd->spi_gpios[i] >= 0) {
 			result = gpio_request(dd->spi_gpios[i], spi_rsrcs[i]);
 			if (result) {
-				pr_err("%s: gpio_request for pin %d failed\
-					with error%d\n", __func__,
+				dev_err(dd->dev, "%s: gpio_request for pin %d "
+					"failed with error %d\n", __func__,
 					dd->spi_gpios[i], result);
 				goto error;
 			}
@@ -659,6 +673,13 @@ static inline void msm_spi_free_gpios(struct msm_spi *dd)
 	for (i = 0; i < ARRAY_SIZE(spi_rsrcs); ++i) {
 		if (dd->spi_gpios[i] >= 0)
 			gpio_free(dd->spi_gpios[i]);
+	}
+
+	for (i = 0; i < ARRAY_SIZE(spi_cs_rsrcs); ++i) {
+		if (dd->cs_gpios[i].valid) {
+			gpio_free(dd->cs_gpios[i].gpio_num);
+			dd->cs_gpios[i].valid = 0;
+		}
 	}
 }
 
@@ -837,14 +858,19 @@ static inline int msm_spi_wait_valid(struct msm_spi *dd)
 	 */
 	if (delay < SPI_DELAY_THRESHOLD)
 		delay = SPI_DELAY_THRESHOLD;
-	timeout = jiffies + msecs_to_jiffies(delay * SPI_DEFAULT_TIMEOUT);
+
+	/* Adding one to round off to the nearest jiffy */
+	timeout = jiffies + msecs_to_jiffies(delay * SPI_DEFAULT_TIMEOUT) + 1;
 	while (!msm_spi_is_valid_state(dd)) {
 		if (time_after(jiffies, timeout)) {
-			if (dd->cur_msg)
-				dd->cur_msg->status = -EIO;
-			dev_err(dd->dev, "%s: SPI operational state not valid"
-				"\n", __func__);
-			return -1;
+			if (!msm_spi_is_valid_state(dd)) {
+				if (dd->cur_msg)
+					dd->cur_msg->status = -EIO;
+				dev_err(dd->dev, "%s: SPI operational state"
+					"not valid\n", __func__);
+				return -ETIMEDOUT;
+			} else
+				return 0;
 		}
 		/*
 		 * For smaller values of delay, context switch time
@@ -1242,7 +1268,7 @@ static int msm_spi_map_dma_buffers(struct msm_spi *dd)
 {
 	struct device *dev;
 	struct spi_transfer *first_xfr;
-	struct spi_transfer *nxt_xfr;
+	struct spi_transfer *nxt_xfr = NULL;
 	void *tx_buf, *rx_buf;
 	unsigned tx_len, rx_len;
 	int ret = -EINVAL;
@@ -1647,7 +1673,24 @@ static inline int combine_transfers(struct msm_spi *dd)
 static void msm_spi_process_message(struct msm_spi *dd)
 {
 	int xfrs_grped = 0;
+	int cs_num;
+	int rc;
+
 	dd->write_xfr_cnt = dd->read_xfr_cnt = 0;
+	cs_num = dd->cur_msg->spi->chip_select;
+	if ((!(dd->cur_msg->spi->mode & SPI_LOOP)) &&
+		(!(dd->cs_gpios[cs_num].valid)) &&
+		(dd->cs_gpios[cs_num].gpio_num >= 0)) {
+		rc = gpio_request(dd->cs_gpios[cs_num].gpio_num,
+				spi_cs_rsrcs[cs_num]);
+		if (rc) {
+			dev_err(dd->dev, "gpio_request for pin %d failed with "
+				"error %d\n", dd->cs_gpios[cs_num].gpio_num,
+				rc);
+			return;
+		}
+		dd->cs_gpios[cs_num].valid = 1;
+	}
 
 	dd->cur_transfer = list_first_entry(&dd->cur_msg->transfers,
 					    struct spi_transfer,
@@ -1659,7 +1702,7 @@ static void msm_spi_process_message(struct msm_spi *dd)
 				    &dd->cur_msg->transfers,
 				    transfer_list) {
 			if (!dd->cur_transfer->len)
-				return;
+				goto error;
 			if (xfrs_grped) {
 				xfrs_grped--;
 				continue;
@@ -1681,11 +1724,19 @@ static void msm_spi_process_message(struct msm_spi *dd)
 			int ret = msm_spi_map_dma_buffers(dd);
 			if (ret < 0) {
 				dd->cur_msg->status = ret;
-				return;
+				goto error;
 			}
 		}
 		dd->cur_tx_transfer = dd->cur_rx_transfer = dd->cur_transfer;
 		msm_spi_process_transfer(dd);
+	}
+
+	return;
+
+error:
+	if (dd->cs_gpios[cs_num].valid) {
+		gpio_free(dd->cs_gpios[cs_num].gpio_num);
+		dd->cs_gpios[cs_num].valid = 0;
 	}
 }
 
@@ -2134,7 +2185,6 @@ static __init int msm_spi_init_dma(struct msm_spi *dd)
 				   DMOV_CMD_ADDR(dd->rx_dmov_cmd_dma +
 				   offsetof(struct spi_dmov_cmd, cmd_ptr));
 	dd->rx_hdr.complete_func = spi_dmov_rx_complete_func;
-	dd->rx_hdr.crci_mask = msm_dmov_build_crci_mask(1, dd->rx_dma_crci);
 
 	box = &(dd->tx_dmov_cmd->box);
 	box->cmd = CMD_MODE_BOX | CMD_DST_CRCI(dd->tx_dma_crci);
@@ -2143,7 +2193,6 @@ static __init int msm_spi_init_dma(struct msm_spi *dd)
 			    DMOV_CMD_ADDR(dd->tx_dmov_cmd_dma +
 			    offsetof(struct spi_dmov_cmd, cmd_ptr));
 	dd->tx_hdr.complete_func = spi_dmov_tx_complete_func;
-	dd->tx_hdr.crci_mask = msm_dmov_build_crci_mask(1, dd->tx_dma_crci);
 
 	dd->tx_dmov_cmd->single_pad.cmd = CMD_MODE_SINGLE | CMD_LC |
 					  CMD_DST_CRCI(dd->tx_dma_crci);
@@ -2254,9 +2303,17 @@ skip_dma_resources:
 		dd->spi_gpios[i] = resource ? resource->start : -1;
 	}
 
+	for (i = 0; i < ARRAY_SIZE(spi_cs_rsrcs); ++i) {
+		resource = platform_get_resource_byname(pdev, IORESOURCE_IO,
+							spi_cs_rsrcs[i]);
+		dd->cs_gpios[i].gpio_num = resource ? resource->start : -1;
+		dd->cs_gpios[i].valid = 0;
+	}
+
 	rc = msm_spi_request_gpios(dd);
 	if (rc)
 		goto err_probe_gpio;
+
 	spin_lock_init(&dd->queue_lock);
 	mutex_init(&dd->core_lock);
 	INIT_LIST_HEAD(&dd->queue);
@@ -2302,16 +2359,16 @@ skip_dma_resources:
 	locked = 1;
 
 	dd->dev = &pdev->dev;
-	dd->clk = clk_get(&pdev->dev, "spi_clk");
+	dd->clk = clk_get(&pdev->dev, "core_clk");
 	if (IS_ERR(dd->clk)) {
-		dev_err(&pdev->dev, "%s: unable to get spi_clk\n", __func__);
+		dev_err(&pdev->dev, "%s: unable to get core_clk\n", __func__);
 		rc = PTR_ERR(dd->clk);
 		goto err_probe_clk_get;
 	}
 
-	dd->pclk = clk_get(&pdev->dev, "spi_pclk");
+	dd->pclk = clk_get(&pdev->dev, "iface_clk");
 	if (IS_ERR(dd->pclk)) {
-		dev_err(&pdev->dev, "%s: unable to get spi_pclk\n", __func__);
+		dev_err(&pdev->dev, "%s: unable to get iface_clk\n", __func__);
 		rc = PTR_ERR(dd->pclk);
 		goto err_probe_pclk_get;
 	}
@@ -2321,7 +2378,7 @@ skip_dma_resources:
 
 	rc = clk_enable(dd->clk);
 	if (rc) {
-		dev_err(&pdev->dev, "%s: unable to enable spi_clk\n",
+		dev_err(&pdev->dev, "%s: unable to enable core_clk\n",
 			__func__);
 		goto err_probe_clk_enable;
 	}
@@ -2329,7 +2386,7 @@ skip_dma_resources:
 
 	rc = clk_enable(dd->pclk);
 	if (rc) {
-		dev_err(&pdev->dev, "%s: unable to enable spi_pclk\n",
+		dev_err(&pdev->dev, "%s: unable to enable iface_clk\n",
 		__func__);
 		goto err_probe_pclk_enable;
 	}

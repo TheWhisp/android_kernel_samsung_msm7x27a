@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -39,7 +39,12 @@ struct snd_msm {
 	struct snd_pcm *pcm;
 };
 
-static struct snd_pcm_hardware msm_pcm_hardware = {
+#define PLAYBACK_NUM_PERIODS	8
+#define PLAYBACK_PERIOD_SIZE	2048
+#define CAPTURE_NUM_PERIODS	16
+#define CAPTURE_PERIOD_SIZE	320
+
+static struct snd_pcm_hardware msm_pcm_hardware_capture = {
 	.info =                 (SNDRV_PCM_INFO_MMAP |
 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
 				SNDRV_PCM_INFO_MMAP_VALID |
@@ -51,11 +56,31 @@ static struct snd_pcm_hardware msm_pcm_hardware = {
 	.rate_max =             48000,
 	.channels_min =         1,
 	.channels_max =         2,
-	.buffer_bytes_max =     4096 * 8,
-	.period_bytes_min =	4096,
-	.period_bytes_max =     4096,
-	.periods_min =          8,
-	.periods_max =          8,
+	.buffer_bytes_max =     CAPTURE_NUM_PERIODS * CAPTURE_PERIOD_SIZE,
+	.period_bytes_min =	CAPTURE_PERIOD_SIZE,
+	.period_bytes_max =     CAPTURE_PERIOD_SIZE,
+	.periods_min =          CAPTURE_NUM_PERIODS,
+	.periods_max =          CAPTURE_NUM_PERIODS,
+	.fifo_size =            0,
+};
+
+static struct snd_pcm_hardware msm_pcm_hardware_playback = {
+	.info =                 (SNDRV_PCM_INFO_MMAP |
+				SNDRV_PCM_INFO_BLOCK_TRANSFER |
+				SNDRV_PCM_INFO_MMAP_VALID |
+				SNDRV_PCM_INFO_INTERLEAVED |
+				SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
+	.formats =              SNDRV_PCM_FMTBIT_S16_LE,
+	.rates =                SNDRV_PCM_RATE_8000_48000,
+	.rate_min =             8000,
+	.rate_max =             48000,
+	.channels_min =         1,
+	.channels_max =         2,
+	.buffer_bytes_max =     PLAYBACK_NUM_PERIODS * PLAYBACK_PERIOD_SIZE,
+	.period_bytes_min =	PLAYBACK_PERIOD_SIZE,
+	.period_bytes_max =     PLAYBACK_PERIOD_SIZE,
+	.periods_min =          PLAYBACK_NUM_PERIODS,
+	.periods_max =          PLAYBACK_NUM_PERIODS,
 	.fifo_size =            0,
 };
 
@@ -64,7 +89,7 @@ static unsigned int supported_sample_rates[] = {
 	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
 };
 
-static uint32_t in_frame_info[8][2];
+static uint32_t in_frame_info[CAPTURE_NUM_PERIODS][2];
 
 static struct snd_pcm_hw_constraint_list constraints_sample_rates = {
 	.count = ARRAY_SIZE(supported_sample_rates),
@@ -96,12 +121,12 @@ static void event_handler(uint32_t opcode,
 			break;
 		if (!prtd->mmap_flag)
 			break;
-		if (q6asm_is_cpu_buf_avail(IN,
+		if (q6asm_is_cpu_buf_avail_nolock(IN,
 				prtd->audio_client,
 				&size, &idx)) {
 			pr_debug("%s:writing %d bytes of buffer to dsp 2\n",
 					__func__, prtd->pcm_count);
-			q6asm_write(prtd->audio_client,
+			q6asm_write_nolock(prtd->audio_client,
 				prtd->pcm_count, 0, 0, NO_TIMESTAMP);
 		}
 		break;
@@ -126,27 +151,26 @@ static void event_handler(uint32_t opcode,
 			atomic_inc(&prtd->in_count);
 		wake_up(&the_locks.read_wait);
 		if (prtd->mmap_flag
-			&& q6asm_is_cpu_buf_avail(OUT,
+			&& q6asm_is_cpu_buf_avail_nolock(OUT,
 				prtd->audio_client,
 				&size, &idx))
-			q6asm_read(prtd->audio_client);
+			q6asm_read_nolock(prtd->audio_client);
 		break;
 	}
 	case APR_BASIC_RSP_RESULT: {
-		if (!prtd->mmap_flag
-			&& !atomic_read(&prtd->out_needed))
-			break;
 		switch (payload[0]) {
 		case ASM_SESSION_CMD_RUN:
 			if (substream->stream
-				!= SNDRV_PCM_STREAM_PLAYBACK)
+				!= SNDRV_PCM_STREAM_PLAYBACK) {
+				atomic_set(&prtd->start, 1);
 				break;
+			}
 			if (prtd->mmap_flag) {
 				pr_debug("%s:writing %d bytes"
 					" of buffer to dsp\n",
 					__func__,
 					prtd->pcm_count);
-				q6asm_write(prtd->audio_client,
+				q6asm_write_nolock(prtd->audio_client,
 					prtd->pcm_count,
 					0, 0, NO_TIMESTAMP);
 			} else {
@@ -155,13 +179,14 @@ static void event_handler(uint32_t opcode,
 						 " of buffer to dsp\n",
 						__func__,
 						prtd->pcm_count);
-					q6asm_write(prtd->audio_client,
+					q6asm_write_nolock(prtd->audio_client,
 						prtd->pcm_count,
 						0, 0, NO_TIMESTAMP);
 					atomic_dec(&prtd->out_needed);
 					wake_up(&the_locks.write_wait);
 				};
 			}
+			atomic_set(&prtd->start, 1);
 			break;
 		default:
 			break;
@@ -249,7 +274,6 @@ static int msm_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 		pr_debug("%s: Trigger start\n", __func__);
 		q6asm_run_nowait(prtd->audio_client, 0, 0, 0);
-		atomic_set(&prtd->start, 1);
 		break;
 	case SNDRV_PCM_TRIGGER_STOP:
 		pr_debug("SNDRV_PCM_TRIGGER_STOP\n");
@@ -286,7 +310,6 @@ static int msm_pcm_open(struct snd_pcm_substream *substream)
 		pr_err("Failed to allocate memory for msm_audio\n");
 		return -ENOMEM;
 	}
-	runtime->hw = msm_pcm_hardware;
 	prtd->substream = substream;
 	prtd->audio_client = q6asm_audio_client_alloc(
 				(app_cb)event_handler, prtd);
@@ -296,6 +319,7 @@ static int msm_pcm_open(struct snd_pcm_substream *substream)
 		return -ENOMEM;
 	}
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+		runtime->hw = msm_pcm_hardware_playback;
 		ret = q6asm_open_write(prtd->audio_client, FORMAT_LINEAR_PCM);
 		if (ret < 0) {
 			pr_err("%s: pcm out open failed\n", __func__);
@@ -306,6 +330,7 @@ static int msm_pcm_open(struct snd_pcm_substream *substream)
 	}
 	/* Capture path */
 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+		runtime->hw = msm_pcm_hardware_capture;
 		ret = q6asm_open_read(prtd->audio_client, FORMAT_LINEAR_PCM);
 		if (ret < 0) {
 			pr_err("%s: pcm in open failed\n", __func__);
@@ -315,7 +340,7 @@ static int msm_pcm_open(struct snd_pcm_substream *substream)
 		}
 	}
 
-	pr_info("%s: session ID %d\n", __func__, prtd->audio_client->session);
+	pr_debug("%s: session ID %d\n", __func__, prtd->audio_client->session);
 
 	prtd->session_id = prtd->audio_client->session;
 	msm_pcm_routing_reg_phy_stream(soc_prtd->dai_link->be_id,
@@ -568,16 +593,25 @@ static snd_pcm_uframes_t msm_pcm_pointer(struct snd_pcm_substream *substream)
 static int msm_pcm_mmap(struct snd_pcm_substream *substream,
 				struct vm_area_struct *vma)
 {
+	int result = 0;
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct msm_audio *prtd = runtime->private_data;
 
 	pr_debug("%s\n", __func__);
 	prtd->mmap_flag = 1;
-	dma_mmap_coherent(substream->pcm->card->dev, vma,
-				     runtime->dma_area,
-				     runtime->dma_addr,
-				     runtime->dma_bytes);
-	return 0;
+
+	if (runtime->dma_addr && runtime->dma_bytes) {
+		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+		result = remap_pfn_range(vma, vma->vm_start,
+				runtime->dma_addr >> PAGE_SHIFT,
+				runtime->dma_bytes,
+				vma->vm_page_prot);
+	} else {
+		pr_err("Physical address or size of buf is NULL");
+		return -EINVAL;
+	}
+
+	return result;
 }
 
 static int msm_pcm_hw_params(struct snd_pcm_substream *substream,

@@ -471,6 +471,7 @@ static int core_scsi3_pr_seq_non_holder(
 	case READ_MEDIA_SERIAL_NUMBER:
 	case REPORT_LUNS:
 	case REQUEST_SENSE:
+	case PERSISTENT_RESERVE_IN:
 		ret = 0; /*/ Allowed CDBs */
 		break;
 	default:
@@ -478,7 +479,7 @@ static int core_scsi3_pr_seq_non_holder(
 		break;
 	}
 	/*
-	 * Case where the CDB is explictly allowed in the above switch
+	 * Case where the CDB is explicitly allowed in the above switch
 	 * statement.
 	 */
 	if (!(ret) && !(other_cdb)) {
@@ -1916,7 +1917,7 @@ static int __core_scsi3_update_aptpl_buf(
 				pr_reg->pr_res_mapped_lun);
 		}
 
-		if ((len + strlen(tmp) > pr_aptpl_buf_len)) {
+		if ((len + strlen(tmp) >= pr_aptpl_buf_len)) {
 			printk(KERN_ERR "Unable to update renaming"
 				" APTPL metadata\n");
 			spin_unlock(&T10_RES(su_dev)->registration_lock);
@@ -1934,7 +1935,7 @@ static int __core_scsi3_update_aptpl_buf(
 			TPG_TFO(tpg)->tpg_get_tag(tpg),
 			lun->lun_sep->sep_rtpi, lun->unpacked_lun, reg_count);
 
-		if ((len + strlen(tmp) > pr_aptpl_buf_len)) {
+		if ((len + strlen(tmp) >= pr_aptpl_buf_len)) {
 			printk(KERN_ERR "Unable to update renaming"
 				" APTPL metadata\n");
 			spin_unlock(&T10_RES(su_dev)->registration_lock);
@@ -1986,7 +1987,7 @@ static int __core_scsi3_write_aptpl_to_file(
 	memset(iov, 0, sizeof(struct iovec));
 	memset(path, 0, 512);
 
-	if (strlen(&wwn->unit_serial[0]) > 512) {
+	if (strlen(&wwn->unit_serial[0]) >= 512) {
 		printk(KERN_ERR "WWN value for struct se_device does not fit"
 			" into path buffer\n");
 		return -1;
@@ -3079,7 +3080,7 @@ static int core_scsi3_pro_preempt(
 			if (!(calling_it_nexus))
 				core_scsi3_ua_allocate(pr_reg_nacl,
 					pr_res_mapped_lun, 0x2A,
-					ASCQ_2AH_RESERVATIONS_PREEMPTED);
+					ASCQ_2AH_REGISTRATIONS_PREEMPTED);
 		}
 		spin_unlock(&pr_tmpl->registration_lock);
 		/*
@@ -3191,7 +3192,7 @@ static int core_scsi3_pro_preempt(
 		 *    additional sense code set to REGISTRATIONS PREEMPTED;
 		 */
 		core_scsi3_ua_allocate(pr_reg_nacl, pr_res_mapped_lun, 0x2A,
-				ASCQ_2AH_RESERVATIONS_PREEMPTED);
+				ASCQ_2AH_REGISTRATIONS_PREEMPTED);
 	}
 	spin_unlock(&pr_tmpl->registration_lock);
 	/*
@@ -3735,7 +3736,7 @@ static int core_scsi3_emulate_pr_out(struct se_cmd *cmd, unsigned char *cdb)
 		return PYX_TRANSPORT_LU_COMM_FAILURE;
 
 	if (cmd->data_length < 24) {
-		printk(KERN_WARNING "SPC-PR: Recieved PR OUT parameter list"
+		printk(KERN_WARNING "SPC-PR: Received PR OUT parameter list"
 			" length too small: %u\n", cmd->data_length);
 		return PYX_TRANSPORT_INVALID_PARAMETER_LIST;
 	}
@@ -3778,7 +3779,7 @@ static int core_scsi3_emulate_pr_out(struct se_cmd *cmd, unsigned char *cdb)
 	 */
 	if (!(spec_i_pt) && ((cdb[1] & 0x1f) != PRO_REGISTER_AND_MOVE) &&
 	    (cmd->data_length != 24)) {
-		printk(KERN_WARNING "SPC-PR: Recieved PR OUT illegal parameter"
+		printk(KERN_WARNING "SPC-PR: Received PR OUT illegal parameter"
 			" list length: %u\n", cmd->data_length);
 		return PYX_TRANSPORT_INVALID_PARAMETER_LIST;
 	}

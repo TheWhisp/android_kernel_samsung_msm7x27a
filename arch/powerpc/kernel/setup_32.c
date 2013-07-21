@@ -48,6 +48,7 @@ extern void bootx_init(unsigned long r4, unsigned long phys);
 
 int boot_cpuid = -1;
 EXPORT_SYMBOL_GPL(boot_cpuid);
+int __initdata boot_cpu_count;
 int boot_cpuid_phys;
 
 int smp_hw_index[NR_CPUS];
@@ -105,6 +106,8 @@ notrace unsigned long __init early_init(unsigned long dt_ptr)
 	do_lwsync_fixups(spec->cpu_features,
 			 PTRRELOC(&__start___lwsync_fixup),
 			 PTRRELOC(&__stop___lwsync_fixup));
+
+	do_final_fixups();
 
 	return KERNELBASE + offset;
 }

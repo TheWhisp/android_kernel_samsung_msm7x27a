@@ -1,29 +1,13 @@
-/* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- *       copyright notice, this list of conditions and the following
- *       disclaimer in the documentation and/or other materials provided
- *       with the distribution.
- *     * Neither the name of Code Aurora Forum, Inc. nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
- * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  */
 
@@ -90,27 +74,24 @@ struct bank_masks {
 	const struct bank_mask_info	bank1_mask;
 };
 
-#define F_RAW(f, sc, m_v, n_v, c_v, m_m, v, e) { \
+#define F_RAW(f, sc, m_v, n_v, c_v, m_m, e) { \
 	.freq_hz = f, \
 	.src_clk = sc, \
 	.md_val = m_v, \
 	.ns_val = n_v, \
 	.ctl_val = c_v, \
 	.mnd_en_mask = m_m, \
-	.sys_vdd = v, \
 	.extra_freq_data = e, \
 	}
 #define FREQ_END	(UINT_MAX-1)
-#define F_END \
-	{ \
-		.freq_hz = FREQ_END, \
-		.sys_vdd = LOW, \
-	}
+#define F_END { .freq_hz = FREQ_END }
 
 /**
  * struct branch - branch on/off
  * @ctl_reg: clock control register
  * @en_mask: ORed with @ctl_reg to enable the clock
+ * @hwcg_reg: hardware clock gating register
+ * @hwcg_mask: ORed with @hwcg_reg to enable hardware clock gating
  * @halt_reg: halt register
  * @halt_check: type of halt check to perform
  * @halt_bit: ANDed with @halt_reg to test for clock halted
@@ -121,15 +102,25 @@ struct branch {
 	void __iomem *const ctl_reg;
 	const u32 en_mask;
 
+	void __iomem *hwcg_reg;
+	u32 hwcg_mask;
+
 	void __iomem *const halt_reg;
 	const u16 halt_check;
 	const u16 halt_bit;
 
 	void __iomem *const reset_reg;
 	const u32 reset_mask;
+
+	void __iomem *const retain_reg;
+	const u32 retain_mask;
 };
 
-int branch_reset(struct branch *clk, enum clk_reset_action action);
+int branch_reset(struct branch *b, enum clk_reset_action action);
+void __branch_clk_enable_reg(const struct branch *clk, const char *name);
+u32 __branch_clk_disable_reg(const struct branch *clk, const char *name);
+int branch_clk_handoff(struct clk *c);
+int branch_clk_set_flags(struct clk *clk, unsigned flags);
 
 /*
  * Generic clock-definition struct and macros
@@ -142,13 +133,13 @@ struct rcg_clk {
 	const uint32_t	root_en_mask;
 	uint32_t	ns_mask;
 	const uint32_t	ctl_mask;
-	struct bank_masks *const bank_masks;
 
+	void		*bank_info;
 	void   (*set_rate)(struct rcg_clk *, struct clk_freq_tbl *);
-	struct clk_freq_tbl *const freq_tbl;
+
+	struct clk_freq_tbl *freq_tbl;
 	struct clk_freq_tbl *current_freq;
 
-	struct clk *depends;
 	struct branch	b;
 	struct clk	c;
 };
@@ -158,27 +149,51 @@ static inline struct rcg_clk *to_rcg_clk(struct clk *clk)
 	return container_of(clk, struct rcg_clk, c);
 }
 
+extern struct clk_freq_tbl rcg_dummy_freq;
+
 int rcg_clk_enable(struct clk *clk);
 void rcg_clk_disable(struct clk *clk);
-void rcg_clk_auto_off(struct clk *clk);
-int rcg_clk_set_rate(struct clk *clk, unsigned rate);
-int rcg_clk_set_min_rate(struct clk *clk, unsigned rate);
-unsigned rcg_clk_get_rate(struct clk *clk);
+int rcg_clk_set_rate(struct clk *clk, unsigned long rate);
+unsigned long rcg_clk_get_rate(struct clk *clk);
 int rcg_clk_list_rate(struct clk *clk, unsigned n);
 int rcg_clk_is_enabled(struct clk *clk);
-long rcg_clk_round_rate(struct clk *clk, unsigned rate);
+long rcg_clk_round_rate(struct clk *clk, unsigned long rate);
 struct clk *rcg_clk_get_parent(struct clk *c);
+int rcg_clk_handoff(struct clk *c);
+int rcg_clk_reset(struct clk *clk, enum clk_reset_action action);
+void rcg_clk_enable_hwcg(struct clk *clk);
+void rcg_clk_disable_hwcg(struct clk *clk);
+int rcg_clk_in_hwcg_mode(struct clk *c);
+int rcg_clk_set_flags(struct clk *clk, unsigned flags);
 
-/*
- * SYS_VDD voltage levels
+/**
+ * struct cdiv_clk - integer divider clock with external source selection
+ * @ns_reg: source select and divider settings register
+ * @ext_mask: bit to set to select an external source
+ * @cur_div: current divider setting (or 0 for external source)
+ * @max_div: maximum divider value supported (must be power of 2)
+ * @div_offset: number of bits to shift divider left by in @ns_reg
+ * @b: branch
+ * @c: clock
  */
-enum sys_vdd_level {
-	NONE,
-	LOW,
-	NOMINAL,
-	HIGH,
-	NUM_SYS_VDD_LEVELS
+struct cdiv_clk {
+	void __iomem *const ns_reg;
+	u32 ext_mask;
+
+	unsigned long cur_div;
+	u8 div_offset;
+	u32 max_div;
+
+	struct branch b;
+	struct clk c;
 };
+
+static inline struct cdiv_clk *to_cdiv_clk(struct clk *clk)
+{
+	return container_of(clk, struct cdiv_clk, c);
+}
+
+extern struct clk_ops clk_ops_cdiv;
 
 /**
  * struct fixed_clk - fixed rate clock (used for crystal oscillators)
@@ -195,7 +210,7 @@ static inline struct fixed_clk *to_fixed_clk(struct clk *clk)
 	return container_of(clk, struct fixed_clk, c);
 }
 
-static inline unsigned fixed_clk_get_rate(struct clk *clk)
+static inline unsigned long fixed_clk_get_rate(struct clk *clk)
 {
 	struct fixed_clk *f = to_fixed_clk(clk);
 	return f->rate;
@@ -205,6 +220,8 @@ static inline unsigned fixed_clk_get_rate(struct clk *clk)
 /**
  * struct pll_vote_clk - phase locked loop (HW voteable)
  * @rate: output rate
+ * @soft_vote: soft voting variable for multiple PLL software instances
+ * @soft_vote_mask: soft voting mask for multiple PLL software instances
  * @en_reg: enable register
  * @en_mask: ORed with @en_reg to enable the clock
  * @status_reg: status register
@@ -214,6 +231,8 @@ static inline unsigned fixed_clk_get_rate(struct clk *clk)
 struct pll_vote_clk {
 	unsigned long rate;
 
+	u32 *soft_vote;
+	const u32 soft_vote_mask;
 	void __iomem *const en_reg;
 	const u32 en_mask;
 
@@ -253,6 +272,8 @@ static inline struct pll_clk *to_pll_clk(struct clk *clk)
 	return container_of(clk, struct pll_clk, c);
 }
 
+int sr_pll_clk_enable(struct clk *clk);
+
 /**
  * struct branch_clk - branch
  * @enabled: true if clock is on, false otherwise
@@ -266,7 +287,6 @@ struct branch_clk {
 	bool enabled;
 	struct branch b;
 	struct clk *parent;
-	struct clk *depends;
 	struct clk c;
 };
 
@@ -280,8 +300,10 @@ void branch_clk_disable(struct clk *clk);
 struct clk *branch_clk_get_parent(struct clk *clk);
 int branch_clk_set_parent(struct clk *clk, struct clk *parent);
 int branch_clk_is_enabled(struct clk *clk);
-void branch_clk_auto_off(struct clk *clk);
 int branch_clk_reset(struct clk *c, enum clk_reset_action action);
+void branch_clk_enable_hwcg(struct clk *clk);
+void branch_clk_disable_hwcg(struct clk *clk);
+int branch_clk_in_hwcg_mode(struct clk *c);
 
 /**
  * struct measure_clk - for rate measurement debug use
@@ -308,20 +330,21 @@ static inline struct measure_clk *to_measure_clk(struct clk *clk)
  * Variables from clock-local driver
  */
 extern spinlock_t		local_clock_reg_lock;
-extern struct clk_freq_tbl	local_dummy_freq;
 extern struct fixed_clk		gnd_clk;
 
 /*
  * Local-clock APIs
  */
-int local_vote_sys_vdd(enum sys_vdd_level level);
-int local_unvote_sys_vdd(enum sys_vdd_level level);
 bool local_clk_is_local(struct clk *clk);
 
 /*
- * Required SoC-specific functions, implemented for every supported SoC
+ * PLL vote clock APIs
  */
-extern int (*soc_update_sys_vdd)(enum sys_vdd_level level);
+int pll_vote_clk_enable(struct clk *clk);
+void pll_vote_clk_disable(struct clk *clk);
+unsigned long pll_vote_clk_get_rate(struct clk *clk);
+struct clk *pll_vote_clk_get_parent(struct clk *clk);
+int pll_vote_clk_is_enabled(struct clk *clk);
 
 /*
  * Generic set-rate implementations

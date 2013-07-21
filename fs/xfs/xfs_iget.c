@@ -253,16 +253,21 @@ xfs_iget_cache_hit(
 			rcu_read_lock();
 			spin_lock(&ip->i_flags_lock);
 
-			ip->i_flags &= ~XFS_INEW;
-			ip->i_flags |= XFS_IRECLAIMABLE;
-			__xfs_inode_set_reclaim_tag(pag, ip);
+			ip->i_flags &= ~(XFS_INEW | XFS_IRECLAIM);
+			ASSERT(ip->i_flags & XFS_IRECLAIMABLE);
 			trace_xfs_iget_reclaim_fail(ip);
 			goto out_error;
 		}
 
 		spin_lock(&pag->pag_ici_lock);
 		spin_lock(&ip->i_flags_lock);
-		ip->i_flags &= ~(XFS_IRECLAIMABLE | XFS_IRECLAIM);
+
+		/*
+		 * Clear the per-lifetime state in the inode as we are now
+		 * effectively a new inode and need to return to the initial
+		 * state before reuse occurs.
+		 */
+		ip->i_flags &= ~XFS_IRECLAIM_RESET_FLAGS;
 		ip->i_flags |= XFS_INEW;
 		__xfs_inode_clear_reclaim_tag(mp, pag, ip);
 		inode->i_state = I_NEW;
@@ -351,9 +356,20 @@ xfs_iget_cache_miss(
 			BUG();
 	}
 
-	spin_lock(&pag->pag_ici_lock);
+	/*
+	 * These values must be set before inserting the inode into the radix
+	 * tree as the moment it is inserted a concurrent lookup (allowed by the
+	 * RCU locking mechanism) can find it and that lookup must see that this
+	 * is an inode currently under construction (i.e. that XFS_INEW is set).
+	 * The ip->i_flags_lock that protects the XFS_INEW flag forms the
+	 * memory barrier that ensures this detection works correctly at lookup
+	 * time.
+	 */
+	ip->i_udquot = ip->i_gdquot = NULL;
+	xfs_iflags_set(ip, XFS_INEW);
 
 	/* insert the new inode */
+	spin_lock(&pag->pag_ici_lock);
 	error = radix_tree_insert(&pag->pag_ici_root, agino, ip);
 	if (unlikely(error)) {
 		WARN_ON(error != -EEXIST);
@@ -361,11 +377,6 @@ xfs_iget_cache_miss(
 		error = EAGAIN;
 		goto out_preload_end;
 	}
-
-	/* These values _must_ be set before releasing the radix tree lock! */
-	ip->i_udquot = ip->i_gdquot = NULL;
-	xfs_iflags_set(ip, XFS_INEW);
-
 	spin_unlock(&pag->pag_ici_lock);
 	radix_tree_preload_end();
 

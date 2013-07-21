@@ -92,7 +92,7 @@ struct mmc_command {
  *              actively failing requests
  */
 
-	unsigned int		erase_timeout;	/* in milliseconds */
+	unsigned int		cmd_timeout_ms;	/* in milliseconds */
 
 	struct mmc_data		*data;		/* data segment associated with cmd */
 	struct mmc_request	*mrq;		/* associated request */
@@ -134,8 +134,10 @@ struct mmc_card;
 
 extern void mmc_wait_for_req(struct mmc_host *, struct mmc_request *);
 extern int mmc_wait_for_cmd(struct mmc_host *, struct mmc_command *, int);
+extern int mmc_app_cmd(struct mmc_host *, struct mmc_card *);
 extern int mmc_wait_for_app_cmd(struct mmc_host *, struct mmc_card *,
 	struct mmc_command *, int);
+extern int mmc_switch(struct mmc_card *, u8, u8, u8, unsigned int);
 
 #define MMC_ERASE_ARG		0x00000000
 #define MMC_SECURE_ERASE_ARG	0x80000000
@@ -163,9 +165,8 @@ extern int __mmc_claim_host(struct mmc_host *host, atomic_t *abort);
 extern void mmc_release_host(struct mmc_host *host);
 extern void mmc_do_release_host(struct mmc_host *host);
 extern int mmc_try_claim_host(struct mmc_host *host);
-
-extern void mmc_power_off(struct mmc_host *host);
-extern void mmc_power_up(struct mmc_host *host);
+extern void mmc_set_ios(struct mmc_host *host);
+extern int mmc_detect_card_removed(struct mmc_host *host);
 
 /**
  *	mmc_claim_host - exclusively claim a host

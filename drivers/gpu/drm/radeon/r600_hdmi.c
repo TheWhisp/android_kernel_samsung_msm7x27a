@@ -26,6 +26,7 @@
 #include "drmP.h"
 #include "radeon_drm.h"
 #include "radeon.h"
+#include "radeon_asic.h"
 #include "atom.h"
 
 /*
@@ -195,6 +196,13 @@ static void r600_hdmi_videoinfoframe(
 	frame[0xD] = (right_bar >> 8);
 
 	r600_hdmi_infoframe_checksum(0x82, 0x02, 0x0D, frame);
+	/* Our header values (type, version, length) should be alright, Intel
+	 * is using the same. Checksum function also seems to be OK, it works
+	 * fine for audio infoframe. However calculated value is always lower
+	 * by 2 in comparison to fglrx. It breaks displaying anything in case
+	 * of TVs that strictly check the checksum. Hack it manually here to
+	 * workaround this issue. */
+	frame[0x0] += 2;
 
 	WREG32(offset+R600_HDMI_VIDEOINFOFRAME_0,
 		frame[0x0] | (frame[0x1] << 8) | (frame[0x2] << 16) | (frame[0x3] << 24));
@@ -333,7 +341,7 @@ void r600_hdmi_setmode(struct drm_encoder *encoder, struct drm_display_mode *mod
 	r600_hdmi_videoinfoframe(encoder, RGB, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-	/* it's unknown what these bits do excatly, but it's indeed quite usefull for debugging */
+	/* it's unknown what these bits do excatly, but it's indeed quite useful for debugging */
 	WREG32(offset+R600_HDMI_AUDIO_DEBUG_0, 0x00FFFFFF);
 	WREG32(offset+R600_HDMI_AUDIO_DEBUG_1, 0x007FFFFF);
 	WREG32(offset+R600_HDMI_AUDIO_DEBUG_2, 0x00000001);

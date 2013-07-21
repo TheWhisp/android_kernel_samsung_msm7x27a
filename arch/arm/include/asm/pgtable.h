@@ -317,6 +317,7 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 #define pgd_present(pgd)	(1)
 #define pgd_clear(pgdp)		do { } while (0)
 #define set_pgd(pgd,pgdp)	do { } while (0)
+#define set_pud(pud,pudp)	do { } while (0)
 
 
 /* Find an entry in the second-level page table.. */
@@ -367,7 +368,7 @@ static inline pte_t *pmd_page_vaddr(pmd_t pmd)
 #define pte_unmap(pte)			__pte_unmap(pte)
 
 #define pte_pfn(pte)		(pte_val(pte) >> PAGE_SHIFT)
-#define pfn_pte(pfn,prot)	__pte(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
+#define pfn_pte(pfn,prot)	__pte(__pfn_to_phys(pfn) | pgprot_val(prot))
 
 #define pte_page(pte)		pfn_to_page(pte_pfn(pte))
 #define mk_pte(page,prot)	pfn_pte(page_to_pfn(page), prot)
@@ -484,15 +485,8 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
  * remap a physical page `pfn' of size `size' with page protection `prot'
  * into virtual address `from'
  */
-#ifndef HAS_ARCH_IO_REMAP_PFN_RANGE
 #define io_remap_pfn_range(vma,from,pfn,size,prot) \
 	remap_pfn_range(vma,from,pfn,size,prot)
-#else
-extern int arch_io_remap_pfn_range(struct vm_area_struct *vma, unsigned long addr, unsigned long pfn, unsigned long size, pgprot_t prot);
-#define io_remap_pfn_range(vma,from,pfn,size,prot) \
-	arch_io_remap_pfn_range(vma,from,pfn,size,prot)
-#endif
-
 
 #define pgtable_cache_init() do { } while (0)
 

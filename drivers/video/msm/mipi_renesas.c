@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -21,6 +21,8 @@ static struct msm_panel_common_pdata *mipi_renesas_pdata;
 
 static struct dsi_buf renesas_tx_buf;
 static struct dsi_buf renesas_rx_buf;
+
+static int mipi_renesas_lcd_init(void);
 
 static char config_sleep_out[2] = {0x11, 0x00};
 static char config_CMD_MODE[2] = {0x40, 0x01};
@@ -1129,23 +1131,23 @@ static int mipi_renesas_lcd_on(struct platform_device *pdev)
 	if (mfd->key != MFD_KEY)
 		return -EINVAL;
 
-	mipi_dsi_cmds_tx(mfd, &renesas_tx_buf, renesas_sleep_off_cmds,
+	mipi_dsi_cmds_tx(&renesas_tx_buf, renesas_sleep_off_cmds,
 			ARRAY_SIZE(renesas_sleep_off_cmds));
 
 	mipi_set_tx_power_mode(1);
-	mipi_dsi_cmds_tx(mfd, &renesas_tx_buf, renesas_display_on_cmds,
+	mipi_dsi_cmds_tx(&renesas_tx_buf, renesas_display_on_cmds,
 			ARRAY_SIZE(renesas_display_on_cmds));
 
 	if (cpu_is_msm7x25a() || cpu_is_msm7x25aa()) {
-		mipi_dsi_cmds_tx(mfd, &renesas_tx_buf, renesas_hvga_on_cmds,
+		mipi_dsi_cmds_tx(&renesas_tx_buf, renesas_hvga_on_cmds,
 			ARRAY_SIZE(renesas_hvga_on_cmds));
 	}
 
 	if (mipi->mode == DSI_VIDEO_MODE)
-		mipi_dsi_cmds_tx(mfd, &renesas_tx_buf, renesas_video_on_cmds,
+		mipi_dsi_cmds_tx(&renesas_tx_buf, renesas_video_on_cmds,
 			ARRAY_SIZE(renesas_video_on_cmds));
 	else
-		mipi_dsi_cmds_tx(mfd, &renesas_tx_buf, renesas_cmd_on_cmds,
+		mipi_dsi_cmds_tx(&renesas_tx_buf, renesas_cmd_on_cmds,
 			ARRAY_SIZE(renesas_cmd_on_cmds));
 	mipi_set_tx_power_mode(0);
 
@@ -1163,7 +1165,7 @@ static int mipi_renesas_lcd_off(struct platform_device *pdev)
 	if (mfd->key != MFD_KEY)
 		return -EINVAL;
 
-	mipi_dsi_cmds_tx(mfd, &renesas_tx_buf, renesas_display_off_cmds,
+	mipi_dsi_cmds_tx(&renesas_tx_buf, renesas_display_off_cmds,
 			ARRAY_SIZE(renesas_display_off_cmds));
 
 	return 0;
@@ -1219,6 +1221,12 @@ int mipi_renesas_device_register(struct msm_panel_info *pinfo,
 
 	ch_used[channel] = TRUE;
 
+	ret = mipi_renesas_lcd_init();
+	if (ret) {
+		pr_err("mipi_renesas_lcd_init() failed with ret %u\n", ret);
+		return ret;
+	}
+
 	pdev = platform_device_alloc("mipi_renesas", (panel << 8)|channel);
 	if (!pdev)
 		return -ENOMEM;
@@ -1245,12 +1253,10 @@ err_device_put:
 	return ret;
 }
 
-static int __init mipi_renesas_lcd_init(void)
+static int mipi_renesas_lcd_init(void)
 {
 	mipi_dsi_buf_alloc(&renesas_tx_buf, DSI_BUF_SIZE);
 	mipi_dsi_buf_alloc(&renesas_rx_buf, DSI_BUF_SIZE);
 
 	return platform_driver_register(&this_driver);
 }
-
-module_init(mipi_renesas_lcd_init);

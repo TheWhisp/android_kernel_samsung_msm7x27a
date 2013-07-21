@@ -23,10 +23,12 @@
 #include <linux/init.h>
 #include <linux/nmi.h>
 #include <linux/dmi.h>
-#include <asm/cacheflush.h>
 
 #define PANIC_TIMER_STEP 100
 #define PANIC_BLINK_SPD 18
+
+/* Machine specific panic information string */
+char *mach_panic_string;
 
 int panic_on_oops;
 static unsigned long tainted_mask;
@@ -53,14 +55,6 @@ static long no_blink(int state)
 long (*panic_blink)(int state);
 EXPORT_SYMBOL(panic_blink);
 
-#if defined(CONFIG_MACH_TREBON) || defined(CONFIG_MACH_GEIM) || defined(CONFIG_MACH_JENA)
-#include "../arch/arm/mach-msm/smd_private.h"
-#include "../arch/arm/mach-msm/proc_comm.h"
-#include <mach/msm_iomap-7xxx.h>
-#include <mach/msm_iomap.h>
-#include <asm/io.h>
-
-#endif
 /**
  *	panic - halt the system
  *	@fmt: The text string to print
@@ -69,11 +63,7 @@ EXPORT_SYMBOL(panic_blink);
  *
  *	This function never returns.
  */
-#ifdef CONFIG_APPLY_GA_SOLUTION
-extern void dump_all_task_info();
-extern void dump_cpu_stat();
-#endif
-NORET_TYPE void panic(const char *fmt, ...)
+NORET_TYPE void panic(const char * fmt, ...)
 {
 	static char buf[1024];
 	va_list args;
@@ -92,49 +82,11 @@ NORET_TYPE void panic(const char *fmt, ...)
 	va_start(args, fmt);
 	vsnprintf(buf, sizeof(buf), fmt, args);
 	va_end(args);
-	printk(KERN_EMERG "Kernel panic - not syncing: %s\n", buf);
+	printk(KERN_EMERG "Kernel panic - not syncing: %s\n",buf);
 #ifdef CONFIG_DEBUG_BUGVERBOSE
 	dump_stack();
 #endif
 
-#if defined(CONFIG_SEC_DEBUG)
-	do {
-		extern void sec_save_final_context(void);
-		sec_save_final_context();
-	} while (0);
-#endif
-
-#ifdef CONFIG_APPLY_GA_SOLUTION
-	dump_all_task_info();
-	dump_cpu_stat();
-#endif
-
-#if defined(CONFIG_SEC_DEBUG)
-	unsigned size;
-	samsung_vendor1_id *smem_vendor1 = (samsung_vendor1_id *) \
-			smem_get_entry(SMEM_ID_VENDOR1, &size);
-
-	if (smem_vendor1 && smem_vendor1->ram_dump_level) {
-		writel_relaxed(0xCCCC, MSM_SHARED_RAM_BASE + 0x30);
-	} else {
-		if (smem_vendor1)
-			smem_vendor1->silent_reset = 0xAEAEAEAE;
-		else
-			printk(KERN_EMERG "smem_vendor1 is NULL\n");
-	}
-
-	if ((strncmp(buf, "[Crash Key]", 11) == 0) && (smem_vendor1 != NULL))
-		memcpy(&(smem_vendor1->apps_dump.apps_string),\
-				"USER_FORCED_UPLOAD",\
-				sizeof("USER_FORCED_UPLOAD"));
-
-	printk(KERN_EMERG "[PANIC] call msm_proc_comm_reset_modem_now func\n");
-
-	flush_cache_all();
-	outer_flush_all();
-
-	msm_proc_comm_reset_modem_now();
-#endif
 	/*
 	 * If we have crashed and we have a crash kernel loaded let it handle
 	 * everything else.
@@ -290,8 +242,16 @@ void add_taint(unsigned flag)
 	 * Also we want to keep up lockdep for staging development and
 	 * post-warning case.
 	 */
-	if (flag != TAINT_CRAP && flag != TAINT_WARN && __debug_locks_off())
-		printk(KERN_WARNING "Disabling lock debugging due to kernel taint\n");
+	switch (flag) {
+	case TAINT_CRAP:
+	case TAINT_WARN:
+	case TAINT_FIRMWARE_WORKAROUND:
+		break;
+
+	default:
+		if (__debug_locks_off())
+			printk(KERN_WARNING "Disabling lock debugging due to kernel taint\n");
+	}
 
 	set_bit(flag, &tainted_mask);
 }
@@ -396,6 +356,11 @@ late_initcall(init_oops_id);
 void print_oops_end_marker(void)
 {
 	init_oops_id();
+
+	if (mach_panic_string)
+		printk(KERN_WARNING "Board Information: %s\n",
+		       mach_panic_string);
+
 	printk(KERN_WARNING "---[ end trace %016llx ]---\n",
 		(unsigned long long)oops_id);
 }
@@ -487,3 +452,13 @@ EXPORT_SYMBOL(__stack_chk_fail);
 
 core_param(panic, panic_timeout, int, 0644);
 core_param(pause_on_oops, pause_on_oops, int, 0644);
+
+static int __init oops_setup(char *s)
+{
+	if (!s)
+		return -EINVAL;
+	if (!strcmp(s, "panic"))
+		panic_on_oops = 1;
+	return 0;
+}
+early_param("oops", oops_setup);

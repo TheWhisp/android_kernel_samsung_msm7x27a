@@ -74,7 +74,7 @@ static struct device_node *dlpar_parse_cc_node(struct cc_workarea *ccwa)
 		return NULL;
 
 	/* The configure connector reported name does not contain a
-	 * preceeding '/', so we allocate a buffer large enough to
+	 * preceding '/', so we allocate a buffer large enough to
 	 * prepend this to the full_name.
 	 */
 	name = (char *)ccwa + ccwa->name_offset;
@@ -112,6 +112,7 @@ void dlpar_free_cc_nodes(struct device_node *dn)
 	dlpar_free_one_cc_node(dn);
 }
 
+#define COMPLETE	0
 #define NEXT_SIBLING    1
 #define NEXT_CHILD      2
 #define NEXT_PROPERTY   3
@@ -158,6 +159,9 @@ struct device_node *dlpar_configure_connector(u32 drc_index)
 		spin_unlock(&rtas_data_buf_lock);
 
 		switch (rc) {
+		case COMPLETE:
+			break;
+
 		case NEXT_SIBLING:
 			dn = dlpar_parse_cc_node(ccwa);
 			if (!dn)

@@ -424,15 +424,12 @@ nfsd4_decode_access(struct nfsd4_compoundargs *argp, struct nfsd4_access *access
 static __be32 nfsd4_decode_bind_conn_to_session(struct nfsd4_compoundargs *argp, struct nfsd4_bind_conn_to_session *bcts)
 {
 	DECODE_HEAD;
-	u32 dummy;
 
 	READ_BUF(NFS4_MAX_SESSIONID_LEN + 8);
 	COPYMEM(bcts->sessionid.data, NFS4_MAX_SESSIONID_LEN);
 	READ32(bcts->dir);
-	/* XXX: Perhaps Tom Tucker could help us figure out how we
-	 * should be using ctsa_use_conn_in_rdma_mode: */
-	READ32(dummy);
-
+	/* XXX: skipping ctsa_use_conn_in_rdma_mode.  Perhaps Tom Tucker
+	 * could help us figure out we should be using it. */
 	DECODE_TAIL;
 }
 
@@ -588,8 +585,6 @@ nfsd4_decode_lockt(struct nfsd4_compoundargs *argp, struct nfsd4_lockt *lockt)
 	READ_BUF(lockt->lt_owner.len);
 	READMEM(lockt->lt_owner.data, lockt->lt_owner.len);
 
-	if (argp->minorversion && !zero_clientid(&lockt->lt_clientid))
-		return nfserr_inval;
 	DECODE_TAIL;
 }
 
@@ -1552,6 +1547,18 @@ static void write_cinfo(__be32 **p, struct nfsd4_change_info *c)
 	__be32 *save;						\
 								\
 	save = resp->p;
+
+static bool seqid_mutating_err(__be32 err)
+{
+	/* rfc 3530 section 8.1.5: */
+	return	err != nfserr_stale_clientid &&
+		err != nfserr_stale_stateid &&
+		err != nfserr_bad_stateid &&
+		err != nfserr_bad_seqid &&
+		err != nfserr_bad_xdr &&
+		err != nfserr_resource &&
+		err != nfserr_nofilehandle;
+}
 
 /*
  * Routine for encoding the result of a "seqid-mutating" NFSv4 operation.  This
@@ -3120,7 +3127,7 @@ nfsd4_encode_destroy_session(struct nfsd4_compoundres *resp, int nfserr,
 	return nfserr;
 }
 
-__be32
+static __be32
 nfsd4_encode_sequence(struct nfsd4_compoundres *resp, int nfserr,
 		      struct nfsd4_sequence *seq)
 {

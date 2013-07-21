@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -20,6 +20,31 @@
 #include <sound/soc.h>
 
 static struct snd_soc_dai_ops msm_fe_dai_ops = {};
+
+/* Conventional and unconventional sample rate supported */
+static unsigned int supported_sample_rates[] = {
+	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
+};
+
+static struct snd_pcm_hw_constraint_list constraints_sample_rates = {
+	.count = ARRAY_SIZE(supported_sample_rates),
+	.list = supported_sample_rates,
+	.mask = 0,
+};
+
+static int multimedia_startup(struct snd_pcm_substream *substream,
+	struct snd_soc_dai *dai)
+{
+	snd_pcm_hw_constraint_list(substream->runtime, 0,
+		SNDRV_PCM_HW_PARAM_RATE,
+		&constraints_sample_rates);
+
+	return 0;
+}
+
+static struct snd_soc_dai_ops msm_fe_Multimedia_dai_ops = {
+	.startup	= multimedia_startup,
+};
 
 static struct snd_soc_dai_driver msm_fe_dais[] = {
 	{
@@ -50,7 +75,7 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
-			.channels_max = 2,
+			.channels_max = 6,
 			.rate_min =     8000,
 			.rate_max =	48000,
 		},
@@ -92,7 +117,8 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.playback = {
 			.stream_name = "VoIP Playback",
 			.rates = SNDRV_PCM_RATE_8000_48000,
-			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+					SNDRV_PCM_FMTBIT_SPECIAL,
 			.channels_min = 1,
 			.channels_max = 2,
 			.rate_min =	8000,
@@ -101,7 +127,8 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.capture = {
 			.stream_name = "VoIP Capture",
 			.rates = SNDRV_PCM_RATE_8000_48000,
-			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+					SNDRV_PCM_FMTBIT_SPECIAL,
 			.channels_min = 1,
 			.channels_max = 2,
 			.rate_min =	8000,
@@ -113,15 +140,30 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 	{
 		.playback = {
 			.stream_name = "MultiMedia3 Playback",
-			.rates = SNDRV_PCM_RATE_8000_48000,
+			.rates = (SNDRV_PCM_RATE_8000_48000 |
+					SNDRV_PCM_RATE_KNOT),
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
 			.channels_min = 1,
 			.channels_max = 2,
 			.rate_min =	8000,
 			.rate_max = 48000,
 		},
-		.ops = &msm_fe_dai_ops,
+		.ops = &msm_fe_Multimedia_dai_ops,
 		.name = "MultiMedia3",
+	},
+	{
+		.playback = {
+			.stream_name = "MultiMedia4 Playback",
+			.rates = (SNDRV_PCM_RATE_8000_48000 |
+					SNDRV_PCM_RATE_KNOT),
+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+			.channels_min = 1,
+			.channels_max = 2,
+			.rate_min =	8000,
+			.rate_max = 48000,
+		},
+		.ops = &msm_fe_Multimedia_dai_ops,
+		.name = "MultiMedia4",
 	},
 	/* FE DAIs created for hostless operation purpose */
 	{
@@ -167,6 +209,67 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		},
 		.ops = &msm_fe_dai_ops,
 		.name = "INT_FM_HOSTLESS",
+	},
+	{
+		.playback = {
+			.stream_name = "AFE-PROXY Playback",
+			.rates = (SNDRV_PCM_RATE_8000 |
+				SNDRV_PCM_RATE_16000 |
+				SNDRV_PCM_RATE_48000),
+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+			.channels_min = 1,
+			.channels_max = 2,
+			.rate_min =     8000,
+			.rate_max =     48000,
+		},
+		.capture = {
+			.stream_name = "AFE-PROXY Capture",
+			.rates = (SNDRV_PCM_RATE_8000 |
+				SNDRV_PCM_RATE_16000 |
+				SNDRV_PCM_RATE_48000),
+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+			.channels_min = 1,
+			.channels_max = 2,
+			.rate_min =     8000,
+			.rate_max =     48000,
+		},
+		.ops = &msm_fe_dai_ops,
+		.name = "AFE-PROXY",
+	},
+	{
+		.playback = {
+			.stream_name = "HDMI_Rx Hostless Playback",
+			.rates = SNDRV_PCM_RATE_8000_48000,
+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+			.channels_min = 1,
+			.channels_max = 2,
+			.rate_min = 8000,
+			.rate_max = 48000,
+		},
+		.ops = &msm_fe_dai_ops,
+		.name = "HDMI_HOSTLESS"
+	},
+	{
+		.playback = {
+			.stream_name = "AUXPCM Hostless Playback",
+			.rates = SNDRV_PCM_RATE_8000,
+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+			.channels_min = 1,
+			.channels_max = 1,
+			.rate_min =     8000,
+			.rate_max =     8000,
+		},
+		.capture = {
+			.stream_name = "AUXPCM Hostless Capture",
+			.rates = SNDRV_PCM_RATE_8000,
+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+			.channels_min = 1,
+			.channels_max = 1,
+			.rate_min =     8000,
+			.rate_max =    48000,
+		},
+		.ops = &msm_fe_dai_ops,
+		.name = "AUXPCM_HOSTLESS",
 	},
 };
 

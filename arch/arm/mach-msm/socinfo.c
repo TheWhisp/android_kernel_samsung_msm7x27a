@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -31,6 +31,10 @@ enum {
 	HW_PLATFORM_FLUID   = 3,
 	HW_PLATFORM_SVLTE_FFA	= 4,
 	HW_PLATFORM_SVLTE_SURF	= 5,
+	HW_PLATFORM_MTP  = 8,
+	HW_PLATFORM_LIQUID  = 9,
+	/* Dragonboard platform id is assigned as 10 in CDT */
+	HW_PLATFORM_DRAGON	= 10,
 	HW_PLATFORM_INVALID
 };
 
@@ -40,7 +44,10 @@ const char *hw_platform[] = {
 	[HW_PLATFORM_FFA] = "FFA",
 	[HW_PLATFORM_FLUID] = "Fluid",
 	[HW_PLATFORM_SVLTE_FFA] = "SVLTE_FFA",
-	[HW_PLATFORM_SVLTE_SURF] = "SLVTE_SURF"
+	[HW_PLATFORM_SVLTE_SURF] = "SLVTE_SURF",
+	[HW_PLATFORM_MTP] = "MTP",
+	[HW_PLATFORM_LIQUID] = "Liquid",
+	[HW_PLATFORM_DRAGON] = "Dragon"
 };
 
 enum {
@@ -161,10 +168,6 @@ static enum msm_cpu cpu_of_id[] = {
 	[37] = MSM_CPU_8X50,
 	[38] = MSM_CPU_8X50,
 
-	/* 8x50A IDs */
-	[64] = MSM_CPU_8X50A,
-	[65] = MSM_CPU_8X50A,
-
 	/* 7x30 IDs */
 	[59] = MSM_CPU_7X30,
 	[60] = MSM_CPU_7X30,
@@ -206,6 +209,37 @@ static enum msm_cpu cpu_of_id[] = {
 	[101] = MSM_CPU_7X27AA,
 	[102] = MSM_CPU_7X27AA,
 	[103] = MSM_CPU_7X27AA,
+
+	/* 9x15 ID */
+	[104] = MSM_CPU_9615,
+	[105] = MSM_CPU_9615,
+	[106] = MSM_CPU_9615,
+	[107] = MSM_CPU_9615,
+
+	/* 8064 IDs */
+	[109] = MSM_CPU_8064,
+
+	/* 8930 IDs */
+	[116] = MSM_CPU_8930,
+	[117] = MSM_CPU_8930,
+	[118] = MSM_CPU_8930,
+	[119] = MSM_CPU_8930,
+
+	/* 8627 IDs */
+	[120] = MSM_CPU_8627,
+	[121] = MSM_CPU_8627,
+
+	/* 8660A ID */
+	[122] = MSM_CPU_8960,
+
+	/* 8260A ID */
+	[123] = MSM_CPU_8960,
+
+	/* 8060A ID */
+	[124] = MSM_CPU_8960,
+
+	/* Copper IDs */
+	[126] = MSM_CPU_COPPER,
 
 	/* Uninitialized IDs are not known to run Linux.
 	   MSM_CPU_UNKNOWN is set to 0 to ensure these IDs are
@@ -569,6 +603,12 @@ void *setup_dummy_socinfo(void)
 	if (machine_is_msm8960_rumi3() || machine_is_msm8960_sim() ||
 	    machine_is_msm8960_cdp())
 		dummy_socinfo.id = 87;
+	else if (machine_is_apq8064_rumi3() || machine_is_apq8064_sim())
+		dummy_socinfo.id = 109;
+	else if (machine_is_msm9615_mtp() || machine_is_msm9615_cdp())
+		dummy_socinfo.id = 104;
+	else if (early_machine_is_copper())
+		dummy_socinfo.id = 126;
 	return (void *) &dummy_socinfo;
 }
 
@@ -672,4 +712,63 @@ int __init socinfo_init(void)
 	}
 
 	return 0;
+}
+
+const int get_core_count(void)
+{
+	if (!(read_cpuid_mpidr() & BIT(31)))
+		return 1;
+
+	if (read_cpuid_mpidr() & BIT(30) &&
+		!machine_is_msm8960_sim() &&
+		!machine_is_apq8064_sim())
+		return 1;
+
+	/* 1 + the PART[1:0] field of MIDR */
+	return ((read_cpuid_id() >> 4) & 3) + 1;
+}
+
+const int read_msm_cpu_type(void)
+{
+	if (machine_is_msm8960_sim() || machine_is_msm8960_rumi3())
+		return MSM_CPU_8960;
+
+	if (socinfo_get_msm_cpu() != MSM_CPU_UNKNOWN)
+		return socinfo_get_msm_cpu();
+
+	switch (read_cpuid_id()) {
+	case 0x510F02D0:
+	case 0x510F02D2:
+	case 0x510F02D4:
+		return MSM_CPU_8X60;
+
+	case 0x510F04D0:
+	case 0x510F04D1:
+	case 0x510F04D2:
+	case 0x511F04D0:
+	case 0x512F04D0:
+		return MSM_CPU_8960;
+
+	case 0x51404D11: /* We can't get here unless we are in bringup */
+		return MSM_CPU_8930;
+
+	case 0x510F06F0:
+		return MSM_CPU_8064;
+
+	default:
+		return MSM_CPU_UNKNOWN;
+	};
+}
+
+const int cpu_is_krait_v1(void)
+{
+	switch (read_cpuid_id()) {
+	case 0x510F04D0:
+	case 0x510F04D1:
+	case 0x510F04D2:
+		return 1;
+
+	default:
+		return 0;
+	};
 }

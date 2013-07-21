@@ -2,7 +2,7 @@
  * Copyright (C) 2008 Eurotech S.p.A. <info@eurotech.it>
  * Based on a previous work by Copyright (C) 2008 Texas Instruments, Inc.
  *
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -458,6 +458,7 @@ static void bq27520_hw_config(struct work_struct *work)
 	 */
 	if_notify_msm_charger(&status);
 	update_current_battery_status(status);
+	msm_battery_gauge_register(&bq27520_batt_gauge);
 	msm_charger_notify_event(NULL, CHG_BATT_STATUS_CHANGE);
 
 	enable_irq(di->irq);
@@ -938,7 +939,6 @@ static int __init bq27520_battery_init(void)
 
 	/* initialize current_battery_status, and register with msm-charger */
 	init_battery_status();
-	msm_battery_gauge_register(&bq27520_batt_gauge);
 
 	ret = i2c_add_driver(&bq27520_battery_driver);
 	if (ret)

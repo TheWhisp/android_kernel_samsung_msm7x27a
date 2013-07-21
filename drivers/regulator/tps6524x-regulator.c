@@ -481,7 +481,7 @@ static int set_voltage(struct regulator_dev *rdev, int min_uV, int max_uV,
 	if (i >= info->n_voltages)
 		i = info->n_voltages - 1;
 
-	*selector = info->voltages[i];
+	*selector = i;
 
 	return write_field(hw, &info->voltage, i);
 }
@@ -596,7 +596,7 @@ static struct regulator_ops regulator_ops = {
 	.get_current_limit	= get_current_limit,
 };
 
-static int __devexit pmic_remove(struct spi_device *spi)
+static int pmic_remove(struct spi_device *spi)
 {
 	struct tps6524x *hw = spi_get_drvdata(spi);
 	int i;

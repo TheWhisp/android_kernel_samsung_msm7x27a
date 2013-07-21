@@ -1,34 +1,13 @@
-/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010, The Linux Foundation. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, and the entire permission notice in its entirety,
- *    including the disclaimer of warranties.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote
- *    products derived from this software without specific prior
- *    written permission.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
- * ALTERNATIVELY, this product may be distributed under the terms of
- * the GNU General Public License, version 2, in which case the provisions
- * of the GPL version 2 are required INSTEAD OF the BSD license.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, ALL OF
- * WHICH ARE HEREBY DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
- * USE OF THIS SOFTWARE, EVEN IF NOT ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  */
 #ifndef __PMIC8058_PWM_H__
@@ -75,7 +54,68 @@ struct pm8058_pwm_pdata {
 #define	PM_PWM_CONF_DTEST3	0x6
 #define	PM_PWM_CONF_DTEST4	0x7
 
-/*
+/**
+ * PWM frequency/period control
+ *
+ * PWM Frequency = ClockFrequency / (N * T)
+ *   or
+ * PWM Period = Clock Period * (N * T)
+ *   where
+ * N = 2^9 or 2^6 for 9-bit or 6-bit PWM size
+ * T = Pre-divide * 2^m, m = 0..7 (exponent)
+ *
+ */
+
+enum pm_pwm_size {
+	PM_PWM_SIZE_6BIT =	6,
+	PM_PWM_SIZE_9BIT =	9,
+};
+
+enum pm_pwm_clk {
+	PM_PWM_CLK_1KHZ,
+	PM_PWM_CLK_32KHZ,
+	PM_PWM_CLK_19P2MHZ,
+};
+
+enum pm_pwm_pre_div {
+	PM_PWM_PDIV_2,
+	PM_PWM_PDIV_3,
+	PM_PWM_PDIV_5,
+	PM_PWM_PDIV_6,
+};
+
+/**
+ * struct pm8058_pwm_period - PWM period structure
+ * @pwm_size: enum pm_pwm_size
+ * @clk: enum pm_pwm_clk
+ * @pre_div: enum pm_pwm_pre_div
+ * @pre_div_exp: exponent of 2 as part of pre-divider: 0..7
+ */
+struct pm8058_pwm_period {
+	enum pm_pwm_size	pwm_size;
+	enum pm_pwm_clk		clk;
+	enum pm_pwm_pre_div	pre_div;
+	int			pre_div_exp;
+};
+
+/**
+ * pm8058_pwm_config_period - change PWM period
+ *
+ * @pwm: the PWM device
+ * @pwm_p: period in struct pm8058_pwm_period
+ */
+int pm8058_pwm_config_period(struct pwm_device *pwm,
+			     struct pm8058_pwm_period *pwm_p);
+
+/**
+ * pm8058_pwm_config_duty_cycle - change PWM duty cycle
+ *
+ * @pwm: the PWM device
+ * @pwm_value: the duty cycle in raw PWM value (< 2^pwm_size)
+ */
+int pm8058_pwm_config_duty_cycle(struct pwm_device *pwm, int pwm_value);
+
+/**
  * pm8058_pwm_lut_config - change a PWM device configuration to use LUT
  *
  * @pwm: the PWM device
@@ -87,13 +127,12 @@ struct pm8058_pwm_pdata {
  * @pause_lo: pause time in millisecond at low index
  * @pause_hi: pause time in millisecond at high index
  * @flags: control flags
- *
  */
 int pm8058_pwm_lut_config(struct pwm_device *pwm, int period_us,
 			  int duty_pct[], int duty_time_ms, int start_idx,
 			  int len, int pause_lo, int pause_hi, int flags);
 
-/*
+/**
  * pm8058_pwm_lut_enable - control a PWM device to start/stop LUT ramp
  *
  * @pwm: the PWM device

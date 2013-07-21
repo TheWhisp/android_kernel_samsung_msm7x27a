@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -723,9 +723,11 @@ static int ov9726_sensor_release(void)
 {
 	int rc = -EBADF;
 	mutex_lock(&ov9726_mut);
-	gpio_direction_output(ov9726_ctrl->sensordata->sensor_reset,
-		0);
-	gpio_free(ov9726_ctrl->sensordata->sensor_reset);
+	if (ov9726_ctrl->sensordata->sensor_reset_enable) {
+		gpio_direction_output(
+			ov9726_ctrl->sensordata->sensor_reset, 0);
+		gpio_free(ov9726_ctrl->sensordata->sensor_reset);
+	}
 	kfree(ov9726_ctrl);
 	ov9726_ctrl = NULL;
 	CDBG("ov9726_release completed\n");

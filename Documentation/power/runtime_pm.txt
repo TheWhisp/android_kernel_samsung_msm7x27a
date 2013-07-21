@@ -1,6 +1,6 @@
 Run-time Power Management Framework for I/O Devices
 
-(C) 2009 Rafael J. Wysocki <rjw@sisk.pl>, Novell Inc.
+(C) 2009-2011 Rafael J. Wysocki <rjw@sisk.pl>, Novell Inc.
 (C) 2010 Alan Stern <stern@rowland.harvard.edu>
 
 1. Introduction
@@ -44,11 +44,12 @@ struct dev_pm_ops {
 };
 
 The ->runtime_suspend(), ->runtime_resume() and ->runtime_idle() callbacks are
-executed by the PM core for either the bus type, or device type (if the bus
-type's callback is not defined), or device class (if the bus type's and device
-type's callbacks are not defined) of given device.  The bus type, device type
-and device class callbacks are referred to as subsystem-level callbacks in what
-follows.
+executed by the PM core for either the device type, or the class (if the device
+type's struct dev_pm_ops object does not exist), or the bus type (if the
+device type's and class' struct dev_pm_ops objects do not exist) of the given
+device (this allows device types to override callbacks provided by bus types or
+classes if necessary).  The bus type, device type and class callbacks are
+referred to as subsystem-level callbacks in what follows.
 
 By default, the callbacks are always invoked in process context with interrupts
 enabled.  However, subsystems can use the pm_runtime_irq_safe() helper function
@@ -468,6 +469,7 @@ pm_runtime_autosuspend()
 pm_runtime_resume()
 pm_runtime_get_sync()
 pm_runtime_put_sync_suspend()
+pm_runtime_put_sync_autosuspend()
 
 5. Run-time PM Initialization, Device Probing and Removal
 
@@ -500,13 +502,29 @@ helper functions described in Section 4.  In that case, pm_runtime_resume()
 should be used.  Of course, for this purpose the device's run-time PM has to be
 enabled earlier by calling pm_runtime_enable().
 
-If the device bus type's or driver's ->probe() or ->remove() callback runs
+If the device bus type's or driver's ->probe() callback runs
 pm_runtime_suspend() or pm_runtime_idle() or their asynchronous counterparts,
 they will fail returning -EAGAIN, because the device's usage counter is
-incremented by the core before executing ->probe() and ->remove().  Still, it
-may be desirable to suspend the device as soon as ->probe() or ->remove() has
-finished, so the PM core uses pm_runtime_idle_sync() to invoke the
-subsystem-level idle callback for the device at that time.
+incremented by the driver core before executing ->probe().  Still, it may be
+desirable to suspend the device as soon as ->probe() has finished, so the driver
+core uses pm_runtime_put_sync() to invoke the subsystem-level idle callback for
+the device at that time.
+
+Moreover, the driver core prevents runtime PM callbacks from racing with the bus
+notifier callback in __device_release_driver(), which is necessary, because the
+notifier is used by some subsystems to carry out operations affecting the
+runtime PM functionality.  It does so by calling pm_runtime_get_sync() before
+driver_sysfs_remove() and the BUS_NOTIFY_UNBIND_DRIVER notifications.  This
+resumes the device if it's in the suspended state and prevents it from
+being suspended again while those routines are being executed.
+
+To allow bus types and drivers to put devices into the suspended state by
+calling pm_runtime_suspend() from their ->remove() routines, the driver core
+executes pm_runtime_put_sync() after running the BUS_NOTIFY_UNBIND_DRIVER
+notifications in __device_release_driver().  This requires bus types and
+drivers to make their ->remove() callbacks avoid races with runtime PM directly,
+but also it allows of more flexibility in the handling of devices during the
+removal of their drivers.
 
 The user space can effectively disallow the driver of the device to power manage
 it at run time by changing the value of its /sys/devices/.../power/control
@@ -564,11 +582,6 @@ to do this is:
 	pm_runtime_disable(dev);
 	pm_runtime_set_active(dev);
 	pm_runtime_enable(dev);
-
-The PM core always increments the run-time usage counter before calling the
-->prepare() callback and decrements it after calling the ->complete() callback.
-Hence disabling run-time PM temporarily like this will not cause any run-time
-suspend callbacks to be lost.
 
 7. Generic subsystem callbacks
 
@@ -695,6 +708,16 @@ Drivers may also continue to use the non-autosuspend helper functions; they
 will behave normally, not taking the autosuspend delay into account.
 Similarly, if the power.use_autosuspend field isn't set then the autosuspend
 helper functions will behave just like the non-autosuspend counterparts.
+
+Under some circumstances a driver or subsystem may want to prevent a device
+from autosuspending immediately, even though the usage counter is zero and the
+autosuspend delay time has expired.  If the ->runtime_suspend() callback
+returns -EAGAIN or -EBUSY, and if the next autosuspend delay expiration time is
+in the future (as it normally would be if the callback invoked
+pm_runtime_mark_last_busy()), the PM core will automatically reschedule the
+autosuspend.  The ->runtime_suspend() callback can't do this rescheduling
+itself because no suspend requests of any kind are accepted while the device is
+suspending (i.e., while the callback is running).
 
 The implementation is well suited for asynchronous use in interrupt contexts.
 However such use inevitably involves races, because the PM core can't

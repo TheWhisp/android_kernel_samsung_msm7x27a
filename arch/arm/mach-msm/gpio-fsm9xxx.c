@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -15,8 +15,8 @@
 #include <linux/gpio.h>
 #include <linux/io.h>
 #include <linux/module.h>
+#include <mach/gpiomux.h>
 #include "gpio_hw.h"
-#include "gpiomux.h"
 
 #define MSM_GPIO_BANK(bank, first, last)				\
 	{								\

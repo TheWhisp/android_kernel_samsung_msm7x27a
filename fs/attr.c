@@ -59,7 +59,7 @@ int inode_change_ok(const struct inode *inode, struct iattr *attr)
 
 	/* Make sure a caller can chmod. */
 	if (ia_valid & ATTR_MODE) {
-		if (!is_owner_or_cap(inode))
+		if (!inode_owner_or_capable(inode))
 			return -EPERM;
 		/* Also check the setgid bit! */
 		if (!in_group_p((ia_valid & ATTR_GID) ? attr->ia_gid :
@@ -69,7 +69,7 @@ int inode_change_ok(const struct inode *inode, struct iattr *attr)
 
 	/* Check for setting the inode time. */
 	if (ia_valid & (ATTR_MTIME_SET | ATTR_ATIME_SET | ATTR_TIMES_SET)) {
-		if (!is_owner_or_cap(inode))
+		if (!inode_owner_or_capable(inode))
 			return -EPERM;
 	}
 
@@ -120,43 +120,6 @@ out_big:
 }
 EXPORT_SYMBOL(inode_newsize_ok);
 
-int inode_setattr(struct inode * inode, struct iattr * attr)
-{
-	unsigned int ia_valid = attr->ia_valid;
-
-	if (ia_valid & ATTR_SIZE &&
-	    attr->ia_size != i_size_read(inode)) {
-		int error = vmtruncate(inode, attr->ia_size);
-		if (error)
-			return error;
-	}
-
-	if (ia_valid & ATTR_UID)
-		inode->i_uid = attr->ia_uid;
-	if (ia_valid & ATTR_GID)
-		inode->i_gid = attr->ia_gid;
-	if (ia_valid & ATTR_ATIME)
-		inode->i_atime = timespec_trunc(attr->ia_atime,
-						inode->i_sb->s_time_gran);
-	if (ia_valid & ATTR_MTIME)
-		inode->i_mtime = timespec_trunc(attr->ia_mtime,
-						inode->i_sb->s_time_gran);
-	if (ia_valid & ATTR_CTIME)
-		inode->i_ctime = timespec_trunc(attr->ia_ctime,
-						inode->i_sb->s_time_gran);
-	if (ia_valid & ATTR_MODE) {
-		umode_t mode = attr->ia_mode;
-
-		if (!in_group_p(inode->i_gid) && !capable(CAP_FSETID))
-			mode &= ~S_ISGID;
-		inode->i_mode = mode;
-	}
-	mark_inode_dirty(inode);
-
-	return 0;
-}
-EXPORT_SYMBOL(inode_setattr);
-
 /**
  * setattr_copy - copy simple metadata updates into the generic inode
  * @inode:	the inode to be updated
@@ -165,7 +128,7 @@ EXPORT_SYMBOL(inode_setattr);
  * setattr_copy must be called with i_mutex held.
  *
  * setattr_copy updates the inode's metadata with that specified
- * in attr. Noticably missing is inode size update, which is more complex
+ * in attr. Noticeably missing is inode size update, which is more complex
  * as it requires pagecache updates.
  *
  * The inode is not marked as dirty after this operation. The rationale is
@@ -210,6 +173,13 @@ int notify_change(struct dentry * dentry, struct iattr * attr)
 	if (ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID | ATTR_TIMES_SET)) {
 		if (IS_IMMUTABLE(inode) || IS_APPEND(inode))
 			return -EPERM;
+	}
+
+	if ((ia_valid & ATTR_MODE)) {
+		mode_t amode = attr->ia_mode;
+		/* Flag setting protected by i_mutex */
+		if (is_sxid(amode))
+			inode->i_flags &= ~S_NOSEC;
 	}
 
 	now = current_fs_time(inode->i_sb);

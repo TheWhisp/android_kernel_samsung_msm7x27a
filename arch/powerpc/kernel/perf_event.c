@@ -782,7 +782,7 @@ static int power_pmu_add(struct perf_event *event, int ef_flags)
 
 	/*
 	 * If group events scheduling transaction was started,
-	 * skip the schedulability test here, it will be peformed
+	 * skip the schedulability test here, it will be performed
 	 * at commit time(->commit_txn) as a whole
 	 */
 	if (cpuhw->group_flag & PERF_EVENT_TXN)
@@ -865,6 +865,7 @@ static void power_pmu_start(struct perf_event *event, int ef_flags)
 {
 	unsigned long flags;
 	s64 left;
+	unsigned long val;
 
 	if (!event->hw.idx || !event->hw.sample_period)
 		return;
@@ -880,7 +881,12 @@ static void power_pmu_start(struct perf_event *event, int ef_flags)
 
 	event->hw.state = 0;
 	left = local64_read(&event->hw.period_left);
-	write_pmc(event->hw.idx, left);
+
+	val = 0;
+	if (left < 0x80000000L)
+		val = 0x80000000L - left;
+
+	write_pmc(event->hw.idx, val);
 
 	perf_event_update_userpage(event);
 	perf_pmu_enable(event->pmu);

@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -29,9 +29,18 @@
 #define PEER_CHANNEL_NAME_SIZE		4
 #define CHANNEL_NAME_SIZE (sizeof(SDIO_PREFIX) + PEER_CHANNEL_NAME_SIZE)
 #define SDIO_TEST_POSTFIX_SIZE 5
+#define MAX_NUM_OF_SDIO_DEVICES	2
+#define TEST_CH_NAME_SIZE (CHANNEL_NAME_SIZE + SDIO_TEST_POSTFIX_SIZE)
 
 struct sdio_al_device; /* Forward Declaration */
 
+enum sdio_channel_state {
+	SDIO_CHANNEL_STATE_INVALID,	 /* before reading software header */
+	SDIO_CHANNEL_STATE_IDLE,         /* channel valid, not opened    */
+	SDIO_CHANNEL_STATE_CLOSED,       /* was closed */
+	SDIO_CHANNEL_STATE_OPEN,	 /* opened */
+	SDIO_CHANNEL_STATE_CLOSING,      /* during flush, when closing */
+};
 /**
  * Peer SDIO-Client channel configuration.
  *
@@ -56,7 +65,9 @@ struct peer_sdioc_channel_config {
 	u32 max_packet_size;
 	u32 is_host_ok_to_sleep;
 	u32 is_packet_mode;
-	u32 reserved[25];
+	u32 peer_operation;
+	u32 is_low_latency_ch;
+	u32 reserved[23];
 };
 
 
@@ -155,7 +166,7 @@ struct sdio_channel_statistics {
 struct sdio_channel {
 	/* Channel Configuration Parameters*/
 	char name[CHANNEL_NAME_SIZE];
-	char ch_test_name[CHANNEL_NAME_SIZE+SDIO_TEST_POSTFIX_SIZE];
+	char ch_test_name[TEST_CH_NAME_SIZE];
 	int read_threshold;
 	int write_threshold;
 	int def_read_threshold;
@@ -163,6 +174,7 @@ struct sdio_channel {
 	int min_write_avail;
 	int poll_delay_msec;
 	int is_packet_mode;
+	int is_low_latency_ch;
 
 	struct peer_sdioc_channel_config ch_config;
 
@@ -172,8 +184,7 @@ struct sdio_channel {
 	void (*notify)(void *priv, unsigned channel_event);
 	void *priv;
 
-	int is_valid;
-	int is_open;
+	int state;
 
 	struct sdio_func *func;
 

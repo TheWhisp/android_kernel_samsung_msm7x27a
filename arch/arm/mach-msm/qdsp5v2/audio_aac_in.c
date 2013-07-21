@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
- * Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -39,6 +39,7 @@
 #include <mach/qdsp5v2/audpreproc.h>
 #include <mach/qdsp5v2/audio_dev_ctl.h>
 #include <mach/debug_mm.h>
+#include <mach/socinfo.h>
 
 /* FRAME_NUM must be a power of two */
 #define FRAME_NUM		(8)
@@ -141,6 +142,7 @@ struct audio_in {
 	int running;
 	int stopped; /* set when stopped, cleared on flush */
 	int abort; /* set when error, like sample rate mismatch */
+	char *build_id;
 };
 
 struct audio_frame {
@@ -573,7 +575,13 @@ static int audaac_in_enc_config(struct audio_in *audio, int enable)
 {
 	struct audpreproc_audrec_cmd_enc_cfg cmd;
 	memset(&cmd, 0, sizeof(cmd));
-	cmd.cmd_id = AUDPREPROC_AUDREC_CMD_ENC_CFG_2;
+	if (audio->build_id[17] == '1') {
+		cmd.cmd_id = AUDPREPROC_AUDREC_CMD_ENC_CFG_2;
+		MM_ERR("sending AUDPREPROC_AUDREC_CMD_ENC_CFG_2 command");
+	} else {
+		cmd.cmd_id = AUDPREPROC_AUDREC_CMD_ENC_CFG;
+		MM_ERR("sending AUDPREPROC_AUDREC_CMD_ENC_CFG command");
+	}
 	cmd.stream_id = audio->enc_id;
 
 	if (enable)
@@ -1403,6 +1411,8 @@ static int audaac_in_open(struct inode *inode, struct file *file)
 		MM_DBG("write buf: phy addr 0x%08x kernel addr 0x%08x\n",
 				audio->out_phys, (int)audio->out_data);
 	}
+	audio->build_id = socinfo_get_build_id();
+	MM_DBG("Modem build id = %s\n", audio->build_id);
 
 		/* Initialize buffer */
 	audio->out[0].data = audio->out_data + 0;

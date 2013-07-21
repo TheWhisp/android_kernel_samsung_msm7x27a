@@ -390,13 +390,6 @@ static int raid_is_congested(struct dm_target_callbacks *cb, int bits)
 	return md_raid5_congested(&rs->md, bits);
 }
 
-static void raid_unplug(struct dm_target_callbacks *cb)
-{
-	struct raid_set *rs = container_of(cb, struct raid_set, callbacks);
-
-	md_raid5_unplug_device(rs->md.private);
-}
-
 /*
  * Construct a RAID4/5/6 mapping:
  * Args:
@@ -475,6 +468,7 @@ static int raid_ctr(struct dm_target *ti, unsigned argc, char **argv)
 	INIT_WORK(&rs->md.event_work, do_table_event);
 	ti->split_io = rs->md.chunk_sectors;
 	ti->private = rs;
+	ti->num_flush_requests = 1;
 
 	mutex_lock(&rs->md.reconfig_mutex);
 	ret = md_run(&rs->md);
@@ -487,7 +481,6 @@ static int raid_ctr(struct dm_target *ti, unsigned argc, char **argv)
 	}
 
 	rs->callbacks.congested_fn = raid_is_congested;
-	rs->callbacks.unplug_fn = raid_unplug;
 	dm_table_add_target_callbacks(ti->table, &rs->callbacks);
 
 	return 0;

@@ -86,8 +86,8 @@
 
 #ifdef CONFIG_QUOTA
 /* Amount of blocks needed for quota update - we know that the structure was
- * allocated so we need to update only inode+data */
-#define EXT4_QUOTA_TRANS_BLOCKS(sb) (test_opt(sb, QUOTA) ? 2 : 0)
+ * allocated so we need to update only data block */
+#define EXT4_QUOTA_TRANS_BLOCKS(sb) (test_opt(sb, QUOTA) ? 1 : 0)
 /* Amount of blocks needed for quota insert/delete - we do some block writes
  * but inode, sb and group updates are done only once */
 #define EXT4_QUOTA_INIT_BLOCKS(sb) (test_opt(sb, QUOTA) ? (DQUOT_INIT_ALLOC*\
@@ -126,9 +126,6 @@ void ext4_journal_abort_handle(const char *caller, unsigned int line,
 			       const char *err_fn,
 		struct buffer_head *bh, handle_t *handle, int err);
 
-int __ext4_journal_get_undo_access(const char *where, unsigned int line,
-				   handle_t *handle, struct buffer_head *bh);
-
 int __ext4_journal_get_write_access(const char *where, unsigned int line,
 				    handle_t *handle, struct buffer_head *bh);
 
@@ -146,8 +143,6 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
 int __ext4_handle_dirty_super(const char *where, unsigned int line,
 			      handle_t *handle, struct super_block *sb);
 
-#define ext4_journal_get_undo_access(handle, bh) \
-	__ext4_journal_get_undo_access(__func__, __LINE__, (handle), (bh))
 #define ext4_journal_get_write_access(handle, bh) \
 	__ext4_journal_get_write_access(__func__, __LINE__, (handle), (bh))
 #define ext4_forget(handle, is_metadata, inode, bh, block_nr) \
@@ -200,13 +195,6 @@ static inline int ext4_handle_has_enough_credits(handle_t *handle, int needed)
 	if (ext4_handle_valid(handle) && handle->h_buffer_credits < needed)
 		return 0;
 	return 1;
-}
-
-static inline void ext4_journal_release_buffer(handle_t *handle,
-						struct buffer_head *bh)
-{
-	if (ext4_handle_valid(handle))
-		jbd2_journal_release_buffer(handle, bh);
 }
 
 static inline handle_t *ext4_journal_start(struct inode *inode, int nblocks)
@@ -273,43 +261,45 @@ static inline void ext4_update_inode_fsync_trans(handle_t *handle,
 /* super.c */
 int ext4_force_commit(struct super_block *sb);
 
-static inline int ext4_should_journal_data(struct inode *inode)
+/*
+ * Ext4 inode journal modes
+ */
+#define EXT4_INODE_JOURNAL_DATA_MODE	0x01 /* journal data mode */
+#define EXT4_INODE_ORDERED_DATA_MODE	0x02 /* ordered data mode */
+#define EXT4_INODE_WRITEBACK_DATA_MODE	0x04 /* writeback data mode */
+
+static inline int ext4_inode_journal_mode(struct inode *inode)
 {
 	if (EXT4_JOURNAL(inode) == NULL)
-		return 0;
-	if (!S_ISREG(inode->i_mode))
-		return 1;
-	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)
-		return 1;
-	if (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
-		return 1;
-	return 0;
+		return EXT4_INODE_WRITEBACK_DATA_MODE;	/* writeback */
+	/* We do not support data journalling with delayed allocation */
+	if (!S_ISREG(inode->i_mode) ||
+	    test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)
+		return EXT4_INODE_JOURNAL_DATA_MODE;	/* journal data */
+	if (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA) &&
+	    !test_opt(inode->i_sb, DELALLOC))
+		return EXT4_INODE_JOURNAL_DATA_MODE;	/* journal data */
+	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_ORDERED_DATA)
+		return EXT4_INODE_ORDERED_DATA_MODE;	/* ordered */
+	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_WRITEBACK_DATA)
+		return EXT4_INODE_WRITEBACK_DATA_MODE;	/* writeback */
+	else
+		BUG();
+}
+
+static inline int ext4_should_journal_data(struct inode *inode)
+{
+	return ext4_inode_journal_mode(inode) & EXT4_INODE_JOURNAL_DATA_MODE;
 }
 
 static inline int ext4_should_order_data(struct inode *inode)
 {
-	if (EXT4_JOURNAL(inode) == NULL)
-		return 0;
-	if (!S_ISREG(inode->i_mode))
-		return 0;
-	if (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
-		return 0;
-	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_ORDERED_DATA)
-		return 1;
-	return 0;
+	return ext4_inode_journal_mode(inode) & EXT4_INODE_ORDERED_DATA_MODE;
 }
 
 static inline int ext4_should_writeback_data(struct inode *inode)
 {
-	if (!S_ISREG(inode->i_mode))
-		return 0;
-	if (EXT4_JOURNAL(inode) == NULL)
-		return 1;
-	if (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA))
-		return 0;
-	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_WRITEBACK_DATA)
-		return 1;
-	return 0;
+	return ext4_inode_journal_mode(inode) & EXT4_INODE_WRITEBACK_DATA_MODE;
 }
 
 /*

@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -48,12 +48,12 @@ static struct lcdc_samsung_data *dd;
 
 static void lcdc_samsung_panel_set_backlight(struct msm_fb_data_type *mfd)
 {
+#ifdef CONFIG_PMIC8058_PWM
 	int bl_level;
 	int ret;
 
 	bl_level = mfd->bl_level;
 
-#ifdef CONFIG_PMIC8058_PWM
 	if (bl_pwm0) {
 		ret = pwm_config(bl_pwm0, PWM_DUTY_LEVEL * bl_level,
 			PWM_PERIOD_USEC);
@@ -222,10 +222,8 @@ static int __init lcdc_samsung_panel_init(void)
 	int ret;
 	struct msm_panel_info *pinfo;
 
-#ifdef CONFIG_FB_MSM_LCDC_AUTO_DETECT
 	if (msm_fb_detect_client("lcdc_samsung_wsvga"))
 		return 0;
-#endif
 
 	ret = platform_driver_register(&this_driver);
 	if (ret)

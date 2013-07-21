@@ -1,4 +1,4 @@
-/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -14,10 +14,9 @@
 
 void __init msm8x60_init_gpiomux(struct msm_gpiomux_configs *cfgs);
 
-extern struct msm_gpiomux_configs msm8x60_qrdc_gpiomux_cfgs[] __initdata;
 extern struct msm_gpiomux_configs msm8x60_surf_ffa_gpiomux_cfgs[] __initdata;
 extern struct msm_gpiomux_configs msm8x60_fluid_gpiomux_cfgs[] __initdata;
 extern struct msm_gpiomux_configs msm8x60_charm_gpiomux_cfgs[] __initdata;
-extern struct msm_gpiomux_configs msm8x60_qt_gpiomux_cfgs[] __initdata;
+extern struct msm_gpiomux_configs msm8x60_dragon_gpiomux_cfgs[] __initdata;
 
 #endif

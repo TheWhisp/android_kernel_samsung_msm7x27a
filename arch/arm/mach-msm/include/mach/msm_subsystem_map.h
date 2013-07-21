@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -25,6 +25,11 @@
 /* ioremaps in the kernel address space are uncached */
 #define MSM_SUBSYSTEM_MAP_UNCACHED	0x8
 /*
+ * Will map 2x the length requested.
+ */
+#define MSM_SUBSYSTEM_MAP_IOMMU_2X 0x10
+
+/*
  * Shortcut flags for alignment.
  * The flag must be equal to the alignment requested.
  * e.g. for 8k alignment the flags must be (0x2000 | other flags)
@@ -33,11 +38,20 @@
 #define MSM_SUBSYSTEM_ALIGN_IOVA_1M	SZ_1M
 
 
-#define MSM_SUBSYSTEM_VIDEO		VCODEC_A_SUBSYS_ID
-#define MSM_SUBSYSTEM_VIDEO_FWARE	VIDEO_FWARE_ID
-#define MSM_SUBSYSTEM_CAMERA		VPE_SUBSYS_ID
-#define MSM_SUBSYSTEM_DISPLAY		MDP0_SUBSYS_ID
-#define MSM_SUBSYSTEM_ROTATOR		ROT_SUBSYS_ID
+enum msm_subsystem_id {
+	INVALID_SUBSYS_ID = -1,
+	MSM_SUBSYSTEM_VIDEO,
+	MSM_SUBSYSTEM_VIDEO_FWARE,
+	MSM_SUBSYSTEM_CAMERA,
+	MSM_SUBSYSTEM_DISPLAY,
+	MSM_SUBSYSTEM_ROTATOR,
+	MAX_SUBSYSTEM_ID
+};
+
+static inline int msm_subsystem_check_id(int subsys_id)
+{
+	return subsys_id > INVALID_SUBSYS_ID && subsys_id < MAX_SUBSYSTEM_ID;
+}
 
 struct msm_mapped_buffer {
 	/*

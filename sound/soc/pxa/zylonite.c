@@ -167,7 +167,7 @@ static struct snd_soc_dai_link zylonite_dai[] = {
 	.codec_name = "wm9713-codec",
 	.platform_name = "pxa-pcm-audio",
 	.cpu_dai_name = "pxa2xx-ac97",
-	.codec_name = "wm9713-hifi",
+	.codec_dai_name = "wm9713-hifi",
 	.init = zylonite_wm9713_init,
 },
 {
@@ -176,7 +176,7 @@ static struct snd_soc_dai_link zylonite_dai[] = {
 	.codec_name = "wm9713-codec",
 	.platform_name = "pxa-pcm-audio",
 	.cpu_dai_name = "pxa2xx-ac97-aux",
-	.codec_name = "wm9713-aux",
+	.codec_dai_name = "wm9713-aux",
 },
 {
 	.name = "WM9713 Voice",
@@ -184,39 +184,39 @@ static struct snd_soc_dai_link zylonite_dai[] = {
 	.codec_name = "wm9713-codec",
 	.platform_name = "pxa-pcm-audio",
 	.cpu_dai_name = "pxa-ssp-dai.2",
-	.codec_name = "wm9713-voice",
+	.codec_dai_name = "wm9713-voice",
 	.ops = &zylonite_voice_ops,
 },
 };
 
-static int zylonite_probe(struct platform_device *pdev)
+static int zylonite_probe(struct snd_soc_card *card)
 {
 	int ret;
 
 	if (clk_pout) {
 		pout = clk_get(NULL, "CLK_POUT");
 		if (IS_ERR(pout)) {
-			dev_err(&pdev->dev, "Unable to obtain CLK_POUT: %ld\n",
+			dev_err(card->dev, "Unable to obtain CLK_POUT: %ld\n",
 				PTR_ERR(pout));
 			return PTR_ERR(pout);
 		}
 
 		ret = clk_enable(pout);
 		if (ret != 0) {
-			dev_err(&pdev->dev, "Unable to enable CLK_POUT: %d\n",
+			dev_err(card->dev, "Unable to enable CLK_POUT: %d\n",
 				ret);
 			clk_put(pout);
 			return ret;
 		}
 
-		dev_dbg(&pdev->dev, "MCLK enabled at %luHz\n",
+		dev_dbg(card->dev, "MCLK enabled at %luHz\n",
 			clk_get_rate(pout));
 	}
 
 	return 0;
 }
 
-static int zylonite_remove(struct platform_device *pdev)
+static int zylonite_remove(struct snd_soc_card *card)
 {
 	if (clk_pout) {
 		clk_disable(pout);
@@ -226,8 +226,7 @@ static int zylonite_remove(struct platform_device *pdev)
 	return 0;
 }
 
-static int zylonite_suspend_post(struct platform_device *pdev,
-				 pm_message_t state)
+static int zylonite_suspend_post(struct snd_soc_card *card)
 {
 	if (clk_pout)
 		clk_disable(pout);
@@ -235,14 +234,14 @@ static int zylonite_suspend_post(struct platform_device *pdev,
 	return 0;
 }
 
-static int zylonite_resume_pre(struct platform_device *pdev)
+static int zylonite_resume_pre(struct snd_soc_card *card)
 {
 	int ret = 0;
 
 	if (clk_pout) {
 		ret = clk_enable(pout);
 		if (ret != 0)
-			dev_err(&pdev->dev, "Unable to enable CLK_POUT: %d\n",
+			dev_err(card->dev, "Unable to enable CLK_POUT: %d\n",
 				ret);
 	}
 

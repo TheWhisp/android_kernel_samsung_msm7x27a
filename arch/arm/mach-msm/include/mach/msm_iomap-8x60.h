@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2007 Google, Inc.
- * Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -106,14 +106,6 @@
 #define MSM_SAW1_PHYS		0x02052000
 #define MSM_SAW1_SIZE		SZ_4K
 
-#define MSM_DMOV_ADM0_BASE	IOMEM(0xFA400000)
-#define MSM_DMOV_ADM0_PHYS	0x18320000
-#define MSM_DMOV_ADM0_SIZE	SZ_1M
-
-#define MSM_DMOV_ADM1_BASE	IOMEM(0xFA500000)
-#define MSM_DMOV_ADM1_PHYS	0x18420000
-#define MSM_DMOV_ADM1_SIZE	SZ_1M
-
 #define MSM_SIC_NON_SECURE_BASE	IOMEM(0xFA600000)
 #define MSM_SIC_NON_SECURE_PHYS	0x12100000
 #define MSM_SIC_NON_SECURE_SIZE	SZ_64K
@@ -134,11 +126,9 @@
 #define MSM_HDMI_PHYS		0x04A00000
 #define MSM_HDMI_SIZE		SZ_4K
 
-#ifdef CONFIG_MSM_DEBUG_UART
-
+#ifdef CONFIG_DEBUG_MSM8660_UART
 #define MSM_DEBUG_UART_BASE	0xFBC40000
 #define MSM_DEBUG_UART_PHYS	0x19C40000
-#define MSM_DEBUG_UART_SIZE	SZ_4K
-
 #endif
+
 #endif

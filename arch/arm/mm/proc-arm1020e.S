@@ -64,7 +64,7 @@
 /*
  * This is the size at which it becomes more efficient to
  * clean the whole cache, rather than using the individual
- * cache line maintainence instructions.
+ * cache line maintenance instructions.
  */
 #define CACHE_DLIMIT	32768
 
@@ -268,7 +268,7 @@ ENTRY(arm1020e_flush_kern_dcache_area)
  *
  * (same as v4wb)
  */
-ENTRY(arm1020e_dma_inv_range)
+arm1020e_dma_inv_range:
 	mov	ip, #0
 #ifndef CONFIG_CPU_DCACHE_DISABLE
 	tst	r0, #CACHE_DLINESIZE - 1
@@ -294,7 +294,7 @@ ENTRY(arm1020e_dma_inv_range)
  *
  * (same as v4wb)
  */
-ENTRY(arm1020e_dma_clean_range)
+arm1020e_dma_clean_range:
 	mov	ip, #0
 #ifndef CONFIG_CPU_DCACHE_DISABLE
 	bic	r0, r0, #CACHE_DLINESIZE - 1
@@ -360,8 +360,6 @@ ENTRY(arm1020e_cache_fns)
 	.long	arm1020e_flush_kern_dcache_area
 	.long	arm1020e_dma_map_area
 	.long	arm1020e_dma_unmap_area
-	.long	arm1020e_dma_inv_range
-	.long	arm1020e_dma_clean_range
 	.long	arm1020e_dma_flush_range
 
 	.align	5
@@ -476,6 +474,9 @@ arm1020e_processor_functions:
 	.word	cpu_arm1020e_dcache_clean_area
 	.word	cpu_arm1020e_switch_mm
 	.word	cpu_arm1020e_set_pte_ext
+	.word	0
+	.word	0
+	.word	0
 	.size	arm1020e_processor_functions, . - arm1020e_processor_functions
 
 	.section ".rodata"

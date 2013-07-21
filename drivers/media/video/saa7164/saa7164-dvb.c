@@ -309,8 +309,8 @@ static int dvb_register(struct saa7164_port *port)
 
 	port->hw_streamingparams.pitch = 188;
 	port->hw_streamingparams.linethreshold = 0;
-	port->hw_streamingparams.pagetablelistvirt = 0;
-	port->hw_streamingparams.pagetablelistphys = 0;
+	port->hw_streamingparams.pagetablelistvirt = NULL;
+	port->hw_streamingparams.pagetablelistphys = NULL;
 	port->hw_streamingparams.numpagetables = 2 +
 		((SAA7164_TS_NUMBER_OF_LINES * 188) / PAGE_SIZE);
 
@@ -475,6 +475,7 @@ int saa7164_dvb_register(struct saa7164_port *port)
 	case SAA7164_BOARD_HAUPPAUGE_HVR2200:
 	case SAA7164_BOARD_HAUPPAUGE_HVR2200_2:
 	case SAA7164_BOARD_HAUPPAUGE_HVR2200_3:
+	case SAA7164_BOARD_HAUPPAUGE_HVR2200_4:
 		i2c_bus = &dev->i2c_bus[port->nr + 1];
 		switch (port->nr) {
 		case 0:

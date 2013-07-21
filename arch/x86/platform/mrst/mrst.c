@@ -31,6 +31,7 @@
 #include <asm/apic.h>
 #include <asm/io_apic.h>
 #include <asm/mrst.h>
+#include <asm/mrst-vrtc.h>
 #include <asm/io.h>
 #include <asm/i8259.h>
 #include <asm/intel_scu_ipc.h>
@@ -96,11 +97,11 @@ static int __init sfi_parse_mtmr(struct sfi_table_header *table)
 			pentry->freq_hz, pentry->irq);
 			if (!pentry->irq)
 				continue;
-			mp_irq.type = MP_IOAPIC;
+			mp_irq.type = MP_INTSRC;
 			mp_irq.irqtype = mp_INT;
 /* triggering mode edge bit 2-3, active high polarity bit 0-1 */
 			mp_irq.irqflag = 5;
-			mp_irq.srcbus = 0;
+			mp_irq.srcbus = MP_BUS_ISA;
 			mp_irq.srcbusirq = pentry->irq;	/* IRQ */
 			mp_irq.dstapic = MP_APIC_ALL;
 			mp_irq.dstirq = pentry->irq;
@@ -167,10 +168,10 @@ int __init sfi_parse_mrtc(struct sfi_table_header *table)
 	for (totallen = 0; totallen < sfi_mrtc_num; totallen++, pentry++) {
 		pr_debug("RTC[%d]: paddr = 0x%08x, irq = %d\n",
 			totallen, (u32)pentry->phys_addr, pentry->irq);
-		mp_irq.type = MP_IOAPIC;
+		mp_irq.type = MP_INTSRC;
 		mp_irq.irqtype = mp_INT;
 		mp_irq.irqflag = 0xf;	/* level trigger and active low */
-		mp_irq.srcbus = 0;
+		mp_irq.srcbus = MP_BUS_ISA;
 		mp_irq.srcbusirq = pentry->irq;	/* IRQ */
 		mp_irq.dstapic = MP_APIC_ALL;
 		mp_irq.dstirq = pentry->irq;
@@ -193,7 +194,7 @@ static unsigned long __init mrst_calibrate_tsc(void)
 	return 0;
 }
 
-void __init mrst_time_init(void)
+static void __init mrst_time_init(void)
 {
 	sfi_table_parse(SFI_SIG_MTMR, NULL, NULL, sfi_parse_mtmr);
 	switch (mrst_timer_options) {
@@ -215,7 +216,7 @@ void __init mrst_time_init(void)
 	apbt_time_init();
 }
 
-void __cpuinit mrst_arch_setup(void)
+static void __cpuinit mrst_arch_setup(void)
 {
 	if (boot_cpu_data.x86 == 6 && boot_cpu_data.x86_model == 0x27)
 		__mrst_cpu_chip = MRST_CPU_CHIP_PENWELL;
@@ -268,6 +269,7 @@ void __init x86_mrst_early_setup(void)
 
 	x86_platform.calibrate_tsc = mrst_calibrate_tsc;
 	x86_platform.i8042_detect = mrst_i8042_detect;
+	x86_init.timers.wallclock_init = mrst_rtc_init;
 	x86_init.pci.init = pci_mrst_init;
 	x86_init.pci.fixup_irqs = x86_init_noop;
 
@@ -280,7 +282,7 @@ void __init x86_mrst_early_setup(void)
 	/* Avoid searching for BIOS MP tables */
 	x86_init.mpparse.find_smp_config = x86_init_noop;
 	x86_init.mpparse.get_smp_config = x86_init_uint_noop;
-
+	set_bit(MP_BUS_ISA, mp_bus_not_pci);
 }
 
 /*
@@ -676,36 +678,40 @@ static int __init sfi_parse_devs(struct sfi_table_header *table)
 	pentry = (struct sfi_device_table_entry *)sb->pentry;
 
 	for (i = 0; i < num; i++, pentry++) {
-		if (pentry->irq != (u8)0xff) { /* native RTE case */
+		int irq = pentry->irq;
+
+		if (irq != (u8)0xff) { /* native RTE case */
 			/* these SPI2 devices are not exposed to system as PCI
 			 * devices, but they have separate RTE entry in IOAPIC
 			 * so we have to enable them one by one here
 			 */
-			ioapic = mp_find_ioapic(pentry->irq);
+			ioapic = mp_find_ioapic(irq);
 			irq_attr.ioapic = ioapic;
-			irq_attr.ioapic_pin = pentry->irq;
+			irq_attr.ioapic_pin = irq;
 			irq_attr.trigger = 1;
 			irq_attr.polarity = 1;
-			io_apic_set_pci_routing(NULL, pentry->irq, &irq_attr);
-		}
+			io_apic_set_pci_routing(NULL, irq, &irq_attr);
+		} else
+			irq = 0; /* No irq */
+
 		switch (pentry->type) {
 		case SFI_DEV_TYPE_IPC:
 			/* ID as IRQ is a hack that will go away */
-			pdev = platform_device_alloc(pentry->name, pentry->irq);
+			pdev = platform_device_alloc(pentry->name, irq);
 			if (pdev == NULL) {
 				pr_err("out of memory for SFI platform device '%s'.\n",
 							pentry->name);
 				continue;
 			}
-			install_irq_resource(pdev, pentry->irq);
+			install_irq_resource(pdev, irq);
 			pr_debug("info[%2d]: IPC bus, name = %16.16s, "
-				"irq = 0x%2x\n", i, pentry->name, pentry->irq);
+				"irq = 0x%2x\n", i, pentry->name, irq);
 			sfi_handle_ipc_dev(pdev);
 			break;
 		case SFI_DEV_TYPE_SPI:
 			memset(&spi_info, 0, sizeof(spi_info));
 			strncpy(spi_info.modalias, pentry->name, SFI_NAME_LEN);
-			spi_info.irq = pentry->irq;
+			spi_info.irq = irq;
 			spi_info.bus_num = pentry->host_num;
 			spi_info.chip_select = pentry->addr;
 			spi_info.max_speed_hz = pentry->max_freq;
@@ -722,7 +728,7 @@ static int __init sfi_parse_devs(struct sfi_table_header *table)
 			memset(&i2c_info, 0, sizeof(i2c_info));
 			bus = pentry->host_num;
 			strncpy(i2c_info.type, pentry->name, SFI_NAME_LEN);
-			i2c_info.irq = pentry->irq;
+			i2c_info.irq = irq;
 			i2c_info.addr = pentry->addr;
 			pr_debug("info[%2d]: I2C bus = %d, name = %16.16s, "
 				"irq = 0x%2x, addr = 0x%x\n", i, bus,

@@ -15,17 +15,20 @@
 #include <linux/mman.h>
 #include <linux/nodemask.h>
 #include <linux/initrd.h>
+#include <linux/of_fdt.h>
 #include <linux/highmem.h>
 #include <linux/gfp.h>
 #include <linux/memblock.h>
 #include <linux/sort.h>
 
 #include <asm/mach-types.h>
+#include <asm/prom.h>
 #include <asm/sections.h>
 #include <asm/setup.h>
 #include <asm/sizes.h>
 #include <asm/tlb.h>
 #include <asm/fixmap.h>
+#include <asm/cputype.h>
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
@@ -34,6 +37,8 @@
 
 static unsigned long phys_initrd_start __initdata = 0;
 static unsigned long phys_initrd_size __initdata = 0;
+int msm_krait_need_wfe_fixup;
+EXPORT_SYMBOL(msm_krait_need_wfe_fixup);
 
 static int __init early_initrd(char *p)
 {
@@ -71,6 +76,14 @@ static int __init parse_tag_initrd2(const struct tag *tag)
 
 __tagtable(ATAG_INITRD2, parse_tag_initrd2);
 
+#ifdef CONFIG_OF_FLATTREE
+void __init early_init_dt_setup_initrd_arch(unsigned long start, unsigned long end)
+{
+	phys_initrd_start = start;
+	phys_initrd_size = end - start;
+}
+#endif /* CONFIG_OF_FLATTREE */
+
 /*
  * This keeps memory configuration data used by a couple memory
  * initialization functions, as well as show_mem() for the skipping
@@ -78,14 +91,14 @@ __tagtable(ATAG_INITRD2, parse_tag_initrd2);
  */
 struct meminfo meminfo;
 
-void show_mem(void)
+void show_mem(unsigned int filter)
 {
 	int free = 0, total = 0, reserved = 0;
 	int shared = 0, cached = 0, slab = 0, i;
 	struct meminfo * mi = &meminfo;
 
 	printk("Mem-info:\n");
-	show_free_areas();
+	show_free_areas(filter);
 
 	for_each_bank (i, mi) {
 		struct membank *bank = &mi->bank[i];
@@ -111,7 +124,14 @@ void show_mem(void)
 			else
 				shared += page_count(page) - 1;
 			page++;
+#ifdef CONFIG_SPARSEMEM
+			pfn1++;
+			if (!(pfn1 % PAGES_PER_SECTION))
+				page = pfn_to_page(pfn1);
+		} while (pfn1 < pfn2);
+#else
 		} while (page < end);
+#endif
 	}
 
 	printk("%d pages of RAM\n", total);
@@ -201,6 +221,43 @@ static void __init arm_bootmem_init(unsigned long start_pfn,
 	}
 }
 
+#ifdef CONFIG_ZONE_DMA
+static void __init arm_adjust_dma_zone(unsigned long *size, unsigned long *hole,
+	unsigned long dma_size)
+{
+	if (size[0] <= dma_size)
+		return;
+
+	size[ZONE_NORMAL] = size[0] - dma_size;
+	size[ZONE_DMA] = dma_size;
+	hole[ZONE_NORMAL] = hole[0];
+	hole[ZONE_DMA] = 0;
+}
+#endif
+
+#ifdef CONFIG_ARCH_POPULATES_NODE_MAP
+static void __init arm_bootmem_free_apnm(unsigned long max_low,
+	unsigned long max_high)
+{
+	unsigned long max_zone_pfns[MAX_NR_ZONES];
+	struct memblock_region *reg;
+
+	memset(max_zone_pfns, 0, sizeof(max_zone_pfns));
+
+	max_zone_pfns[0] = max_low;
+#ifdef CONFIG_HIGHMEM
+	max_zone_pfns[ZONE_HIGHMEM] = max_high;
+#endif
+	for_each_memblock(memory, reg) {
+		unsigned long start = memblock_region_memory_base_pfn(reg);
+		unsigned long end = memblock_region_memory_end_pfn(reg);
+
+		add_active_range(0, start, end);
+	}
+	free_area_init_nodes(max_zone_pfns);
+}
+
+#else
 static void __init arm_bootmem_free(unsigned long min, unsigned long max_low,
 	unsigned long max_high)
 {
@@ -243,33 +300,44 @@ static void __init arm_bootmem_free(unsigned long min, unsigned long max_low,
 #endif
 	}
 
+#ifdef ARM_DMA_ZONE_SIZE
+#ifndef CONFIG_ZONE_DMA
+#error ARM_DMA_ZONE_SIZE set but no DMA zone to limit allocations
+#endif
+
 	/*
 	 * Adjust the sizes according to any special requirements for
 	 * this machine type.
 	 */
-	arch_adjust_zones(zone_size, zhole_size);
+	arm_adjust_dma_zone(zone_size, zhole_size,
+		ARM_DMA_ZONE_SIZE >> PAGE_SHIFT);
+#endif
 
 	free_area_init_node(0, zone_size, min, zhole_size);
 }
+#endif
 
-#ifndef CONFIG_SPARSEMEM
+#ifdef CONFIG_HAVE_ARCH_PFN_VALID
 int pfn_valid(unsigned long pfn)
 {
 	return memblock_is_memory(pfn << PAGE_SHIFT);
 }
 EXPORT_SYMBOL(pfn_valid);
+#endif
 
+#ifndef CONFIG_SPARSEMEM
 static void arm_memory_present(void)
 {
 }
 #else
 static void arm_memory_present(void)
 {
-	struct memblock_region *reg;
-
-	for_each_memblock(memory, reg)
-		memory_present(0, memblock_region_memory_base_pfn(reg),
-			       memblock_region_memory_end_pfn(reg));
+	struct meminfo *mi = &meminfo;
+	int i;
+	for_each_bank(i, mi) {
+		memory_present(0, bank_pfn_start(&mi->bank[i]),
+				bank_pfn_end(&mi->bank[i]));
+	}
 }
 #endif
 
@@ -280,11 +348,31 @@ static int __init meminfo_cmp(const void *_a, const void *_b)
 	return cmp < 0 ? -1 : cmp > 0 ? 1 : 0;
 }
 
+#ifdef CONFIG_DONT_MAP_HOLE_AFTER_MEMBANK0
+unsigned long membank0_size;
+EXPORT_SYMBOL(membank0_size);
+unsigned long membank1_start;
+EXPORT_SYMBOL(membank1_start);
+
+void __init find_membank0_hole(void)
+{
+	sort(&meminfo.bank, meminfo.nr_banks,
+		sizeof(meminfo.bank[0]), meminfo_cmp, NULL);
+
+	membank0_size = meminfo.bank[0].size;
+	membank1_start = meminfo.bank[1].start;
+
+	pr_info("m0 size %lx m1 start %lx\n", membank0_size, membank1_start);
+}
+#endif
+
 void __init arm_memblock_init(struct meminfo *mi, struct machine_desc *mdesc)
 {
 	int i;
 
+#ifndef CONFIG_DONT_MAP_HOLE_AFTER_MEMBANK0
 	sort(&meminfo.bank, meminfo.nr_banks, sizeof(meminfo.bank[0]), meminfo_cmp, NULL);
+#endif
 
 	memblock_init();
 	for (i = 0; i < mi->nr_banks; i++)
@@ -297,6 +385,12 @@ void __init arm_memblock_init(struct meminfo *mi, struct machine_desc *mdesc)
 	memblock_reserve(__pa(_stext), _end - _stext);
 #endif
 #ifdef CONFIG_BLK_DEV_INITRD
+	if (phys_initrd_size &&
+	    !memblock_is_region_memory(phys_initrd_start, phys_initrd_size)) {
+		pr_err("INITRD: 0x%08lx+0x%08lx is not a memory region - disabling initrd\n",
+		       phys_initrd_start, phys_initrd_size);
+		phys_initrd_start = phys_initrd_size = 0;
+	}
 	if (phys_initrd_size &&
 	    memblock_is_region_reserved(phys_initrd_start, phys_initrd_size)) {
 		pr_err("INITRD: 0x%08lx+0x%08lx overlaps in-use memory region - disabling initrd\n",
@@ -313,6 +407,7 @@ void __init arm_memblock_init(struct meminfo *mi, struct machine_desc *mdesc)
 #endif
 
 	arm_mm_memblock_reserve();
+	arm_dt_memblock_reserve();
 
 	/* reserve any platform specific memblock areas */
 	if (mdesc->reserve)
@@ -365,14 +460,18 @@ void __init bootmem_init(void)
 	 */
 	sparse_init();
 
+#ifdef CONFIG_ARCH_POPULATES_NODE_MAP
+	arm_bootmem_free_apnm(max_low, max_high);
+#else
 	/*
 	 * Now free the memory - free_area_init_node needs
 	 * the sparse mem_map arrays initialized by sparse_init()
 	 * for memmap_init_zone(), otherwise all PFNs are invalid.
 	 */
 	arm_bootmem_free(min, max_low, max_high);
+#endif
 
-	high_memory = __va((max_low << PAGE_SHIFT) - 1) + 1;
+	high_memory = __va(((phys_addr_t)max_low << PAGE_SHIFT) - 1) + 1;
 
 	/*
 	 * This doesn't seem to be used by the Linux memory manager any
@@ -404,6 +503,17 @@ static inline int free_area(unsigned long pfn, unsigned long end, char *s)
 	return pages;
 }
 
+/*
+ * Poison init memory with an undefined instruction (ARM) or a branch to an
+ * undefined instruction (Thumb).
+ */
+static inline void poison_init_mem(void *s, size_t count)
+{
+	u32 *p = (u32 *)s;
+	for (; count != 0; count -= 4)
+		*p++ = 0xe7fddef0;
+}
+
 static inline void
 free_memmap(unsigned long start_pfn, unsigned long end_pfn)
 {
@@ -414,14 +524,14 @@ free_memmap(unsigned long start_pfn, unsigned long end_pfn)
 	 * Convert start_pfn/end_pfn to a struct page pointer.
 	 */
 	start_pg = pfn_to_page(start_pfn - 1) + 1;
-	end_pg = pfn_to_page(end_pfn);
+	end_pg = pfn_to_page(end_pfn - 1) + 1;
 
 	/*
 	 * Convert to physical addresses, and
 	 * round start upwards and end downwards.
 	 */
-	pg = PAGE_ALIGN(__pa(start_pg));
-	pgend = __pa(end_pg) & PAGE_MASK;
+	pg = (unsigned long)PAGE_ALIGN(__pa(start_pg));
+	pgend = (unsigned long)__pa(end_pg) & PAGE_MASK;
 
 	/*
 	 * If there are free pages between these,
@@ -432,7 +542,10 @@ free_memmap(unsigned long start_pfn, unsigned long end_pfn)
 }
 
 /*
- * The mem_map array can get very big.  Free the unused area of the memory map.
+ * The mem_map array can get very big.  Free as much of the unused portion of
+ * the mem_map that we are allowed to. The page migration code moves pages
+ * in blocks that are rounded per the MAX_ORDER_NR_PAGES definition, so we
+ * can't free mem_map entries that may be dereferenced in this manner.
  */
 static void __init free_unused_memmap(struct meminfo *mi)
 {
@@ -446,8 +559,24 @@ static void __init free_unused_memmap(struct meminfo *mi)
 	for_each_bank(i, mi) {
 		struct membank *bank = &mi->bank[i];
 
-		bank_start = bank_pfn_start(bank);
+		bank_start = round_down(bank_pfn_start(bank),
+					MAX_ORDER_NR_PAGES);
 
+#ifdef CONFIG_SPARSEMEM
+		/*
+		 * Take care not to free memmap entries that don't exist
+		 * due to SPARSEMEM sections which aren't present.
+		 */
+		bank_start = min(bank_start,
+				 ALIGN(prev_bank_end, PAGES_PER_SECTION));
+#else
+		/*
+		 * Align down here since the VM subsystem insists that the
+		 * memmap entries are valid from the bank start aligned to
+		 * MAX_ORDER_NR_PAGES.
+		 */
+		bank_start = round_down(bank_start, MAX_ORDER_NR_PAGES);
+#endif
 		/*
 		 * If we had a previous bank, and there is a space
 		 * between the current bank and the previous, free it.
@@ -455,13 +584,15 @@ static void __init free_unused_memmap(struct meminfo *mi)
 		if (prev_bank_end && prev_bank_end < bank_start)
 			free_memmap(prev_bank_end, bank_start);
 
-		/*
-		 * Align up here since the VM subsystem insists that the
-		 * memmap entries are valid from the bank end aligned to
-		 * MAX_ORDER_NR_PAGES.
-		 */
-		prev_bank_end = ALIGN(bank_pfn_end(bank), MAX_ORDER_NR_PAGES);
+		prev_bank_end = round_up(bank_pfn_end(bank),
+					 MAX_ORDER_NR_PAGES);
 	}
+
+#ifdef CONFIG_SPARSEMEM
+	if (!IS_ALIGNED(prev_bank_end, PAGES_PER_SECTION))
+		free_memmap(prev_bank_end,
+			    ALIGN(prev_bank_end, PAGES_PER_SECTION));
+#endif
 }
 
 static void __init free_highpages(void)
@@ -529,6 +660,9 @@ void __init mem_init(void)
 	extern u32 dtcm_end;
 	extern u32 itcm_end;
 #endif
+#ifdef CONFIG_FIX_MOVABLE_ZONE
+	struct zone *zone;
+#endif
 
 	max_mapnr   = pfn_to_page(max_pfn + PHYS_PFN_OFFSET) - mem_map;
 
@@ -564,8 +698,23 @@ void __init mem_init(void)
 			else if (!page_count(page))
 				free_pages++;
 			page++;
+#ifdef CONFIG_SPARSEMEM
+			pfn1++;
+			if (!(pfn1 % PAGES_PER_SECTION))
+				page = pfn_to_page(pfn1);
+		} while (pfn1 < pfn2);
+#else
 		} while (page < end);
+#endif
 	}
+
+#ifdef CONFIG_FIX_MOVABLE_ZONE
+	for_each_zone(zone) {
+		if (zone_idx(zone) == ZONE_MOVABLE)
+			total_unmovable_pages = totalram_pages -
+							zone->spanned_pages;
+	}
+#endif
 
 	/*
 	 * Since our memory may not be contiguous, calculate the
@@ -609,7 +758,8 @@ void __init mem_init(void)
 			"    modules : 0x%08lx - 0x%08lx   (%4ld MB)\n"
 			"      .init : 0x%p" " - 0x%p" "   (%4d kB)\n"
 			"      .text : 0x%p" " - 0x%p" "   (%4d kB)\n"
-			"      .data : 0x%p" " - 0x%p" "   (%4d kB)\n",
+			"      .data : 0x%p" " - 0x%p" "   (%4d kB)\n"
+			"       .bss : 0x%p" " - 0x%p" "   (%4d kB)\n",
 
 			MLK(UL(CONFIG_VECTORS_BASE), UL(CONFIG_VECTORS_BASE) +
 				(PAGE_SIZE)),
@@ -631,7 +781,8 @@ void __init mem_init(void)
 
 			MLK_ROUNDUP(__init_begin, __init_end),
 			MLK_ROUNDUP(_text, _etext),
-			MLK_ROUNDUP(_sdata, _edata));
+			MLK_ROUNDUP(_sdata, _edata),
+			MLK_ROUNDUP(__bss_start, __bss_stop));
 
 #undef MLK
 #undef MLM
@@ -667,18 +818,26 @@ void __init mem_init(void)
 
 void free_initmem(void)
 {
+	unsigned long reclaimed_initmem;
 #ifdef CONFIG_HAVE_TCM
 	extern char __tcm_start, __tcm_end;
 
+	poison_init_mem(&__tcm_start, &__tcm_end - &__tcm_start);
 	totalram_pages += free_area(__phys_to_pfn(__pa(&__tcm_start)),
 				    __phys_to_pfn(__pa(&__tcm_end)),
 				    "TCM link");
 #endif
 
-	if (!machine_is_integrator() && !machine_is_cintegrator())
-		totalram_pages += free_area(__phys_to_pfn(__pa(__init_begin)),
+	if (!machine_is_integrator() && !machine_is_cintegrator()) {
+		poison_init_mem(__init_begin, __init_end - __init_begin);
+		reclaimed_initmem = free_area(__phys_to_pfn(__pa(__init_begin)),
 					    __phys_to_pfn(__pa(__init_end)),
 					    "init");
+		totalram_pages += reclaimed_initmem;
+#ifdef CONFIG_FIX_MOVABLE_ZONE
+		total_unmovable_pages += reclaimed_initmem;
+#endif
+	}
 }
 
 #ifdef CONFIG_MEMORY_HOTPLUG
@@ -694,26 +853,17 @@ int arch_add_memory(int nid, u64 start, u64 size)
 
 int arch_physical_active_memory(u64 start, u64 size)
 {
-	unsigned long start_pfn = start >> PAGE_SHIFT;
-	unsigned long nr_pages = size >> PAGE_SHIFT;
-
-	return platform_physical_active_pages(start_pfn, nr_pages);
+	return platform_physical_active_pages(start, size);
 }
 
 int arch_physical_remove_memory(u64 start, u64 size)
 {
-	unsigned long start_pfn = start >> PAGE_SHIFT;
-	unsigned long nr_pages = size >> PAGE_SHIFT;
-
-	return platform_physical_remove_pages(start_pfn, nr_pages);
+	return platform_physical_remove_pages(start, size);
 }
 
 int arch_physical_low_power_memory(u64 start, u64 size)
 {
-	unsigned long start_pfn = start >> PAGE_SHIFT;
-	unsigned long nr_pages = size >> PAGE_SHIFT;
-
-	return platform_physical_low_power_pages(start_pfn, nr_pages);
+	return platform_physical_low_power_pages(start, size);
 }
 #endif
 
@@ -723,10 +873,17 @@ static int keep_initrd;
 
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
-	if (!keep_initrd)
-		totalram_pages += free_area(__phys_to_pfn(__pa(start)),
+	unsigned long reclaimed_initrd_mem;
+	if (!keep_initrd) {
+		poison_init_mem((void *)start, PAGE_ALIGN(end) - start);
+		reclaimed_initrd_mem = free_area(__phys_to_pfn(__pa(start)),
 					    __phys_to_pfn(__pa(end)),
 					    "initrd");
+		totalram_pages += reclaimed_initrd_mem;
+#ifdef CONFIG_FIX_MOVABLE_ZONE
+		total_unmovable_pages += reclaimed_initrd_mem;
+#endif
+	}
 }
 
 static int __init keepinitrd_setup(char *__unused)
@@ -736,4 +893,18 @@ static int __init keepinitrd_setup(char *__unused)
 }
 
 __setup("keepinitrd", keepinitrd_setup);
+#endif
+
+#ifdef CONFIG_MSM_KRAIT_WFE_FIXUP
+static int __init msm_krait_wfe_init(void)
+{
+	unsigned int val, midr;
+	midr = read_cpuid_id() & 0xffffff00;
+	if ((midr == 0x511f0400) || (midr == 0x510f0600)) {
+		asm volatile("mrc p15, 7, %0, c15, c0, 5" : "=r" (val));
+		msm_krait_need_wfe_fixup = (val & 0x10000) ? 1 : 0;
+	}
+	return 0;
+}
+pure_initcall(msm_krait_wfe_init);
 #endif

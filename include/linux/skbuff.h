@@ -122,8 +122,14 @@ struct sk_buff_head {
 
 struct sk_buff;
 
-/* To allow 64K frame to be packed as single skb without frag_list */
+/* To allow 64K frame to be packed as single skb without frag_list. Since
+ * GRO uses frags we allocate at least 16 regardless of page size.
+ */
+#if (65536/PAGE_SIZE + 2) < 16
+#define MAX_SKB_FRAGS 16UL
+#else
 #define MAX_SKB_FRAGS (65536/PAGE_SIZE + 2)
+#endif
 
 typedef struct skb_frag_struct skb_frag_t;
 
@@ -385,13 +391,10 @@ struct sk_buff {
 
 	__u32			rxhash;
 
+	__u16			queue_mapping;
 	kmemcheck_bitfield_begin(flags2);
-	__u16			queue_mapping:16;
 #ifdef CONFIG_IPV6_NDISC_NODETYPE
-	__u8			ndisc_nodetype:2,
-				deliver_no_wcard:1;
-#else
-	__u8			deliver_no_wcard:1;
+	__u8			ndisc_nodetype:2;
 #endif
 	__u8			ooo_okay:1;
 	kmemcheck_bitfield_end(flags2);
@@ -471,7 +474,7 @@ static inline void skb_dst_set(struct sk_buff *skb, struct dst_entry *dst)
 extern void skb_dst_set_noref(struct sk_buff *skb, struct dst_entry *dst);
 
 /**
- * skb_dst_is_noref - Test if skb dst isnt refcounted
+ * skb_dst_is_noref - Test if skb dst isn't refcounted
  * @skb: buffer
  */
 static inline bool skb_dst_is_noref(const struct sk_buff *skb)
@@ -1253,6 +1256,11 @@ static inline void skb_reserve(struct sk_buff *skb, int len)
 	skb->tail += len;
 }
 
+static inline void skb_reset_mac_len(struct sk_buff *skb)
+{
+	skb->mac_len = skb->network_header - skb->mac_header;
+}
+
 #ifdef NET_SKBUFF_DATA_USES_OFFSET
 static inline unsigned char *skb_transport_header(const struct sk_buff *skb)
 {
@@ -1362,6 +1370,16 @@ static inline void skb_set_mac_header(struct sk_buff *skb, const int offset)
 }
 #endif /* NET_SKBUFF_DATA_USES_OFFSET */
 
+static inline void skb_mac_header_rebuild(struct sk_buff *skb)
+{
+	if (skb_mac_header_was_set(skb)) {
+		const unsigned char *old_mac = skb_mac_header(skb);
+
+		skb_set_mac_header(skb, -skb->mac_len);
+		memmove(skb_mac_header(skb), old_mac, skb->mac_len);
+	}
+}
+
 static inline int skb_checksum_start_offset(const struct sk_buff *skb)
 {
 	return skb->csum_start - skb_headroom(skb);
@@ -1439,7 +1457,7 @@ extern int ___pskb_trim(struct sk_buff *skb, unsigned int len);
 
 static inline void __skb_trim(struct sk_buff *skb, unsigned int len)
 {
-	if (unlikely(skb->data_len)) {
+	if (unlikely(skb_is_nonlinear(skb))) {
 		WARN_ON(1);
 		return;
 	}
@@ -1779,7 +1797,7 @@ static inline int pskb_trim_rcsum(struct sk_buff *skb, unsigned int len)
 
 #define skb_queue_walk(queue, skb) \
 		for (skb = (queue)->next;					\
-		     prefetch(skb->next), (skb != (struct sk_buff *)(queue));	\
+		     skb != (struct sk_buff *)(queue);				\
 		     skb = skb->next)
 
 #define skb_queue_walk_safe(queue, skb, tmp)					\
@@ -1788,7 +1806,7 @@ static inline int pskb_trim_rcsum(struct sk_buff *skb, unsigned int len)
 		     skb = tmp, tmp = skb->next)
 
 #define skb_queue_walk_from(queue, skb)						\
-		for (; prefetch(skb->next), (skb != (struct sk_buff *)(queue));	\
+		for (; skb != (struct sk_buff *)(queue);			\
 		     skb = skb->next)
 
 #define skb_queue_walk_from_safe(queue, skb, tmp)				\
@@ -1798,9 +1816,18 @@ static inline int pskb_trim_rcsum(struct sk_buff *skb, unsigned int len)
 
 #define skb_queue_reverse_walk(queue, skb) \
 		for (skb = (queue)->prev;					\
-		     prefetch(skb->prev), (skb != (struct sk_buff *)(queue));	\
+		     skb != (struct sk_buff *)(queue);				\
 		     skb = skb->prev)
 
+#define skb_queue_reverse_walk_safe(queue, skb, tmp)				\
+		for (skb = (queue)->prev, tmp = skb->prev;			\
+		     skb != (struct sk_buff *)(queue);				\
+		     skb = tmp, tmp = skb->prev)
+
+#define skb_queue_reverse_walk_from_safe(queue, skb, tmp)			\
+		for (tmp = skb->prev;						\
+		     skb != (struct sk_buff *)(queue);				\
+		     skb = tmp, tmp = skb->prev)
 
 static inline bool skb_has_frag_list(const struct sk_buff *skb)
 {
@@ -1868,7 +1895,7 @@ extern void	       skb_split(struct sk_buff *skb,
 extern int	       skb_shift(struct sk_buff *tgt, struct sk_buff *skb,
 				 int shiftlen);
 
-extern struct sk_buff *skb_segment(struct sk_buff *skb, int features);
+extern struct sk_buff *skb_segment(struct sk_buff *skb, u32 features);
 
 static inline void *skb_header_pointer(const struct sk_buff *skb, int offset,
 				       int len, void *buffer)
@@ -1979,8 +2006,13 @@ static inline bool skb_defer_rx_timestamp(struct sk_buff *skb)
 /**
  * skb_complete_tx_timestamp() - deliver cloned skb with tx timestamps
  *
+ * PHY drivers may accept clones of transmitted packets for
+ * timestamping via their phy_driver.txtstamp method. These drivers
+ * must call this function to return the skb back to the stack, with
+ * or without a timestamp.
+ *
  * @skb: clone of the the original outgoing packet
- * @hwtstamps: hardware time stamps
+ * @hwtstamps: hardware time stamps, may be NULL if not available
  *
  */
 void skb_complete_tx_timestamp(struct sk_buff *skb,

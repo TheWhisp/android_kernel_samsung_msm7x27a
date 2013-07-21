@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * Based on videobuf-dma-contig.c,
  * (c) 2008 Magnus Damm
@@ -284,7 +284,7 @@ static int __videobuf_mmap_mapper(struct videobuf_queue *q,
 	buf->bsize = mem->size;
 	mem->phyaddr = msm_mem_allocate(mem->size);
 
-	if (IS_ERR((void *)mem->phyaddr)) {
+	if (!mem->phyaddr) {
 		pr_err("%s : pmem memory allocation failed\n", __func__);
 		goto error;
 	}

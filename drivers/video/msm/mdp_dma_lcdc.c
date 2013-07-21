@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2008-2009, 2012 The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -62,26 +62,12 @@ ssize_t mdp_dma_lcdc_show_event(struct device *dev,
 
 	INIT_COMPLETION(vsync_cntrl.vsync_wait);
 
-	ret = wait_for_completion_interruptible_timeout(&vsync_cntrl.vsync_wait,
-		msecs_to_jiffies(VSYNC_PERIOD * 4));
-	if (ret <= 0) {
-		ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu",
-				ktime_to_ns(ktime_get()));
-		buf[strlen(buf) + 1] = '\0';
-		return ret;
-    }
-
+	wait_for_completion(&vsync_cntrl.vsync_wait);
 	ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu",
 			ktime_to_ns(vsync_cntrl.vsync_time));
 	buf[strlen(buf) + 1] = '\0';
 	return ret;
 }
-
-#if defined(CONFIG_MACH_JENA)
-extern unsigned long mdp_timer_duration;
-/* Defined in mdp.c to indicate support appboot logo display*/
-extern boolean mdp_continues_display;
-#endif
 
 int mdp_lcdc_on(struct platform_device *pdev)
 {
@@ -136,7 +122,6 @@ int mdp_lcdc_on(struct platform_device *pdev)
 
 	fbi = mfd->fbi;
 	var = &fbi->var;
-
 	vsync_cntrl.dev = mfd->fbi->dev;
 	atomic_set(&vsync_cntrl.suspend, 0);
 
@@ -145,13 +130,10 @@ int mdp_lcdc_on(struct platform_device *pdev)
 
 	bpp = fbi->var.bits_per_pixel / 8;
 	buf = (uint8 *) fbi->fix.smem_start;
-	buf += fbi->var.xoffset * bpp + fbi->var.yoffset * fbi->fix.line_length;
 
-#if defined(CONFIG_MACH_JENA)
-	dma2_cfg_reg = DMA_PACK_ALIGN_LSB | DMA_DITHER_EN | DMA_OUT_SEL_LCDC;
-#else
+	buf += calc_fb_offset(mfd, fbi, bpp);
+
 	dma2_cfg_reg = DMA_PACK_ALIGN_LSB | DMA_OUT_SEL_LCDC;
-#endif
 
 	if (mfd->fb_imgType == MDP_BGR_565)
 		dma2_cfg_reg |= DMA_PACK_PATTERN_BGR;
@@ -310,22 +292,15 @@ int mdp_lcdc_on(struct platform_device *pdev)
 		MDP_OUTP(MDP_BASE + timer_base + 0x38, active_v_end);
 	}
 
-	/*kamalnath.m - changed the order to fix LCD Timing Issue */
-	/*signal_timing*/
-	/* enable LCDC block */
-	MDP_OUTP(MDP_BASE + timer_base, 1);
-	mdp_pipe_ctrl(block, MDP_BLOCK_POWER_ON, FALSE);
-
 	ret = panel_next_on(pdev);
+	if (ret == 0) {
+		/* enable LCDC block */
+		MDP_OUTP(MDP_BASE + timer_base, 1);
+		mdp_pipe_ctrl(block, MDP_BLOCK_POWER_ON, FALSE);
+	}
 	/* MDP cmd block disable */
 	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_OFF, FALSE);
 
-#if defined(CONFIG_MACH_JENA)
-if (mdp_continues_display) {
-	mdp_continues_display = FALSE;
-	mdp_timer_duration = (HZ);
-}
-#endif
 	return ret;
 }
 
@@ -345,7 +320,7 @@ int mdp_lcdc_off(struct platform_device *pdev)
 	}
 #endif
 
-	ret = panel_next_off(pdev);
+	down(&mfd->dma->mutex);
 	/* MDP cmd block enable */
 	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
 	MDP_OUTP(MDP_BASE + timer_base, 0);
@@ -353,11 +328,11 @@ int mdp_lcdc_off(struct platform_device *pdev)
 	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_OFF, FALSE);
 	mdp_pipe_ctrl(block, MDP_BLOCK_POWER_OFF, FALSE);
 
-/*	ret = panel_next_off(pdev);*/
-
+	ret = panel_next_off(pdev);
+	up(&mfd->dma->mutex);
 	atomic_set(&vsync_cntrl.suspend, 1);
-  	atomic_set(&vsync_cntrl.vsync_resume, 0);
-  	complete_all(&vsync_cntrl.vsync_wait);
+	atomic_set(&vsync_cntrl.vsync_resume, 0);
+	complete_all(&vsync_cntrl.vsync_wait);
 
 	/* delay to make sure the last frame finishes */
 	msleep(16);
@@ -365,16 +340,10 @@ int mdp_lcdc_off(struct platform_device *pdev)
 	return ret;
 }
 
-void mdp_dma_lcdc_vsync_init(int cndx)
-{
-    /* nothing to do */
-}
-
 void mdp_dma_lcdc_vsync_ctrl(int enable)
 {
 	unsigned long flag;
 	int disabled_clocks;
-
 	if (vsync_cntrl.vsync_irq_enabled == enable)
 		return;
 
@@ -418,11 +387,12 @@ void mdp_lcdc_update(struct msm_fb_data_type *mfd)
 	if (!mfd->panel_power_on)
 		return;
 
+	down(&mfd->dma->mutex);
 	/* no need to power on cmd block since it's lcdc mode */
 	bpp = fbi->var.bits_per_pixel / 8;
 	buf = (uint8 *) fbi->fix.smem_start;
-	buf += fbi->var.xoffset * bpp +
-		fbi->var.yoffset * fbi->fix.line_length;
+
+	buf += calc_fb_offset(mfd, fbi, bpp);
 
 	dma_base = DMA_P_BASE;
 
@@ -454,4 +424,5 @@ void mdp_lcdc_update(struct msm_fb_data_type *mfd)
 	spin_unlock_irqrestore(&mdp_spin_lock, flag);
 	wait_for_completion_killable(&mfd->dma->comp);
 	mdp_disable_irq(irq_block);
+	up(&mfd->dma->mutex);
 }

@@ -2,7 +2,6 @@
  * soc-dsp.c  --  ALSA SoC Audio DSP
  *
  * Copyright (C) 2010 Texas Instruments Inc.
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
  *
  * Author: Liam Girdwood <lrg@slimlogic.co.uk>
  *
@@ -12,7 +11,6 @@
  *
  */
 
-#define DEBUG
 
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -38,18 +36,6 @@ int soc_pcm_hw_free(struct snd_pcm_substream *);
 int soc_pcm_prepare(struct snd_pcm_substream *);
 int soc_pcm_trigger(struct snd_pcm_substream *, int);
 int soc_pcm_bespoke_trigger(struct snd_pcm_substream *, int);
-
-static int is_be_supported(struct snd_soc_pcm_runtime *rtd, const char *link)
-{
-	struct snd_soc_dsp_link *dsp = rtd->dai_link->dsp_link;
-	int i;
-
-	for (i= 0; i < dsp->num_be; i++) {
-		if(!strcmp(dsp->supported_be[i], link))
-			return 1;
-	}
-	return 0;
-}
 
 static inline int be_connect(struct snd_soc_pcm_runtime *fe,
 		struct snd_soc_pcm_runtime *be, int stream)
@@ -111,21 +97,67 @@ static inline void be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
 	}
 }
 
+static struct snd_soc_pcm_runtime *be_get_rtd(struct snd_soc_card *card,
+		struct snd_soc_dapm_widget *widget)
+{
+	struct snd_soc_pcm_runtime *be;
+	int i;
+
+	if (!widget->sname)
+		return NULL;
+
+	for (i = 0; i < card->num_links; i++) {
+		be = &card->rtd[i];
+
+		if (!strcmp(widget->sname, be->dai_link->stream_name))
+			return be;
+	}
+
+	return NULL;
+}
+
+static struct snd_soc_dapm_widget *be_get_widget(struct snd_soc_card *card,
+		struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_soc_dapm_widget *widget;
+
+	list_for_each_entry(widget, &card->widgets, list) {
+
+		if (!widget->sname)
+			continue;
+
+		if (!strcmp(widget->sname, rtd->dai_link->stream_name))
+			return widget;
+	}
+
+	return NULL;
+}
+
+static int widget_in_list(struct snd_soc_dapm_widget_list *list,
+		struct snd_soc_dapm_widget *widget)
+{
+	int i;
+
+	for (i = 0; i < list->num_widgets; i++) {
+			if (widget == list->widgets[i])
+				return 1;
+	}
+
+	return 0;
+}
+
 /*
  * Find the corresponding BE DAIs that source or sink audio to this
  * FE substream.
  */
-static int dsp_add_new_paths(struct snd_soc_pcm_runtime *fe, int stream,
-	int pending)
+static int dsp_add_new_paths(struct snd_soc_pcm_runtime *fe,
+	int stream, int pending)
 {
 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
 	struct snd_soc_card *card = fe->card;
-	int i, num, count = 0, err;
-	const char *fe_aif = NULL, *be_aif;
+	struct snd_soc_dapm_widget_list *list;
 	enum snd_soc_dapm_type fe_type, be_type;
-
-	dev_dbg(&fe->dev, "scan for new %s %s streams\n", fe->dai_link->name,
-			stream ? "capture" : "playback");
+	int i, count = 0, err, paths;
 
 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		fe_type = snd_soc_dapm_aif_in;
@@ -135,69 +167,54 @@ static int dsp_add_new_paths(struct snd_soc_pcm_runtime *fe, int stream,
 		be_type = snd_soc_dapm_aif_in;
 	}
 
-	/* search card for valid FE AIF that matches our DAI */
-	for (i = 0; i < card->num_links; i++) {
-		struct snd_soc_pcm_runtime *be = &card->rtd[i];
+	/* get number of valid playback paths and their widgets */
+	paths = snd_soc_dapm_get_connected_widgets_type(&card->dapm,
+			cpu_dai->driver->name, &list, stream, fe_type);
 
-		/* is this a BE DAI link ? */
-		if (be->dai_link->dynamic)
-			continue;
+	dev_dbg(&fe->dev, "found %d audio %s paths\n", paths,
+			stream ? "capture" : "playback");
+	if (!paths)
+		goto out;
 
-		/* does this DAI have a AIF that matches ours ? */
-		fe_aif = snd_soc_dapm_get_aif(&be->platform->dapm,
-				cpu_dai->driver->name, fe_type);
-		if (fe_aif)
-			break;
+	if (list == NULL) {
+		pr_err("%s:Widget list is not configured. paths=%d",
+		__func__, paths);
+		goto out;
 	}
 
-	if (fe_aif == NULL)
-		return 0;
+	/* find BE DAI widgets and and connect the to FE */
+	for (i = 0; i < list->num_widgets; i++) {
 
-	/* search card for valid BE AIFs */
-	for (i = 0; i < card->num_links; i++) {
-		struct snd_soc_pcm_runtime *be = &card->rtd[i];
+		if (list->widgets[i]->id == be_type) {
+			struct snd_soc_pcm_runtime *be;
 
-		/* is this a BE DAI link ? */
-		if (be->dai_link->dynamic)
-			continue;
+			/* is there a valid BE rtd for this widget */
+			be = be_get_rtd(card, list->widgets[i]);
+			if (!be) {
+				dev_err(&fe->dev, "no BE found for %s\n",
+						list->widgets[i]->name);
+				continue;
+			}
 
-		/* BEs must belong to this FE */
-		if (!be->dai_link->no_pcm)
-			continue;
+			/* don't connect if FE is not running */
+			if (!fe->dsp[stream].runtime)
+				continue;
 
-		/* BE must be supported by machine driver */
-		if (!is_be_supported(fe, be->dai_link->name))
-			continue;
+			/* newly connected FE and BE */
+			err = be_connect(fe, be, stream);
+			if (err < 0) {
+				dev_err(&fe->dev, "can't connect %s\n", list->widgets[i]->name);
+				break;
+			} else if (err == 0)
+				continue;
 
-		/* get BE AIF */
-		be_aif = snd_soc_dapm_get_aif(&be->platform->dapm,
-				be->dai_link->stream_name, be_type);
-		if (be_aif == NULL)
-			continue;
-
-		/* check for valid dsp_params */
-		num = snd_soc_dapm_query_path(&be->platform->dapm,
-					fe_aif, be_aif, stream);
-
-		dev_dbg(&fe->dev, " scanned %s paths BE %s for stream %s num %d",
-				stream ? "capture" : "playback", be_aif,
-				be->dai_link->stream_name, num);
-
-		/* add backend if we have space */
-		if (num <= 0)
-			continue;
-
-		err = be_connect(fe, be, stream);
-		if (err < 0)
-			break;
-		else if (err == 0)
-			continue;
-
-		be->dsp[stream].runtime_update = pending;
-		count++;
+			be->dsp[stream].runtime_update = pending;
+			count++;
+		}
 	}
 
-	/* the number of new paths created */
+out:
+	kfree(list);
 	return count;
 }
 
@@ -211,9 +228,10 @@ static int dsp_prune_old_paths(struct snd_soc_pcm_runtime *fe, int stream,
 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
 	struct snd_soc_card *card = fe->card;
 	struct snd_soc_dsp_params *dsp_params;
-	int i, num, count = 0;
-	const char *fe_aif = NULL, *be_aif;
+	struct snd_soc_dapm_widget_list *list;
+	int count = 0, paths;
 	enum snd_soc_dapm_type fe_type, be_type;
+	struct snd_soc_dapm_widget *widget;
 
 	dev_dbg(&fe->dev, "scan for old %s %s streams\n", fe->dai_link->name,
 			stream ? "capture" : "playback");
@@ -226,52 +244,52 @@ static int dsp_prune_old_paths(struct snd_soc_pcm_runtime *fe, int stream,
 		be_type = snd_soc_dapm_aif_in;
 	}
 
-	/* search card for valid FE AIF that matches our DAI */
-	for (i = 0; i < card->num_links; i++) {
-		struct snd_soc_pcm_runtime *be = &card->rtd[i];
+	/* get number of valid playback paths and their widgets */
+	paths = snd_soc_dapm_get_connected_widgets_type(&card->dapm,
+			cpu_dai->driver->name, &list, stream, fe_type);
 
-		/* check for frontend */
-		if (be->dai_link->dynamic)
-			continue;
+	dev_dbg(&fe->dev, "found %d audio %s paths\n", paths,
+			stream ? "capture" : "playback");
+	if (!paths) {
+		/* prune all BEs */
+		list_for_each_entry(dsp_params, &fe->dsp[stream].be_clients, list_be) {
 
-		/* does this DAI have a AIF that matches ours ? */
-		fe_aif = snd_soc_dapm_get_aif(&be->platform->dapm,
-				cpu_dai->driver->name, fe_type);
-		if (fe_aif)
-			break;
+			dsp_params->state = SND_SOC_DSP_LINK_STATE_FREE;
+			dsp_params->be->dsp[stream].runtime_update = pending;
+			count++;
+		}
+
+		dev_dbg(&fe->dev, "pruned all %s BE for FE %s\n", fe->dai_link->name,
+			stream ? "capture" : "playback");
+		goto out;
 	}
-
-	if (fe_aif == NULL)
-		return 0;
 
 	/* search card for valid BE AIFs */
 	list_for_each_entry(dsp_params, &fe->dsp[stream].be_clients, list_be) {
 
-		/* get BE AIF */
-		be_aif = snd_soc_dapm_get_aif(&dsp_params->be->platform->dapm,
-				dsp_params->be->dai_link->stream_name, be_type);
-		if (be_aif == NULL) {
+		/* is there a valid widget for this BE */
+		widget = be_get_widget(card, dsp_params->be);
+		if (!widget) {
+			dev_err(&fe->dev, "no widget found for %s\n",
+					dsp_params->be->dai_link->name);
 			continue;
 		}
 
-		/* check for valid dsp_params */
-		num = snd_soc_dapm_query_path(&dsp_params->be->platform->dapm,
-					fe_aif, be_aif, stream);
-
-		dev_dbg(&fe->dev, " scanned %s paths BE %s for stream %s num %d",
-				stream ? "capture" : "playback", be_aif,
-				dsp_params->be->dai_link->stream_name, num);
-
-		/* prune backend if no longer used */
-		if (num > 0)
+		/* prune the BE if it's no longer in our active list */
+		if (widget_in_list(list, widget))
 			continue;
 
+		dev_dbg(&fe->dev, "pruning %s BE %s for %s\n",
+			stream ? "capture" : "playback", dsp_params->be->dai_link->name,
+			fe->dai_link->name);
 		dsp_params->state = SND_SOC_DSP_LINK_STATE_FREE;
 		dsp_params->be->dsp[stream].runtime_update = pending;
 		count++;
 	}
 
 	/* the number of old paths pruned */
+out:
+	kfree(list);
 	return count;
 }
 
@@ -414,7 +432,7 @@ void soc_dsp_set_dynamic_runtime(struct snd_pcm_substream *substream)
 		runtime->hw.channels_min = cpu_dai_drv->playback.channels_min;
 		runtime->hw.channels_max = cpu_dai_drv->playback.channels_max;
 		runtime->hw.formats &= cpu_dai_drv->playback.formats;
-		runtime->hw.rates = cpu_dai_drv->playback.rates | SNDRV_PCM_RATE_96000;
+		runtime->hw.rates = cpu_dai_drv->playback.rates;
 	} else {
 		runtime->hw.rate_min = cpu_dai_drv->capture.rate_min;
 		runtime->hw.rate_max = cpu_dai_drv->capture.rate_max;
@@ -431,7 +449,7 @@ static int soc_dsp_fe_dai_startup(struct snd_pcm_substream *fe_substream)
 	struct snd_pcm_runtime *runtime = fe_substream->runtime;
 	int ret = 0;
 
-	mutex_lock(&fe->card->dsp_mutex);
+	mutex_lock_nested(&fe->card->dsp_mutex, 0);
 
 	ret = soc_dsp_be_dai_startup(fe, fe_substream->stream);
 	if (ret < 0)
@@ -439,7 +457,7 @@ static int soc_dsp_fe_dai_startup(struct snd_pcm_substream *fe_substream)
 
 	dev_dbg(&fe->dev, "dsp: open FE %s\n", fe->dai_link->name);
 
-	/* start the ABE frontend */
+	/* start the DAI frontend */
 	ret = soc_pcm_open(fe_substream);
 	if (ret < 0) {
 		dev_err(&fe->dev,"dsp: failed to start FE %d\n", ret);
@@ -470,6 +488,9 @@ static int soc_dsp_be_dai_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
 		struct snd_pcm_substream *be_substream =
 			snd_soc_dsp_get_substream(dsp_params->be, stream);
 
+		if (dsp_params->state != SND_SOC_DSP_LINK_STATE_FREE)
+			continue;
+
 		/* is this op for this BE ? */
 		if (fe->dsp[stream].runtime_update &&
 				!dsp_params->be->dsp[stream].runtime_update)
@@ -478,13 +499,11 @@ static int soc_dsp_be_dai_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
 		if (--dsp_params->be->dsp[stream].users != 0)
 			continue;
 
-		if (dsp_params->state != SND_SOC_DSP_LINK_STATE_FREE)
-			continue;
-
 		dev_dbg(&dsp_params->be->dev, "dsp: close BE %s\n",
 			dsp_params->fe->dai_link->name);
 
 		soc_pcm_close(be_substream);
+		dsp_params->be->dsp[stream].hwparam_set = false;
 		be_substream->runtime = NULL;
 	}
 	return 0;
@@ -496,7 +515,7 @@ static int soc_dsp_fe_dai_shutdown(struct snd_pcm_substream *substream)
 	struct snd_soc_pcm_runtime *fe = substream->private_data;
 	int stream = substream->stream;
 
-	mutex_lock(&fe->card->dsp_mutex);
+	mutex_lock_nested(&fe->card->dsp_mutex, 0);
 
 	dev_dbg(&fe->dev, "dsp: close FE %s\n", fe->dai_link->name);
 
@@ -539,7 +558,8 @@ static int soc_dsp_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
 			continue;
 
 		/* first time the dsp_params is open ? */
-		if (dsp_params->be->dsp[stream].users != 1)
+		if ((dsp_params->be->dsp[stream].users != 1) &&
+		    (dsp_params->be->dsp[stream].hwparam_set == true))
 			continue;
 
 		dev_dbg(&dsp_params->be->dev, "dsp: hw_params BE %s\n",
@@ -565,6 +585,7 @@ static int soc_dsp_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
 			dev_err(&dsp_params->be->dev, "dsp: hw_params BE failed %d\n", ret);
 			return ret;
 		}
+		dsp_params->be->dsp[stream].hwparam_set = true;
 	}
 	return 0;
 }
@@ -575,7 +596,7 @@ int soc_dsp_fe_dai_hw_params(struct snd_pcm_substream *substream,
 	struct snd_soc_pcm_runtime *fe = substream->private_data;
 	int ret;
 
-	mutex_lock(&fe->card->dsp_mutex);
+	mutex_lock_nested(&fe->card->dsp_mutex, 0);
 
 	memcpy(&fe->dsp[substream->stream].params, params,
 			sizeof(struct snd_pcm_hw_params));
@@ -614,6 +635,15 @@ int soc_dsp_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream, int cmd)
 {
 	struct snd_soc_dsp_params *dsp_params;
 	int ret = 0;
+	unsigned long flags;
+
+	spin_lock_irqsave(&fe->card->dsp_spinlock, flags);
+
+	if ((cmd == SNDRV_PCM_TRIGGER_PAUSE_RELEASE) ||
+				(cmd == SNDRV_PCM_TRIGGER_PAUSE_PUSH)) {
+		spin_unlock_irqrestore(&fe->card->dsp_spinlock, flags);
+		return ret;
+	}
 
 	list_for_each_entry(dsp_params, &fe->dsp[stream].be_clients, list_be) {
 
@@ -662,10 +692,14 @@ int soc_dsp_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream, int cmd)
 			}
 			break;
 		}
-		if (ret < 0)
+
+		if (ret < 0) {
+			spin_unlock_irqrestore(&fe->card->dsp_spinlock, flags);
 			return ret;
+		}
 	}
 
+	spin_unlock_irqrestore(&fe->card->dsp_spinlock, flags);
 	return ret;
 }
 EXPORT_SYMBOL_GPL(soc_dsp_be_dai_trigger);
@@ -768,7 +802,7 @@ int soc_dsp_fe_dai_prepare(struct snd_pcm_substream *substream)
 	struct snd_soc_pcm_runtime *fe = substream->private_data;
 	int stream = substream->stream, ret = 0;
 
-	mutex_lock(&fe->card->dsp_mutex);
+	mutex_lock_nested(&fe->card->dsp_mutex, 0);
 
 	dev_dbg(&fe->dev, "dsp: prepare FE %s\n", fe->dai_link->name);
 
@@ -836,6 +870,7 @@ static int soc_dsp_be_dai_hw_free(struct snd_soc_pcm_runtime *fe, int stream)
 			dsp_params->fe->dai_link->name);
 
 		soc_pcm_hw_free(be_substream);
+		dsp_params->be->dsp[stream].hwparam_set = false;
 	}
 
 	return 0;
@@ -846,7 +881,7 @@ int soc_dsp_fe_dai_hw_free(struct snd_pcm_substream *substream)
 	struct snd_soc_pcm_runtime *fe = substream->private_data;
 	int ret, stream = substream->stream;
 
-	mutex_lock(&fe->card->dsp_mutex);
+	mutex_lock_nested(&fe->card->dsp_mutex, 0);
 
 	fe_state_update(fe, stream, SND_SOC_DSP_LINK_STATE_FREE);
 
@@ -1012,23 +1047,14 @@ static int dsp_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
 
 			switch (cmd) {
 			case SNDRV_PCM_TRIGGER_START:
-				/* only start BEs that are not triggered */
-				if (dsp_params->state == SND_SOC_DSP_LINK_STATE_PREPARE)
-						dsp_params->state = SND_SOC_DSP_LINK_STATE_START;
-				break;
 			case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-				/* only release Paused BEs */
-				if (dsp_params->state == SND_SOC_DSP_LINK_STATE_PAUSED)
-						dsp_params->state = SND_SOC_DSP_LINK_STATE_START;
+			case SNDRV_PCM_TRIGGER_RESUME:
+				dsp_params->state = SND_SOC_DSP_LINK_STATE_START;
 				break;
 			case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-				/* only pause active BEs */
-				if (dsp_params->state == SND_SOC_DSP_LINK_STATE_START)
-						dsp_params->state = SND_SOC_DSP_LINK_STATE_PAUSED;
-				break;
 			case SNDRV_PCM_TRIGGER_STOP:
 			case SNDRV_PCM_TRIGGER_SUSPEND:
-			case SNDRV_PCM_TRIGGER_RESUME:
+				dsp_params->state = SND_SOC_DSP_LINK_STATE_PAUSED;
 				break;
 			}
 		}
@@ -1084,7 +1110,7 @@ int soc_dsp_runtime_update(struct snd_soc_dapm_widget *widget)
 	else
 		return -EINVAL;
 
-	mutex_lock(&widget->dapm->card->dsp_mutex);
+	mutex_lock_nested(&widget->dapm->card->dsp_mutex, 1);
 
 	for (i = 0; i < card->num_rtd; i++) {
 		struct snd_soc_pcm_runtime *fe = &card->rtd[i];
@@ -1093,10 +1119,9 @@ int soc_dsp_runtime_update(struct snd_soc_dapm_widget *widget)
 		if (!fe->dai_link->dsp_link)
 			continue;
 
-		/* only check active links */
-		if (!fe->cpu_dai->active) {
-			continue;
-		}
+		/* only check active playback links */
+		if (!fe->cpu_dai->playback_active)
+			goto capture;
 
 		/* DAPM sync will call this to update DSP paths */
 		dev_dbg(card->dev, "DSP runtime update for FE %s\n", fe->dai_link->name);
@@ -1120,21 +1145,26 @@ int soc_dsp_runtime_update(struct snd_soc_dapm_widget *widget)
 
 capture:
 		/* update any capture paths */
-		start = dsp_add_new_paths(fe, SNDRV_PCM_STREAM_CAPTURE, 1);
-		stop = dsp_prune_old_paths(fe, SNDRV_PCM_STREAM_CAPTURE, 1);
-		if (!(start || stop))
-			continue;
+		if (fe->cpu_dai->capture_active) {
+			start = dsp_add_new_paths(fe, SNDRV_PCM_STREAM_CAPTURE,
+				1);
+			stop = dsp_prune_old_paths(fe, SNDRV_PCM_STREAM_CAPTURE,
+				1);
+			if (!(start || stop))
+				continue;
 
-		/* run PCM ops on new/old capture paths */
-		ret = dsp_run_update(fe, SNDRV_PCM_STREAM_CAPTURE, start, stop);
-		if (ret < 0) {
-			dev_err(&fe->dev, "failed to update capture FE stream %s\n",
+			/* run PCM ops on new/old capture paths */
+			ret = dsp_run_update(fe, SNDRV_PCM_STREAM_CAPTURE,
+				start, stop);
+			if (ret < 0) {
+				dev_err(&fe->dev, "failed to update capture FE stream %s\n",
 					fe->dai_link->stream_name);
-		}
+			}
 
-		/* free old capture links */
-		be_disconnect(fe, SNDRV_PCM_STREAM_CAPTURE);
-		fe_clear_pending(fe, SNDRV_PCM_STREAM_CAPTURE);
+			/* free old capture links */
+			be_disconnect(fe, SNDRV_PCM_STREAM_CAPTURE);
+			fe_clear_pending(fe, SNDRV_PCM_STREAM_CAPTURE);
+		}
 	}
 
 	mutex_unlock(&widget->dapm->card->dsp_mutex);
@@ -1461,6 +1491,8 @@ int soc_dsp_fe_dai_close(struct snd_pcm_substream *fe_substream)
 	ret = soc_dsp_fe_dai_shutdown(fe_substream);
 
 	be_disconnect(fe, fe_substream->stream);
+
+	fe->dsp[fe_substream->stream].runtime = NULL;
 
 	return ret;
 }

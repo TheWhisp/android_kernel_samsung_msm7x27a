@@ -1,6 +1,6 @@
  /*
  * Copyright (C) 2007 Google, Inc.
- * Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2008-2009, The Linux Foundation. All rights reserved.
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -25,6 +25,8 @@
 #define USB_HWRXBUF          (MSM_USB_BASE + 0x0014)
 #define USB_AHB_BURST        (MSM_USB_BASE + 0x0090)
 #define USB_AHB_MODE         (MSM_USB_BASE + 0x0098)
+#define USB_GEN_CONFIG       (MSM_USB_BASE + 0x009C)
+#define USB_BAM_DISABLE      (1 << 13)
 #define USB_ROC_AHB_MODE     (MSM_USB_BASE + 0x0090)
 #define USB_SBUSCFG          (MSM_USB_BASE + 0x0090)
 

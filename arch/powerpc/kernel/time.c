@@ -544,7 +544,7 @@ DEFINE_PER_CPU(u8, irq_work_pending);
 
 #endif /* 32 vs 64 bit */
 
-void set_irq_work_pending(void)
+void arch_irq_work_raise(void)
 {
 	preempt_disable();
 	set_irq_work_pending_flag();
@@ -580,13 +580,20 @@ void timer_interrupt(struct pt_regs * regs)
 	struct clock_event_device *evt = &decrementer->event;
 	u64 now;
 
+	/* Ensure a positive value is written to the decrementer, or else
+	 * some CPUs will continue to take decrementer exceptions.
+	 */
+	set_dec(DECREMENTER_MAX);
+
+	/* Some implementations of hotplug will get timer interrupts while
+	 * offline, just ignore these
+	 */
+	if (!cpu_online(smp_processor_id()))
+		return;
+
 	trace_timer_interrupt_entry(regs);
 
 	__get_cpu_var(irq_stat).timer_irqs++;
-
-	/* Ensure a positive value is written to the decrementer, or else
-	 * some CPUs will continuue to take decrementer exceptions */
-	set_dec(DECREMENTER_MAX);
 
 #if defined(CONFIG_PPC32) && defined(CONFIG_PMAC)
 	if (atomic_read(&ppc_n_lost_interrupts) != 0)
@@ -880,6 +887,15 @@ static void __init clocksource_init(void)
 
 	printk(KERN_INFO "clocksource: %s mult[%x] shift[%d] registered\n",
 	       clock->name, clock->mult, clock->shift);
+}
+
+void decrementer_check_overflow(void)
+{
+	u64 now = get_tb_or_rtc();
+	struct decrementer_clock *decrementer = &__get_cpu_var(decrementers);
+
+	if (now >= decrementer->next_tb)
+		set_dec(1);
 }
 
 static int decrementer_set_next_event(unsigned long evt,

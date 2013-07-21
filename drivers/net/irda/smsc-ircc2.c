@@ -515,7 +515,7 @@ static const struct net_device_ops smsc_ircc_netdev_ops = {
  *    Try to open driver instance
  *
  */
-static int __init smsc_ircc_open(unsigned int fir_base, unsigned int sir_base, u8 dma, u8 irq)
+static int __devinit smsc_ircc_open(unsigned int fir_base, unsigned int sir_base, u8 dma, u8 irq)
 {
 	struct smsc_ircc_cb *self;
 	struct net_device *dev;
@@ -1582,7 +1582,7 @@ static irqreturn_t smsc_ircc_interrupt_sir(struct net_device *dev)
 	int iobase;
 	int iir, lsr;
 
-	/* Already locked comming here in smsc_ircc_interrupt() */
+	/* Already locked coming here in smsc_ircc_interrupt() */
 	/*spin_lock(&self->lock);*/
 
 	iobase = self->io.sir_base;

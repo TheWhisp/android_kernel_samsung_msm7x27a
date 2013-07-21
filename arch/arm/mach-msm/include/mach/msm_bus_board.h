@@ -1,34 +1,13 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, and the entire permission notice in its entirety,
- *    including the disclaimer of warranties.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote
- *    products derived from this software without specific prior
- *    written permission.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
- * ALTERNATIVELY, this product may be distributed under the terms of
- * the GNU General Public License, version 2, in which case the provisions
- * of the GPL version 2 are required INSTEAD OF the BSD license.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, ALL OF
- * WHICH ARE HEREBY DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
- * USE OF THIS SOFTWARE, EVEN IF NOT ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  */
 
 #ifndef __ASM_ARCH_MSM_BUS_BOARD_H
@@ -56,6 +35,8 @@ struct msm_bus_fabric_registration {
 	const unsigned int nmasters;
 	const unsigned int nslaves;
 	const unsigned int ntieredslaves;
+	bool il_flag;
+	const struct msm_bus_board_algorithm *board_algo;
 };
 
 enum msm_bus_bw_tier_type {
@@ -75,9 +56,24 @@ extern struct msm_bus_fabric_registration msm_bus_sys_fabric_pdata;
 extern struct msm_bus_fabric_registration msm_bus_mm_fabric_pdata;
 extern struct msm_bus_fabric_registration msm_bus_sys_fpb_pdata;
 extern struct msm_bus_fabric_registration msm_bus_cpss_fpb_pdata;
+extern struct msm_bus_fabric_registration msm_bus_def_fab_pdata;
 
-void msm_bus_board_assign_iids(struct msm_bus_fabric_registration
-	*fabreg, int fabid);
+extern struct msm_bus_fabric_registration msm_bus_8960_apps_fabric_pdata;
+extern struct msm_bus_fabric_registration msm_bus_8960_sys_fabric_pdata;
+extern struct msm_bus_fabric_registration msm_bus_8960_mm_fabric_pdata;
+extern struct msm_bus_fabric_registration msm_bus_8960_sys_fpb_pdata;
+extern struct msm_bus_fabric_registration msm_bus_8960_cpss_fpb_pdata;
+
+extern struct msm_bus_fabric_registration msm_bus_8064_apps_fabric_pdata;
+extern struct msm_bus_fabric_registration msm_bus_8064_sys_fabric_pdata;
+extern struct msm_bus_fabric_registration msm_bus_8064_mm_fabric_pdata;
+extern struct msm_bus_fabric_registration msm_bus_8064_sys_fpb_pdata;
+extern struct msm_bus_fabric_registration msm_bus_8064_cpss_fpb_pdata;
+
+extern struct msm_bus_fabric_registration msm_bus_9615_sys_fabric_pdata;
+extern struct msm_bus_fabric_registration msm_bus_9615_def_fab_pdata;
+void msm_bus_rpm_set_mt_mask(void);
+int msm_bus_board_rpm_get_il_ids(uint16_t *id);
 int msm_bus_board_get_iid(int id);
 
 /*
@@ -96,6 +92,7 @@ int msm_bus_board_get_iid(int id);
 
 #define NODE_ID(id) ((id) & (FABRIC_ID_KEY - 1))
 #define IS_SLAVE(id) ((NODE_ID(id)) >= SLAVE_ID_KEY ? 1 : 0)
+#define CHECK_ID(iid, id) (((iid & id) != id) ? -ENXIO : iid)
 
 /*
  * The following macros are used to format the data for port halt
@@ -142,6 +139,7 @@ int msm_bus_board_get_iid(int id);
 
 /* Topology related enums */
 enum msm_bus_fabric_type {
+	MSM_BUS_FAB_DEFAULT = 0,
 	MSM_BUS_FAB_APPSS = 0,
 	MSM_BUS_FAB_SYSTEM = 1024,
 	MSM_BUS_FAB_MMSS = 2048,
@@ -198,7 +196,15 @@ enum msm_bus_fabric_master_type {
 	MSM_BUS_MASTER_MSS_SW_PROC,
 	MSM_BUS_MASTER_MSS_FW_PROC,
 	MSM_BUS_MMSS_MASTER_UNUSED_2,
+	MSM_BUS_MASTER_GSS_NAV,
+	MSM_BUS_MASTER_PCIE,
+	MSM_BUS_MASTER_SATA,
+	MSM_BUS_MASTER_CRYPTO,
 
+	MSM_BUS_MASTER_VIDEO_CAP,
+	MSM_BUS_MASTER_GRAPHICS_3D_PORT1,
+	MSM_BUS_MASTER_VIDEO_ENC,
+	MSM_BUS_MASTER_VIDEO_DEC,
 	MSM_BUS_MASTER_LAST = MSM_BUS_MMSS_MASTER_UNUSED_2,
 
 	MSM_BUS_SYSTEM_FPB_MASTER_SYSTEM =
@@ -231,6 +237,7 @@ enum msm_bus_fabric_slave_type {
 	MSM_BUS_MMSS_SLAVE_FAB_APPS,
 	MSM_BUS_MMSS_SLAVE_FAB_APPS_1,
 	MSM_BUS_SLAVE_MM_IMEM,
+	MSM_BUS_SLAVE_CRYPTO,
 
 	MSM_BUS_SLAVE_SPDM,
 	MSM_BUS_SLAVE_RPM,
@@ -281,6 +288,8 @@ enum msm_bus_fabric_slave_type {
 	MSM_BUS_SLAVE_MSM_DIMEM,
 	MSM_BUS_SLAVE_MSM_TCSR,
 	MSM_BUS_SLAVE_MSM_PRNG,
+	MSM_BUS_SLAVE_GSS,
+	MSM_BUS_SLAVE_SATA,
 	MSM_BUS_SLAVE_LAST = MSM_BUS_SLAVE_MSM_PRNG,
 
 	MSM_BUS_SYSTEM_FPB_SLAVE_SYSTEM =

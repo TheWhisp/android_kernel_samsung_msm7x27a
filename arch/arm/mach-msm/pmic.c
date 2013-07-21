@@ -1,4 +1,4 @@
-/* Copyright (c) 2009, 2011 Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2009, 2011 The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -333,7 +333,7 @@ static int pmic_rpc_req_reply(struct pmic_buf *tbuf, struct pmic_buf *rbuf,
 	if ((pm->endpoint == NULL) || IS_ERR(pm->endpoint)) {
 		for (i = 0; i < ARRAY_SIZE(rpc_vers); i++) {
 			pm->endpoint = msm_rpc_connect_compatible(PMIC_RPC_PROG,
-					rpc_vers[i], 0);
+					rpc_vers[i], MSM_RPC_UNINTERRUPTIBLE);
 
 			if (IS_ERR(pm->endpoint)) {
 				ans  = PTR_ERR(pm->endpoint);

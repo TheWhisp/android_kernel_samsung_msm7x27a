@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -11,11 +11,18 @@
  * GNU General Public License for more details.
  */
 
+#include <linux/cpumask.h>
+
 #include <asm/vfp.h>
 #include <asm/system.h>
 #include "../vfp/vfpinstr.h"
 
 #ifdef CONFIG_CPU_V7
+#define SCORPION_EVT_PREFIX 1
+#define SCORPION_MAX_L1_REG 4
+
+static u32 scorpion_evt_type_base[] = {0x4c, 0x50, 0x54, 0x58, 0x5c};
+
 enum scorpion_perf_common {
 	SCORPION_EVT_START_IDX			= 0x4c,
 	SCORPION_ICACHE_EXPL_INV		= 0x4c,
@@ -123,7 +130,7 @@ static const unsigned armv7_scorpion_perf_map[PERF_COUNT_HW_MAX] = {
 	[PERF_COUNT_HW_BUS_CYCLES]	    = ARMV7_PERFCTR_CLOCK_CYCLES,
 };
 
-static const unsigned armv7_scorpion_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+static unsigned armv7_scorpion_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 					  [PERF_COUNT_HW_CACHE_OP_MAX]
 					  [PERF_COUNT_HW_CACHE_RESULT_MAX] = {
 	[C(L1D)] = {
@@ -210,15 +217,15 @@ static const unsigned armv7_scorpion_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 	[C(BPU)] = {
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]
-					= ARMV7_PERFCTR_PC_BRANCH_MIS_USED,
+					= ARMV7_PERFCTR_PC_BRANCH_PRED,
 			[C(RESULT_MISS)]
-					= ARMV7_PERFCTR_PC_BRANCH_MIS_USED,
+					= ARMV7_PERFCTR_PC_BRANCH_PRED,
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]
-					= ARMV7_PERFCTR_PC_BRANCH_MIS_USED,
+					= ARMV7_PERFCTR_PC_BRANCH_PRED,
 			[C(RESULT_MISS)]
-					= ARMV7_PERFCTR_PC_BRANCH_MIS_USED,
+					= ARMV7_PERFCTR_PC_BRANCH_PRED,
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -356,6 +363,25 @@ static unsigned int get_scorpion_evtinfo(unsigned int scorpion_evt_type,
 					struct scorpion_evt *evtinfo)
 {
 	u32 idx;
+	u8 prefix;
+	u8 reg;
+	u8 code;
+	u8 group;
+
+	prefix = (scorpion_evt_type & 0xF0000) >> 16;
+	if (prefix == SCORPION_EVT_PREFIX) {
+		reg   = (scorpion_evt_type & 0x0F000) >> 12;
+		code  = (scorpion_evt_type & 0x00FF0) >> 4;
+		group =  scorpion_evt_type & 0x0000F;
+
+		if ((group > 3) || (reg > SCORPION_MAX_L1_REG))
+			return -EINVAL;
+
+		evtinfo->group_setval = 0x80000000 | (code << (group * 8));
+		evtinfo->groupcode = reg;
+		evtinfo->armv7_evt_type = scorpion_evt_type_base[reg] | group;
+		return evtinfo->armv7_evt_type;
+	}
 
 	if (scorpion_evt_type < SCORPION_EVT_START_IDX || scorpion_evt_type >=
 		(ARRAY_SIZE(scorpion_event) + SCORPION_EVT_START_IDX))
@@ -450,24 +476,31 @@ static void scorpion_pre_vlpm(void)
 {
 	u32 venum_new_val;
 	u32 fp_new_val;
+	u32 v_orig_val;
+	u32 f_orig_val;
 
-	/* CPACR Enable CP10 access*/
-	venum_orig_val = get_copro_access();
-	venum_new_val = venum_orig_val | CPACC_SVC(10);
+	/* CPACR Enable CP10 access */
+	v_orig_val = get_copro_access();
+	venum_new_val = v_orig_val | CPACC_SVC(10);
 	set_copro_access(venum_new_val);
+	/* Store orig venum val */
+	__get_cpu_var(venum_orig_val) = v_orig_val;
+
 	/* Enable FPEXC */
-	fp_orig_val = fmrx(FPEXC);
-	fp_new_val = fp_orig_val | FPEXC_EN;
+	f_orig_val = fmrx(FPEXC);
+	fp_new_val = f_orig_val | FPEXC_EN;
 	fmxr(FPEXC, fp_new_val);
+	/* Store orig fp val */
+	__get_cpu_var(fp_orig_val) = f_orig_val;
 }
 
 static void scorpion_post_vlpm(void)
 {
-	/* Restore FPEXC*/
-	fmxr(FPEXC, fp_orig_val);
+	/* Restore FPEXC */
+	fmxr(FPEXC, __get_cpu_var(fp_orig_val));
 	isb();
-	/* Restore CPACR*/
-	set_copro_access(venum_orig_val);
+	/* Restore CPACR */
+	set_copro_access(__get_cpu_var(venum_orig_val));
 }
 
 struct scorpion_access_funcs {
@@ -561,7 +594,8 @@ static void scorpion_pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	 */
 	if (idx != ARMV7_CYCLE_COUNTER) {
 		val = hwc->config_base;
-		val &= ARMV7_EVTSEL_MASK;
+		val &= ARMV7_EVTYPE_EVENT;
+
 		if (val > 0x40) {
 			event = get_scorpion_evtinfo(val, &evtinfo);
 			if (event == -EINVAL)
@@ -585,6 +619,7 @@ static void scorpion_pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	u32 gr;
 	unsigned long event;
 	struct scorpion_evt evtinfo;
+	unsigned long long prev_count = local64_read(&hwc->prev_count);
 
 	/*
 	 * Enable counter and interrupt, and set the counter to count
@@ -601,7 +636,8 @@ static void scorpion_pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	 */
 	if (idx != ARMV7_CYCLE_COUNTER) {
 		val = hwc->config_base;
-		val &= ARMV7_EVTSEL_MASK;
+		val &= ARMV7_EVTYPE_EVENT;
+
 		if (val < 0x40) {
 			armv7_pmnc_write_evtsel(idx, hwc->config_base);
 		} else {
@@ -626,6 +662,9 @@ static void scorpion_pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	/* Enable interrupt for this counter */
 	armv7_pmnc_enable_intens(idx);
 
+	/* Restore prev val */
+	armv7pmu_write_counter(idx, prev_count & COUNT_MASK);
+
 	/* Enable counter */
 	armv7_pmnc_enable_counter(idx);
 
@@ -633,47 +672,84 @@ scorpion_out:
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 }
 
-#ifdef CONFIG_SMP
-static void scorpion_secondary_enable_callback(void *info)
+static void enable_irq_callback(void *info)
 {
 	int irq = *(unsigned int *)info;
 
-	if (get_irq_chip(irq)->irq_unmask)
-		get_irq_chip(irq)->irq_unmask(irq_get_irq_data(irq));
+	enable_percpu_irq(irq, 0);
 }
-static void scorpion_secondary_disable_callback(void *info)
+
+static void disable_irq_callback(void *info)
 {
 	int irq = *(unsigned int *)info;
 
-	if (get_irq_chip(irq)->irq_mask)
-		get_irq_chip(irq)->irq_mask(irq_get_irq_data(irq));
+	disable_percpu_irq(irq);
 }
 
-static void scorpion_secondary_enable(unsigned int irq)
+static int
+msm_request_irq(int irq, irq_handler_t *handle_irq)
 {
-	smp_call_function(scorpion_secondary_enable_callback, &irq, 1);
+	int err = 0;
+	int cpu;
+
+	err = request_percpu_irq(irq, *handle_irq, "armpmu",
+			&cpu_hw_events);
+
+	if (!err) {
+		for_each_cpu(cpu, cpu_online_mask) {
+			smp_call_function_single(cpu,
+					enable_irq_callback, &irq, 1);
+		}
+	}
+
+	return err;
 }
 
-static void scorpion_secondary_disable(unsigned int irq)
+static void
+msm_free_irq(int irq)
 {
-	smp_call_function(scorpion_secondary_disable_callback, &irq, 1);
+	int cpu;
+
+	if (irq >= 0) {
+		for_each_cpu(cpu, cpu_online_mask) {
+			smp_call_function_single(cpu,
+					disable_irq_callback, &irq, 1);
+		}
+		free_percpu_irq(irq, &cpu_hw_events);
+	}
 }
-#endif
+
+static void scorpion_pmu_reset(void *info)
+{
+	u32 idx, nb_cnt = armpmu->num_events;
+
+	/* Stop all counters and their interrupts */
+	for (idx = 1; idx < nb_cnt; ++idx) {
+		armv7_pmnc_disable_counter(idx);
+		armv7_pmnc_disable_intens(idx);
+	}
+
+	/* Clear all pmresrs */
+	scorpion_clear_pmuregs();
+
+	/* Reset irq stat reg */
+	armv7_pmnc_getreset_flags();
+
+	/* Reset all ctrs to 0 */
+	armv7_pmnc_write(ARMV7_PMNC_P | ARMV7_PMNC_C);
+}
 
 static struct arm_pmu scorpion_pmu = {
 	.handle_irq		= armv7pmu_handle_irq,
-#ifdef CONFIG_SMP
-	.secondary_enable       = scorpion_secondary_enable,
-	.secondary_disable      = scorpion_secondary_disable,
-#endif
 	.enable			= scorpion_pmu_enable_event,
 	.disable		= scorpion_pmu_disable_event,
 	.read_counter		= armv7pmu_read_counter,
 	.write_counter		= armv7pmu_write_counter,
-	.raw_event_mask		= 0xFF,
+	.raw_event_mask		= 0xFFFFF,
 	.get_event_idx		= armv7pmu_get_event_idx,
 	.start			= armv7pmu_start,
 	.stop			= armv7pmu_stop,
+	.reset			= scorpion_pmu_reset,
 	.max_period		= (1LLU << 32) - 1,
 };
 
@@ -683,7 +759,10 @@ static const struct arm_pmu *__init armv7_scorpion_pmu_init(void)
 	scorpion_pmu.name	= "ARMv7 Scorpion";
 	scorpion_pmu.cache_map	= &armv7_scorpion_perf_cache_map;
 	scorpion_pmu.event_map	= &armv7_scorpion_perf_map;
-	scorpion_pmu.num_events	= armv7_reset_read_pmnc();
+	scorpion_pmu.num_events	= armv7_read_num_pmnc_events();
+	/* Unicore can't use the percpu IRQ API. */
+	scorpion_pmu.request_pmu_irq	= armpmu_generic_request_irq;
+	scorpion_pmu.free_pmu_irq	= armpmu_generic_free_irq;
 	scorpion_clear_pmuregs();
 	return &scorpion_pmu;
 }
@@ -694,7 +773,9 @@ static const struct arm_pmu *__init armv7_scorpionmp_pmu_init(void)
 	scorpion_pmu.name	= "ARMv7 Scorpion-MP";
 	scorpion_pmu.cache_map	= &armv7_scorpion_perf_cache_map;
 	scorpion_pmu.event_map	= &armv7_scorpion_perf_map;
-	scorpion_pmu.num_events	= armv7_reset_read_pmnc();
+	scorpion_pmu.num_events	= armv7_read_num_pmnc_events();
+	scorpion_pmu.request_pmu_irq	= msm_request_irq;
+	scorpion_pmu.free_pmu_irq	= msm_free_irq;
 	scorpion_clear_pmuregs();
 	return &scorpion_pmu;
 }

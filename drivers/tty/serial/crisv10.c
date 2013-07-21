@@ -3581,8 +3581,7 @@ rs_break(struct tty_struct *tty, int break_state)
 }
 
 static int
-rs_tiocmset(struct tty_struct *tty, struct file *file,
-		unsigned int set, unsigned int clear)
+rs_tiocmset(struct tty_struct *tty, unsigned int set, unsigned int clear)
 {
 	struct e100_serial *info = (struct e100_serial *)tty->driver_data;
 	unsigned long flags;
@@ -3614,7 +3613,7 @@ rs_tiocmset(struct tty_struct *tty, struct file *file,
 }
 
 static int
-rs_tiocmget(struct tty_struct *tty, struct file *file)
+rs_tiocmget(struct tty_struct *tty)
 {
 	struct e100_serial *info = (struct e100_serial *)tty->driver_data;
 	unsigned int result;
@@ -3648,7 +3647,7 @@ rs_tiocmget(struct tty_struct *tty, struct file *file)
 
 
 static int
-rs_ioctl(struct tty_struct *tty, struct file * file,
+rs_ioctl(struct tty_struct *tty,
 	 unsigned int cmd, unsigned long arg)
 {
 	struct e100_serial * info = (struct e100_serial *)tty->driver_data;
@@ -4451,7 +4450,7 @@ static int __init rs_init(void)
 
 #if defined(CONFIG_ETRAX_RS485)
 #if defined(CONFIG_ETRAX_RS485_ON_PA)
-	if (cris_io_interface_allocate_pins(if_ser0, 'a', rs485_pa_bit,
+	if (cris_io_interface_allocate_pins(if_serial_0, 'a', rs485_pa_bit,
 			rs485_pa_bit)) {
 		printk(KERN_CRIT "ETRAX100LX serial: Could not allocate "
 			"RS485 pin\n");
@@ -4460,7 +4459,7 @@ static int __init rs_init(void)
 	}
 #endif
 #if defined(CONFIG_ETRAX_RS485_ON_PORT_G)
-	if (cris_io_interface_allocate_pins(if_ser0, 'g', rs485_pa_bit,
+	if (cris_io_interface_allocate_pins(if_serial_0, 'g', rs485_pa_bit,
 			rs485_port_g_bit)) {
 		printk(KERN_CRIT "ETRAX100LX serial: Could not allocate "
 			"RS485 pin\n");

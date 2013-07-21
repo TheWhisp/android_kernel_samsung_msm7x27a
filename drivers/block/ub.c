@@ -1744,12 +1744,11 @@ static int ub_bd_release(struct gendisk *disk, fmode_t mode)
 static int ub_bd_ioctl(struct block_device *bdev, fmode_t mode,
     unsigned int cmd, unsigned long arg)
 {
-	struct gendisk *disk = bdev->bd_disk;
 	void __user *usermem = (void __user *) arg;
 	int ret;
 
 	mutex_lock(&ub_mutex);
-	ret = scsi_cmd_ioctl(disk->queue, disk, mode, cmd, usermem);
+	ret = scsi_cmd_blk_ioctl(bdev, mode, cmd, usermem);
 	mutex_unlock(&ub_mutex);
 
 	return ret;
@@ -1788,7 +1787,8 @@ static int ub_bd_revalidate(struct gendisk *disk)
  *
  * The return code is bool!
  */
-static int ub_bd_media_changed(struct gendisk *disk)
+static unsigned int ub_bd_check_events(struct gendisk *disk,
+				       unsigned int clearing)
 {
 	struct ub_lun *lun = disk->private_data;
 
@@ -1806,10 +1806,10 @@ static int ub_bd_media_changed(struct gendisk *disk)
 	 */
 	if (ub_sync_tur(lun->udev, lun) != 0) {
 		lun->changed = 1;
-		return 1;
+		return DISK_EVENT_MEDIA_CHANGE;
 	}
 
-	return lun->changed;
+	return lun->changed ? DISK_EVENT_MEDIA_CHANGE : 0;
 }
 
 static const struct block_device_operations ub_bd_fops = {
@@ -1817,7 +1817,7 @@ static const struct block_device_operations ub_bd_fops = {
 	.open		= ub_bd_unlocked_open,
 	.release	= ub_bd_release,
 	.ioctl		= ub_bd_ioctl,
-	.media_changed	= ub_bd_media_changed,
+	.check_events	= ub_bd_check_events,
 	.revalidate_disk = ub_bd_revalidate,
 };
 

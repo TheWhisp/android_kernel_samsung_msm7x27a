@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -24,7 +24,6 @@
 
 #include <mach/iommu_hw-8xxx.h>
 #include <mach/iommu.h>
-#include <mach/clk.h>
 
 struct iommu_ctx_iter_data {
 	/* input */
@@ -69,7 +68,7 @@ struct device *msm_iommu_get_ctx(const char *ctx_name)
 	r.name = ctx_name;
 	found = device_for_each_child(&msm_iommu_root_dev->dev, &r, each_iommu);
 
-	if (!found) {
+	if (!found || !dev_get_drvdata(r.dev)) {
 		pr_err("Could not find context <%s>\n", ctx_name);
 		goto fail;
 	}
@@ -111,10 +110,11 @@ static void msm_iommu_reset(void __iomem *base, int ncb)
 		SET_BFBCR(base, ctx, 0);
 		SET_PAR(base, ctx, 0);
 		SET_FAR(base, ctx, 0);
-		SET_CTX_TLBIALL(base, ctx, 0);
 		SET_TLBFLPTER(base, ctx, 0);
 		SET_TLBSLPTER(base, ctx, 0);
 		SET_TLBLKCR(base, ctx, 0);
+		SET_CTX_TLBIALL(base, ctx, 0);
+		SET_TLBIVA(base, ctx, 0);
 		SET_PRRR(base, ctx, 0);
 		SET_NMRR(base, ctx, 0);
 		SET_CONTEXTIDR(base, ctx, 0);
@@ -150,7 +150,7 @@ static int msm_iommu_probe(struct platform_device *pdev)
 		goto fail;
 	}
 
-	iommu_pclk = clk_get(NULL, "smmu_pclk");
+	iommu_pclk = clk_get_sys("msm_iommu", "iface_clk");
 	if (IS_ERR(iommu_pclk)) {
 		ret = -ENODEV;
 		goto fail;
@@ -160,11 +160,13 @@ static int msm_iommu_probe(struct platform_device *pdev)
 	if (ret)
 		goto fail_enable;
 
-	iommu_clk = clk_get(&pdev->dev, "iommu_clk");
+	iommu_clk = clk_get(&pdev->dev, "core_clk");
 
 	if (!IS_ERR(iommu_clk))	{
-		if (clk_get_rate(iommu_clk) == 0)
-			clk_set_min_rate(iommu_clk, 1);
+		if (clk_get_rate(iommu_clk) == 0) {
+			ret = clk_round_rate(iommu_clk, 1);
+			clk_set_rate(iommu_clk, ret);
+		}
 
 		ret = clk_enable(iommu_clk);
 		if (ret) {
@@ -181,7 +183,7 @@ static int msm_iommu_probe(struct platform_device *pdev)
 		goto fail_clk;
 	}
 
-	len = r->end - r->start + 1;
+	len = resource_size(r);
 
 	r2 = request_mem_region(r->start, len, r->name);
 	if (!r2) {
@@ -333,6 +335,9 @@ static int msm_iommu_ctx_probe(struct platform_device *pdev)
 
 		SET_M2VCBR_N(drvdata->base, mid, 0);
 		SET_CBACR_N(drvdata->base, c->num, 0);
+
+		/* Route page faults to the non-secure interrupt */
+		SET_IRPTNDX(drvdata->base, c->num, 1);
 
 		/* Set VMID = 0 */
 		SET_VMID(drvdata->base, mid, 0);

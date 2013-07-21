@@ -141,8 +141,13 @@ typedef struct page *pgtable_t;
 #endif /* !__ASSEMBLY__ */
 
 #ifdef CONFIG_UNCACHED_MAPPING
+#if defined(CONFIG_29BIT)
+#define UNCAC_ADDR(addr)	P2SEGADDR(addr)
+#define CAC_ADDR(addr)		P1SEGADDR(addr)
+#else
 #define UNCAC_ADDR(addr)	((addr) - PAGE_OFFSET + uncached_start)
 #define CAC_ADDR(addr)		((addr) - uncached_start + PAGE_OFFSET)
+#endif
 #else
 #define UNCAC_ADDR(addr)	((addr))
 #define CAC_ADDR(addr)		((addr))
@@ -186,7 +191,7 @@ typedef struct page *pgtable_t;
 /*
  * While BYTES_PER_WORD == 4 on the current sh64 ABI, GCC will still
  * happily generate {ld/st}.q pairs, requiring us to have 8-byte
- * alignment to avoid traps. The kmalloc alignment is gauranteed by
+ * alignment to avoid traps. The kmalloc alignment is guaranteed by
  * virtue of L1_CACHE_BYTES, requiring this to only be special cased
  * for slab caches.
  */

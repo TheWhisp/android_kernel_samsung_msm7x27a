@@ -61,6 +61,14 @@
 		bne	9998f
 		ldr	\irqnr, [\base, #0xd8] /* IRQ pending reg 3 */
 		cmp	\irqnr, #0x0
+		bne	9998f
+
+		/*
+		 * ti816x has additional IRQ pending register. Checking this
+		 * register on omap2 & omap3 has no effect (read as 0).
+		 */
+		ldr	\irqnr, [\base, #0xf8] /* IRQ pending reg 4 */
+		cmp	\irqnr, #0x0
 9998:
 		ldrne	\irqnr, [\base, #INTCPS_SIR_IRQ_OFFSET]
 		and	\irqnr, \irqnr, #ACTIVEIRQ_MASK /* Clear spurious bits */
@@ -70,7 +78,7 @@
 4401:		ldr     \irqstat, [\base, #GIC_CPU_INTACK]
 		ldr     \tmp, =1021
 		bic     \irqnr, \irqstat, #0x1c00
-		cmp     \irqnr, #29
+		cmp     \irqnr, #15
 		cmpcc   \irqnr, \irqnr
 		cmpne   \irqnr, \tmp
 		cmpcs   \irqnr, \irqnr
@@ -92,18 +100,6 @@
 		strcc	\irqstat, [\base, #GIC_CPU_EOI]
 		it	cs
 		cmpcs	\irqnr, \irqnr
-		.endm
-
-		/* As above, this assumes that irqstat and base are preserved */
-
-		.macro test_for_ltirq, irqnr, irqstat, base, tmp
-		bic	\irqnr, \irqstat, #0x1c00
-		mov 	\tmp, #0
-		cmp	\irqnr, #29
-		itt	eq
-		moveq	\tmp, #1
-		streq	\irqstat, [\base, #GIC_CPU_EOI]
-		cmp	\tmp, #0
 		.endm
 #endif	/* CONFIG_SMP */
 
@@ -133,6 +129,11 @@
 		bne	9999f
 		ldr	\irqnr, [\base, #0xd8] /* IRQ pending reg 3 */
 		cmp	\irqnr, #0x0
+#ifdef CONFIG_SOC_OMAPTI816X
+		bne	9999f
+		ldr	\irqnr, [\base, #0xf8] /* IRQ pending reg 4 */
+		cmp	\irqnr, #0x0
+#endif
 9999:
 		ldrne	\irqnr, [\base, #INTCPS_SIR_IRQ_OFFSET]
 		and	\irqnr, \irqnr, #ACTIVEIRQ_MASK /* Clear spurious bits */

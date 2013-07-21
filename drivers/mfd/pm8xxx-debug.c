@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -132,8 +132,6 @@ static int __devinit pm8xxx_debug_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
-	mutex_init(&debugdev->debug_mutex);
-
 	debugdev->parent = pdev->dev.parent;
 	debugdev->addr = -1;
 
@@ -160,6 +158,8 @@ static int __devinit pm8xxx_debug_probe(struct platform_device *pdev)
 		goto file_error;
 	}
 
+	mutex_init(&debugdev->debug_mutex);
+
 	debugdev->dir = dir;
 	platform_set_drvdata(pdev, debugdev);
 
@@ -179,6 +179,7 @@ static int __devexit pm8xxx_debug_remove(struct platform_device *pdev)
 
 	if (debugdev) {
 		debugfs_remove_recursive(debugdev->dir);
+		mutex_destroy(&debugdev->debug_mutex);
 		kfree(debugdev);
 	}
 

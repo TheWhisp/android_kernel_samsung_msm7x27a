@@ -30,6 +30,7 @@
 #include <linux/configfs.h>
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>
+#include <asm/unaligned.h>
 
 #include <target/target_core_base.h>
 #include <target/target_core_device.h>
@@ -60,10 +61,30 @@ int core_emulate_report_target_port_groups(struct se_cmd *cmd)
 	unsigned char *buf = (unsigned char *)T_TASK(cmd)->t_task_buf;
 	u32 rd_len = 0, off = 4; /* Skip over RESERVED area to first
 				    Target port group descriptor */
+	/*
+	 * Need at least 4 bytes of response data or else we can't
+	 * even fit the return data length.
+	 */
+	if (cmd->data_length < 4) {
+		pr_warn("REPORT TARGET PORT GROUPS allocation length %u"
+			" too small\n", cmd->data_length);
+		return -EINVAL;
+	}
 
 	spin_lock(&T10_ALUA(su_dev)->tg_pt_gps_lock);
 	list_for_each_entry(tg_pt_gp, &T10_ALUA(su_dev)->tg_pt_gps_list,
 			tg_pt_gp_list) {
+		/*
+		 * Check if the Target port group and Target port descriptor list
+		 * based on tg_pt_gp_members count will fit into the response payload.
+		 * Otherwise, bump rd_len to let the initiator know we have exceeded
+		 * the allocation length and the response is truncated.
+		 */
+		if ((off + 8 + (tg_pt_gp->tg_pt_gp_members * 4)) >
+		     cmd->data_length) {
+			rd_len += 8 + (tg_pt_gp->tg_pt_gp_members * 4);
+			continue;
+		}
 		/*
 		 * PREF: Preferred target port bit, determine if this
 		 * bit should be set for port group.
@@ -218,8 +239,7 @@ int core_emulate_set_target_port_groups(struct se_cmd *cmd)
 		 * changed.
 		 */
 		if (primary) {
-			tg_pt_id = ((ptr[2] << 8) & 0xff);
-			tg_pt_id |= (ptr[3] & 0xff);
+			tg_pt_id = get_unaligned_be16(ptr + 2);
 			/*
 			 * Locate the matching target port group ID from
 			 * the global tg_pt_gp list
@@ -260,8 +280,7 @@ int core_emulate_set_target_port_groups(struct se_cmd *cmd)
 			 * the Target Port in question for the the incoming
 			 * SET_TARGET_PORT_GROUPS op.
 			 */
-			rtpi = ((ptr[2] << 8) & 0xff);
-			rtpi |= (ptr[3] & 0xff);
+			rtpi = get_unaligned_be16(ptr + 2);
 			/*
 			 * Locate the matching relative target port identifer
 			 * for the struct se_device storage object.
@@ -496,8 +515,8 @@ static int core_alua_state_check(
 	nonop_delay_msecs = tg_pt_gp->tg_pt_gp_nonop_delay_msecs;
 	spin_unlock(&tg_pt_gp_mem->tg_pt_gp_mem_lock);
 	/*
-	 * Process ALUA_ACCESS_STATE_ACTIVE_OPTMIZED in a seperate conditional
-	 * statement so the complier knows explictly to check this case first.
+	 * Process ALUA_ACCESS_STATE_ACTIVE_OPTMIZED in a separate conditional
+	 * statement so the compiler knows explicitly to check this case first.
 	 * For the Optimized ALUA access state case, we want to process the
 	 * incoming fabric cmd ASAP..
 	 */
@@ -1036,7 +1055,7 @@ core_alua_allocate_lu_gp(const char *name, int def_group)
 	lu_gp = kmem_cache_zalloc(t10_alua_lu_gp_cache, GFP_KERNEL);
 	if (!(lu_gp)) {
 		printk(KERN_ERR "Unable to allocate struct t10_alua_lu_gp\n");
-		return ERR_PTR(-ENOMEM);;
+		return ERR_PTR(-ENOMEM);
 	}
 	INIT_LIST_HEAD(&lu_gp->lu_gp_list);
 	INIT_LIST_HEAD(&lu_gp->lu_gp_mem_list);
@@ -1044,7 +1063,7 @@ core_alua_allocate_lu_gp(const char *name, int def_group)
 	atomic_set(&lu_gp->lu_gp_ref_cnt, 0);
 
 	if (def_group) {
-		lu_gp->lu_gp_id = se_global->alua_lu_gps_counter++;;
+		lu_gp->lu_gp_id = se_global->alua_lu_gps_counter++;
 		lu_gp->lu_gp_valid_id = 1;
 		se_global->alua_lu_gps_count++;
 	}
@@ -1157,7 +1176,7 @@ void core_alua_free_lu_gp(struct t10_alua_lu_gp *lu_gp)
 		spin_unlock(&lu_gp->lu_gp_lock);
 		/*
 		 *
-		 * lu_gp_mem is assoicated with a single
+		 * lu_gp_mem is associated with a single
 		 * struct se_device->dev_alua_lu_gp_mem, and is released when
 		 * struct se_device is released via core_alua_free_lu_gp_mem().
 		 *
@@ -1429,7 +1448,7 @@ void core_alua_free_tg_pt_gp(
 		}
 		spin_unlock(&tg_pt_gp->tg_pt_gp_lock);
 		/*
-		 * tg_pt_gp_mem is assoicated with a single
+		 * tg_pt_gp_mem is associated with a single
 		 * se_port->sep_alua_tg_pt_gp_mem, and is released via
 		 * core_alua_free_tg_pt_gp_mem().
 		 *
@@ -1963,7 +1982,7 @@ int core_setup_alua(struct se_device *dev, int force_pt)
 		printk(KERN_INFO "%s: Enabling ALUA Emulation for SPC-3"
 			" device\n", TRANSPORT(dev)->name);
 		/*
-		 * Assoicate this struct se_device with the default ALUA
+		 * Associate this struct se_device with the default ALUA
 		 * LUN Group.
 		 */
 		lu_gp_mem = core_alua_allocate_lu_gp_mem(dev);

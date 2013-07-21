@@ -1,37 +1,21 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- *       copyright notice, this list of conditions and the following
- *       disclaimer in the documentation and/or other materials provided
- *       with the distribution.
- *     * Neither the name of Code Aurora Forum, Inc. nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
- * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  */
 
 #ifndef _VCD_DDL_API_H_
 #define _VCD_DDL_API_H_
 
+#include <media/msm/vcd_api.h>
 #include "vidc.h"
-#include "vcd_api.h"
 
 #define VCD_EVT_RESP_DDL_BASE             0x3000
 #define VCD_EVT_RESP_DEVICE_INIT          (VCD_EVT_RESP_DDL_BASE + 0x1)
@@ -78,6 +62,11 @@ struct vcd_property_adaptive_rc_params{
 	u32 disable_static_region_as_flag;
 	u32 disable_activity_region_flag;
 };
+struct vcd_property_slice_delivery_info {
+	u32  enable;
+	u32  num_slices;
+	u32  num_slices_enc;
+};
 struct ddl_property_dec_pic_buffers{
 	struct ddl_frame_data_tag *dec_pic_buffers;
 	u32 no_of_dec_pic_buf;
@@ -110,6 +99,11 @@ u32 ddl_encode_start(u32 *ddl_handle, void *client_data);
 u32 ddl_encode_frame(u32 *ddl_handle,
 	struct ddl_frame_data_tag *input_frame,
 	struct ddl_frame_data_tag *output_bit, void *client_data);
+u32 ddl_encode_frame_batch(u32 *ddl_handle,
+	struct ddl_frame_data_tag *input_frame,
+	struct ddl_frame_data_tag *output_bit,
+	u32 num_in_frames, u32 num_out_frames,
+	void *client_data);
 u32 ddl_encode_end(u32 *ddl_handle, void *client_data);
 u32 ddl_decode_start(u32 *ddl_handle, struct vcd_sequence_hdr *header,
 	void *client_data);

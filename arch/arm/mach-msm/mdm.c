@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -26,12 +26,12 @@
 #include <linux/delay.h>
 #include <linux/reboot.h>
 #include <linux/debugfs.h>
-#include <linux/smp_lock.h>
 #include <linux/completion.h>
 #include <linux/workqueue.h>
 #include <linux/clk.h>
 #include <asm/mach-types.h>
 #include <asm/uaccess.h>
+#include <linux/mfd/pm8xxx/misc.h>
 #include <mach/mdm.h>
 #include <mach/restart.h>
 #include <mach/subsystem_notif.h>
@@ -73,17 +73,10 @@ static void charm_disable_irqs(void)
 
 }
 
-static void charm_enable_irqs(void)
-{
-	enable_irq(charm_errfatal_irq);
-	enable_irq(charm_status_irq);
-}
-
 static int charm_subsys_shutdown(const struct subsys_data *crashed_subsys)
 {
-	charm_disable_irqs();
-	power_down_charm();
 	charm_ready = 0;
+	power_down_charm();
 	return 0;
 }
 
@@ -95,7 +88,6 @@ static int charm_subsys_powerup(const struct subsys_data *crashed_subsys)
 	wait_for_completion(&charm_boot);
 	pr_info("%s: charm modem has been restarted\n", __func__);
 	INIT_COMPLETION(charm_boot);
-	charm_enable_irqs();
 	return charm_boot_status;
 }
 
@@ -123,10 +115,24 @@ static struct subsys_data charm_subsystem = {
 static int charm_panic_prep(struct notifier_block *this,
 				unsigned long event, void *ptr)
 {
+	int i;
+
 	CHARM_DBG("%s: setting AP2MDM_ERRFATAL high for a non graceful reset\n",
 			 __func__);
+	if (get_restart_level() == RESET_SOC)
+		pm8xxx_stay_on();
+
 	charm_disable_irqs();
 	gpio_set_value(AP2MDM_ERRFATAL, 1);
+	gpio_set_value(AP2MDM_WAKEUP, 1);
+	for (i = CHARM_MODEM_TIMEOUT; i > 0; i -= CHARM_MODEM_DELTA) {
+		pet_watchdog();
+		mdelay(CHARM_MODEM_DELTA);
+		if (gpio_get_value(MDM2AP_STATUS) == 0)
+			break;
+	}
+	if (i <= 0)
+		pr_err("%s: MDM2AP_STATUS never went low\n", __func__);
 	return NOTIFY_DONE;
 }
 
@@ -168,6 +174,7 @@ static long charm_modem_ioctl(struct file *filp, unsigned int cmd,
 			charm_boot_status = 0;
 		charm_ready = 1;
 
+		gpio_set_value(AP2MDM_KPDPWR_N, 0);
 		if (!first_boot)
 			complete(&charm_boot);
 		else
@@ -230,6 +237,8 @@ static DECLARE_WORK(charm_status_work, charm_status_fn);
 static void charm_fatal_fn(struct work_struct *work)
 {
 	pr_info("Reseting the charm due to an errfatal\n");
+	if (get_restart_level() == RESET_SOC)
+		pm8xxx_stay_on();
 	subsystem_restart("external_modem");
 }
 
@@ -238,7 +247,7 @@ static DECLARE_WORK(charm_fatal_work, charm_fatal_fn);
 static irqreturn_t charm_errfatal(int irq, void *dev_id)
 {
 	CHARM_DBG("%s: charm got errfatal interrupt\n", __func__);
-	if (charm_ready) {
+	if (charm_ready && (gpio_get_value(MDM2AP_STATUS) == 1)) {
 		CHARM_DBG("%s: scheduling work now\n", __func__);
 		queue_work(charm_queue, &charm_fatal_work);
 	}
@@ -317,9 +326,11 @@ static int __init charm_modem_probe(struct platform_device *pdev)
 	gpio_request(AP2MDM_PMIC_RESET_N, "AP2MDM_PMIC_RESET_N");
 	gpio_request(MDM2AP_STATUS, "MDM2AP_STATUS");
 	gpio_request(MDM2AP_ERRFATAL, "MDM2AP_ERRFATAL");
+	gpio_request(AP2MDM_WAKEUP, "AP2MDM_WAKEUP");
 
 	gpio_direction_output(AP2MDM_STATUS, 1);
 	gpio_direction_output(AP2MDM_ERRFATAL, 0);
+	gpio_direction_output(AP2MDM_WAKEUP, 0);
 	gpio_direction_input(MDM2AP_STATUS);
 	gpio_direction_input(MDM2AP_ERRFATAL);
 
@@ -422,6 +433,7 @@ static void charm_modem_shutdown(struct platform_device *pdev)
 	charm_disable_irqs();
 
 	gpio_set_value(AP2MDM_STATUS, 0);
+	gpio_set_value(AP2MDM_WAKEUP, 1);
 
 	for (i = CHARM_MODEM_TIMEOUT; i > 0; i -= CHARM_MODEM_DELTA) {
 		pet_watchdog();
@@ -440,6 +452,7 @@ static void charm_modem_shutdown(struct platform_device *pdev)
 		}
 		gpio_direction_output(AP2MDM_PMIC_RESET_N, 0);
 	}
+	gpio_set_value(AP2MDM_WAKEUP, 0);
 }
 
 static struct platform_driver charm_modem_driver = {

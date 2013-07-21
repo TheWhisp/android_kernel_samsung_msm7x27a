@@ -1,6 +1,6 @@
 /* drivers/serial/msm_serial_hs_hwreg.h
  *
- * Copyright (c) 2007-2009, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2007-2009, The Linux Foundation. All rights reserved.
  * 
  * All source code in this file is licensed under the following license
  * except where indicated.
@@ -31,6 +31,30 @@
 #define TCSR_ADM_1_B_CRCI_MUX_SEL      0x7C
 #define ADM1_CRCI_GSBI6_RX_SEL         0x800
 #define ADM1_CRCI_GSBI6_TX_SEL         0x400
+
+enum msm_hsl_regs {
+	UARTDM_MR1,
+	UARTDM_MR2,
+	UARTDM_IMR,
+	UARTDM_SR,
+	UARTDM_CR,
+	UARTDM_CSR,
+	UARTDM_IPR,
+	UARTDM_ISR,
+	UARTDM_RX_TOTAL_SNAP,
+	UARTDM_RFWR,
+	UARTDM_TFWR,
+	UARTDM_RF,
+	UARTDM_TF,
+	UARTDM_MISR,
+	UARTDM_DMRX,
+	UARTDM_NCF_TX,
+	UARTDM_DMEN,
+	UARTDM_BCR,
+	UARTDM_TXFS,
+	UARTDM_RXFS,
+	UARTDM_LAST,
+};
 
 #define UARTDM_MR1_ADDR 0x0
 #define UARTDM_MR2_ADDR 0x4
@@ -96,6 +120,7 @@
 #define UARTDM_ISR_ADDR 0x14
 #define UARTDM_RX_TOTAL_SNAP_ADDR 0x38
 
+#define UARTDM_TXFS_ADDR 0x4C
 #define UARTDM_RXFS_ADDR 0x50
 
 /* Register field Mask Mapping */
@@ -155,8 +180,8 @@
 
 /* Parity configuration */
 #define NO_PARITY 0x0
-#define EVEN_PARITY 0x1
-#define ODD_PARITY 0x2
+#define EVEN_PARITY 0x2
+#define ODD_PARITY 0x1
 #define SPACE_PARITY 0x3
 
 #define UARTDM_IPR_STALE_TIMEOUT_MSB_BMSK 0xffffff80

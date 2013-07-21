@@ -480,6 +480,15 @@ static void atl1c_set_rxbufsize(struct atl1c_adapter *adapter,
 	adapter->rx_buffer_len = mtu > AT_RX_BUF_SIZE ?
 		roundup(mtu + ETH_HLEN + ETH_FCS_LEN + VLAN_HLEN, 8) : AT_RX_BUF_SIZE;
 }
+
+static u32 atl1c_fix_features(struct net_device *netdev, u32 features)
+{
+	if (netdev->mtu > MAX_TSO_FRAME_SIZE)
+		features &= ~(NETIF_F_TSO | NETIF_F_TSO6);
+
+	return features;
+}
+
 /*
  * atl1c_change_mtu - Change the Maximum Transfer Unit
  * @netdev: network interface device structure
@@ -506,14 +515,8 @@ static int atl1c_change_mtu(struct net_device *netdev, int new_mtu)
 		netdev->mtu = new_mtu;
 		adapter->hw.max_frame_size = new_mtu;
 		atl1c_set_rxbufsize(adapter, netdev);
-		if (new_mtu > MAX_TSO_FRAME_SIZE) {
-			adapter->netdev->features &= ~NETIF_F_TSO;
-			adapter->netdev->features &= ~NETIF_F_TSO6;
-		} else {
-			adapter->netdev->features |= NETIF_F_TSO;
-			adapter->netdev->features |= NETIF_F_TSO6;
-		}
 		atl1c_down(adapter);
+		netdev_update_features(netdev);
 		atl1c_up(adapter);
 		clear_bit(__AT_RESETTING, &adapter->flags);
 		if (adapter->hw.ctrl_flags & ATL1C_FPGA_VERSION) {
@@ -1088,20 +1091,18 @@ static void atl1c_configure_tx(struct atl1c_adapter *adapter)
 	u32 max_pay_load;
 	u16 tx_offload_thresh;
 	u32 txq_ctrl_data;
-	u32 extra_size = 0;     /* Jumbo frame threshold in QWORD unit */
 	u32 max_pay_load_data;
 
-	extra_size = ETH_HLEN + VLAN_HLEN + ETH_FCS_LEN;
 	tx_offload_thresh = MAX_TX_OFFLOAD_THRESH;
 	AT_WRITE_REG(hw, REG_TX_TSO_OFFLOAD_THRESH,
 		(tx_offload_thresh >> 3) & TX_TSO_OFFLOAD_THRESH_MASK);
 	AT_READ_REG(hw, REG_DEVICE_CTRL, &dev_ctrl_data);
 	max_pay_load  = (dev_ctrl_data >> DEVICE_CTRL_MAX_PAYLOAD_SHIFT) &
 			DEVICE_CTRL_MAX_PAYLOAD_MASK;
-	hw->dmaw_block = min(max_pay_load, hw->dmaw_block);
+	hw->dmaw_block = min_t(u32, max_pay_load, hw->dmaw_block);
 	max_pay_load  = (dev_ctrl_data >> DEVICE_CTRL_MAX_RREQ_SZ_SHIFT) &
 			DEVICE_CTRL_MAX_RREQ_SZ_MASK;
-	hw->dmar_block = min(max_pay_load, hw->dmar_block);
+	hw->dmar_block = min_t(u32, max_pay_load, hw->dmar_block);
 
 	txq_ctrl_data = (hw->tpd_burst & TXQ_NUM_TPD_BURST_MASK) <<
 			TXQ_NUM_TPD_BURST_SHIFT;
@@ -2222,10 +2223,6 @@ static netdev_tx_t atl1c_xmit_frame(struct sk_buff *skb,
 			dev_info(&adapter->pdev->dev, "tx locked\n");
 		return NETDEV_TX_LOCKED;
 	}
-	if (skb->mark == 0x01)
-		type = atl1c_trans_high;
-	else
-		type = atl1c_trans_normal;
 
 	if (atl1c_tpd_avail(adapter, type) < tpd_req) {
 		/* no enough descriptor, just stop queue */
@@ -2536,6 +2533,7 @@ static int atl1c_suspend(struct device *dev)
 	return 0;
 }
 
+#ifdef CONFIG_PM_SLEEP
 static int atl1c_resume(struct device *dev)
 {
 	struct pci_dev *pdev = to_pci_dev(dev);
@@ -2562,6 +2560,7 @@ static int atl1c_resume(struct device *dev)
 
 	return 0;
 }
+#endif
 
 static void atl1c_shutdown(struct pci_dev *pdev)
 {
@@ -2581,6 +2580,7 @@ static const struct net_device_ops atl1c_netdev_ops = {
 	.ndo_set_mac_address 	= atl1c_set_mac_addr,
 	.ndo_set_multicast_list = atl1c_set_multi,
 	.ndo_change_mtu		= atl1c_change_mtu,
+	.ndo_fix_features	= atl1c_fix_features,
 	.ndo_do_ioctl		= atl1c_ioctl,
 	.ndo_tx_timeout		= atl1c_tx_timeout,
 	.ndo_get_stats		= atl1c_get_stats,
@@ -2601,12 +2601,13 @@ static int atl1c_init_netdev(struct net_device *netdev, struct pci_dev *pdev)
 	atl1c_set_ethtool_ops(netdev);
 
 	/* TODO: add when ready */
-	netdev->features =	NETIF_F_SG	   |
+	netdev->hw_features =	NETIF_F_SG	   |
 				NETIF_F_HW_CSUM	   |
 				NETIF_F_HW_VLAN_TX |
-				NETIF_F_HW_VLAN_RX |
 				NETIF_F_TSO	   |
 				NETIF_F_TSO6;
+	netdev->features =	netdev->hw_features |
+				NETIF_F_HW_VLAN_RX;
 	return 0;
 }
 
@@ -2714,7 +2715,6 @@ static int __devinit atl1c_probe(struct pci_dev *pdev,
 		goto err_reset;
 	}
 
-	device_init_wakeup(&pdev->dev, 1);
 	/* reset the controller to
 	 * put the device in a known good starting state */
 	err = atl1c_phy_init(&adapter->hw);

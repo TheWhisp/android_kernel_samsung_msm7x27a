@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -174,14 +174,18 @@ static int pmic8xxx_chk_sync_read(struct pmic8xxx_kp *kp)
 	u8 scan_val;
 
 	rc = pmic8xxx_kp_read_u8(kp, &scan_val, KEYP_SCAN);
-	if (rc < 0)
+	if (rc < 0) {
+		dev_err(kp->dev, "Error reading KEYP_SCAN reg, rc=%d\n", rc);
 		return rc;
+	}
 
 	scan_val |= 0x1;
 
 	rc = pmic8xxx_kp_write_u8(kp, scan_val, KEYP_SCAN);
-	if (rc < 0)
+	if (rc < 0) {
+		dev_err(kp->dev, "Error writing KEYP_SCAN reg, rc=%d\n", rc);
 		return rc;
+	}
 
 	/* 2 * 32KHz clocks */
 	udelay((2 * DIV_ROUND_UP(USEC_PER_SEC, KEYP_CLOCK_FREQ)) + 1);
@@ -224,25 +228,34 @@ static int pmic8xxx_kp_read_matrix(struct pmic8xxx_kp *kp, u16 *new_state,
 	if (old_state) {
 		rc = pmic8xxx_kp_read_data(kp, old_state, KEYP_OLD_DATA,
 						read_rows);
-		if (rc < 0)
+		if (rc < 0) {
+			dev_err(kp->dev,
+				"Error reading KEYP_OLD_DATA, rc=%d\n", rc);
 			return rc;
+		}
 	}
 
 	rc = pmic8xxx_kp_read_data(kp, new_state, KEYP_RECENT_DATA,
 					 read_rows);
-	if (rc < 0)
+	if (rc < 0) {
+		dev_err(kp->dev,
+			"Error reading KEYP_RECENT_DATA, rc=%d\n", rc);
 		return rc;
+	}
 
 	/* 4 * 32KHz clocks */
 	udelay((4 * DIV_ROUND_UP(USEC_PER_SEC, KEYP_CLOCK_FREQ)) + 1);
 
 	rc = pmic8xxx_kp_read_u8(kp, &scan_val, KEYP_SCAN);
-	if (rc < 0)
+	if (rc < 0) {
+		dev_err(kp->dev, "Error reading KEYP_SCAN reg, rc=%d\n", rc);
 		return rc;
+	}
+
 	scan_val &= 0xFE;
 	rc = pmic8xxx_kp_write_u8(kp, scan_val, KEYP_SCAN);
 	if (rc < 0)
-		return rc;
+		dev_err(kp->dev, "Error writing KEYP_SCAN reg, rc=%d\n", rc);
 
 	return rc;
 }
@@ -394,7 +407,7 @@ static irqreturn_t pmic8xxx_kp_irq(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
-static int pmic8xxx_kpd_init(struct pmic8xxx_kp *kp)
+static int __devinit pmic8xxx_kpd_init(struct pmic8xxx_kp *kp)
 {
 	int bits, rc, cycles;
 	u8 scan_val = 0, ctrl_val = 0;
@@ -419,8 +432,10 @@ static int pmic8xxx_kpd_init(struct pmic8xxx_kp *kp)
 	ctrl_val |= (bits << KEYP_CTRL_SCAN_ROWS_SHIFT);
 
 	rc = pmic8xxx_kp_write_u8(kp, ctrl_val, KEYP_CTRL);
-	if (rc < 0)
+	if (rc < 0) {
+		dev_err(kp->dev, "Error writing KEYP_CTRL reg, rc=%d\n", rc);
 		return rc;
+	}
 
 	bits = (kp->pdata->debounce_ms / 5) - 1;
 
@@ -435,6 +450,8 @@ static int pmic8xxx_kpd_init(struct pmic8xxx_kp *kp)
 	scan_val |= (cycles << KEYP_SCAN_ROW_HOLD_SHIFT);
 
 	rc = pmic8xxx_kp_write_u8(kp, scan_val, KEYP_SCAN);
+	if (rc)
+		dev_err(kp->dev, "Error writing KEYP_SCAN reg, rc=%d\n", rc);
 
 	return rc;
 
@@ -469,7 +486,7 @@ static int pmic8xxx_kp_enable(struct pmic8xxx_kp *kp)
 
 	rc = pmic8xxx_kp_write_u8(kp, kp->ctrl_reg, KEYP_CTRL);
 	if (rc < 0)
-		return rc;
+		dev_err(kp->dev, "Error writing KEYP_CTRL reg, rc=%d\n", rc);
 
 	return rc;
 }
@@ -514,7 +531,7 @@ static void pmic8xxx_kp_close(struct input_dev *dev)
 static int __devinit pmic8xxx_kp_probe(struct platform_device *pdev)
 {
 	const struct pm8xxx_keypad_platform_data *pdata =
-						pdev->dev.platform_data;
+					dev_get_platdata(&pdev->dev);
 	const struct matrix_keymap_data *keymap_data;
 	struct pmic8xxx_kp *kp;
 	int rc;
@@ -558,7 +575,7 @@ static int __devinit pmic8xxx_kp_probe(struct platform_device *pdev)
 	}
 
 	if (!pdata->row_hold_ns ||
-	    pdata->row_hold_ns > MAX_ROW_HOLD_DELAY ||
+		pdata->row_hold_ns > MAX_ROW_HOLD_DELAY ||
 		pdata->row_hold_ns < MIN_ROW_HOLD_DELAY ||
 		((pdata->row_hold_ns % MIN_ROW_HOLD_DELAY) != 0)) {
 		dev_err(&pdev->dev, "invalid keypad row hold time supplied\n");
@@ -693,9 +710,9 @@ static int __devinit pmic8xxx_kp_probe(struct platform_device *pdev)
 	return 0;
 
 err_pmic_reg_read:
-	free_irq(kp->key_stuck_irq, NULL);
+	free_irq(kp->key_stuck_irq, kp);
 err_req_stuck_irq:
-	free_irq(kp->key_sense_irq, NULL);
+	free_irq(kp->key_sense_irq, kp);
 err_gpio_config:
 err_get_irq:
 	input_free_device(kp->input);
@@ -710,8 +727,8 @@ static int __devexit pmic8xxx_kp_remove(struct platform_device *pdev)
 	struct pmic8xxx_kp *kp = platform_get_drvdata(pdev);
 
 	device_init_wakeup(&pdev->dev, 0);
-	free_irq(kp->key_stuck_irq, NULL);
-	free_irq(kp->key_sense_irq, NULL);
+	free_irq(kp->key_stuck_irq, kp);
+	free_irq(kp->key_sense_irq, kp);
 	input_unregister_device(kp->input);
 	kfree(kp);
 
@@ -790,3 +807,4 @@ MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("PMIC8XXX keypad driver");
 MODULE_VERSION("1.0");
 MODULE_ALIAS("platform:pmic8xxx_keypad");
+MODULE_AUTHOR("Trilok Soni <tsoni@codeaurora.org>");

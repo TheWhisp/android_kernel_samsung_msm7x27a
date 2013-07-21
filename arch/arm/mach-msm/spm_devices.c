@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,6 +18,7 @@
 #include <linux/io.h>
 #include <linux/slab.h>
 #include <mach/msm_iomap.h>
+#include <mach/socinfo.h>
 
 #include "spm.h"
 #include "spm_driver.h"
@@ -129,6 +130,11 @@ spm_failed_malloc:
 int msm_spm_set_low_power_mode(unsigned int mode, bool notify_rpm)
 {
 	struct msm_spm_device *dev = &__get_cpu_var(msm_cpu_spm_device);
+
+	/* TODO: Remove this after 8064 bring up */
+	if (cpu_is_apq8064())
+		return 0;
+
 	return msm_spm_dev_set_low_power_mode(dev, mode, notify_rpm);
 }
 
@@ -136,6 +142,10 @@ int __init msm_spm_init(struct msm_spm_platform_data *data, int nr_devs)
 {
 	unsigned int cpu;
 	int ret = 0;
+
+	/* TODO: Remove this after 8064 bring up */
+	if (cpu_is_apq8064())
+		return 0;
 
 	BUG_ON((nr_devs < num_possible_cpus()) || !data);
 
@@ -152,6 +162,40 @@ int __init msm_spm_init(struct msm_spm_platform_data *data, int nr_devs)
 	return ret;
 }
 
+int msm_spm_turn_on_cpu_rail(unsigned int cpu)
+{
+	uint32_t val = 0;
+	uint32_t timeout = 0;
+	void *reg = NULL;
+
+	if (cpu >= num_possible_cpus())
+		return -EINVAL;
+
+	switch (cpu) {
+	case 1:
+		reg = MSM_SAW1_BASE;
+		break;
+	case 0:
+	default:
+		return -EFAULT;
+	}
+
+	if (cpu_is_msm8960() || cpu_is_msm8930() || cpu_is_apq8064()) {
+		val = 0xA4;
+		reg += 0x14;
+		timeout = 512;
+	} else {
+		return -ENOSYS;
+	}
+
+	writel_relaxed(val, reg);
+	mb();
+	udelay(timeout);
+
+	return 0;
+}
+EXPORT_SYMBOL(msm_spm_turn_on_cpu_rail);
+
 #if defined(CONFIG_MSM_L2_SPM)
 static struct msm_spm_device msm_spm_l2_device;
 
@@ -163,6 +207,10 @@ int msm_spm_l2_set_low_power_mode(unsigned int mode, bool notify_rpm)
 
 int __init msm_spm_l2_init(struct msm_spm_platform_data *data)
 {
+	/* TODO: Remove this after 8064 bring up */
+	if (cpu_is_apq8064())
+		return 0;
+
 	return msm_spm_dev_init(&msm_spm_l2_device, data);
 }
 #endif

@@ -1,4 +1,4 @@
-/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -300,7 +300,7 @@ static int __devinit pm8058_charger_probe(struct platform_device *pdev)
 {
 	struct pm8058_chip *pm_chip;
 
-	pm_chip = platform_get_drvdata(pdev);
+	pm_chip = dev_get_drvdata(pdev->dev.parent);
 	if (pm_chip == NULL) {
 		pr_err("%s:no parent data passed in.\n", __func__);
 		return -EFAULT;

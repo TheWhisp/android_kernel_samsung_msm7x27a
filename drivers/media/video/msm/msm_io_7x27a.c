@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -39,7 +39,6 @@
 #define	MIPI_PHY_D2_CONTROL		0x0000002C
 #define	MIPI_PHY_D3_CONTROL		0x00000030
 #define	MIPI_PWR_CNTL			0x00000054
-
 
 /*
  * MIPI_PROTOCOL_CONTROL register bits to enable/disable the features of
@@ -158,24 +157,23 @@ void __iomem *appbase;
 void msm_io_w(u32 data, void __iomem *addr)
 {
 	CDBG("%s: %08x %08x\n", __func__, (int) (addr), (data));
-	/* writel(data), (addr)); is not linux standard syntax */
-	 writel_relaxed((data), (addr));
+	writel((data), (addr));
 }
 
 u32 msm_io_r(void __iomem *addr)
 {
-	/* uint32_t data = readl(addr); */
-	/* is not linux standard syntax */
-	uint32_t data = readl_relaxed(addr);
+	uint32_t data = readl(addr);
 	CDBG("%s: %08x %08x\n", __func__, (int) (addr), (data));
 	return data;
 }
 
-void msm_camio_vfe_clk_rate_set(int rate)
+int msm_camio_vfe_clk_rate_set(int rate)
 {
+	int rc = 0;
 	struct clk *clk = camio_vfe_clk;
 	if (rate > clk_get_rate(clk))
-		clk_set_rate(clk, rate);
+		rc = clk_set_rate(clk, rate);
+	return rc;
 }
 
 int msm_camio_clk_enable(enum msm_camio_clk_type clktype)
@@ -288,11 +286,6 @@ void msm_camio_clk_rate_set(int rate)
 void msm_camio_clk_rate_set_2(struct clk *clk, int rate)
 {
 	clk_set_rate(clk, rate);
-}
-
-void msm_camio_clk_set_min_rate(struct clk *clk, int rate)
-{
-	clk_set_min_rate(clk, rate);
 }
 
 static irqreturn_t msm_io_csi_irq(int irq_num, void *data)
@@ -425,34 +418,16 @@ int msm_camio_sensor_clk_on(struct platform_device *pdev)
 	rc = camdev->camera_gpio_on();
 	if (rc < 0)
 		return rc;
-
-/* In case of GEIM has to control MCLK in own camera driver.        */
-/* Because SR300PC20, camera sensor, doesn't accept to enable MCLK  */
-/* before the power supplied. */
-#if defined(CONFIG_MACH_GEIM) || defined(CONFIG_MACH_JENA)
-	return rc;
-#else
 	return msm_camio_clk_enable(CAMIO_CAM_MCLK_CLK);
-#endif
 }
 
 int msm_camio_sensor_clk_off(struct platform_device *pdev)
 {
-#if defined(CONFIG_MACH_GEIM) || defined(CONFIG_MACH_JENA)
-	int rc = 0;
-#endif
 	const struct msm_camera_sensor_info *sinfo = pdev->dev.platform_data;
 	struct msm_camera_device_platform_data *camdev = sinfo->pdata;
 	camdev->camera_gpio_off();
-
-/* In case of GEIM has to control MCLK in own camera driver.         */
-/* Because SR300PC20, camera sensor, doesn't accept to disable MCLK  */
-/* after turning off the power. */
-#if defined(CONFIG_MACH_GEIM) || defined(CONFIG_MACH_JENA)
-	return rc;
-#else
 	return msm_camio_clk_disable(CAMIO_CAM_MCLK_CLK);
-#endif
+
 }
 
 void msm_camio_vfe_blk_reset(void)
@@ -463,24 +438,24 @@ void msm_camio_vfe_blk_reset(void)
 	val = readl_relaxed(appbase + 0x00000210);
 	val |= 0x1;
 	writel_relaxed(val, appbase + 0x00000210);
-	usleep_range(1000, 2000);
+	usleep_range(10000, 11000);
 
 	val = readl_relaxed(appbase + 0x00000210);
 	val &= ~0x1;
 	writel_relaxed(val, appbase + 0x00000210);
-	usleep_range(1000, 2000);
+	usleep_range(10000, 11000);
 
 	/* do axi reset */
 	val = readl_relaxed(appbase + 0x00000208);
 	val |= 0x1;
 	writel_relaxed(val, appbase + 0x00000208);
-	usleep_range(1000, 2000);
+	usleep_range(10000, 11000);
 
 	val = readl_relaxed(appbase + 0x00000208);
 	val &= ~0x1;
 	writel_relaxed(val, appbase + 0x00000208);
 	mb();
-	usleep_range(1000, 2000);
+	usleep_range(10000, 11000);
 	return;
 }
 

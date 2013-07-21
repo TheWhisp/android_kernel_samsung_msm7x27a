@@ -33,7 +33,7 @@
  * for driver private data (info->par). info->par (if any) will be
  * aligned to sizeof(long).
  *
- * Returns the new structure, or NULL if an error occured.
+ * Returns the new structure, or NULL if an error occurred.
  *
  */
 struct fb_info *framebuffer_alloc(size_t size, struct device *dev)
@@ -399,9 +399,12 @@ static ssize_t store_fbstate(struct device *device,
 
 	state = simple_strtoul(buf, &last, 0);
 
+	if (!lock_fb_info(fb_info))
+		return -ENODEV;
 	console_lock();
 	fb_set_suspend(fb_info, (int)state);
 	console_unlock();
+	unlock_fb_info(fb_info);
 
 	return count;
 }

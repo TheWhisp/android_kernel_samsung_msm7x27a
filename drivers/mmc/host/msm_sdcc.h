@@ -2,7 +2,7 @@
  *  linux/drivers/mmc/host/msmsdcc.h - QCT MSM7K SDC Controller
  *
  *  Copyright (C) 2008 Google, All Rights Reserved.
- *  Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+ *  Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -26,6 +26,7 @@
 #include <linux/dma-mapping.h>
 #include <linux/wakelock.h>
 #include <linux/earlysuspend.h>
+#include <linux/pm_qos_params.h>
 #include <mach/sps.h>
 
 #include <asm/sizes.h>
@@ -77,6 +78,8 @@
 #define MCI_DPSM_DIRECTION	(1 << 1)
 #define MCI_DPSM_MODE		(1 << 2)
 #define MCI_DPSM_DMAENABLE	(1 << 3)
+#define MCI_AUTO_PROG_DONE	(1 << 19)
+#define MCI_RX_DATA_PEND	(1 << 20)
 
 #define MMCIDATACNT		0x030
 #define MMCISTATUS		0x034
@@ -166,6 +169,7 @@
 
 #define MMCIMASK1		0x040
 #define MMCIFIFOCNT		0x044
+#define MCI_VERSION		0x050
 #define MCICCSTIMER		0x058
 #define MCI_DLL_CONFIG		0x060
 #define MCI_DLL_EN		(1 << 16)
@@ -177,6 +181,9 @@
 
 #define MCI_DLL_STATUS		0x068
 #define MCI_DLL_LOCK		(1 << 7)
+
+#define MCI_STATUS2		0x06C
+#define MCI_MCLK_REG_WR_ACTIVE	(1 << 0)
 
 #define MMCIFIFO		0x080 /* to 0x0bc */
 
@@ -201,20 +208,55 @@
 
 #define MCI_FIFOHALFSIZE (MCI_FIFOSIZE / 2)
 
-#define NR_SG		32
+#define NR_SG		128
 
-#define MSM_MMC_IDLE_TIMEOUT	15000 /* msecs */
+#define MSM_MMC_DEFAULT_IDLE_TIMEOUT	5000 /* msecs */
 
 /*
  * Set the request timeout to 10secs to allow
  * bad cards/controller to respond.
  */
 #define MSM_MMC_REQ_TIMEOUT	10000 /* msecs */
+#define MSM_MMC_DISABLE_TIMEOUT        200 /* msecs */
+
+/*
+ * Controller HW limitations
+ */
+#define MCI_DATALENGTH_BITS	25
+#define MMC_MAX_REQ_SIZE	((1 << MCI_DATALENGTH_BITS) - 1)
+/* MCI_DATA_CTL BLOCKSIZE up to 4096 */
+#define MMC_MAX_BLK_SIZE	4096
+#define MMC_MIN_BLK_SIZE	512
+#define MMC_MAX_BLK_CNT		(MMC_MAX_REQ_SIZE / MMC_MIN_BLK_SIZE)
+
+/* 64KiB */
+#define MAX_SG_SIZE		(64 * 1024)
+#define MAX_NR_SG_DMA_PIO	(MMC_MAX_REQ_SIZE / MAX_SG_SIZE)
+
+/*
+ * BAM limitations
+ */
+/* upto 16 bits (64K - 1) */
+#define SPS_MAX_DESC_FIFO_SIZE	65535
+/* 16KiB */
+#define SPS_MAX_DESC_SIZE	(16 * 1024)
+/* Each descriptor is of length 8 bytes */
+#define SPS_MAX_DESC_LENGTH	8
+#define SPS_MAX_DESCS		(SPS_MAX_DESC_FIFO_SIZE / SPS_MAX_DESC_LENGTH)
+
+/*
+ * DMA limitations
+ */
+/* upto 16 bits (64K - 1) */
+#define MMC_MAX_DMA_ROWS (64 * 1024 - 1)
+#define MMC_MAX_DMA_BOX_LENGTH (MMC_MAX_DMA_ROWS * MCI_FIFOSIZE)
+#define MMC_MAX_DMA_CMDS (MAX_NR_SG_DMA_PIO * (MMC_MAX_REQ_SIZE / \
+		MMC_MAX_DMA_BOX_LENGTH))
 
 struct clk;
 
 struct msmsdcc_nc_dmadata {
-	dmov_box	cmd[NR_SG];
+	dmov_box	cmd[MMC_MAX_DMA_CMDS];
 	uint32_t	cmdptr;
 };
 
@@ -239,9 +281,10 @@ struct msmsdcc_dma_data {
 };
 
 struct msmsdcc_pio_data {
-	struct scatterlist	*sg;
-	unsigned int		sg_len;
-	unsigned int		sg_off;
+	struct sg_mapping_iter		sg_miter;
+	char				bounce_buf[4];
+	/* valid bytes in bounce_buf */
+	int				bounce_buf_len;
 };
 
 struct msmsdcc_curr_req {
@@ -252,6 +295,8 @@ struct msmsdcc_curr_req {
 	unsigned int		xfer_remain;	/* Bytes remaining to send */
 	unsigned int		data_xfered;	/* Bytes acked by BLKEND irq */
 	int			got_dataend;
+	int			wait_for_auto_prog_done;
+	int			got_auto_prog_done;
 	int			user_pages;
 };
 
@@ -273,8 +318,17 @@ struct msmsdcc_sps_data {
 	unsigned int			dest_pipe_index;
 	unsigned int			busy;
 	unsigned int			xfer_req_cnt;
+	bool				pipe_reset_pending;
 	struct tasklet_struct		tlet;
+};
 
+struct msmsdcc_msm_bus_vote {
+	uint32_t client_handle;
+	uint32_t curr_vote;
+	int min_bw_vote;
+	int max_bw_vote;
+	bool is_max_bw_needed;
+	struct delayed_work vote_work;
 };
 
 struct msmsdcc_host {
@@ -309,6 +363,7 @@ struct msmsdcc_host {
 
 	u32			pwr;
 	struct mmc_platform_data *plat;
+	u32			sdcc_version;
 
 	unsigned int		oldstat;
 
@@ -325,7 +380,6 @@ struct msmsdcc_host {
 
 	struct tasklet_struct 	dma_tlet;
 
-	unsigned int prog_scan;
 	unsigned int prog_enable;
 
 	/* Command parameters */
@@ -338,12 +392,10 @@ struct msmsdcc_host {
 	unsigned int	mci_irqenable;
 	unsigned int	dummy_52_needed;
 	unsigned int	dummy_52_sent;
-	unsigned int	sdio_irq_disabled;
+
+	bool		is_resumed;
 	struct wake_lock	sdio_wlock;
 	struct wake_lock	sdio_suspend_wlock;
-	unsigned int    sdcc_suspending;
-
-	unsigned int sdcc_irq_disabled;
 	struct timer_list req_tout_timer;
 	unsigned long reg_write_delay;
 	bool io_pad_pwr_switch;
@@ -351,6 +403,17 @@ struct msmsdcc_host {
 	bool tuning_needed;
 	bool sdio_gpio_lpm;
 	bool irq_wake_enabled;
+	struct pm_qos_request_list pm_qos_req_dma;
+	bool sdcc_suspending;
+	bool sdcc_irq_disabled;
+	bool sdcc_suspended;
+	bool sdio_wakeupirq_disabled;
+	bool pending_resume;
+	unsigned int idle_tout_ms;		/* Timeout in msecs */
+	struct msmsdcc_msm_bus_vote msm_bus_vote;
+	struct device_attribute	max_bus_bw;
+	struct device_attribute	polling;
+	struct device_attribute idle_timeout;
 };
 
 int msmsdcc_set_pwrsave(struct mmc_host *mmc, int pwrsave);
@@ -365,7 +428,12 @@ static inline int msmsdcc_lpm_enable(struct mmc_host *mmc)
 
 static inline int msmsdcc_lpm_disable(struct mmc_host *mmc)
 {
-	return msmsdcc_sdio_al_lpm(mmc, false);
+	struct msmsdcc_host *host = mmc_priv(mmc);
+	int ret;
+
+	ret = msmsdcc_sdio_al_lpm(mmc, false);
+	wake_unlock(&host->sdio_wlock);
+	return ret;
 }
 #endif
 

@@ -1,7 +1,6 @@
-
 /*
  *
- * Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -58,10 +57,18 @@
 #define INT_BT_A2DP_RX 0x3002		/* index = 27 */
 #define INT_FM_RX 0x3004		/* index = 28 */
 #define INT_FM_TX 0x3005		/* index = 29 */
+#define RT_PROXY_PORT_001_RX	0x2000    /* index = 30 */
+#define RT_PROXY_PORT_001_TX	0x2001    /* index = 31 */
 
 #define AFE_PORT_INVALID 0xFFFF
 
 #define AFE_PORT_CMD_START 0x000100ca
+
+#define AFE_EVENT_RTPORT_START 0
+#define AFE_EVENT_RTPORT_STOP 1
+#define AFE_EVENT_RTPORT_LOW_WM 2
+#define AFE_EVENT_RTPORT_HI_WM 3
+
 struct afe_port_start_command {
 	struct apr_hdr hdr;
 	u16 port_id;
@@ -227,8 +234,16 @@ struct afe_port_hdmi_cfg {
 				/* HDMI_5Point1 (6-ch) = 2 */
 				/* HDMI_6Point1 (8-ch) = 3 */
 	u16	data_type;	/* HDMI_Linear = 0 */
-				/* HDMI_non_Linaer = 1 */
+				/* HDMI_non_Linear = 1 */
 } __attribute__ ((packed));
+
+
+struct afe_port_hdmi_multi_ch_cfg {
+	u16	data_type;		/* HDMI_Linear = 0 */
+					/* HDMI_non_Linear = 1 */
+	u16	channel_allocation;	/* The default is 0 (Stereo) */
+	u16	reserved;		/* must be set to 0 */
+} __packed;
 
 
 /* Slimbus Device Ids */
@@ -257,14 +272,28 @@ struct afe_port_slimbus_cfg {
 	u16	reserved;
 } __packed;
 
+struct afe_port_rtproxy_cfg {
+	u16	bitwidth;	/* 16,24,32 */
+	u16	interleaved;    /* interleaved = 1 */
+				/* Noninterleaved = 0 */
+	u16	frame_sz;	/* 5ms buffers = 160bytes */
+	u16	jitter;		/* 10ms of jitter = 320 */
+	u16	lw_mark;	/* Low watermark in bytes for triggering event*/
+	u16	hw_mark;	/* High watermark bytes for triggering event*/
+	u16	rsvd;
+	int	num_ch;		/* 1 to 8 */
+} __packed;
 
-#define AFE_PORT_AUDIO_IF_CONFIG 0x000100d3
+#define AFE_PORT_AUDIO_IF_CONFIG			0x000100d3
+#define AFE_PORT_MULTI_CHAN_HDMI_AUDIO_IF_CONFIG	0x000100D9
 
 union afe_port_config {
-	struct afe_port_pcm_cfg         pcm;
-	struct afe_port_mi2s_cfg        mi2s;
-	struct afe_port_hdmi_cfg        hdmi;
-	struct afe_port_slimbus_cfg	slimbus;
+	struct afe_port_pcm_cfg			pcm;
+	struct afe_port_mi2s_cfg		mi2s;
+	struct afe_port_hdmi_cfg		hdmi;
+	struct afe_port_hdmi_multi_ch_cfg	hdmi_multi_ch;
+	struct afe_port_slimbus_cfg		slimbus;
+	struct afe_port_rtproxy_cfg		rtproxy;
 } __attribute__((packed));
 
 struct afe_audioif_config_command {
@@ -333,6 +362,12 @@ struct afe_port_cmd_set_param {
 	struct afe_param_payload payload;
 } __attribute__ ((packed));
 
+struct afe_port_cmd_set_param_no_payload {
+	struct apr_hdr hdr;
+	u16 port_id;
+	u16 payload_size;
+	u32 payload_address;
+} __packed;
 
 #define AFE_EVENT_GET_ACTIVE_PORTS 0x00010100
 struct afe_get_active_ports_rsp {
@@ -351,6 +386,55 @@ struct afe_get_active_handles_rsp {
 				/* 3, audio tx */
 	u16	handle;
 } __attribute__ ((packed));
+
+#define AFE_SERVICE_CMD_MEMORY_MAP 0x000100DE
+struct afe_cmd_memory_map {
+	struct apr_hdr hdr;
+	u32 phy_addr;
+	u32 mem_sz;
+	u16 mem_id;
+	u16 rsvd;
+} __packed;
+
+#define AFE_SERVICE_CMD_MEMORY_UNMAP 0x000100DF
+struct afe_cmd_memory_unmap {
+	struct apr_hdr hdr;
+	u32 phy_addr;
+} __packed;
+
+#define AFE_SERVICE_CMD_REG_RTPORT 0x000100E0
+struct afe_cmd_reg_rtport {
+	struct apr_hdr hdr;
+	u16 port_id;
+	u16 rsvd;
+} __packed;
+
+#define AFE_SERVICE_CMD_UNREG_RTPORT 0x000100E1
+struct afe_cmd_unreg_rtport {
+	struct apr_hdr hdr;
+	u16 port_id;
+	u16 rsvd;
+} __packed;
+
+#define AFE_SERVICE_CMD_RTPORT_WR 0x000100E2
+struct afe_cmd_rtport_wr {
+	struct apr_hdr hdr;
+	u16 port_id;
+	u16 rsvd;
+	u32 buf_addr;
+	u32 bytes_avail;
+} __packed;
+
+#define AFE_SERVICE_CMD_RTPORT_RD 0x000100E3
+struct afe_cmd_rtport_rd {
+	struct apr_hdr hdr;
+	u16 port_id;
+	u16 rsvd;
+	u32 buf_addr;
+	u32 bytes_avail;
+} __packed;
+
+#define AFE_EVENT_RT_PROXY_PORT_STATUS 0x00010105
 
 #define ADM_MAX_COPPS 5
 
@@ -408,6 +492,20 @@ struct adm_copp_open_command {
 
 #define ADM_CMD_COPP_CLOSE                               0x00010305
 
+#define ADM_CMD_MULTI_CHANNEL_COPP_OPEN                  0x00010310
+struct adm_multi_ch_copp_open_command {
+	struct apr_hdr hdr;
+	u16 flags;
+	u16 mode; /* 1-RX, 2-Live TX, 3-Non Live TX */
+	u16 endpoint_id1;
+	u16 endpoint_id2;
+	u32 topology_id;
+	u16 channel_config;
+	u16 reserved;
+	u32 rate;
+	u8 dev_channel_mapping[8];
+} __packed;
+
 #define ADM_CMD_MEMORY_MAP				0x00010C30
 struct adm_cmd_memory_map{
 	struct apr_hdr	hdr;
@@ -450,6 +548,7 @@ struct adm_cmd_memory_unmap_regions{
 #define DEFAULT_POPP_TOPOLOGY				0x00010be4
 #define VPM_TX_SM_ECNS_COPP_TOPOLOGY			0x00010F71
 #define VPM_TX_DM_FLUENCE_COPP_TOPOLOGY			0x00010F72
+#define VPM_TX_QMIC_FLUENCE_COPP_TOPOLOGY		0x00010F75
 
 #define ASM_MAX_EQ_BANDS 12
 
@@ -517,6 +616,7 @@ struct asm_pp_params_command {
 #define L_R_CHANNEL_GAIN_PARAM_ID	0x00010c00
 #define MUTE_CONFIG_PARAM_ID 0x00010c01
 #define SOFT_PAUSE_PARAM_ID 0x00010D6A
+#define SOFT_VOLUME_PARAM_ID 0x00010C29
 
 #define IIR_FILTER_ENABLE_PARAM_ID 0x00010c03
 #define IIR_FILTER_PREGAIN_PARAM_ID 0x00010c04
@@ -559,6 +659,9 @@ struct adm_copp_open_respond {
 	u16 reserved;
 } __attribute__ ((packed));
 
+#define ADM_CMDRSP_MULTI_CHANNEL_COPP_OPEN               0x00010311
+
+
 #define ASM_STREAM_PRIORITY_NORMAL	0
 #define ASM_STREAM_PRIORITY_LOW		1
 #define ASM_STREAM_PRIORITY_HIGH	2
@@ -598,6 +701,128 @@ struct asm_pcm_cfg {
 	u32 sample_rate;
 	u16 is_signed;
 	u16 interleaved;
+};
+
+#define PCM_CHANNEL_NULL 0
+
+/* Front left channel. */
+#define PCM_CHANNEL_FL    1
+
+/* Front right channel. */
+#define PCM_CHANNEL_FR    2
+
+/* Front center channel. */
+#define PCM_CHANNEL_FC    3
+
+/* Left surround channel.*/
+#define PCM_CHANNEL_LS   4
+
+/* Right surround channel.*/
+#define PCM_CHANNEL_RS   5
+
+/* Low frequency effect channel. */
+#define PCM_CHANNEL_LFE  6
+
+/* Center surround channel; Rear center channel. */
+#define PCM_CHANNEL_CS   7
+
+/* Left back channel; Rear left channel. */
+#define PCM_CHANNEL_LB   8
+
+/* Right back channel; Rear right channel. */
+#define PCM_CHANNEL_RB   9
+
+/* Top surround channel. */
+#define PCM_CHANNEL_TS   10
+
+/* Center vertical height channel.*/
+#define PCM_CHANNEL_CVH  11
+
+/* Mono surround channel.*/
+#define PCM_CHANNEL_MS   12
+
+/* Front left of center. */
+#define PCM_CHANNEL_FLC  13
+
+/* Front right of center. */
+#define PCM_CHANNEL_FRC  14
+
+/* Rear left of center. */
+#define PCM_CHANNEL_RLC  15
+
+/* Rear right of center. */
+#define PCM_CHANNEL_RRC  16
+
+#define PCM_FORMAT_MAX_NUM_CHANNEL  8
+
+/* Maximum number of channels supported
+ * in ASM_ENCDEC_DEC_CHAN_MAP command
+ */
+#define MAX_CHAN_MAP_CHANNELS 16
+/*
+ *  Multiple-channel PCM decoder format block structure used in the
+ *  #ASM_STREAM_CMD_OPEN_WRITE command.
+ *  The data must be in little-endian format.
+ */
+struct asm_multi_channel_pcm_fmt_blk {
+
+	u16 num_channels;	/*
+				 * Number of channels.
+				 * Supported values:1 to 8
+				 */
+
+	u16 bits_per_sample;	/*
+				 * Number of bits per sample per channel.
+				 * Supported values: 16, 24 When used for
+				 * playback, the client must send 24-bit
+				 * samples packed in 32-bit words. The
+				 * 24-bit samples must be placed in the most
+				 * significant 24 bits of the 32-bit word. When
+				 * used for recording, the aDSP sends 24-bit
+				 * samples packed in 32-bit words. The 24-bit
+				 * samples are placed in the most significant
+				 * 24 bits of the 32-bit word.
+				 */
+
+	u32 sample_rate;	/*
+				 * Number of samples per second
+				 * (in Hertz). Supported values:
+				 * 2000 to 48000
+				 */
+
+	u16 is_signed;		/*
+				 * Flag that indicates the samples
+				 * are signed (1).
+				 */
+
+	u16 is_interleaved;	/*
+				 * Flag that indicates whether the channels are
+				 * de-interleaved (0) or interleaved (1).
+				 * Interleaved format means corresponding
+				 * samples from the left and right channels are
+				 * interleaved within the buffer.
+				 * De-interleaved format means samples from
+				 * each channel are contiguous in the buffer.
+				 * The samples from one channel immediately
+				 * follow those of the previous channel.
+				 */
+
+	u8 channel_mapping[8];	/*
+				 * Supported values:
+				 * PCM_CHANNEL_NULL, PCM_CHANNEL_FL,
+				 * PCM_CHANNEL_FR, PCM_CHANNEL_FC,
+				 * PCM_CHANNEL_LS, PCM_CHANNEL_RS,
+				 * PCM_CHANNEL_LFE, PCM_CHANNEL_CS,
+				 * PCM_CHANNEL_LB, PCM_CHANNEL_RB,
+				 * PCM_CHANNEL_TS, PCM_CHANNEL_CVH,
+				 * PCM_CHANNEL_MS, PCM_CHANNEL_FLC,
+				 * PCM_CHANNEL_FRC, PCM_CHANNEL_RLC,
+				 * PCM_CHANNEL_RRC.
+				 * Channel[i] mapping describes channel I. Each
+				 * element i of the array describes channel I
+				 * inside the buffer where  I < num_channels.
+				 * An unused channel is set to zero.
+				 */
 };
 
 struct asm_adpcm_cfg {
@@ -698,6 +923,11 @@ struct asm_amrnb_read_cfg {
 	u16 dtx_mode;
 };
 
+struct asm_amrwb_read_cfg {
+	u16 mode;
+	u16 dtx_mode;
+};
+
 struct asm_evrc_read_cfg {
 	u16 max_rate;
 	u16 min_rate;
@@ -733,6 +963,37 @@ struct asm_sbr_ps {
 	u32 enable;
 };
 
+struct asm_dual_mono {
+	u16 sce_left;
+	u16 sce_right;
+};
+
+struct asm_dec_chan_map {
+	u32 num_channels;			  /* Number of decoder output
+						   * channels. A value of 0
+						   * indicates native channel
+						   * mapping, which is valid
+						   * only for NT mode. This
+						   * means the output of the
+						   * decoder is to be preserved
+						   * as is.
+						   */
+
+	u8 channel_mapping[MAX_CHAN_MAP_CHANNELS];/* Channel array of size
+						   * num_channels. It can grow
+						   * till MAX_CHAN_MAP_CHANNELS.
+						   * Channel[i] mapping
+						   * describes channel I inside
+						   * the decoder output buffer.
+						   * Valid channel mapping
+						   * values are to be present at
+						   * the beginning of the array.
+						   * All remaining elements of
+						   * the array are to be filled
+						   * with PCM_CHANNEL_NULL.
+						   */
+};
+
 struct asm_encode_cfg_blk {
 	u32 frames_per_buf;
 	u32 format_id;
@@ -744,6 +1005,7 @@ struct asm_encode_cfg_blk {
 		struct asm_evrc_read_cfg    evrc;
 		struct asm_qcelp13_read_cfg qcelp13;
 		struct asm_sbc_read_cfg     sbc;
+		struct asm_amrwb_read_cfg   amrwb;
 	} __attribute__((packed)) cfg;
 };
 
@@ -774,6 +1036,7 @@ struct asm_stream_cmd_open_read {
 #define MP3          0x00010BE9
 #define MPEG4_AAC    0x00010BEA
 #define AMRNB_FS     0x00010BEB
+#define AMRWB_FS     0x00010BEC
 #define V13K_FS      0x00010BED
 #define EVRC_FS      0x00010BEE
 #define EVRCB_FS     0x00010BEF
@@ -787,6 +1050,10 @@ struct asm_stream_cmd_open_read {
 #define G711_ALAW_FS 0x00010BF7
 #define G711_MLAW_FS 0x00010BF8
 #define G711_PCM_FS  0x00010BF9
+#define MPEG4_MULTI_AAC 0x00010D86
+#define US_POINT_EPOS_FORMAT 0x00012310
+#define US_RAW_FORMAT        0x0001127C
+#define MULTI_CHANNEL_PCM    0x00010C66
 
 #define ASM_ENCDEC_SBCRATE         0x00010C13
 #define ASM_ENCDEC_IMMDIATE_DECODE 0x00010C14
@@ -820,6 +1087,7 @@ struct asm_stream_cmd_open_read_write {
 #define ASM_STREAM_CMD_GET_ENCDEC_PARAM                  0x00010C11
 #define ASM_ENCDEC_CFG_BLK_ID				 0x00010C2C
 #define ASM_ENABLE_SBR_PS				 0x00010C63
+#define ASM_CONFIGURE_DUAL_MONO			 0x00010C64
 struct asm_stream_cmd_encdec_cfg_blk{
 	struct apr_hdr              hdr;
 	u32                         param_id;
@@ -846,6 +1114,21 @@ struct asm_stream_cmd_encdec_sbr{
 	u32            param_size;
 	struct asm_sbr_ps sbr_ps;
 } __attribute__((packed));
+
+struct asm_stream_cmd_encdec_dualmono {
+	struct apr_hdr hdr;
+	u32            param_id;
+	u32            param_size;
+	struct asm_dual_mono channel_map;
+} __packed;
+
+#define ASM_ENCDEC_DEC_CHAN_MAP				 0x00010D82
+struct asm_stream_cmd_encdec_channelmap {
+	struct apr_hdr hdr;
+	u32            param_id;
+	u32            param_size;
+	struct asm_dec_chan_map chan_map;
+} __packed;
 
 #define ASM_STREAM _CMD_ADJUST_SAMPLES                   0x00010C0A
 struct asm_stream_cmd_adjust_samples{
@@ -945,7 +1228,7 @@ struct asm_stream_cmd_read{
 } __attribute__((packed));
 
 #define ASM_DATA_CMD_MEDIA_FORMAT_UPDATE                 0x00010BDC
-#define ASM_DATA_EVENT_MEDIA_FORMAT_UPDATE               0x00010BDE
+#define ASM_DATA_EVENT_ENC_SR_CM_NOTIFY                  0x00010BDE
 struct asm_stream_media_format_update{
 	struct apr_hdr hdr;
 	u32            format;
@@ -960,6 +1243,7 @@ struct asm_stream_media_format_update{
 		struct asm_aac_cfg         aac_cfg;
 		struct asm_flac_cfg        flac_cfg;
 		struct asm_vorbis_cfg      vorbis_cfg;
+		struct asm_multi_channel_pcm_fmt_blk multi_ch_pcm_cfg;
 	} __attribute__((packed)) write_cfg;
 } __attribute__((packed));
 

@@ -66,14 +66,14 @@ queue_requests_store(struct request_queue *q, const char *page, size_t count)
 
 	if (rl->count[BLK_RW_SYNC] >= q->nr_requests) {
 		blk_set_queue_full(q, BLK_RW_SYNC);
-	} else if (rl->count[BLK_RW_SYNC]+1 <= q->nr_requests) {
+	} else {
 		blk_clear_queue_full(q, BLK_RW_SYNC);
 		wake_up(&rl->wait[BLK_RW_SYNC]);
 	}
 
 	if (rl->count[BLK_RW_ASYNC] >= q->nr_requests) {
 		blk_set_queue_full(q, BLK_RW_ASYNC);
-	} else if (rl->count[BLK_RW_ASYNC]+1 <= q->nr_requests) {
+	} else {
 		blk_clear_queue_full(q, BLK_RW_ASYNC);
 		wake_up(&rl->wait[BLK_RW_ASYNC]);
 	}
@@ -152,7 +152,8 @@ static ssize_t queue_discard_granularity_show(struct request_queue *q, char *pag
 
 static ssize_t queue_discard_max_show(struct request_queue *q, char *page)
 {
-	return queue_var_show(q->limits.max_discard_sectors << 9, page);
+	return sprintf(page, "%llu\n",
+		       (unsigned long long)q->limits.max_discard_sectors << 9);
 }
 
 static ssize_t queue_discard_zeroes_data_show(struct request_queue *q, char *page)
@@ -471,6 +472,9 @@ static void blk_release_queue(struct kobject *kobj)
 
 	blk_sync_queue(q);
 
+	if (q->elevator)
+		elevator_exit(q->elevator);
+
 	blk_throtl_exit(q);
 
 	if (rl->rq_pool)
@@ -500,7 +504,6 @@ int blk_register_queue(struct gendisk *disk)
 {
 	int ret;
 	struct device *dev = disk_to_dev(disk);
-
 	struct request_queue *q = disk->queue;
 
 	if (WARN_ON(!q))
@@ -525,7 +528,7 @@ int blk_register_queue(struct gendisk *disk)
 	if (ret) {
 		kobject_uevent(&q->kobj, KOBJ_REMOVE);
 		kobject_del(&q->kobj);
-		blk_trace_remove_sysfs(disk_to_dev(disk));
+		blk_trace_remove_sysfs(dev);
 		kobject_put(&dev->kobj);
 		return ret;
 	}

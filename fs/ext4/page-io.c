@@ -142,7 +142,23 @@ static void ext4_end_io_work(struct work_struct *work)
 	unsigned long		flags;
 	int			ret;
 
-	mutex_lock(&inode->i_mutex);
+	if (!mutex_trylock(&inode->i_mutex)) {
+		/*
+		 * Requeue the work instead of waiting so that the work
+		 * items queued after this can be processed.
+		 */
+		queue_work(EXT4_SB(inode->i_sb)->dio_unwritten_wq, &io->work);
+		/*
+		 * To prevent the ext4-dio-unwritten thread from keeping
+		 * requeueing end_io requests and occupying cpu for too long,
+		 * yield the cpu if it sees an end_io request that has already
+		 * been requeued.
+		 */
+		if (io->flag & EXT4_IO_END_QUEUED)
+			yield();
+		io->flag |= EXT4_IO_END_QUEUED;
+		return;
+	}
 	ret = ext4_end_io_nolock(io);
 	if (ret < 0) {
 		mutex_unlock(&inode->i_mutex);
@@ -203,45 +219,28 @@ static void ext4_end_bio(struct bio *bio, int error)
 	for (i = 0; i < io_end->num_io_pages; i++) {
 		struct page *page = io_end->pages[i]->p_page;
 		struct buffer_head *bh, *head;
-		int partial_write = 0;
+		loff_t offset;
+		loff_t io_end_offset;
 
-		head = page_buffers(page);
-		if (error)
+		if (error) {
 			SetPageError(page);
-		BUG_ON(!head);
-		if (head->b_size != PAGE_CACHE_SIZE) {
-			loff_t offset;
-			loff_t io_end_offset = io_end->offset + io_end->size;
+			set_bit(AS_EIO, &page->mapping->flags);
+			head = page_buffers(page);
+			BUG_ON(!head);
+
+			io_end_offset = io_end->offset + io_end->size;
 
 			offset = (sector_t) page->index << PAGE_CACHE_SHIFT;
 			bh = head;
 			do {
 				if ((offset >= io_end->offset) &&
-				    (offset+bh->b_size <= io_end_offset)) {
-					if (error)
-						buffer_io_error(bh);
+				    (offset+bh->b_size <= io_end_offset))
+					buffer_io_error(bh);
 
-				}
-				if (buffer_delay(bh))
-					partial_write = 1;
-				else if (!buffer_mapped(bh))
-					clear_buffer_dirty(bh);
-				else if (buffer_dirty(bh))
-					partial_write = 1;
 				offset += bh->b_size;
 				bh = bh->b_this_page;
 			} while (bh != head);
 		}
-
-		/*
-		 * If this is a partial write which happened to make
-		 * all buffers uptodate then we can optimize away a
-		 * bogus readpage() for the next read(). Here we
-		 * 'discover' whether the page went uptodate as a
-		 * result of this (potentially partial) write.
-		 */
-		if (!partial_write)
-			SetPageUptodate(page);
 
 		put_io_page(io_end->pages[i]);
 	}
@@ -257,6 +256,11 @@ static void ext4_end_bio(struct bio *bio, int error)
 			     (long) io_end->size,
 			     (unsigned long long)
 			     bi_sector >> (inode->i_blkbits - 9));
+	}
+
+	if (!(io_end->flag & EXT4_IO_END_UNWRITTEN)) {
+		ext4_free_io_end(io_end);
+		return;
 	}
 
 	/* Add the io_end to per-inode completed io list*/
@@ -279,9 +283,9 @@ void ext4_io_submit(struct ext4_io_submit *io)
 		BUG_ON(bio_flagged(io->io_bio, BIO_EOPNOTSUPP));
 		bio_put(io->io_bio);
 	}
-	io->io_bio = 0;
+	io->io_bio = NULL;
 	io->io_op = 0;
-	io->io_end = 0;
+	io->io_end = NULL;
 }
 
 static int io_submit_init(struct ext4_io_submit *io,
@@ -310,8 +314,7 @@ static int io_submit_init(struct ext4_io_submit *io,
 	io_end->offset = (page->index << PAGE_CACHE_SHIFT) + bh_offset(bh);
 
 	io->io_bio = bio;
-	io->io_op = (wbc->sync_mode == WB_SYNC_ALL ?
-			WRITE_SYNC_PLUG : WRITE);
+	io->io_op = (wbc->sync_mode == WB_SYNC_ALL ?  WRITE_SYNC : WRITE);
 	io->io_next_block = bh->b_blocknr;
 	return 0;
 }
@@ -351,8 +354,10 @@ submit_and_retry:
 	if ((io_end->num_io_pages >= MAX_IO_PAGES) &&
 	    (io_end->pages[io_end->num_io_pages-1] != io_page))
 		goto submit_and_retry;
-	if (buffer_uninit(bh))
-		io->io_end->flag |= EXT4_IO_END_UNWRITTEN;
+	if (buffer_uninit(bh) && !(io_end->flag & EXT4_IO_END_UNWRITTEN)) {
+		io_end->flag |= EXT4_IO_END_UNWRITTEN;
+		atomic_inc(&EXT4_I(inode)->i_aiodio_unwritten);
+	}
 	io->io_end->size += bh->b_size;
 	io->io_next_block++;
 	ret = bio_add_page(io->io_bio, bh->b_page, bh->b_size, bh_offset(bh));
@@ -381,8 +386,6 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
 
 	BUG_ON(!PageLocked(page));
 	BUG_ON(PageWriteback(page));
-	set_page_writeback(page);
-	ClearPageError(page);
 
 	io_page = kmem_cache_alloc(io_page_cachep, GFP_NOFS);
 	if (!io_page) {
@@ -393,6 +396,8 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
 	io_page->p_page = page;
 	atomic_set(&io_page->p_count, 1);
 	get_page(page);
+	set_page_writeback(page);
+	ClearPageError(page);
 
 	for (bh = head = page_buffers(page), block_start = 0;
 	     bh != head || !block_start;
@@ -400,6 +405,18 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
 
 		block_end = block_start + blocksize;
 		if (block_start >= len) {
+			/*
+			 * Comments copied from block_write_full_page_endio:
+			 *
+			 * The page straddles i_size.  It must be zeroed out on
+			 * each and every writepage invocation because it may
+			 * be mmapped.  "A file is mapped in multiples of the
+			 * page size.  For a file that is not a multiple of
+			 * the  page size, the remaining memory is zeroed when
+			 * mapped, and writes to that region are not written
+			 * out to the file."
+			 */
+			zero_user_segment(page, block_start, block_end);
 			clear_buffer_dirty(bh);
 			set_buffer_uptodate(bh);
 			continue;

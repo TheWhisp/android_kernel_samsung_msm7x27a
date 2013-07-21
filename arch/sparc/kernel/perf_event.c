@@ -26,6 +26,7 @@
 #include <asm/nmi.h>
 #include <asm/pcr.h>
 
+#include "kernel.h"
 #include "kstack.h"
 
 /* Sparc64 chips have two performance counters, 32-bits each, with
@@ -1027,7 +1028,7 @@ static int sparc_pmu_add(struct perf_event *event, int ef_flags)
 
 	/*
 	 * If group events scheduling transaction was started,
-	 * skip the schedulability test here, it will be peformed
+	 * skip the schedulability test here, it will be performed
 	 * at commit time(->commit_txn) as a whole
 	 */
 	if (cpuc->group_flag & PERF_EVENT_TXN)
@@ -1300,7 +1301,8 @@ static bool __init supported_pmu(void)
 		sparc_pmu = &niagara1_pmu;
 		return true;
 	}
-	if (!strcmp(sparc_pmu_type, "niagara2")) {
+	if (!strcmp(sparc_pmu_type, "niagara2") ||
+	    !strcmp(sparc_pmu_type, "niagara3")) {
 		sparc_pmu = &niagara2_pmu;
 		return true;
 	}

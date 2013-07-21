@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -12,6 +12,7 @@
 #include <linux/bitops.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
+#include <linux/sched.h>
 #include <linux/irq.h>
 #include <linux/mfd/core.h>
 #include <linux/mfd/wcd9310/core.h>
@@ -83,18 +84,101 @@ static struct irq_chip tabla_irq_chip = {
 	.irq_enable = tabla_irq_enable,
 };
 
+enum tabla_pm_state tabla_pm_cmpxchg(struct tabla *tabla, enum tabla_pm_state o,
+				     enum tabla_pm_state n)
+{
+	enum tabla_pm_state old;
+	mutex_lock(&tabla->pm_lock);
+	old = tabla->pm_state;
+	if (old == o)
+		tabla->pm_state = n;
+	mutex_unlock(&tabla->pm_lock);
+	return old;
+}
+EXPORT_SYMBOL_GPL(tabla_pm_cmpxchg);
+
+bool tabla_lock_sleep(struct tabla *tabla)
+{
+	enum tabla_pm_state os;
+
+	/* tabla_{lock/unlock}_sleep will be called by tabla_irq_thread
+	 * and its subroutines only motly.
+	 * but btn0_lpress_fn is not tabla_irq_thread's subroutine and
+	 * it can race with tabla_irq_thread.
+	 * so need to embrace wlock_holders with mutex.
+	 */
+	mutex_lock(&tabla->pm_lock);
+	if (tabla->wlock_holders++ == 0) {
+		pr_debug("%s: holding wake lock\n", __func__);
+		wake_lock(&tabla->wlock);
+	}
+	mutex_unlock(&tabla->pm_lock);
+	if (!wait_event_timeout(tabla->pm_wq,
+			((os = tabla_pm_cmpxchg(tabla, TABLA_PM_SLEEPABLE,
+						TABLA_PM_AWAKE)) ==
+						    TABLA_PM_SLEEPABLE ||
+			 (os == TABLA_PM_AWAKE)),
+			5 * HZ)) {
+		pr_err("%s: system didn't resume within 5000ms, state %d, "
+		       "wlock %d\n", __func__, tabla->pm_state,
+		       tabla->wlock_holders);
+		WARN_ON(1);
+		tabla_unlock_sleep(tabla);
+		return false;
+	}
+	wake_up_all(&tabla->pm_wq);
+	return true;
+}
+EXPORT_SYMBOL_GPL(tabla_lock_sleep);
+
+void tabla_unlock_sleep(struct tabla *tabla)
+{
+	mutex_lock(&tabla->pm_lock);
+	if (--tabla->wlock_holders == 0) {
+		tabla->pm_state = TABLA_PM_SLEEPABLE;
+		pr_debug("%s: releasing wake lock\n", __func__);
+		wake_unlock(&tabla->wlock);
+	}
+	mutex_unlock(&tabla->pm_lock);
+	wake_up_all(&tabla->pm_wq);
+}
+EXPORT_SYMBOL_GPL(tabla_unlock_sleep);
+
+static void tabla_irq_dispatch(struct tabla *tabla, int irqbit)
+{
+	if ((irqbit <= TABLA_IRQ_MBHC_INSERTION) &&
+	    (irqbit >= TABLA_IRQ_MBHC_REMOVAL)) {
+		tabla_reg_write(tabla, TABLA_A_INTR_CLEAR0 +
+				  BIT_BYTE(irqbit), BYTE_BIT_MASK(irqbit));
+		if (tabla_get_intf_type() == TABLA_INTERFACE_TYPE_I2C)
+			tabla_reg_write(tabla, TABLA_A_INTR_MODE, 0x02);
+		handle_nested_irq(tabla->irq_base + irqbit);
+	} else {
+		handle_nested_irq(tabla->irq_base + irqbit);
+		tabla_reg_write(tabla, TABLA_A_INTR_CLEAR0 +
+				  BIT_BYTE(irqbit), BYTE_BIT_MASK(irqbit));
+		if (tabla_get_intf_type() == TABLA_INTERFACE_TYPE_I2C)
+			tabla_reg_write(tabla, TABLA_A_INTR_MODE, 0x02);
+	}
+}
+
 static irqreturn_t tabla_irq_thread(int irq, void *data)
 {
 	int ret;
 	struct tabla *tabla = data;
 	u8 status[TABLA_NUM_IRQ_REGS];
-	unsigned int i;
+	int i;
 
+	if (unlikely(tabla_lock_sleep(tabla) == false)) {
+		dev_err(tabla->dev, "Failed to hold suspend\n");
+		return IRQ_NONE;
+	}
 	ret = tabla_bulk_read(tabla, TABLA_A_INTR_STATUS0,
 			       TABLA_NUM_IRQ_REGS, status);
 	if (ret < 0) {
 		dev_err(tabla->dev, "Failed to read interrupt status: %d\n",
 			ret);
+		tabla_unlock_sleep(tabla);
 		return IRQ_NONE;
 	}
 	/* Apply masking */
@@ -104,21 +188,24 @@ static irqreturn_t tabla_irq_thread(int irq, void *data)
 	/* Find out which interrupt was triggered and call that interrupt's
 	 * handler function
 	 */
-	for (i = 0; i < TABLA_NUM_IRQS; i++) {
-		if (status[BIT_BYTE(i)] & BYTE_BIT_MASK(i)) {
-			if ((i <= TABLA_IRQ_MBHC_INSERTION) &&
-				(i >= TABLA_IRQ_MBHC_REMOVAL)) {
-				tabla_reg_write(tabla, TABLA_A_INTR_CLEAR0 +
-					BIT_BYTE(i), BYTE_BIT_MASK(i));
-				handle_nested_irq(tabla->irq_base + i);
-			} else {
-				handle_nested_irq(tabla->irq_base + i);
-				tabla_reg_write(tabla, TABLA_A_INTR_CLEAR0 +
-					BIT_BYTE(i), BYTE_BIT_MASK(i));
-			}
-			break;
-		}
+	if (status[BIT_BYTE(TABLA_IRQ_SLIMBUS)] &
+	    BYTE_BIT_MASK(TABLA_IRQ_SLIMBUS))
+		tabla_irq_dispatch(tabla, TABLA_IRQ_SLIMBUS);
+
+	/* Since codec has only one hardware irq line which is shared by
+	 * codec's different internal interrupts, so it's possible master irq
+	 * handler dispatches multiple nested irq handlers after breaking
+	 * order.  Dispatch MBHC interrupts order to follow MBHC state
+	 * machine's order */
+	for (i = TABLA_IRQ_MBHC_INSERTION; i >= TABLA_IRQ_MBHC_REMOVAL; i--) {
+		if (status[BIT_BYTE(i)] & BYTE_BIT_MASK(i))
+			tabla_irq_dispatch(tabla, i);
 	}
+	for (i = TABLA_IRQ_BG_PRECHARGE; i < TABLA_NUM_IRQS; i++) {
+		if (status[BIT_BYTE(i)] & BYTE_BIT_MASK(i))
+			tabla_irq_dispatch(tabla, i);
+	}
+	tabla_unlock_sleep(tabla);
 
 	return IRQ_HANDLED;
 }
@@ -146,16 +233,16 @@ int tabla_irq_init(struct tabla *tabla)
 	for (i = 0, cur_irq = tabla->irq_base; i < TABLA_NUM_IRQS; i++,
 		cur_irq++) {
 
-		set_irq_chip_data(cur_irq, tabla);
+		irq_set_chip_data(cur_irq, tabla);
 
 		if (tabla_irqs[i].level)
-			set_irq_chip_and_handler(cur_irq, &tabla_irq_chip,
+			irq_set_chip_and_handler(cur_irq, &tabla_irq_chip,
 					 handle_level_irq);
 		else
-			set_irq_chip_and_handler(cur_irq, &tabla_irq_chip,
+			irq_set_chip_and_handler(cur_irq, &tabla_irq_chip,
 					 handle_edge_irq);
 
-		set_irq_nested_thread(cur_irq, 1);
+		irq_set_nested_thread(cur_irq, 1);
 
 		/* ARM needs us to explicitly flag the IRQ as valid
 		 * and will set them noprobe when we do so. */
@@ -181,17 +268,37 @@ int tabla_irq_init(struct tabla *tabla)
 	ret = request_threaded_irq(tabla->irq, NULL, tabla_irq_thread,
 				   IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
 				   "tabla", tabla);
-
-	if (ret != 0) {
+	if (ret != 0)
 		dev_err(tabla->dev, "Failed to request IRQ %d: %d\n",
 			tabla->irq, ret);
-		return ret;
+	else {
+		ret = enable_irq_wake(tabla->irq);
+		if (ret == 0) {
+			ret = device_init_wakeup(tabla->dev, 1);
+			if (ret) {
+				dev_err(tabla->dev, "Failed to init device"
+					"wakeup : %d\n", ret);
+				disable_irq_wake(tabla->irq);
+			}
+		} else
+			dev_err(tabla->dev, "Failed to set wake interrupt on"
+				" IRQ %d: %d\n", tabla->irq, ret);
+		if (ret)
+			free_irq(tabla->irq, tabla);
 	}
-	return 0;
+
+	if (ret)
+		mutex_destroy(&tabla->irq_lock);
+
+	return ret;
 }
+
 void tabla_irq_exit(struct tabla *tabla)
 {
-	if (tabla->irq)
+	if (tabla->irq) {
+		disable_irq_wake(tabla->irq);
 		free_irq(tabla->irq, tabla);
+		device_init_wakeup(tabla->dev, 0);
+	}
 	mutex_destroy(&tabla->irq_lock);
 }

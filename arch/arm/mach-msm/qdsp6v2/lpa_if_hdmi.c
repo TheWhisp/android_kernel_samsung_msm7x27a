@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -28,18 +28,7 @@
 #include <sound/dai.h>
 #include "q6core.h"
 
-#define NUM_FRA_IN_BLOCK		192
-#define NUM_SAMP_PER_CH_PER_AC3_FRAME	1536
-#define AC3_REP_PER			1536	/* num of 60958 Frames */
-#define FRAME_60958_SZ			8	/* bytes */
-#define PREABLE_61937_SZ_16_BIT		4	/* in 16 bit words */
-
-
-#define MAX_AC3_FRA_SZ_16_BIT		1920  /* in 16 bit words */
-#define DMA_PERIOD_SZ			(AC3_REP_PER * FRAME_60958_SZ)
-#define DMA_BUF_SZ			(DMA_PERIOD_SZ * 2)
-#define USER_BUF_SZ			DMA_PERIOD_SZ
-#define DMA_ALLOC_BUF_SZ		(SZ_4K * 6)
+#define DMA_ALLOC_BUF_SZ		(SZ_4K * 16)
 
 #define HDMI_AUDIO_FIFO_WATER_MARK	4
 
@@ -54,7 +43,7 @@ struct audio_buffer {
 struct lpa_if {
 	struct mutex lock;
 	struct msm_audio_config cfg;
-	struct audio_buffer audio_buf[2];
+	struct audio_buffer audio_buf[6];
 	int cpu_buf;		/* next buffer the CPU will touch */
 	int dma_buf;		/* next buffer the DMA will touch */
 	u8 *buffer;
@@ -62,6 +51,8 @@ struct lpa_if {
 	u32 dma_ch;
 	wait_queue_head_t wait;
 	u32 config;
+	u32 dma_period_sz;
+	unsigned int num_periods;
 };
 
 static struct lpa_if  *lpa_if_ptr;
@@ -84,8 +75,6 @@ static irqreturn_t lpa_if_irq(int intrsrc, void *data)
 	pending = (intrsrc
 		   & (UNDER_CH(dma_ch) | PER_CH(dma_ch) | ERR_CH(dma_ch)));
 
-	pr_debug("pending = 0x%08x\n", pending);
-
 	if (pending & UNDER_CH(dma_ch))
 		pr_err("under run\n");
 	if (pending & ERR_CH(dma_ch))
@@ -97,9 +86,11 @@ static irqreturn_t lpa_if_irq(int intrsrc, void *data)
 
 		pr_debug("dma_buf %d  used %d\n", lpa_if->dma_buf,
 			lpa_if->audio_buf[lpa_if->dma_buf].used);
+		lpa_if->dma_buf++;
+		lpa_if->dma_buf = lpa_if->dma_buf % lpa_if->cfg.buffer_count;
 
-		lpa_if->dma_buf ^= 1;
-
+		if (lpa_if->dma_buf == lpa_if->cpu_buf)
+			pr_err("Err:both dma_buf and cpu_buf are on same index\n");
 		wake_up(&lpa_if->wait);
 	}
 	return IRQ_HANDLED;
@@ -114,10 +105,9 @@ int lpa_if_start(struct lpa_if *lpa_if)
 
 	dai_start_hdmi(lpa_if->dma_ch);
 
-	mb();
-
 	hdmi_audio_enable(1, HDMI_AUDIO_FIFO_WATER_MARK);
-	mb();
+
+	hdmi_audio_packet_enable(1);
 	return 0;
 }
 
@@ -127,12 +117,11 @@ int lpa_if_config(struct lpa_if *lpa_if)
 
 	dma_params.src_start = lpa_if->buffer_phys;
 	dma_params.buffer = lpa_if->buffer;
-	dma_params.buffer_size = DMA_BUF_SZ;
-	dma_params.period_size = DMA_PERIOD_SZ;
+	dma_params.buffer_size = lpa_if->dma_period_sz * lpa_if->num_periods;
+	dma_params.period_size = lpa_if->dma_period_sz;
 	dma_params.channels = 2;
 
-	lpa_if->dma_ch = 0;
-
+	lpa_if->dma_ch = 4;
 	dai_set_params(lpa_if->dma_ch, &dma_params);
 
 	register_dma_irq_handler(lpa_if->dma_ch, lpa_if_irq, (void *)lpa_if);
@@ -157,7 +146,7 @@ static long lpa_if_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	struct lpa_if *lpa_if = file->private_data;
 	int rc = 0;
-
+	unsigned int i;
 	pr_debug("cmd %u\n", cmd);
 
 	mutex_lock(&lpa_if->lock);
@@ -195,7 +184,74 @@ static long lpa_if_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			rc = -EFAULT;
 		}
 		break;
+	case AUDIO_SET_CONFIG: {
+		/*  Setting default rate as 48khz */
+		unsigned int cur_sample_rate =
+			HDMI_SAMPLE_RATE_48KHZ;
+		struct msm_audio_config config;
 
+		pr_debug("AUDIO_SET_CONFIG\n");
+		if (copy_from_user(&config, (void *)arg, sizeof(config))) {
+			rc = -EFAULT;
+			break;
+		}
+		lpa_if->dma_period_sz = config.buffer_size;
+		if ((lpa_if->dma_period_sz * lpa_if->num_periods) >
+			DMA_ALLOC_BUF_SZ) {
+			pr_err("Dma buffer size greater than allocated size\n");
+			return -EINVAL;
+		}
+		pr_debug("Dma_period_sz %d\n", lpa_if->dma_period_sz);
+		if (lpa_if->dma_period_sz < (2 * SZ_4K))
+			lpa_if->num_periods = 6;
+		pr_debug("No. of Periods %d\n", lpa_if->num_periods);
+
+		lpa_if->cfg.buffer_count = lpa_if->num_periods;
+		lpa_if->cfg.buffer_size = lpa_if->dma_period_sz *
+						lpa_if->num_periods;
+
+		for (i = 0; i < lpa_if->cfg.buffer_count; i++) {
+			lpa_if->audio_buf[i].phys =
+				lpa_if->buffer_phys + i * lpa_if->dma_period_sz;
+			lpa_if->audio_buf[i].data =
+				lpa_if->buffer + i * lpa_if->dma_period_sz;
+			lpa_if->audio_buf[i].size = lpa_if->dma_period_sz;
+			lpa_if->audio_buf[i].used = 0;
+		}
+
+		pr_debug("Sample rate %d\n", config.sample_rate);
+		switch (config.sample_rate) {
+		case 48000:
+			cur_sample_rate = HDMI_SAMPLE_RATE_48KHZ;
+			break;
+		case 44100:
+			cur_sample_rate = HDMI_SAMPLE_RATE_44_1KHZ;
+			break;
+		case 32000:
+			cur_sample_rate = HDMI_SAMPLE_RATE_32KHZ;
+			break;
+		case 88200:
+			cur_sample_rate = HDMI_SAMPLE_RATE_88_2KHZ;
+			break;
+		case 96000:
+			cur_sample_rate = HDMI_SAMPLE_RATE_96KHZ;
+			break;
+		case 176400:
+			cur_sample_rate = HDMI_SAMPLE_RATE_176_4KHZ;
+			break;
+		case 192000:
+			cur_sample_rate = HDMI_SAMPLE_RATE_192KHZ;
+			break;
+		default:
+			cur_sample_rate = HDMI_SAMPLE_RATE_48KHZ;
+		}
+		if (cur_sample_rate != hdmi_msm_audio_get_sample_rate())
+			hdmi_msm_audio_sample_rate_reset(cur_sample_rate);
+		else
+			pr_debug("Previous sample rate and current"
+				"sample rate are same\n");
+		break;
+	}
 	default:
 		pr_err("UnKnown Ioctl\n");
 		rc = -EINVAL;
@@ -209,33 +265,31 @@ static long lpa_if_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 static int lpa_if_open(struct inode *inode, struct file *file)
 {
-	struct lpa_if *lpa_if;
-
 	pr_debug("\n");
 
 	file->private_data = lpa_if_ptr;
-	lpa_if = lpa_if_ptr;
-
-	lpa_if->cfg.buffer_count = 2;
-	lpa_if->cfg.buffer_size = USER_BUF_SZ;
-
-	lpa_if->audio_buf[0].phys = lpa_if->buffer_phys;
-	lpa_if->audio_buf[0].data = lpa_if->buffer;
-	lpa_if->audio_buf[0].size = DMA_PERIOD_SZ;
-	lpa_if->audio_buf[0].used = 0;
-
-	lpa_if->audio_buf[1].phys = lpa_if->buffer_phys + DMA_PERIOD_SZ;
-	lpa_if->audio_buf[1].data = lpa_if->buffer + DMA_PERIOD_SZ;
-	lpa_if->audio_buf[1].size = DMA_PERIOD_SZ;
-	lpa_if->audio_buf[1].used = 0;
-
 	dma_buf_index = 0;
+	lpa_if_ptr->cpu_buf = 2;
+	lpa_if_ptr->dma_buf = 0;
+	lpa_if_ptr->num_periods = 4;
 
 	core_req_bus_bandwith(AUDIO_IF_BUS_ID, 100000, 0);
+	mb();
 
 	return 0;
 }
 
+static inline int rt_policy(int policy)
+{
+	if (unlikely(policy == SCHED_FIFO) || unlikely(policy == SCHED_RR))
+		return 1;
+	return 0;
+}
+
+static inline int task_has_rt_policy(struct task_struct *p)
+{
+	return rt_policy(p->policy);
+}
 static ssize_t lpa_if_write(struct file *file, const char __user *buf,
 		size_t count, loff_t *pos)
 {
@@ -243,10 +297,19 @@ static ssize_t lpa_if_write(struct file *file, const char __user *buf,
 	struct audio_buffer *ab;
 	const char __user *start = buf;
 	int xfer, rc;
+	struct sched_param s = { .sched_priority = 1 };
+	int old_prio = current->rt_priority;
+	int old_policy = current->policy;
+	int cap_nice = cap_raised(current_cap(), CAP_SYS_NICE);
 
-	pr_debug("count %u cpu_buf %d dma_buf %d\n",
-		(unsigned int)count, lpa_if->cpu_buf, lpa_if->dma_buf);
-
+	 /* just for this write, set us real-time */
+	if (!task_has_rt_policy(current)) {
+		struct cred *new = prepare_creds();
+		cap_raise(new->cap_effective, CAP_SYS_NICE);
+		commit_creds(new);
+		if ((sched_setscheduler(current, SCHED_RR, &s)) < 0)
+			pr_err("sched_setscheduler failed\n");
+	}
 	mutex_lock(&lpa_if->lock);
 
 	if (dma_buf_index < 2) {
@@ -259,6 +322,7 @@ static ssize_t lpa_if_write(struct file *file, const char __user *buf,
 			goto end;
 
 		}
+		mb();
 		pr_debug("prefill: count %u  audio_buf[%u].size %u\n",
 			 count, dma_buf_index, ab->size);
 
@@ -287,8 +351,8 @@ static ssize_t lpa_if_write(struct file *file, const char __user *buf,
 
 		xfer = count;
 
-		if (xfer > USER_BUF_SZ)
-			xfer = USER_BUF_SZ;
+		if (xfer > lpa_if->dma_period_sz)
+			xfer = lpa_if->dma_period_sz;
 
 		if (copy_from_user(ab->data, buf, xfer)) {
 			pr_err("copy from user failed\n");
@@ -303,27 +367,46 @@ static ssize_t lpa_if_write(struct file *file, const char __user *buf,
 
 		pr_debug("xfer %d, size %d, used %d cpu_buf %d\n",
 			xfer, ab->size, ab->used, lpa_if->cpu_buf);
-
-		lpa_if->cpu_buf ^= 1;
+		lpa_if->cpu_buf++;
+		lpa_if->cpu_buf = lpa_if->cpu_buf % lpa_if->cfg.buffer_count;
 	}
 	rc = buf - start;
 end:
 	mutex_unlock(&lpa_if->lock);
+	/* restore old scheduling policy */
+	if (!rt_policy(old_policy)) {
+		struct sched_param v = { .sched_priority = old_prio };
+		if ((sched_setscheduler(current, old_policy, &v)) < 0)
+			pr_err("sched_setscheduler failed\n");
+		if (likely(!cap_nice)) {
+			struct cred *new = prepare_creds();
+			cap_lower(new->cap_effective, CAP_SYS_NICE);
+			commit_creds(new);
+		}
+	}
 	return rc;
 }
 
 static int lpa_if_release(struct inode *inode, struct file *file)
 {
 	struct lpa_if *lpa_if = file->private_data;
-	hdmi_audio_enable(0, HDMI_AUDIO_FIFO_WATER_MARK);
 
-	smp_mb();
+	hdmi_audio_packet_enable(0);
+
+	wait_for_dma_cnt_stop(lpa_if->dma_ch);
+
+	hdmi_audio_enable(0, HDMI_AUDIO_FIFO_WATER_MARK);
 
 	if (lpa_if->config) {
 		unregister_dma_irq_handler(lpa_if->dma_ch);
 		dai_stop_hdmi(lpa_if->dma_ch);
 		lpa_if->config = 0;
 	}
+	core_req_bus_bandwith(AUDIO_IF_BUS_ID, 0, 0);
+
+	if (hdmi_msm_audio_get_sample_rate() != HDMI_SAMPLE_RATE_48KHZ)
+		hdmi_msm_audio_sample_rate_reset(HDMI_SAMPLE_RATE_48KHZ);
+
 	return 0;
 }
 

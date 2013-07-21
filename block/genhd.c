@@ -36,6 +36,7 @@ static DEFINE_IDR(ext_devt_idr);
 
 static struct device_type disk_type;
 
+static void disk_alloc_events(struct gendisk *disk);
 static void disk_add_events(struct gendisk *disk);
 static void disk_del_events(struct gendisk *disk);
 static void disk_release_events(struct gendisk *disk);
@@ -602,6 +603,8 @@ void add_disk(struct gendisk *disk)
 	disk->major = MAJOR(devt);
 	disk->first_minor = MINOR(devt);
 
+	disk_alloc_events(disk);
+
 	/* Register BDI before referencing it from bdev */ 
 	bdi = &disk->queue->backing_dev_info;
 	bdi_register_dev(bdi, disk_devt(disk));
@@ -610,6 +613,12 @@ void add_disk(struct gendisk *disk)
 			    exact_match, exact_lock, disk);
 	register_disk(disk);
 	blk_register_queue(disk);
+
+	/*
+	 * Take an extra ref on queue which will be put on disk_release()
+	 * so that it sticks around as long as @disk is there.
+	 */
+	WARN_ON_ONCE(blk_get_queue(disk->queue));
 
 	retval = sysfs_create_link(&disk_to_dev(disk)->kobj, &bdi->dev->kobj,
 				   "bdi");
@@ -739,7 +748,7 @@ void __init printk_all_partitions(void)
 
 		/*
 		 * Don't show empty devices or things that have been
-		 * surpressed
+		 * suppressed
 		 */
 		if (get_capacity(disk) == 0 ||
 		    (disk->flags & GENHD_FL_SUPPRESS_PARTITION_INFO))
@@ -1103,6 +1112,8 @@ static void disk_release(struct device *dev)
 	disk_replace_part_tbl(disk, NULL);
 	free_part_stats(&disk->part0);
 	free_part_info(&disk->part0);
+	if (disk->queue)
+		blk_put_queue(disk->queue);
 	kfree(disk);
 }
 
@@ -1175,14 +1186,14 @@ static int diskstats_show(struct seq_file *seqf, void *v)
 			   "%u %lu %lu %llu %u %u %u %u\n",
 			   MAJOR(part_devt(hd)), MINOR(part_devt(hd)),
 			   disk_name(gp, hd->partno, buf),
-			   part_stat_read(hd, ios[0]),
-			   part_stat_read(hd, merges[0]),
-			   (unsigned long long)part_stat_read(hd, sectors[0]),
-			   jiffies_to_msecs(part_stat_read(hd, ticks[0])),
-			   part_stat_read(hd, ios[1]),
-			   part_stat_read(hd, merges[1]),
-			   (unsigned long long)part_stat_read(hd, sectors[1]),
-			   jiffies_to_msecs(part_stat_read(hd, ticks[1])),
+			   part_stat_read(hd, ios[READ]),
+			   part_stat_read(hd, merges[READ]),
+			   (unsigned long long)part_stat_read(hd, sectors[READ]),
+			   jiffies_to_msecs(part_stat_read(hd, ticks[READ])),
+			   part_stat_read(hd, ios[WRITE]),
+			   part_stat_read(hd, merges[WRITE]),
+			   (unsigned long long)part_stat_read(hd, sectors[WRITE]),
+			   jiffies_to_msecs(part_stat_read(hd, ticks[WRITE])),
 			   part_in_flight(hd),
 			   jiffies_to_msecs(part_stat_read(hd, io_ticks)),
 			   jiffies_to_msecs(part_stat_read(hd, time_in_queue))
@@ -1388,6 +1399,7 @@ struct disk_events {
 	struct gendisk		*disk;		/* the associated disk */
 	spinlock_t		lock;
 
+	struct mutex		block_mutex;	/* protects blocking */
 	int			block;		/* event blocking depth */
 	unsigned int		pending;	/* events already sent out */
 	unsigned int		clearing;	/* events being cleared */
@@ -1431,22 +1443,44 @@ static unsigned long disk_events_poll_jiffies(struct gendisk *disk)
 	return msecs_to_jiffies(intv_msecs);
 }
 
-static void __disk_block_events(struct gendisk *disk, bool sync)
+/**
+ * disk_block_events - block and flush disk event checking
+ * @disk: disk to block events for
+ *
+ * On return from this function, it is guaranteed that event checking
+ * isn't in progress and won't happen until unblocked by
+ * disk_unblock_events().  Events blocking is counted and the actual
+ * unblocking happens after the matching number of unblocks are done.
+ *
+ * Note that this intentionally does not block event checking from
+ * disk_clear_events().
+ *
+ * CONTEXT:
+ * Might sleep.
+ */
+void disk_block_events(struct gendisk *disk)
 {
 	struct disk_events *ev = disk->ev;
 	unsigned long flags;
 	bool cancel;
 
+	if (!ev)
+		return;
+
+	/*
+	 * Outer mutex ensures that the first blocker completes canceling
+	 * the event work before further blockers are allowed to finish.
+	 */
+	mutex_lock(&ev->block_mutex);
+
 	spin_lock_irqsave(&ev->lock, flags);
 	cancel = !ev->block++;
 	spin_unlock_irqrestore(&ev->lock, flags);
 
-	if (cancel) {
-		if (sync)
-			cancel_delayed_work_sync(&disk->ev->dwork);
-		else
-			cancel_delayed_work(&disk->ev->dwork);
-	}
+	if (cancel)
+		cancel_delayed_work_sync(&disk->ev->dwork);
+
+	mutex_unlock(&ev->block_mutex);
 }
 
 static void __disk_unblock_events(struct gendisk *disk, bool check_now)
@@ -1470,32 +1504,11 @@ static void __disk_unblock_events(struct gendisk *disk, bool check_now)
 	intv = disk_events_poll_jiffies(disk);
 	set_timer_slack(&ev->dwork.timer, intv / 4);
 	if (check_now)
-		queue_delayed_work(system_nrt_wq, &ev->dwork, 0);
+		queue_delayed_work(system_nrt_freezable_wq, &ev->dwork, 0);
 	else if (intv)
-		queue_delayed_work(system_nrt_wq, &ev->dwork, intv);
+		queue_delayed_work(system_nrt_freezable_wq, &ev->dwork, intv);
 out_unlock:
 	spin_unlock_irqrestore(&ev->lock, flags);
-}
-
-/**
- * disk_block_events - block and flush disk event checking
- * @disk: disk to block events for
- *
- * On return from this function, it is guaranteed that event checking
- * isn't in progress and won't happen until unblocked by
- * disk_unblock_events().  Events blocking is counted and the actual
- * unblocking happens after the matching number of unblocks are done.
- *
- * Note that this intentionally does not block event checking from
- * disk_clear_events().
- *
- * CONTEXT:
- * Might sleep.
- */
-void disk_block_events(struct gendisk *disk)
-{
-	if (disk->ev)
-		__disk_block_events(disk, true);
 }
 
 /**
@@ -1511,7 +1524,7 @@ void disk_block_events(struct gendisk *disk)
 void disk_unblock_events(struct gendisk *disk)
 {
 	if (disk->ev)
-		__disk_unblock_events(disk, true);
+		__disk_unblock_events(disk, false);
 }
 
 /**
@@ -1525,10 +1538,18 @@ void disk_unblock_events(struct gendisk *disk)
  */
 void disk_check_events(struct gendisk *disk)
 {
-	if (disk->ev) {
-		__disk_block_events(disk, false);
-		__disk_unblock_events(disk, true);
+	struct disk_events *ev = disk->ev;
+	unsigned long flags;
+
+	if (!ev)
+		return;
+
+	spin_lock_irqsave(&ev->lock, flags);
+	if (!ev->block) {
+		cancel_delayed_work(&ev->dwork);
+		queue_delayed_work(system_nrt_freezable_wq, &ev->dwork, 0);
 	}
+	spin_unlock_irqrestore(&ev->lock, flags);
 }
 EXPORT_SYMBOL_GPL(disk_check_events);
 
@@ -1563,8 +1584,8 @@ unsigned int disk_clear_events(struct gendisk *disk, unsigned int mask)
 	spin_unlock_irq(&ev->lock);
 
 	/* uncondtionally schedule event check and wait for it to finish */
-	__disk_block_events(disk, true);
-	queue_delayed_work(system_nrt_wq, &ev->dwork, 0);
+	disk_block_events(disk);
+	queue_delayed_work(system_nrt_freezable_wq, &ev->dwork, 0);
 	flush_delayed_work(&ev->dwork);
 	__disk_unblock_events(disk, false);
 
@@ -1601,13 +1622,17 @@ static void disk_events_workfn(struct work_struct *work)
 
 	intv = disk_events_poll_jiffies(disk);
 	if (!ev->block && intv)
-		queue_delayed_work(system_nrt_wq, &ev->dwork, intv);
+		queue_delayed_work(system_nrt_freezable_wq, &ev->dwork, intv);
 
 	spin_unlock_irq(&ev->lock);
 
-	/* tell userland about new events */
+	/*
+	 * Tell userland about new events.  Only the events listed in
+	 * @disk->events are reported.  Unlisted events are processed the
+	 * same internally but never get reported to userland.
+	 */
 	for (i = 0; i < ARRAY_SIZE(disk_uevents); i++)
-		if (events & (1 << i))
+		if (events & disk->events & (1 << i))
 			envp[nr_events++] = disk_uevents[i];
 
 	if (nr_events)
@@ -1677,7 +1702,7 @@ static ssize_t disk_events_poll_msecs_store(struct device *dev,
 	if (intv < 0 && intv != -1)
 		return -EINVAL;
 
-	__disk_block_events(disk, true);
+	disk_block_events(disk);
 	disk->ev->poll_msecs = intv;
 	__disk_unblock_events(disk, true);
 
@@ -1735,13 +1760,13 @@ module_param_cb(events_dfl_poll_msecs, &disk_events_dfl_poll_msecs_param_ops,
 		&disk_events_dfl_poll_msecs, 0644);
 
 /*
- * disk_{add|del|release}_events - initialize and destroy disk_events.
+ * disk_{alloc|add|del|release}_events - initialize and destroy disk_events.
  */
-static void disk_add_events(struct gendisk *disk)
+static void disk_alloc_events(struct gendisk *disk)
 {
 	struct disk_events *ev;
 
-	if (!disk->fops->check_events || !(disk->events | disk->async_events))
+	if (!disk->fops->check_events)
 		return;
 
 	ev = kzalloc(sizeof(*ev), GFP_KERNEL);
@@ -1750,25 +1775,29 @@ static void disk_add_events(struct gendisk *disk)
 		return;
 	}
 
-	if (sysfs_create_files(&disk_to_dev(disk)->kobj,
-			       disk_events_attrs) < 0) {
-		pr_warn("%s: failed to create sysfs files for events\n",
-			disk->disk_name);
-		kfree(ev);
-		return;
-	}
-
-	disk->ev = ev;
-
 	INIT_LIST_HEAD(&ev->node);
 	ev->disk = disk;
 	spin_lock_init(&ev->lock);
+	mutex_init(&ev->block_mutex);
 	ev->block = 1;
 	ev->poll_msecs = -1;
 	INIT_DELAYED_WORK(&ev->dwork, disk_events_workfn);
 
+	disk->ev = ev;
+}
+
+static void disk_add_events(struct gendisk *disk)
+{
+	if (!disk->ev)
+		return;
+
+	/* FIXME: error handling */
+	if (sysfs_create_files(&disk_to_dev(disk)->kobj, disk_events_attrs) < 0)
+		pr_warn("%s: failed to create sysfs files for events\n",
+			disk->disk_name);
+
 	mutex_lock(&disk_events_mutex);
-	list_add_tail(&ev->node, &disk_events);
+	list_add_tail(&disk->ev->node, &disk_events);
 	mutex_unlock(&disk_events_mutex);
 
 	/*
@@ -1783,7 +1812,7 @@ static void disk_del_events(struct gendisk *disk)
 	if (!disk->ev)
 		return;
 
-	__disk_block_events(disk, true);
+	disk_block_events(disk);
 
 	mutex_lock(&disk_events_mutex);
 	list_del_init(&disk->ev->node);

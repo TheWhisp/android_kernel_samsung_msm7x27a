@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -146,9 +146,10 @@ int bam_check(void *base, u32 *version, u32 *num_pipes);
 void bam_exit(void *base, u32 ee);
 
 /**
- * Get BAM global IRQ status
+ * Get BAM IRQ source and clear global IRQ status
  *
- * This function gets BAM global IRQ status.
+ * This function gets BAM IRQ source.
+ * Clear global IRQ status if it is non-zero.
  *
  * @base - BAM virtual base address.
  *
@@ -159,7 +160,7 @@ void bam_exit(void *base, u32 ee);
  * @return IRQ status
  *
  */
-u32 bam_get_irq_status(void *base, u32 ee, u32 mask);
+u32 bam_check_irq_source(void *base, u32 ee, u32 mask);
 
 /**
  * Initialize a BAM pipe

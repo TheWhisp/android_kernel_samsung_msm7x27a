@@ -25,8 +25,6 @@
 #include <linux/gpio_keys.h>
 #include <linux/workqueue.h>
 #include <linux/gpio.h>
-#include "../../misc/sec_debug.h"
-#include "../../dpram/dpram.h"
 
 struct gpio_button_data {
 	struct gpio_keys_button *button;
@@ -35,7 +33,6 @@ struct gpio_button_data {
 	struct work_struct work;
 	int timer_debounce;	/* in msecs */
 	bool disabled;
-	bool key_state;
 };
 
 struct gpio_keys_drvdata {
@@ -308,70 +305,11 @@ static DEVICE_ATTR(disabled_switches, S_IWUSR | S_IRUGO,
 		   gpio_keys_show_disabled_switches,
 		   gpio_keys_store_disabled_switches);
 
-static ssize_t key_pressed_show(struct device *dev,
-				struct device_attribute *attr, char *buf)
-{
-	struct platform_device *pdev = to_platform_device(dev);
-	struct gpio_keys_drvdata *ddata = platform_get_drvdata(pdev);
-	int i;
-	int keystate = 0;
-
-	for (i = 0; i < ddata->n_buttons; i++) {
-		struct gpio_button_data *bdata = &ddata->data[i];
-		keystate |= bdata->key_state;
-	}
-
-	if (keystate)
-		snprintf(buf, sizeof(buf), "PRESS");
-	else
-		snprintf(buf, sizeof(buf), "RELEASE");
-
-	return strnlen(buf, sizeof(buf));
-}
-
-/* the volume keys can be the wakeup keys in special case */
-static ssize_t wakeup_enable(struct device *dev,
-	struct device_attribute *attr, char *buf, size_t count)
-{
-	struct platform_device *pdev = to_platform_device(dev);
-	struct gpio_keys_drvdata *ddata = platform_get_drvdata(pdev);
-
-	int n_events = get_n_events_by_type(EV_KEY);
-	unsigned long *bits;
-	ssize_t error;
-	int i;
-
-	bits = kcalloc(BITS_TO_LONGS(n_events), sizeof(*bits), GFP_KERNEL);
-	if (!bits)
-		return -ENOMEM;
-
-	error = bitmap_parselist(buf, bits, n_events);
-	if (error)
-		goto out;
-
-	for (i = 0; i < ddata->n_buttons; i++) {
-		struct gpio_button_data *button = &ddata->data[i];
-		if (test_bit(button->button->code, bits))
-			button->button->wakeup = 1;
-		else
-			button->button->wakeup = 0;
-	}
-
-out:
-	kfree(bits);
-	return count;
-}
-
-static DEVICE_ATTR(key_pressed, 0664, key_pressed_show, NULL);
-static DEVICE_ATTR(wakeup_keys, S_IWUSR, NULL, wakeup_enable);
-
 static struct attribute *gpio_keys_attrs[] = {
 	&dev_attr_keys.attr,
 	&dev_attr_switches.attr,
-	&dev_attr_key_pressed.attr,
 	&dev_attr_disabled_keys.attr,
 	&dev_attr_disabled_switches.attr,
-	&dev_attr_wakeup_keys.attr,
 	NULL,
 };
 
@@ -386,17 +324,13 @@ static void gpio_keys_report_event(struct gpio_button_data *bdata)
 	unsigned int type = button->type ?: EV_KEY;
 	int state = (gpio_get_value_cansleep(button->gpio) ? 1 : 0) ^ button->active_low;
 
-	printk(KERN_INFO"[KEY] key: %s gpio_keys_report_event state = %d\n",
-		button->desc, state);
-	bdata->key_state = !!state;
-
-	input_event(input, type, button->code, !!state);
+	if (type == EV_ABS) {
+		if (state)
+			input_event(input, type, button->code, button->value);
+	} else {
+		input_event(input, type, button->code, !!state);
+	}
 	input_sync(input);
-#if defined(CONFIG_MACH_TREBON) || defined(CONFIG_MACH_GEIM) \
-						 || defined(CONFIG_MACH_JENA)
-	if (dump_enable_flag != 0)
-		sec_check_crash_key(button->code, state);
-#endif
 }
 
 static void gpio_keys_work_func(struct work_struct *work)
@@ -434,7 +368,7 @@ static int __devinit gpio_keys_setup_key(struct platform_device *pdev,
 					 struct gpio_button_data *bdata,
 					 struct gpio_keys_button *button)
 {
-	char *desc = button->desc ? button->desc : "gpio_keys";
+	const char *desc = button->desc ? button->desc : "gpio_keys";
 	struct device *dev = &pdev->dev;
 	unsigned long irqflags;
 	int irq, error;
@@ -539,7 +473,7 @@ static int __devinit gpio_keys_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, ddata);
 	input_set_drvdata(input, ddata);
 
-	input->name = pdev->name;
+	input->name = pdata->name ? : pdev->name;
 	input->phys = "gpio-keys/input0";
 	input->dev.parent = &pdev->dev;
 	input->open = gpio_keys_open;

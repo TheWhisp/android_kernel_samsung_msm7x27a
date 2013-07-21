@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,7 +18,7 @@
 #include <linux/io.h>
 #include <linux/slab.h>
 #include <mach/msm_iomap.h>
-
+#include <mach/msm_rtb.h>
 #include "spm_driver.h"
 
 enum {
@@ -68,6 +68,9 @@ static inline void msm_spm_drv_set_vctl(struct msm_spm_driver_data *dev,
 
 	dev->reg_shadow[MSM_SPM_REG_SAW2_PMIC_DATA_0] &= ~0xFF;
 	dev->reg_shadow[MSM_SPM_REG_SAW2_PMIC_DATA_0] |= vlevel;
+
+	dev->reg_shadow[MSM_SPM_REG_SAW2_PMIC_DATA_1] &= ~0x3F;
+	dev->reg_shadow[MSM_SPM_REG_SAW2_PMIC_DATA_1] |= (vlevel & 0x3F);
 }
 
 static void msm_spm_drv_flush_shadow(struct msm_spm_driver_data *dev,
@@ -200,16 +203,31 @@ failed_write_seq_data:
 int msm_spm_drv_set_low_power_mode(struct msm_spm_driver_data *dev,
 		uint32_t addr)
 {
+	void *base = NULL;
 
 	/* SPM is configured to reset start address to zero after end of Program
 	 */
 	if (!dev)
 		return -EINVAL;
 
+	base = dev->reg_base_addr;
+	msm_spm_drv_load_shadow(dev, MSM_SPM_REG_SAW2_SPM_CTL);
+	msm_spm_drv_load_shadow(dev, MSM_SPM_REG_SAW2_STS0);
+	uncached_logk_pc(LOGK_PM,
+		(void *)(base + msm_spm_reg_offsets[MSM_SPM_REG_SAW2_SPM_CTL]),
+		(void *)dev->reg_shadow[MSM_SPM_REG_SAW2_SPM_CTL]);
+	uncached_logk_pc(LOGK_PM,
+		(void *)(base + msm_spm_reg_offsets[MSM_SPM_REG_SAW2_STS0]),
+		(void *)dev->reg_shadow[MSM_SPM_REG_SAW2_STS0]);
+
 	msm_spm_drv_set_start_addr(dev, addr);
 
 	msm_spm_drv_flush_shadow(dev, MSM_SPM_REG_SAW2_SPM_CTL);
 	wmb();
+
+	uncached_logk_pc(LOGK_PM,
+		(void *)(base + msm_spm_reg_offsets[MSM_SPM_REG_SAW2_SPM_CTL]),
+		(void *)dev->reg_shadow[MSM_SPM_REG_SAW2_SPM_CTL]);
 
 	if (msm_spm_debug_mask & MSM_SPM_DEBUG_SHADOW) {
 		int i;
@@ -235,6 +253,7 @@ int msm_spm_drv_set_vdd(struct msm_spm_driver_data *dev, unsigned int vlevel)
 	msm_spm_drv_set_vctl(dev, vlevel);
 	msm_spm_drv_flush_shadow(dev, MSM_SPM_REG_SAW2_VCTL);
 	msm_spm_drv_flush_shadow(dev, MSM_SPM_REG_SAW2_PMIC_DATA_0);
+	msm_spm_drv_flush_shadow(dev, MSM_SPM_REG_SAW2_PMIC_DATA_1);
 	mb();
 
 	/* Wait for PMIC state to return to idle or until timeout */

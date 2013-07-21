@@ -520,7 +520,9 @@ static int hmc5843_detect(struct i2c_client *client,
 /* Called when we have found a new HMC5843. */
 static void hmc5843_init_client(struct i2c_client *client)
 {
-	struct hmc5843_data *data = i2c_get_clientdata(client);
+	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+	struct hmc5843_data *data = iio_priv(indio_dev);
+
 	hmc5843_set_meas_conf(client, data->meas_conf);
 	hmc5843_set_rate(client, data->rate);
 	hmc5843_configure(client, data->operating_mode);
@@ -528,6 +530,11 @@ static void hmc5843_init_client(struct i2c_client *client)
 	mutex_init(&data->lock);
 	pr_info("HMC5843 initialized\n");
 }
+
+static const struct iio_info hmc5843_info = {
+	.attrs = &hmc5843_group,
+	.driver_module = THIS_MODULE,
+};
 
 static int hmc5843_probe(struct i2c_client *client,
 			 const struct i2c_device_id *id)
@@ -552,15 +559,14 @@ static int hmc5843_probe(struct i2c_client *client,
 	/* Initialize the HMC5843 chip */
 	hmc5843_init_client(client);
 
-	data->indio_dev = iio_allocate_device();
+	data->indio_dev = iio_allocate_device(0);
 	if (!data->indio_dev) {
 		err = -ENOMEM;
 		goto exit_free1;
 	}
-	data->indio_dev->attrs = &hmc5843_group;
+	data->indio_dev->info = &hmc5843_info;
 	data->indio_dev->dev.parent = &client->dev;
 	data->indio_dev->dev_data = (void *)(data);
-	data->indio_dev->driver_module = THIS_MODULE;
 	data->indio_dev->modes = INDIO_DIRECT_MODE;
 	err = iio_device_register(data->indio_dev);
 	if (err)

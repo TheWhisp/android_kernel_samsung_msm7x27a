@@ -356,10 +356,7 @@ static void ohci_finish_controller_resume(struct usb_hcd *hcd)
 		msleep(20);
 	}
 
-	/* Does the root hub have a port wakeup pending? */
-	if (ohci_readl(ohci, &ohci->regs->intrstatus) &
-			(OHCI_INTR_RD | OHCI_INTR_RHSC))
-		usb_hcd_resume_root_hub(hcd);
+	usb_hcd_resume_root_hub(hcd);
 }
 
 /* Carry out polling-, autostop-, and autoresume-related state changes */
@@ -580,15 +577,16 @@ ohci_hub_descriptor (
 	    temp |= 0x0008;
 	desc->wHubCharacteristics = (__force __u16)cpu_to_hc16(ohci, temp);
 
-	/* two bitmaps:  ports removable, and usb 1.0 legacy PortPwrCtrlMask */
+	/* ports removable, and usb 1.0 legacy PortPwrCtrlMask */
 	rh = roothub_b (ohci);
-	memset(desc->bitmap, 0xff, sizeof(desc->bitmap));
-	desc->bitmap [0] = rh & RH_B_DR;
+	memset(desc->u.hs.DeviceRemovable, 0xff,
+			sizeof(desc->u.hs.DeviceRemovable));
+	desc->u.hs.DeviceRemovable[0] = rh & RH_B_DR;
 	if (ohci->num_ports > 7) {
-		desc->bitmap [1] = (rh & RH_B_DR) >> 8;
-		desc->bitmap [2] = 0xff;
+		desc->u.hs.DeviceRemovable[1] = (rh & RH_B_DR) >> 8;
+		desc->u.hs.DeviceRemovable[2] = 0xff;
 	} else
-		desc->bitmap [1] = 0xff;
+		desc->u.hs.DeviceRemovable[1] = 0xff;
 }
 
 /*-------------------------------------------------------------------------*/

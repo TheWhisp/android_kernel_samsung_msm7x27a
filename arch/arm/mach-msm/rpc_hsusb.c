@@ -1,6 +1,6 @@
 /* linux/arch/arm/mach-msm/rpc_hsusb.c
  *
- * Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
  *
  * All source code in this file is licensed under the following license except
  * where indicated.
@@ -160,8 +160,7 @@ int msm_chg_rpc_connect(void)
 {
 	uint32_t chg_vers;
 
-	if (machine_is_msm7201a_surf() || machine_is_msm7x27_surf() ||
-	    machine_is_qsd8x50_surf() || machine_is_msm7x25_surf())
+	if (machine_is_msm7x27_surf() || machine_is_qsd8x50_surf())
 		return -ENOTSUPP;
 
 	if (chg_ep && !IS_ERR(chg_ep)) {

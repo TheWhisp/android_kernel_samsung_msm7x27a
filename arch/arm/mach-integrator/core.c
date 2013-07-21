@@ -144,11 +144,14 @@ static struct clk_lookup lookups[] = {
 	}
 };
 
+void __init integrator_init_early(void)
+{
+	clkdev_add_table(lookups, ARRAY_SIZE(lookups));
+}
+
 static int __init integrator_init(void)
 {
 	int i;
-
-	clkdev_add_table(lookups, ARRAY_SIZE(lookups));
 
 	for (i = 0; i < ARRAY_SIZE(amba_devs); i++) {
 		struct amba_device *d = amba_devs[i];
@@ -202,7 +205,7 @@ static struct amba_pl010_data integrator_uart_data = {
 
 #define CM_CTRL	IO_ADDRESS(INTEGRATOR_HDR_CTRL)
 
-static DEFINE_SPINLOCK(cm_lock);
+static DEFINE_RAW_SPINLOCK(cm_lock);
 
 /**
  * cm_control - update the CM_CTRL register.
@@ -214,10 +217,10 @@ void cm_control(u32 mask, u32 set)
 	unsigned long flags;
 	u32 val;
 
-	spin_lock_irqsave(&cm_lock, flags);
+	raw_spin_lock_irqsave(&cm_lock, flags);
 	val = readl(CM_CTRL) & ~mask;
 	writel(val | set, CM_CTRL);
-	spin_unlock_irqrestore(&cm_lock, flags);
+	raw_spin_unlock_irqrestore(&cm_lock, flags);
 }
 
 EXPORT_SYMBOL(cm_control);

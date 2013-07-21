@@ -1,36 +1,3 @@
-/* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, and the entire permission notice in its entirety,
- *    including the disclaimer of warranties.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote
- *    products derived from this software without specific prior
- *    written permission.
- *
- * ALTERNATIVELY, this product may be distributed under the terms of
- * the GNU General Public License, version 2, in which case the provisions
- * of the GPL version 2 are required INSTEAD OF the BSD license.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, ALL OF
- * WHICH ARE HEREBY DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
- * USE OF THIS SOFTWARE, EVEN IF NOT ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- */
 #ifndef _MSM_VIDC_ENC_H_
 #define _MSM_VIDC_ENC_H_
 
@@ -85,6 +52,11 @@
 #define VEN_BUFFLAG_EXTRADATA	0x00000040
 #define VEN_BUFFLAG_CODECCONFIG	0x00000080
 
+/*Post processing flags bit masks*/
+#define VEN_EXTRADATA_NONE          0x001
+#define VEN_EXTRADATA_QCOMFILLER    0x002
+#define VEN_EXTRADATA_SLICEINFO     0x100
+
 /*ENCODER CONFIGURATION CONSTANTS*/
 
 /*Encoded video frame types*/
@@ -125,16 +97,17 @@
 #define VEN_LEVEL_H264_2p2	0x10/* H.264 Level 2.2 */
 #define VEN_LEVEL_H264_3	0x11/* H.264 Level 3   */
 #define VEN_LEVEL_H264_3p1	0x12/* H.264 Level 3.1 */
-#define VEN_LEVEL_H264_4	0x13/* H.264 Level 4   */
+#define VEN_LEVEL_H264_3p2	0x13/* H.264 Level 3.2 */
+#define VEN_LEVEL_H264_4	0x14/* H.264 Level 4   */
 
-#define VEN_LEVEL_H263_10	0x14/* H.263 Level 10  */
-#define VEN_LEVEL_H263_20	0x15/* H.263 Level 20  */
-#define VEN_LEVEL_H263_30	0x16/* H.263 Level 30  */
-#define VEN_LEVEL_H263_40	0x17/* H.263 Level 40  */
-#define VEN_LEVEL_H263_45	0x18/* H.263 Level 45  */
-#define VEN_LEVEL_H263_50	0x19/* H.263 Level 50  */
-#define VEN_LEVEL_H263_60	0x1A/* H.263 Level 60  */
-#define VEN_LEVEL_H263_70	0x1B/* H.263 Level 70  */
+#define VEN_LEVEL_H263_10	0x15/* H.263 Level 10  */
+#define VEN_LEVEL_H263_20	0x16/* H.263 Level 20  */
+#define VEN_LEVEL_H263_30	0x17/* H.263 Level 30  */
+#define VEN_LEVEL_H263_40	0x18/* H.263 Level 40  */
+#define VEN_LEVEL_H263_45	0x19/* H.263 Level 45  */
+#define VEN_LEVEL_H263_50	0x1A/* H.263 Level 50  */
+#define VEN_LEVEL_H263_60	0x1B/* H.263 Level 60  */
+#define VEN_LEVEL_H263_70	0x1C/* H.263 Level 70  */
 
 /*Entropy coding model selection for H.264 encoder.*/
 #define VEN_ENTROPY_MODEL_CAVLC	1
@@ -288,6 +261,8 @@ struct venc_ioctl_msg{
 
 #define VEN_IOCTL_GET_RECON_BUFFER_SIZE \
 	_IOW(VEN_IOCTLBASE_NENC, 22, struct venc_ioctl_msg)
+
+
 
 /*ENCODER PROPERTY CONFIGURATION & CAPABILITY IOCTLs*/
 
@@ -467,6 +442,21 @@ struct venc_ioctl_msg{
 
 #define VEN_IOCTL_GET_NUMBER_INSTANCES \
 	_IOR(VEN_IOCTLBASE_ENC, 46, struct venc_ioctl_msg)
+
+#define VEN_IOCTL_SET_METABUFFER_MODE \
+	_IOW(VEN_IOCTLBASE_ENC, 47, struct venc_ioctl_msg)
+
+
+/*IOCTL params:SET: InputData - unsigned int, OutputData - NULL.*/
+#define VEN_IOCTL_SET_EXTRADATA \
+	_IOW(VEN_IOCTLBASE_ENC, 48, struct venc_ioctl_msg)
+/*IOCTL params:GET: InputData - NULL, OutputData - unsigned int.*/
+#define VEN_IOCTL_GET_EXTRADATA \
+	_IOR(VEN_IOCTLBASE_ENC, 49, struct venc_ioctl_msg)
+
+/*IOCTL params:SET: InputData - NULL, OutputData - NULL.*/
+#define VEN_IOCTL_SET_SLICE_DELIVERY_MODE \
+	_IO(VEN_IOCTLBASE_ENC, 50)
 
 struct venc_switch{
 	unsigned char	status;

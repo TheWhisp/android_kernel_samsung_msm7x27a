@@ -88,7 +88,7 @@ struct cmsghdr {
 };
 
 /*
- *	Ancilliary data object information MACROS
+ *	Ancillary data object information MACROS
  *	Table 5-14 of POSIX 1003.1g
  */
 
@@ -261,7 +261,7 @@ struct ucred {
 #define MSG_NOSIGNAL	0x4000	/* Do not generate SIGPIPE */
 #define MSG_MORE	0x8000	/* Sender will send more */
 #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
-
+#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
 #define MSG_EOF         MSG_FIN
 
 #define MSG_CMSG_CLOEXEC 0x40000000	/* Set close_on_exit for file
@@ -333,5 +333,7 @@ struct timespec;
 
 extern int __sys_recvmmsg(int fd, struct mmsghdr __user *mmsg, unsigned int vlen,
 			  unsigned int flags, struct timespec *timeout);
+extern int __sys_sendmmsg(int fd, struct mmsghdr __user *mmsg,
+			  unsigned int vlen, unsigned int flags);
 #endif /* not kernel and not glibc */
 #endif /* _LINUX_SOCKET_H */

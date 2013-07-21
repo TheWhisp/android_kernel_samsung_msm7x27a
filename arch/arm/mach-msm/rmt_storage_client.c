@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -125,9 +125,6 @@ DECLARE_DELAYED_WORK(sdio_smem_work, rmt_storage_sdio_smem_work);
 #define MDM_LOCAL_BUF_SZ	0xC0000
 static struct sdio_smem_client *sdio_smem;
 #endif
-
-extern int in_recovery_mode;
-extern int charging_boot;
 
 #ifdef CONFIG_MSM_RMT_STORAGE_CLIENT_STATS
 struct rmt_storage_op_stats {
@@ -360,9 +357,7 @@ static int rmt_storage_event_open_cb(struct rmt_storage_event *event_args,
 	if (cid > MAX_NUM_CLIENTS) {
 		pr_err("%s: Max clients are reached\n", __func__);
 		cid = 0;
-		/* prevent fix */
-		ret = cid;
-		goto free_rs_client;
+		return cid;
 	}
 	__set_bit(cid, &rmc->cids);
 	pr_info("open partition %s handle=%d\n", event_args->path, cid);
@@ -1311,13 +1306,12 @@ static int rmt_storage_get_ramfs(struct rmt_storage_srv *srv)
 }
 
 static ssize_t
-set_force_sync(struct device *dev, struct device_attribute *attr,
-		const char *buf, size_t count)
+show_force_sync(struct device *dev, struct device_attribute *attr,
+		char *buf)
 {
 	struct platform_device *pdev;
 	struct rpcsvr_platform_device *rpc_pdev;
 	struct rmt_storage_srv *srv;
-	int value, rc;
 
 	pdev = container_of(dev, struct platform_device, dev);
 	rpc_pdev = container_of(pdev, struct rpcsvr_platform_device, base);
@@ -1328,13 +1322,7 @@ set_force_sync(struct device *dev, struct device_attribute *attr,
 		return -EINVAL;
 	}
 
-	sscanf(buf, "%d", &value);
-	if (!!value) {
-		rc = rmt_storage_force_sync(srv->rpc_client);
-		if (rc)
-			return rc;
-	}
-	return count;
+	return rmt_storage_force_sync(srv->rpc_client);
 }
 
 /* Returns -EINVAL for invalid sync token and an error value for any failure
@@ -1411,7 +1399,7 @@ static void rmt_storage_set_client_status(struct rmt_storage_srv *srv,
 	spin_unlock(&rmc->lock);
 }
 
-static DEVICE_ATTR(force_sync, S_IRUGO | S_IWUSR, NULL, set_force_sync);
+static DEVICE_ATTR(force_sync, S_IRUGO | S_IWUSR, show_force_sync, NULL);
 static DEVICE_ATTR(sync_sts, S_IRUGO | S_IWUSR, show_sync_sts, NULL);
 static struct attribute *dev_attrs[] = {
 	&dev_attr_force_sync.attr,
@@ -1677,9 +1665,6 @@ static int __init rmt_storage_init(void)
 	void *mdm_local_buf;
 #endif
 	int ret = 0;
-
-	if (in_recovery_mode == 1 || charging_boot == 1)
-		return 0;
 
 	rmc = kzalloc(sizeof(struct rmt_storage_client_info), GFP_KERNEL);
 	if (!rmc) {

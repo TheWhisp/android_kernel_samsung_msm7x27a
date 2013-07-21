@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2010, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2008-2010, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -22,8 +22,6 @@
 #include <linux/workqueue.h>
 
 #include "modem_notifier.h"
-#include "../../../drivers/misc/sec_debug.h"
-#include <asm/cacheflush.h>
 
 #define DEBUG
 

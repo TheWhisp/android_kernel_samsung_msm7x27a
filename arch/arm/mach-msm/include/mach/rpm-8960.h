@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -12,6 +12,10 @@
 
 #ifndef __ARCH_ARM_MACH_MSM_RPM_8960_H
 #define __ARCH_ARM_MACH_MSM_RPM_8960_H
+
+#define RPM_MAJOR_VER	3
+#define RPM_MINOR_VER	0
+#define RPM_BUILD_VER	0
 
 /* RPM control message RAM enums */
 enum {
@@ -40,6 +44,7 @@ enum {
 
 	MSM_RPM_SEL_CXO_CLK					= 5,
 	MSM_RPM_SEL_PXO_CLK					= 6,
+	MSM_RPM_SEL_QDSS_CLK					= 7,
 	MSM_RPM_SEL_APPS_FABRIC_CLK				= 8,
 	MSM_RPM_SEL_SYSTEM_FABRIC_CLK				= 9,
 	MSM_RPM_SEL_MM_FABRIC_CLK				= 10,
@@ -115,8 +120,9 @@ enum {
 	MSM_RPM_SEL_CXO_BUFFERS					= 81,
 	MSM_RPM_SEL_USB_OTG_SWITCH				= 82,
 	MSM_RPM_SEL_HDMI_SWITCH					= 83,
+	MSM_RPM_SEL_DDR_DMM					= 84,
 
-	MSM_RPM_SEL_LAST = MSM_RPM_SEL_HDMI_SWITCH,
+	MSM_RPM_SEL_LAST = MSM_RPM_SEL_DDR_DMM,
 };
 
 /* RPM resource (4 byte) word ID enum */
@@ -271,12 +277,14 @@ enum {
 	MSM_RPM_ID_PM8921_LVS7					= 201,
 	MSM_RPM_ID_NCP_0					= 202,
 	MSM_RPM_ID_NCP_1					= 203,
-
 	MSM_RPM_ID_CXO_BUFFERS					= 204,
 	MSM_RPM_ID_USB_OTG_SWITCH				= 205,
 	MSM_RPM_ID_HDMI_SWITCH					= 206,
+	MSM_RPM_ID_DDR_DMM_0					= 207,
+	MSM_RPM_ID_DDR_DMM_1					= 208,
+	MSM_RPM_ID_QDSS_CLK					= 209,
 
-	MSM_RPM_ID_LAST = MSM_RPM_ID_HDMI_SWITCH
+	MSM_RPM_ID_LAST = MSM_RPM_ID_QDSS_CLK,
 };
 
 /* RPM resources RPM_ID aliases */
@@ -291,6 +299,22 @@ enum {
 	/* MSM8960 L2 cache power control not via RPM
 	 * MSM_RPM_ID_LAST + 1 indicates invalid */
 	MSM_RPMRS_ID_APPS_L2_CACHE_CTL = MSM_RPM_ID_LAST + 1
+};
+
+/* VDD values are in microvolts */
+#define MSM_RPMRS_VDD_MASK  0x7fffff
+enum {
+	MSM_RPMRS_VDD_MEM_RET_LOW	=  750000,
+	MSM_RPMRS_VDD_MEM_RET_HIGH	=  750000,
+	MSM_RPMRS_VDD_MEM_ACTIVE	= 1050000,
+	MSM_RPMRS_VDD_MEM_MAX		= 1150000,
+};
+
+enum {
+	MSM_RPMRS_VDD_DIG_RET_LOW	=  500000,
+	MSM_RPMRS_VDD_DIG_RET_HIGH	=  750000,
+	MSM_RPMRS_VDD_DIG_ACTIVE	=  950000,
+	MSM_RPMRS_VDD_DIG_MAX		= 1150000,
 };
 
 /* RPM status ID enum */
@@ -416,8 +440,12 @@ enum {
 	MSM_RPM_STATUS_ID_CXO_BUFFERS				= 118,
 	MSM_RPM_STATUS_ID_USB_OTG_SWITCH			= 119,
 	MSM_RPM_STATUS_ID_HDMI_SWITCH				= 120,
+	MSM_RPM_STATUS_ID_DDR_DMM_0				= 121,
+	MSM_RPM_STATUS_ID_DDR_DMM_1				= 122,
+	MSM_RPM_STATUS_ID_EBI1_CH0_RANGE			= 123,
+	MSM_RPM_STATUS_ID_EBI1_CH1_RANGE			= 124,
 
-	MSM_RPM_STATUS_ID_LAST = MSM_RPM_STATUS_ID_HDMI_SWITCH
+	MSM_RPM_STATUS_ID_LAST = MSM_RPM_STATUS_ID_EBI1_CH1_RANGE,
 };
 
 #endif /* __ARCH_ARM_MACH_MSM_RPM_8960_H */

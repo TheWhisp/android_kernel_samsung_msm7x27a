@@ -2,21 +2,21 @@
  * imx-ssi.c  --  ALSA Soc Audio Layer
  *
  * Copyright 2009 Sascha Hauer <s.hauer@pengutronix.de>
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
  *
  * This code is based on code copyrighted by Freescale,
  * Liam Girdwood, Javier Martin and probably others.
  *
  *  This program is free software; you can redistribute  it and/or modify it
  *  under  the terms of  the GNU General  Public License as published by the
- *  Free Software Foundation;  only version 2 of the  License.
+ *  Free Software Foundation;  either version 2 of the  License, or (at your
+ *  option) any later version.
  *
  *
  * The i.MX SSI core has some nasty limitations in AC97 mode. While most
  * sane processor vendors have a FIFO per AC97 slot, the i.MX has only
  * one FIFO which combines all valid receive slots. We cannot even select
  * which slots we want to receive. The WM9712 with which this driver
- * was developped with always sends GPIO status data in slot 12 which
+ * was developed with always sends GPIO status data in slot 12 which
  * we receive in our (PCM-) data stream. The only chance we have is to
  * manually skip this data in the FIQ handler. With sampling rates different
  * from 48000Hz not every frame has valid receive data, so the ratio
@@ -108,11 +108,11 @@ static int imx_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
 		break;
 	case SND_SOC_DAIFMT_DSP_B:
 		/* data on rising edge of bclk, frame high with data */
-		strcr |= SSI_STCR_TFSL;
+		strcr |= SSI_STCR_TFSL | SSI_STCR_TXBIT0;
 		break;
 	case SND_SOC_DAIFMT_DSP_A:
 		/* data on rising edge of bclk, frame high 1clk before data */
-		strcr |= SSI_STCR_TFSL | SSI_STCR_TEFS;
+		strcr |= SSI_STCR_TFSL | SSI_STCR_TXBIT0 | SSI_STCR_TEFS;
 		break;
 	}
 
@@ -657,6 +657,9 @@ static int imx_ssi_probe(struct platform_device *pdev)
 	ssi->dma_params_rx.dma_addr = res->start + SSI_SRX0;
 	ssi->dma_params_tx.dma_addr = res->start + SSI_STX0;
 
+	ssi->dma_params_tx.burstsize = 4;
+	ssi->dma_params_rx.burstsize = 4;
+
 	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "tx0");
 	if (res)
 		ssi->dma_params_tx.dma = res->start;
@@ -664,12 +667,6 @@ static int imx_ssi_probe(struct platform_device *pdev)
 	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "rx0");
 	if (res)
 		ssi->dma_params_rx.dma = res->start;
-
-	if ((cpu_is_mx27() || cpu_is_mx21()) &&
-			!(ssi->flags & IMX_SSI_USE_AC97) &&
-			(ssi->flags & IMX_SSI_DMA)) {
-		ssi->flags |= IMX_SSI_DMA;
-	}
 
 	platform_set_drvdata(pdev, ssi);
 
@@ -777,5 +774,5 @@ module_exit(imx_ssi_exit);
 /* Module information */
 MODULE_AUTHOR("Sascha Hauer, <s.hauer@pengutronix.de>");
 MODULE_DESCRIPTION("i.MX I2S/ac97 SoC Interface");
-MODULE_LICENSE("GPL v2");
-
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:imx-ssi");

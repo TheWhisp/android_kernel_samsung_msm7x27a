@@ -12,6 +12,8 @@
 #include <linux/idr.h>
 #include <linux/slab.h>
 
+#define CREATE_TRACE_POINTS
+#include <trace/events/gpio.h>
 
 /* Optional implementation infrastructure for GPIO interfaces.
  *
@@ -1165,6 +1167,7 @@ struct gpio_chip *gpiochip_find(void *data,
 
 	return chip;
 }
+EXPORT_SYMBOL_GPL(gpiochip_find);
 
 /* These "optional" allocation calls help prevent drivers from stomping
  * on each other, and help provide better diagnostics in debugfs.
@@ -1293,7 +1296,7 @@ EXPORT_SYMBOL_GPL(gpio_request_one);
  * @array:	array of the 'struct gpio'
  * @num:	how many GPIOs in the array
  */
-int gpio_request_array(struct gpio *array, size_t num)
+int gpio_request_array(const struct gpio *array, size_t num)
 {
 	int i, err;
 
@@ -1316,7 +1319,7 @@ EXPORT_SYMBOL_GPL(gpio_request_array);
  * @array:	array of the 'struct gpio'
  * @num:	how many GPIOs in the array
  */
-void gpio_free_array(struct gpio *array, size_t num)
+void gpio_free_array(const struct gpio *array, size_t num)
 {
 	while (num--)
 		gpio_free((array++)->gpio);
@@ -1404,6 +1407,8 @@ int gpio_direction_input(unsigned gpio)
 	status = chip->direction_input(chip, gpio);
 	if (status == 0)
 		clear_bit(FLAG_IS_OUT, &desc->flags);
+
+	trace_gpio_direction(chip->base + gpio, 1, status);
 lose:
 	return status;
 fail:
@@ -1457,6 +1462,8 @@ int gpio_direction_output(unsigned gpio, int value)
 	status = chip->direction_output(chip, gpio, value);
 	if (status == 0)
 		set_bit(FLAG_IS_OUT, &desc->flags);
+	trace_gpio_value(chip->base + gpio, 0, value);
+	trace_gpio_direction(chip->base + gpio, 0, status);
 lose:
 	return status;
 fail:
@@ -1546,10 +1553,13 @@ EXPORT_SYMBOL_GPL(gpio_set_debounce);
 int __gpio_get_value(unsigned gpio)
 {
 	struct gpio_chip	*chip;
+	int value;
 
 	chip = gpio_to_chip(gpio);
 	WARN_ON(chip->can_sleep);
-	return chip->get ? chip->get(chip, gpio - chip->base) : 0;
+	value = chip->get ? chip->get(chip, gpio - chip->base) : 0;
+	trace_gpio_value(gpio, 1, value);
+	return value;
 }
 EXPORT_SYMBOL_GPL(__gpio_get_value);
 
@@ -1568,6 +1578,7 @@ void __gpio_set_value(unsigned gpio, int value)
 
 	chip = gpio_to_chip(gpio);
 	WARN_ON(chip->can_sleep);
+	trace_gpio_value(gpio, 0, value);
 	chip->set(chip, gpio - chip->base, value);
 }
 EXPORT_SYMBOL_GPL(__gpio_set_value);
@@ -1618,10 +1629,13 @@ EXPORT_SYMBOL_GPL(__gpio_to_irq);
 int gpio_get_value_cansleep(unsigned gpio)
 {
 	struct gpio_chip	*chip;
+	int value;
 
 	might_sleep_if(extra_checks);
 	chip = gpio_to_chip(gpio);
-	return chip->get ? chip->get(chip, gpio - chip->base) : 0;
+	value = chip->get ? chip->get(chip, gpio - chip->base) : 0;
+	trace_gpio_value(gpio, 1, value);
+	return value;
 }
 EXPORT_SYMBOL_GPL(gpio_get_value_cansleep);
 
@@ -1631,9 +1645,11 @@ void gpio_set_value_cansleep(unsigned gpio, int value)
 
 	might_sleep_if(extra_checks);
 	chip = gpio_to_chip(gpio);
+	trace_gpio_value(gpio, 0, value);
 	chip->set(chip, gpio - chip->base, value);
 }
 EXPORT_SYMBOL_GPL(gpio_set_value_cansleep);
+
 
 #ifdef CONFIG_DEBUG_FS
 
@@ -1650,56 +1666,11 @@ static void gpiolib_dbg_show(struct seq_file *s, struct gpio_chip *chip)
 
 		is_out = test_bit(FLAG_IS_OUT, &gdesc->flags);
 		seq_printf(s, " gpio-%-3d (%-20.20s) %s %s",
-					gpio, gdesc->label,
+			gpio, gdesc->label,
 			is_out ? "out" : "in ",
-					chip->get
-					? (chip->get(chip, i) ? "hi" : "lo")
-					: "?  ");
-
-		if (!is_out) {
-			int		irq = gpio_to_irq(gpio);
-			struct irq_desc	*desc = irq_to_desc(irq);
-
-			/* This races with request_irq(), set_irq_type(),
-			 * and set_irq_wake() ... but those are "rare".
-			 *
-			 * More significantly, trigger type flags aren't
-			 * currently maintained by genirq.
-			 */
-			if (irq >= 0 && desc->action) {
-				char *trigger;
-
-				switch (desc->status & IRQ_TYPE_SENSE_MASK) {
-				case IRQ_TYPE_NONE:
-					trigger = "(default)";
-					break;
-				case IRQ_TYPE_EDGE_FALLING:
-					trigger = "edge-falling";
-					break;
-				case IRQ_TYPE_EDGE_RISING:
-					trigger = "edge-rising";
-					break;
-				case IRQ_TYPE_EDGE_BOTH:
-					trigger = "edge-both";
-					break;
-				case IRQ_TYPE_LEVEL_HIGH:
-					trigger = "level-high";
-					break;
-				case IRQ_TYPE_LEVEL_LOW:
-					trigger = "level-low";
-					break;
-				default:
-					trigger = "?trigger?";
-					break;
-				}
-
-				seq_printf(s, " irq-%d %s%s",
-						irq, trigger,
-						(desc->status & IRQ_WAKEUP)
-						? " wakeup" : "");
-			}
-		}
-
+			chip->get
+				? (chip->get(chip, i) ? "hi" : "lo")
+				: "?  ");
 		seq_printf(s, "\n");
 	}
 }
@@ -1756,126 +1727,13 @@ static const struct file_operations gpiolib_operations = {
 	.release	= single_release,
 };
 
-static u32 gpio_debug_suspend;
-
-static void gpiolib_power_dbg_show(struct gpio_chip *chip)
-{
-	unsigned		i;
-	unsigned		gpio = chip->base;
-	struct gpio_desc	*gdesc = &gpio_desc[gpio];
-	int			is_out;
-
-	for (i = 0; i < chip->ngpio; i++, gpio++, gdesc++) {
-		if (!test_bit(FLAG_REQUESTED, &gdesc->flags))
-			continue;
-
-		is_out = test_bit(FLAG_IS_OUT, &gdesc->flags);
-
-		if (is_out) {
-			pr_debug(" gpio-%-3d (%-20.20s) out %s\n",
-			gpio, gdesc->label,
-			chip->get
-				? (chip->get(chip, i) ? "hi" : "lo")
-				: "?  ");
-		} else {
-			int		irq = gpio_to_irq(gpio);
-			struct irq_desc	*desc = irq_to_desc(irq);
-
-			if (irq >= 0 && desc->action) {
-				char *trigger;
-
-				switch (desc->status & IRQ_TYPE_SENSE_MASK) {
-				case IRQ_TYPE_NONE:
-					trigger = "(default)";
-					break;
-				case IRQ_TYPE_EDGE_FALLING:
-					trigger = "edge-falling";
-					break;
-				case IRQ_TYPE_EDGE_RISING:
-					trigger = "edge-rising";
-					break;
-				case IRQ_TYPE_EDGE_BOTH:
-					trigger = "edge-both";
-					break;
-				case IRQ_TYPE_LEVEL_HIGH:
-					trigger = "level-high";
-					break;
-				case IRQ_TYPE_LEVEL_LOW:
-					trigger = "level-low";
-					break;
-				default:
-					trigger = "?trigger?";
-					break;
-				}
-
-				pr_debug(" gpio-%-3d (%-20.20s) in %s"
-						" irq-%d %s%s\n",
-						gpio, gdesc->label,
-						chip->get
-						? (chip->get(chip, i) ? "hi" : "lo")
-						: "?  ",
-					irq, trigger,
-					(desc->status & IRQ_WAKEUP)
-						? " wakeup" : "");
-			} else {
-				pr_debug(" gpio-%-3d (%-20.20s) in %s\n",
-						gpio, gdesc->label,
-						chip->get
-						? (chip->get(chip, i) ? "hi" : "lo")
-						: "?  ");
-			}
-		}
-
-	}
-}
-
-int gpiolib_power_show(void)
-{
-	struct gpio_chip	*chip = NULL;
-	unsigned		gpio;
-	int			started = 0;
-
-	if (likely(!gpio_debug_suspend))
-		return 0;
-
-	for (gpio = 0; gpio_is_valid(gpio); gpio++) {
-		struct device *dev;
-
-		if (chip == gpio_desc[gpio].chip)
-			continue;
-		chip = gpio_desc[gpio].chip;
-		if (!chip)
-			continue;
-
-		pr_debug("%sGPIOs %d-%d", started ? "\n" : "",
-				chip->base, chip->base + chip->ngpio - 1);
-		dev = chip->dev;
-		if (dev)
-			pr_debug(", %s/%s",
-				dev->bus ? dev->bus->name : "no-bus",
-				dev_name(dev));
-		if (chip->label)
-			pr_debug(", %s", chip->label);
-		if (chip->can_sleep)
-			pr_debug(", can sleep");
-
-		started = 1;
-		gpiolib_power_dbg_show(chip);
-	}
-	return 0;
-}
-
 static int __init gpiolib_debugfs_init(void)
 {
 	/* /sys/kernel/debug/gpio */
 	(void) debugfs_create_file("gpio", S_IFREG | S_IRUGO,
 				NULL, NULL, &gpiolib_operations);
-	(void) debugfs_create_u32("gpio_debug_suspend", S_IRUGO | S_IWUSR,
-				NULL, &gpio_debug_suspend);
 	return 0;
 }
 subsys_initcall(gpiolib_debugfs_init);
 
-#else
-int gpiolib_power_show(void) { return 0; }
 #endif	/* DEBUG_FS */

@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2008-2009, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -12,11 +12,6 @@
  */
 
 #include "mdp.h"
-
-#if defined(CONFIG_MACH_JENA)
-extern unsigned long mdp_timer_duration;
-extern boolean mdp_continues_display;
-#endif
 
 /* mdp primary csc limit vector */
 uint32 mdp_plv[] = { 0x10, 0xeb, 0x10, 0xf0 };
@@ -592,9 +587,6 @@ static void mdp_load_lut_param(void)
 void mdp_hw_init(void)
 {
 	int i;
-#if defined(CONFIG_MACH_JENA)
-	mdp_timer_duration = (100 * HZ);   /* 100 sec */
-#endif
 
 	/* MDP cmd block enable */
 	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
@@ -640,17 +632,9 @@ void mdp_hw_init(void)
 	MDP_OUTP(MDP_CMD_DEBUG_ACCESS_BASE + 0x01e4, 0);
 
 #ifndef CONFIG_FB_MSM_MDP22
-#if defined(CONFIG_MACH_JENA)
-/* skip the code to avoid LCDC is to be disable */
-if (!mdp_continues_display)
-#endif
-{
 	MDP_OUTP(MDP_BASE + 0xE0000, 0);
 	MDP_OUTP(MDP_BASE + 0x100, 0xffffffff);
 	MDP_OUTP(MDP_BASE + 0x90070, 0);
-	MDP_OUTP(MDP_BASE + 0x94010, 1);
-	MDP_OUTP(MDP_BASE + 0x9401c, 2);
-}
 #endif
 
 	/*

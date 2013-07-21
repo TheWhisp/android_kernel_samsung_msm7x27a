@@ -1,4 +1,4 @@
-/* Copyright (c) 2002,2007-2012, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2002,2007-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -26,6 +26,7 @@
 
 #define KGSL_TIMEOUT_NONE       0
 #define KGSL_TIMEOUT_DEFAULT    0xFFFFFFFF
+#define KGSL_TIMEOUT_PART       2000 /* 2 sec */
 
 #define FIRST_TIMEOUT (HZ / 2)
 
@@ -67,7 +68,7 @@ struct kgsl_functable {
 		unsigned int offsetwords, unsigned int *value);
 	void (*regwrite) (struct kgsl_device *device,
 		unsigned int offsetwords, unsigned int value);
-	int (*idle) (struct kgsl_device *device, unsigned int timeout);
+	int (*idle) (struct kgsl_device *device);
 	unsigned int (*isidle) (struct kgsl_device *device);
 	int (*suspend_context) (struct kgsl_device *device);
 	int (*start) (struct kgsl_device *device, unsigned int init_ram);
@@ -96,7 +97,8 @@ struct kgsl_functable {
 	/* Optional functions - these functions are not mandatory.  The
 	   driver will check that the function pointer is not NULL before
 	   calling the hook */
-	void (*setstate) (struct kgsl_device *device, uint32_t flags);
+	void (*setstate) (struct kgsl_device *device, unsigned int context_id,
+			uint32_t flags);
 	int (*drawctxt_create) (struct kgsl_device *device,
 		struct kgsl_pagetable *pagetable, struct kgsl_context *context,
 		uint32_t flags);
@@ -189,6 +191,12 @@ struct kgsl_device {
 	struct work_struct ts_expired_ws;
 	struct list_head events;
 	s64 on_time;
+
+	/* page fault debugging parameters */
+	struct work_struct print_fault_ib;
+	unsigned int page_fault_ptbase;
+	unsigned int page_fault_ib1;
+	unsigned int page_fault_rptr;
 };
 
 struct kgsl_context {
@@ -255,9 +263,9 @@ static inline void kgsl_regwrite(struct kgsl_device *device,
 	device->ftbl->regwrite(device, offsetwords, value);
 }
 
-static inline int kgsl_idle(struct kgsl_device *device, unsigned int timeout)
+static inline int kgsl_idle(struct kgsl_device *device)
 {
-	return device->ftbl->idle(device, timeout);
+	return device->ftbl->idle(device);
 }
 
 static inline unsigned int kgsl_gpuid(struct kgsl_device *device)

@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -29,7 +29,6 @@
 #include <linux/clk.h>
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
-#include <mach/clk.h>
 
 #include "msm_fb.h"
 
@@ -66,8 +65,8 @@ static int lcdc_off(struct platform_device *pdev)
 	mfd = platform_get_drvdata(pdev);
 	ret = panel_next_off(pdev);
 
-	clk_disable(pixel_mdp_clk);
-	clk_disable(pixel_lcdc_clk);
+	clk_disable_unprepare(pixel_mdp_clk);
+	clk_disable_unprepare(pixel_lcdc_clk);
 
 	if (lcdc_pdata && lcdc_pdata->lcdc_power_save)
 		lcdc_pdata->lcdc_power_save(0);
@@ -78,11 +77,11 @@ static int lcdc_off(struct platform_device *pdev)
 #ifndef CONFIG_MSM_BUS_SCALING
 	if (mfd->ebi1_clk) {
 		if (mdp_rev == MDP_REV_303) {
-			if (clk_set_min_rate(mfd->ebi1_clk, 0))
+			if (clk_set_rate(mfd->ebi1_clk, 0))
 				pr_err("%s: ebi1_lcdc_clk set rate failed\n",
 					__func__);
 		}
-		clk_disable(mfd->ebi1_clk);
+		clk_disable_unprepare(mfd->ebi1_clk);
 	}
 #else
 	mdp_bus_scale_update_request(0);
@@ -117,38 +116,29 @@ static int lcdc_on(struct platform_device *pdev)
 
 	if (mfd->ebi1_clk) {
 		if (mdp_rev == MDP_REV_303) {
-			if (clk_set_min_rate(mfd->ebi1_clk, 65000000))
+			if (clk_set_rate(mfd->ebi1_clk, 65000000))
 				pr_err("%s: ebi1_lcdc_clk set rate failed\n",
 					__func__);
 		} else {
 			clk_set_rate(mfd->ebi1_clk, pm_qos_rate * 1000);
 		}
-		clk_enable(mfd->ebi1_clk);
+		clk_prepare_enable(mfd->ebi1_clk);
 	}
 
 #endif
-
 	mfd = platform_get_drvdata(pdev);
 
 	mfd->fbi->var.pixclock = clk_round_rate(pixel_mdp_clk,
 					mfd->fbi->var.pixclock);
-
-#if defined(CONFIG_MACH_TREBON) || defined(CONFIG_MACH_GEIM) \
-						|| defined(CONFIG_MACH_JENA)
 	ret = clk_set_rate(pixel_mdp_clk, mfd->fbi->var.pixclock);
-
-	pr_err("%s:Trebon: set MDP LCDC pixel clock to %u\n",
-		__func__, mfd->fbi->var.pixclock);
-
 	if (ret) {
 		pr_err("%s: Can't set MDP LCDC pixel clock to rate %u\n",
 			__func__, mfd->fbi->var.pixclock);
 		goto out;
 	}
-#endif
 
-	clk_enable(pixel_mdp_clk);
-	clk_enable(pixel_lcdc_clk);
+	clk_prepare_enable(pixel_mdp_clk);
+	clk_prepare_enable(pixel_lcdc_clk);
 
 	if (lcdc_pdata && lcdc_pdata->lcdc_power_save)
 		lcdc_pdata->lcdc_power_save(1);
@@ -168,13 +158,33 @@ static int lcdc_probe(struct platform_device *pdev)
 	struct platform_device *mdp_dev = NULL;
 	struct msm_fb_panel_data *pdata = NULL;
 	int rc;
+	struct clk *ebi1_clk = NULL;
 
 	if (pdev->id == 0) {
 		lcdc_pdata = pdev->dev.platform_data;
+		pixel_mdp_clk = clk_get(&pdev->dev, "mdp_clk");
+		if (IS_ERR(pixel_mdp_clk)) {
+			pr_err("Couldnt find pixel_mdp_clk\n");
+			return -EINVAL;
+		}
+
+		pixel_lcdc_clk = clk_get(&pdev->dev, "lcdc_clk");
+		if (IS_ERR(pixel_lcdc_clk)) {
+			pr_err("Couldnt find pixel_lcdc_clk\n");
+			return -EINVAL;
+		}
+
+#ifndef CONFIG_MSM_BUS_SCALING
+		ebi1_clk = clk_get(&pdev->dev, "mem_clk");
+		if (IS_ERR(ebi1_clk))
+			return PTR_ERR(ebi1_clk);
+#endif
+
 		return 0;
 	}
 
 	mfd = platform_get_drvdata(pdev);
+	mfd->ebi1_clk = ebi1_clk;
 
 	if (!mfd)
 		return -ENODEV;
@@ -201,7 +211,7 @@ static int lcdc_probe(struct platform_device *pdev)
 	if (platform_device_add_data
 	    (mdp_dev, pdev->dev.platform_data,
 	     sizeof(struct msm_fb_panel_data))) {
-		printk(KERN_ERR "lcdc_probe: platform_device_add_data failed!\n");
+		pr_err("lcdc_probe: platform_device_add_data failed!\n");
 		platform_device_put(mdp_dev);
 		return -ENOMEM;
 	}
@@ -233,11 +243,6 @@ static int lcdc_probe(struct platform_device *pdev)
 	fbi->var.hsync_len = mfd->panel_info.lcdc.h_pulse_width;
 	fbi->var.vsync_len = mfd->panel_info.lcdc.v_pulse_width;
 
-#ifndef CONFIG_MSM_BUS_SCALING
-	mfd->ebi1_clk = clk_get(NULL, "ebi1_lcdc_clk");
-	if (IS_ERR(mfd->ebi1_clk))
-		return PTR_ERR(mfd->ebi1_clk);
-#endif
 	/*
 	 * set driver data
 	 */
@@ -277,30 +282,6 @@ static int lcdc_register_driver(void)
 
 static int __init lcdc_driver_init(void)
 {
-
-	pixel_mdp_clk = clk_get(NULL, "pixel_mdp_clk");
-	if (IS_ERR(pixel_mdp_clk))
-		pixel_mdp_clk = NULL;
-
-	if (pixel_mdp_clk) {
-		pixel_lcdc_clk = clk_get(NULL, "pixel_lcdc_clk");
-		if (IS_ERR(pixel_lcdc_clk)) {
-			printk(KERN_ERR "Couldnt find pixel_lcdc_clk\n");
-			return -EINVAL;
-		}
-	} else {
-		pixel_mdp_clk = clk_get(NULL, "mdp_lcdc_pclk_clk");
-		if (IS_ERR(pixel_mdp_clk)) {
-			printk(KERN_ERR "Couldnt find mdp_lcdc_pclk_clk\n");
-			return -EINVAL;
-		}
-
-		pixel_lcdc_clk = clk_get(NULL, "mdp_lcdc_pad_pclk_clk");
-		if (IS_ERR(pixel_lcdc_clk)) {
-			printk(KERN_ERR "Couldnt find mdp_lcdc_pad_pclk_clk\n");
-			return -EINVAL;
-		}
-	}
 
 	return lcdc_register_driver();
 }

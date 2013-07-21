@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -38,13 +38,13 @@ static inline void sirc_get_group_offset_mask(unsigned int irq,
 	*mask = 1 << *offset;
 }
 
-static void sirc_irq_mask(unsigned int irq)
+static void sirc_irq_mask(struct irq_data *d)
 {
 	void *reg_enable;
 	unsigned int group, offset, mask;
 	unsigned int val;
 
-	sirc_get_group_offset_mask(irq, &group, &offset, &mask);
+	sirc_get_group_offset_mask(d->irq, &group, &offset, &mask);
 
 	reg_enable = sirc_regs.int_enable + group * 4;
 	val = __raw_readl(reg_enable);
@@ -53,16 +53,16 @@ static void sirc_irq_mask(unsigned int irq)
 	mb();
 }
 
-static void sirc_irq_unmask(unsigned int irq)
+static void sirc_irq_unmask(struct irq_data *d)
 {
 	void *reg_enable;
 	void *reg_clear;
 	unsigned int group, offset, mask;
 	unsigned int val;
 
-	sirc_get_group_offset_mask(irq, &group, &offset, &mask);
+	sirc_get_group_offset_mask(d->irq, &group, &offset, &mask);
 
-	if (irq_desc[irq].handle_irq == handle_level_irq) {
+	if (irq_desc[d->irq].handle_irq == handle_level_irq) {
 		reg_clear = sirc_regs.int_clear + group * 4;
 		__raw_writel(mask, reg_clear);
 	}
@@ -74,29 +74,29 @@ static void sirc_irq_unmask(unsigned int irq)
 	mb();
 }
 
-static void sirc_irq_ack(unsigned int irq)
+static void sirc_irq_ack(struct irq_data *d)
 {
 	void *reg_clear;
 	unsigned int group, offset, mask;
 
-	sirc_get_group_offset_mask(irq, &group, &offset, &mask);
+	sirc_get_group_offset_mask(d->irq, &group, &offset, &mask);
 
 	reg_clear = sirc_regs.int_clear + group * 4;
 	__raw_writel(mask, reg_clear);
 }
 
-static int sirc_irq_set_wake(unsigned int irq, unsigned int on)
+static int sirc_irq_set_wake(struct irq_data *d, unsigned int on)
 {
 	return 0;
 }
 
-static int sirc_irq_set_type(unsigned int irq, unsigned int flow_type)
+static int sirc_irq_set_type(struct irq_data *d, unsigned int flow_type)
 {
 	void *reg_polarity, *reg_type;
 	unsigned int group, offset, mask;
 	unsigned int val;
 
-	sirc_get_group_offset_mask(irq, &group, &offset, &mask);
+	sirc_get_group_offset_mask(d->irq, &group, &offset, &mask);
 
 	reg_polarity = sirc_regs.int_polarity + group * 4;
 	val = __raw_readl(reg_polarity);
@@ -113,10 +113,10 @@ static int sirc_irq_set_type(unsigned int irq, unsigned int flow_type)
 
 	if (flow_type & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING)) {
 		val |= mask;
-		irq_desc[irq].handle_irq = handle_edge_irq;
+		irq_desc[d->irq].handle_irq = handle_edge_irq;
 	} else {
 		val &= ~mask;
-		irq_desc[irq].handle_irq = handle_level_irq;
+		irq_desc[d->irq].handle_irq = handle_level_irq;
 	}
 
 	__raw_writel(val, reg_type);
@@ -137,16 +137,16 @@ static void sirc_irq_handler(unsigned int irq, struct irq_desc *desc)
 		generic_handle_irq(sirq + FIRST_SIRC_IRQ);
 	}
 
-	desc->chip->ack(irq);
+	irq_desc_get_chip(desc)->irq_ack(irq_get_irq_data(irq));
 }
 
 static struct irq_chip sirc_irq_chip = {
-	.name      = "sirc",
-	.ack       = sirc_irq_ack,
-	.mask      = sirc_irq_mask,
-	.unmask    = sirc_irq_unmask,
-	.set_wake  = sirc_irq_set_wake,
-	.set_type  = sirc_irq_set_type,
+	.name		= "sirc",
+	.irq_ack	= sirc_irq_ack,
+	.irq_mask	= sirc_irq_mask,
+	.irq_unmask	= sirc_irq_unmask,
+	.irq_set_wake	= sirc_irq_set_wake,
+	.irq_set_type	= sirc_irq_set_type,
 };
 
 void __init msm_init_sirc(void)
@@ -157,11 +157,10 @@ void __init msm_init_sirc(void)
 	sirc_int_enable[1] = 0;
 
 	for (i = FIRST_SIRC_IRQ; i <= LAST_SIRC_IRQ; i++) {
-		set_irq_chip(i, &sirc_irq_chip);
-		set_irq_handler(i, handle_edge_irq);
+		irq_set_chip_and_handler(i, &sirc_irq_chip, handle_edge_irq);
 		set_irq_flags(i, IRQF_VALID);
 	}
 
-	set_irq_chained_handler(INT_SIRC_0, sirc_irq_handler);
-	set_irq_wake(INT_SIRC_0, 1);
+	irq_set_chained_handler(INT_SIRC_0, sirc_irq_handler);
+	irq_set_irq_wake(INT_SIRC_0, 1);
 }

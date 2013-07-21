@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 Google, Inc.
- * Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -31,7 +31,6 @@
 #include <asm/mach/mmc.h>
 #include <mach/msm_hsusb.h>
 #include <mach/usbdiag.h>
-#include <mach/usb_gadget_fserial.h>
 #include <mach/rpc_hsusb.h>
 
 #include "clock-pcom.h"
@@ -407,12 +406,21 @@ struct platform_device msm_device_smd = {
 	.id	= -1,
 };
 
-struct resource msm_dmov_resource[] = {
+static struct resource msm_dmov_resource[] = {
 	{
 		.start = INT_ADM_AARM,
-		.end = (resource_size_t)MSM_DMOV_BASE,
 		.flags = IORESOURCE_IRQ,
 	},
+	{
+		.start = 0xA9700000,
+		.end = 0xA9700000 + SZ_4K - 1,
+		.flags = IORESOURCE_MEM,
+	},
+};
+
+static struct msm_dmov_pdata msm_dmov_pdata = {
+	.sd = 3,
+	.sd_size = 0x400,
 };
 
 struct platform_device msm_device_dmov = {
@@ -420,6 +428,9 @@ struct platform_device msm_device_dmov = {
 	.id	= -1,
 	.resource = msm_dmov_resource,
 	.num_resources = ARRAY_SIZE(msm_dmov_resource),
+	.dev = {
+		.platform_data = &msm_dmov_pdata,
+	},
 };
 
 #define MSM_SDC1_BASE         0xA0400000
@@ -925,16 +936,16 @@ static DEFINE_CLK_PCOM(vfe_clk,		VFE_CLK, OFF);
 static DEFINE_CLK_PCOM(vfe_mdc_clk,	VFE_MDC_CLK, OFF);
 
 struct clk_lookup msm_clocks_7x25[] = {
-	CLK_LOOKUP("adm_clk",		adm_clk.c,	NULL),
+	CLK_LOOKUP("core_clk",		adm_clk.c,	"msm_dmov"),
 	CLK_LOOKUP("adsp_clk",		adsp_clk.c,	NULL),
 	CLK_LOOKUP("ebi1_clk",		ebi1_clk.c,	NULL),
 	CLK_LOOKUP("ebi2_clk",		ebi2_clk.c,	NULL),
 	CLK_LOOKUP("ecodec_clk",	ecodec_clk.c,	NULL),
-	CLK_LOOKUP("gp_clk",		gp_clk.c,		NULL),
-	CLK_LOOKUP("i2c_clk",		i2c_clk.c,	"msm_i2c.0"),
+	CLK_LOOKUP("core_clk",		gp_clk.c,		NULL),
+	CLK_LOOKUP("core_clk",		i2c_clk.c,	"msm_i2c.0"),
 	CLK_LOOKUP("icodec_rx_clk",	icodec_rx_clk.c,	NULL),
 	CLK_LOOKUP("icodec_tx_clk",	icodec_tx_clk.c,	NULL),
-	CLK_LOOKUP("imem_clk",		imem_clk.c,	NULL),
+	CLK_LOOKUP("mem_clk",		imem_clk.c,	NULL),
 	CLK_LOOKUP("mdc_clk",		mdc_clk.c,	NULL),
 	CLK_LOOKUP("mddi_clk",		pmdh_clk.c,	NULL),
 	CLK_LOOKUP("mdp_clk",		mdp_clk.c,	NULL),
@@ -944,22 +955,24 @@ struct clk_lookup msm_clocks_7x25[] = {
 	CLK_LOOKUP("pbus_clk",		pbus_clk.c,	NULL),
 	CLK_LOOKUP("pcm_clk",		pcm_clk.c,	NULL),
 	CLK_LOOKUP("sdac_clk",		sdac_clk.c,	NULL),
-	CLK_LOOKUP("sdc_clk",		sdc1_clk.c,	"msm_sdcc.1"),
-	CLK_LOOKUP("sdc_pclk",		sdc1_p_clk.c,	"msm_sdcc.1"),
-	CLK_LOOKUP("sdc_clk",		sdc2_clk.c,	"msm_sdcc.2"),
-	CLK_LOOKUP("sdc_pclk",		sdc2_p_clk.c,	"msm_sdcc.2"),
-	CLK_LOOKUP("sdc_clk",		sdc3_clk.c,	"msm_sdcc.3"),
-	CLK_LOOKUP("sdc_pclk",		sdc3_p_clk.c,	"msm_sdcc.3"),
-	CLK_LOOKUP("sdc_clk",		sdc4_clk.c,	"msm_sdcc.4"),
-	CLK_LOOKUP("sdc_pclk",		sdc4_p_clk.c,	"msm_sdcc.4"),
-	CLK_LOOKUP("uart_clk",		uart1_clk.c,	"msm_serial.0"),
-	CLK_LOOKUP("uart_clk",		uart2_clk.c,	"msm_serial.1"),
-	CLK_LOOKUP("uart_clk",		uart3_clk.c,	"msm_serial.2"),
-	CLK_LOOKUP("uartdm_clk",	uart1dm_clk.c,	"msm_serial_hs.0"),
-	CLK_LOOKUP("uartdm_clk",	uart2dm_clk.c,	"msm_serial_hs.1"),
-	CLK_LOOKUP("usb_hs_clk",	usb_hs_clk.c,	NULL),
-	CLK_LOOKUP("usb_hs_pclk",	usb_hs_p_clk.c,	NULL),
-	CLK_LOOKUP("usb_otg_clk",	usb_otg_clk.c,	NULL),
+	CLK_LOOKUP("core_clk",		sdc1_clk.c,	"msm_sdcc.1"),
+	CLK_LOOKUP("iface_clk",		sdc1_p_clk.c,	"msm_sdcc.1"),
+	CLK_LOOKUP("core_clk",		sdc2_clk.c,	"msm_sdcc.2"),
+	CLK_LOOKUP("iface_clk",		sdc2_p_clk.c,	"msm_sdcc.2"),
+	CLK_LOOKUP("core_clk",		sdc3_clk.c,	"msm_sdcc.3"),
+	CLK_LOOKUP("iface_clk",		sdc3_p_clk.c,	"msm_sdcc.3"),
+	CLK_LOOKUP("core_clk",		sdc4_clk.c,	"msm_sdcc.4"),
+	CLK_LOOKUP("iface_clk",		sdc4_p_clk.c,	"msm_sdcc.4"),
+	CLK_LOOKUP("core_clk",		uart1_clk.c,	"msm_serial.0"),
+	CLK_LOOKUP("core_clk",		uart2_clk.c,	"msm_serial.1"),
+	CLK_LOOKUP("core_clk",		uart3_clk.c,	"msm_serial.2"),
+	CLK_LOOKUP("core_clk",		uart1dm_clk.c,	"msm_serial_hs.0"),
+	CLK_LOOKUP("core_clk",		uart2dm_clk.c,	"msm_serial_hs.1"),
+	CLK_LOOKUP("alt_core_clk",	usb_hs_clk.c,	"msm_otg"),
+	CLK_LOOKUP("iface_clk",		usb_hs_p_clk.c,	"msm_otg"),
+	CLK_LOOKUP("alt_core_clk",	usb_hs_clk.c,	"msm_hsusb_peripheral"),
+	CLK_LOOKUP("iface_clk",		usb_hs_p_clk.c,	"msm_hsusb_peripheral"),
+	CLK_LOOKUP("alt_core_clk",	usb_otg_clk.c,	NULL),
 	CLK_LOOKUP("vdc_clk",		vdc_clk.c,	NULL),
 	CLK_LOOKUP("vfe_clk",		vfe_clk.c,	NULL),
 	CLK_LOOKUP("vfe_mdc_clk",	vfe_mdc_clk.c,	NULL),

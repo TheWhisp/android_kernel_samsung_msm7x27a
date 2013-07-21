@@ -597,6 +597,8 @@ struct hid_usage_id {
  * @input_mapping: invoked on input registering before mapping an usage
  * @input_mapped: invoked on input registering after mapping an usage
  * @feature_mapping: invoked on feature registering
+ * @input_register: called just before input device is registered after reports
+ * 		    are parsed.
  * @suspend: invoked on suspend (NULL means nop)
  * @resume: invoked on resume if device was not reset (NULL means nop)
  * @reset_resume: invoked on resume if device was reset (NULL means nop)
@@ -643,6 +645,8 @@ struct hid_driver {
 	void (*feature_mapping)(struct hid_device *hdev,
 			struct hid_field *field,
 			struct hid_usage *usage);
+	int (*input_register)(struct hid_device *hdev, struct hid_input
+			*hidinput);
 #ifdef CONFIG_PM
 	int (*suspend)(struct hid_device *hdev, pm_message_t message);
 	int (*resume)(struct hid_device *hdev);
@@ -799,7 +803,7 @@ static inline int __must_check hid_parse(struct hid_device *hdev)
  *
  * Call this in probe function *after* hid_parse. This will setup HW buffers
  * and start the device (if not deffered to device open). hid_hw_stop must be
- * called if this was successfull.
+ * called if this was successful.
  */
 static inline int __must_check hid_hw_start(struct hid_device *hdev,
 		unsigned int connect_mask)

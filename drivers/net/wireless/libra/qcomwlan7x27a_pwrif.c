@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -11,7 +11,7 @@
  */
 
 #include <linux/device.h>
-#include <mach/vreg.h>
+#include <linux/regulator/consumer.h>
 #include <linux/gpio.h>
 #include <mach/rpc_pmapp.h>
 #include <linux/err.h>
@@ -32,25 +32,61 @@ enum {
 
 struct wlan_vreg_info {
 	const char *vreg_id;
-	unsigned int vreg_level;
+	unsigned int level_min;
+	unsigned int level_max;
 	unsigned int pmapp_id;
 	unsigned int is_vreg_pin_controlled;
-	struct vreg *vreg;
+	struct regulator *reg;
 };
 
 
 static struct wlan_vreg_info vreg_info[] = {
-	{"bt", 3050, 21, 1, NULL},
-	{"msme1", 1800, 2, 0, NULL},
-	{"wlan_tcx0", 1800, 53, 0, NULL},
-	{"wlan4", 1200, 23, 0, NULL},
-	{"wlan2", 1350, 9, 1, NULL},
-	{"wlan3", 1200, 10, 1, NULL} };
+	{"bt",        3050000, 3050000, 21, 1, NULL},
+	{"msme1",     1800000, 1800000, 2,  0, NULL},
+	{"wlan_tcx0", 1800000, 1800000, 53, 0, NULL},
+	{"wlan4",     1200000, 1200000, 23, 0, NULL},
+	{"wlan2",     1350000, 1350000, 9,  1, NULL},
+	{"wlan3",     1200000, 1200000, 10, 1, NULL},
+};
 
+static int qrf6285_init_regs(void)
+{
+	struct regulator_bulk_data regs[ARRAY_SIZE(vreg_info)];
+	int i, rc;
+
+	for (i = 0; i < ARRAY_SIZE(regs); i++) {
+		regs[i].supply = vreg_info[i].vreg_id;
+		regs[i].min_uV = vreg_info[i].level_min;
+		regs[i].max_uV = vreg_info[i].level_max;
+	}
+
+	rc = regulator_bulk_get(NULL, ARRAY_SIZE(regs), regs);
+	if (rc) {
+		pr_err("%s: could not get regulators: %d\n", __func__, rc);
+		goto out;
+	}
+
+	for (i = 0; i < ARRAY_SIZE(regs); i++)
+		vreg_info[i].reg = regs[i].consumer;
+
+	return 0;
+
+out:
+	return rc;
+}
 
 int chip_power_qrf6285(bool on)
 {
+	static bool init_done;
 	int rc = 0, index = 0;
+
+	if (unlikely(!init_done)) {
+		rc = qrf6285_init_regs();
+		if (rc)
+			return rc;
+		else
+			init_done = true;
+	}
 
 	if (on) {
 		rc = gpio_request(WLAN_GPIO_EXT_POR_N, "WLAN_DEEP_SLEEP_N");
@@ -89,34 +125,24 @@ int chip_power_qrf6285(bool on)
 		}
 	}
 
-
 	for (index = 0; index < ARRAY_SIZE(vreg_info); index++) {
-		vreg_info[index].vreg = vreg_get(NULL,
-						vreg_info[index].vreg_id);
-		if (IS_ERR(vreg_info[index].vreg)) {
-			pr_err("%s:%s vreg get failed %ld\n",
-				__func__, vreg_info[index].vreg_id,
-				PTR_ERR(vreg_info[index].vreg));
-			rc = PTR_ERR(vreg_info[index].vreg);
-			if (on)
-				goto vreg_fail;
-			else
-				continue;
-		}
 		if (on) {
-			rc = vreg_set_level(vreg_info[index].vreg,
-					 vreg_info[index].vreg_level);
+
+			rc = regulator_set_voltage(vreg_info[index].reg,
+						vreg_info[index].level_min,
+						vreg_info[index].level_max);
 			if (rc) {
-				pr_err("%s:%s vreg set level failed %d\n",
+				pr_err("%s:%s set voltage failed %d\n",
 					__func__, vreg_info[index].vreg_id, rc);
+
 				goto vreg_fail;
 			}
 
-			rc = vreg_enable(vreg_info[index].vreg);
+			rc = regulator_enable(vreg_info[index].reg);
 			if (rc) {
 				pr_err("%s:%s vreg enable failed %d\n",
-					__func__,
-					vreg_info[index].vreg_id, rc);
+					__func__, vreg_info[index].vreg_id, rc);
+
 				goto vreg_fail;
 			}
 
@@ -129,9 +155,10 @@ int chip_power_qrf6285(bool on)
 						" for enable failed %d\n",
 						__func__,
 						vreg_info[index].vreg_id, rc);
-					goto vreg_pin_ctrl_fail;
+					goto vreg_clock_vote_fail;
 				}
 			}
+
 			/*At this point CLK_PWR_REQ is high*/
 			if (WLAN_VREG_L6 == index) {
 				/*
@@ -161,21 +188,19 @@ int chip_power_qrf6285(bool on)
 						vreg_info[index].vreg_id, rc);
 				}
 			}
-			rc = vreg_disable(vreg_info[index].vreg);
+			rc = regulator_disable(vreg_info[index].reg);
 			if (rc) {
 				pr_err("%s:%s vreg disable failed %d\n",
-					__func__,
-					vreg_info[index].vreg_id, rc);
+					__func__, vreg_info[index].vreg_id, rc);
 			}
 		}
 	}
 	return 0;
 vreg_fail:
 	index--;
-vreg_pin_ctrl_fail:
 vreg_clock_vote_fail:
-	while (index > 0) {
-		rc = vreg_disable(vreg_info[index].vreg);
+	while (index >= 0) {
+		rc = regulator_disable(vreg_info[index].reg);
 		if (rc) {
 			pr_err("%s:%s vreg disable failed %d\n",
 				__func__, vreg_info[index].vreg_id, rc);

@@ -34,7 +34,6 @@ MODULE_LICENSE("GPL");
 
 #define INPUT_DEVICES	256
 
-
 static LIST_HEAD(input_dev_list);
 static LIST_HEAD(input_handler_list);
 
@@ -148,20 +147,9 @@ static void input_start_autorepeat(struct input_dev *dev, int code)
 	if (test_bit(EV_REP, dev->evbit) &&
 	    dev->rep[REP_PERIOD] && dev->rep[REP_DELAY] &&
 	    dev->timer.data) {
-		/*
-		* Samsung Bluetooth feature
-		* to avoid auto-repeat of bluetooth A2DP
-		*/
-		const char strBluetooth[] = "AVRCP";
-		if (dev->name != NULL && !strnstr(dev->name,
-			strBluetooth, sizeof(strBluetooth))) {
-			printk(KERN_INFO "input: %s\n",
-				dev->name ? dev->name : "Unspecified device");
-
-			dev->repeat_key = code;
-			mod_timer(&dev->timer,
-			jiffies + msecs_to_jiffies(dev->rep[REP_DELAY]));
-		}
+		dev->repeat_key = code;
+		mod_timer(&dev->timer,
+			  jiffies + msecs_to_jiffies(dev->rep[REP_DELAY]));
 	}
 }
 
@@ -463,7 +451,6 @@ int input_grab_device(struct input_handle *handle)
 	}
 
 	rcu_assign_pointer(dev->grab, handle);
-	synchronize_rcu();
 
  out:
 	mutex_unlock(&dev->mutex);
@@ -606,14 +593,9 @@ static void input_dev_release_keys(struct input_dev *dev)
 
 	if (is_event_supported(EV_KEY, dev->evbit, EV_MAX)) {
 		for (code = 0; code <= KEY_MAX; code++) {
-			if ((code != KEY_VOLUMEDOWN) &&
-				(code != KEY_VOLUMEUP)) {
-				if (is_event_supported(code,
-							dev->keybit, KEY_MAX) &&
-						__test_and_clear_bit(code,
-							dev->key)) {
-					input_pass_event(dev, EV_KEY, code, 0);
-				}
+			if (is_event_supported(code, dev->keybit, KEY_MAX) &&
+			    __test_and_clear_bit(code, dev->key)) {
+				input_pass_event(dev, EV_KEY, code, 0);
 			}
 		}
 		input_pass_event(dev, EV_SYN, SYN_REPORT, 1);
@@ -808,22 +790,9 @@ int input_get_keycode(struct input_dev *dev, struct input_keymap_entry *ke)
 	int retval;
 
 	spin_lock_irqsave(&dev->event_lock, flags);
-
-	if (dev->getkeycode) {
-		/*
-		 * Support for legacy drivers, that don't implement the new
-		 * ioctls
-		 */
-		u32 scancode = ke->index;
-
-		memcpy(ke->scancode, &scancode, sizeof(scancode));
-		ke->len = sizeof(scancode);
-		retval = dev->getkeycode(dev, scancode, &ke->keycode);
-	} else {
-		retval = dev->getkeycode_new(dev, ke);
-	}
-
+	retval = dev->getkeycode(dev, ke);
 	spin_unlock_irqrestore(&dev->event_lock, flags);
+
 	return retval;
 }
 EXPORT_SYMBOL(input_get_keycode);
@@ -848,35 +817,7 @@ int input_set_keycode(struct input_dev *dev,
 
 	spin_lock_irqsave(&dev->event_lock, flags);
 
-	if (dev->setkeycode) {
-		/*
-		 * Support for legacy drivers, that don't implement the new
-		 * ioctls
-		 */
-		unsigned int scancode;
-
-		retval = input_scancode_to_scalar(ke, &scancode);
-		if (retval)
-			goto out;
-
-		/*
-		 * We need to know the old scancode, in order to generate a
-		 * keyup effect, if the set operation happens successfully
-		 */
-		if (!dev->getkeycode) {
-			retval = -EINVAL;
-			goto out;
-		}
-
-		retval = dev->getkeycode(dev, scancode, &old_keycode);
-		if (retval)
-			goto out;
-
-		retval = dev->setkeycode(dev, scancode, ke->keycode);
-	} else {
-		retval = dev->setkeycode_new(dev, ke, &old_keycode);
-	}
-
+	retval = dev->setkeycode(dev, ke, &old_keycode);
 	if (retval)
 		goto out;
 
@@ -959,22 +900,8 @@ static int input_attach_handler(struct input_dev *dev, struct input_handler *han
 	id = input_match_device(handler, dev);
 	if (!id)
 		return -ENODEV;
-#if 1
-	if(dev->name != NULL)
-	{
-		if(strcmp(dev->name,"accelerometer_sensor")==0 && strcmp(handler->name,"cpufreq_ond")==0)
-		{
-			return -ENODEV;
-		}
-		
-		if((strcmp(dev->name,"alps")==0) && (strcmp(handler->name,"cpufreq_ond")==0))
-		{
-			return -ENODEV;
-		}
-	}
-#endif
-	error = handler->connect(handler, dev, id);
 
+	error = handler->connect(handler, dev, id);
 	if (error && error != -ENODEV)
 		pr_err("failed to attach handler %s to device %s, error: %d\n",
 		       handler->name, kobject_name(&dev->dev.kobj), error);
@@ -1818,6 +1745,42 @@ void input_set_capability(struct input_dev *dev, unsigned int type, unsigned int
 }
 EXPORT_SYMBOL(input_set_capability);
 
+static unsigned int input_estimate_events_per_packet(struct input_dev *dev)
+{
+	int mt_slots;
+	int i;
+	unsigned int events;
+
+	if (dev->mtsize) {
+		mt_slots = dev->mtsize;
+	} else if (test_bit(ABS_MT_TRACKING_ID, dev->absbit)) {
+		mt_slots = dev->absinfo[ABS_MT_TRACKING_ID].maximum -
+			   dev->absinfo[ABS_MT_TRACKING_ID].minimum + 1,
+		mt_slots = clamp(mt_slots, 2, 32);
+	} else if (test_bit(ABS_MT_POSITION_X, dev->absbit)) {
+		mt_slots = 2;
+	} else {
+		mt_slots = 0;
+	}
+
+	events = mt_slots + 1; /* count SYN_MT_REPORT and SYN_REPORT */
+
+	for (i = 0; i < ABS_CNT; i++) {
+		if (test_bit(i, dev->absbit)) {
+			if (input_is_mt_axis(i))
+				events += mt_slots;
+			else
+				events++;
+		}
+	}
+
+	for (i = 0; i < REL_CNT; i++)
+		if (test_bit(i, dev->relbit))
+			events++;
+
+	return events;
+}
+
 #define INPUT_CLEANSE_BITMASK(dev, type, bits)				\
 	do {								\
 		if (!test_bit(EV_##type, dev->evbit))			\
@@ -1865,6 +1828,10 @@ int input_register_device(struct input_dev *dev)
 	/* Make sure that bitmasks not mentioned in dev->evbit are clean. */
 	input_cleanse_bitmasks(dev);
 
+	if (!dev->hint_events_per_packet)
+		dev->hint_events_per_packet =
+				input_estimate_events_per_packet(dev);
+
 	/*
 	 * If delay and period are pre-set by the driver, then autorepeating
 	 * is handled by the driver itself and we don't do it in input.c.
@@ -1877,11 +1844,11 @@ int input_register_device(struct input_dev *dev)
 		dev->rep[REP_PERIOD] = 33;
 	}
 
-	if (!dev->getkeycode && !dev->getkeycode_new)
-		dev->getkeycode_new = input_default_getkeycode;
+	if (!dev->getkeycode)
+		dev->getkeycode = input_default_getkeycode;
 
-	if (!dev->setkeycode && !dev->setkeycode_new)
-		dev->setkeycode_new = input_default_setkeycode;
+	if (!dev->setkeycode)
+		dev->setkeycode = input_default_setkeycode;
 
 	dev_set_name(&dev->dev, "input%ld",
 		     (unsigned long) atomic_inc_return(&input_no) - 1);

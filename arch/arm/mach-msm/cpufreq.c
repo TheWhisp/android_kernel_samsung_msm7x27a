@@ -3,7 +3,7 @@
  * MSM architecture cpufreq driver
  *
  * Copyright (C) 2007 Google, Inc.
- * Copyright (c) 2007-2010, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2007-2010, The Linux Foundation. All rights reserved.
  * Author: Mike A. Chan <mikechan@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -26,6 +26,7 @@
 #include <linux/cpumask.h>
 #include <linux/sched.h>
 #include <linux/suspend.h>
+#include <mach/socinfo.h>
 
 #include "acpuclock.h"
 
@@ -50,9 +51,6 @@ struct cpufreq_suspend_t {
 static DEFINE_PER_CPU(struct cpufreq_suspend_t, cpufreq_suspend);
 
 static int override_cpu;
-
-#define dprintk(msg...) \
-		cpufreq_debug_printk(CPUFREQ_DEBUG_DRIVER, "cpufreq-msm", msg)
 
 static int set_cpu_freq(struct cpufreq_policy *policy, unsigned int new_freq)
 {
@@ -98,13 +96,13 @@ static int msm_cpufreq_target(struct cpufreq_policy *policy,
 	struct cpufreq_work_struct *cpu_work = NULL;
 	cpumask_var_t mask;
 
-	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
-		return -ENOMEM;
-
 	if (!cpu_active(policy->cpu)) {
 		pr_info("cpufreq: cpu %d is not active.\n", policy->cpu);
 		return -ENODEV;
 	}
+
+	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
+		return -ENOMEM;
 #endif
 
 	mutex_lock(&per_cpu(cpufreq_suspend, policy->cpu).suspend_mutex);
@@ -125,7 +123,7 @@ static int msm_cpufreq_target(struct cpufreq_policy *policy,
 	}
 
 #ifdef CONFIG_CPU_FREQ_DEBUG
-	dprintk("CPU[%d] target %d relation %d (%d-%d) selected %d\n",
+	pr_debug("CPU[%d] target %d relation %d (%d-%d) selected %d\n",
 		policy->cpu, target_freq, relation,
 		policy->min, policy->max, table[index].frequency);
 #endif
@@ -148,13 +146,15 @@ static int msm_cpufreq_target(struct cpufreq_policy *policy,
 		wait_for_completion(&cpu_work->complete);
 	}
 
-	free_cpumask_var(mask);
 	ret = cpu_work->status;
 #else
 	ret = set_cpu_freq(policy, table[index].frequency);
 #endif
 
 done:
+#ifdef CONFIG_SMP
+	free_cpumask_var(mask);
+#endif
 	mutex_unlock(&per_cpu(cpufreq_suspend, policy->cpu).suspend_mutex);
 	return ret;
 }
@@ -175,6 +175,9 @@ static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 	struct cpufreq_work_struct *cpu_work = NULL;
 #endif
 
+	if (cpu_is_apq8064())
+		return -ENODEV;
+
 	table = cpufreq_frequency_get_table(policy->cpu);
 	if (cpufreq_frequency_table_cpuinfo(policy, table)) {
 #ifdef CONFIG_MSM_CPU_FREQ_SET_MIN_MAX
@@ -189,7 +192,9 @@ static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 
 	cur_freq = acpuclk_get_rate(policy->cpu);
 	if (cpufreq_frequency_table_target(policy, table, cur_freq,
-				CPUFREQ_RELATION_H, &index)) {
+	    CPUFREQ_RELATION_H, &index) &&
+	    cpufreq_frequency_table_target(policy, table, cur_freq,
+	    CPUFREQ_RELATION_L, &index)) {
 		pr_info("cpufreq: cpu%d at invalid freq: %d\n",
 				policy->cpu, cur_freq);
 		return -EINVAL;
@@ -277,9 +282,9 @@ static ssize_t store_mfreq(struct sysdev_class *class,
 
 static SYSDEV_CLASS_ATTR(mfreq, 0200, NULL, store_mfreq);
 
-static struct freq_attr *msm_cpufreq_attr[] = {
-  &cpufreq_freq_attr_scaling_available_freqs,
-  NULL,
+static struct freq_attr *msm_freq_attr[] = {
+	&cpufreq_freq_attr_scaling_available_freqs,
+	NULL,
 };
 
 static struct cpufreq_driver msm_cpufreq_driver = {
@@ -289,7 +294,7 @@ static struct cpufreq_driver msm_cpufreq_driver = {
 	.verify		= msm_cpufreq_verify,
 	.target		= msm_cpufreq_target,
 	.name		= "msm",
-	.attr    	= msm_cpufreq_attr,
+	.attr		= msm_freq_attr,
 };
 
 static struct notifier_block msm_cpufreq_pm_notifier = {

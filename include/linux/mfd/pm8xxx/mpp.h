@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -166,6 +166,27 @@ static inline int pm8xxx_mpp_config(unsigned mpp,
 #define	PM8921_MPP_DIG_LEVEL_L15	3
 #define	PM8921_MPP_DIG_LEVEL_L17	4
 #define	PM8921_MPP_DIG_LEVEL_VPH	7
+
+/* Digital Input/Output: level [PM8821] */
+#define	PM8821_MPP_DIG_LEVEL_1P8	1
+#define	PM8821_MPP_DIG_LEVEL_VPH	7
+
+/* Digital Input/Output: level [PM8018] */
+#define	PM8018_MPP_DIG_LEVEL_L4		0
+#define	PM8018_MPP_DIG_LEVEL_L14	1
+#define	PM8018_MPP_DIG_LEVEL_S3		2
+#define	PM8018_MPP_DIG_LEVEL_L6		3
+#define	PM8018_MPP_DIG_LEVEL_L2		4
+#define	PM8018_MPP_DIG_LEVEL_L5		5
+#define	PM8018_MPP_DIG_LEVEL_VPH	7
+
+/* Digital Input/Output: level [PM8038] */
+#define	PM8038_MPP_DIG_LEVEL_L20	0
+#define	PM8038_MPP_DIG_LEVEL_L11	1
+#define	PM8038_MPP_DIG_LEVEL_L5		2
+#define	PM8038_MPP_DIG_LEVEL_L15	3
+#define	PM8038_MPP_DIG_LEVEL_L17	4
+#define	PM8038_MPP_DIG_LEVEL_VPH	7
 
 /* Digital Input: control */
 #define	PM8XXX_MPP_DIN_TO_INT		0

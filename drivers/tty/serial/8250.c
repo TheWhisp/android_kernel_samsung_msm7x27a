@@ -1,6 +1,4 @@
 /*
- *  linux/drivers/char/8250.c
- *
  *  Driver for 8250/16550-type serial ports
  *
  *  Based on drivers/char/serial.c, by Linus Torvalds, Theodore Ts'o.
@@ -273,7 +271,7 @@ static const struct serial8250_config uart_config[] = {
 		.fifo_size	= 32,
 		.tx_loadsz	= 32,
 		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_10,
-		.flags		= UART_CAP_FIFO | UART_CAP_UUE,
+		.flags		= UART_CAP_FIFO | UART_CAP_UUE | UART_CAP_RTOIE,
 	},
 	[PORT_RM9000] = {
 		.name		= "RM9000",
@@ -302,6 +300,14 @@ static const struct serial8250_config uart_config[] = {
 		.tx_loadsz	= 64,
 		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_10,
 		.flags		= UART_CAP_FIFO | UART_CAP_AFE,
+	},
+	[PORT_TEGRA] = {
+		.name		= "Tegra",
+		.fifo_size	= 32,
+		.tx_loadsz	= 8,
+		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_01 |
+				  UART_FCR_T_TRIG_01,
+		.flags		= UART_CAP_FIFO | UART_CAP_RTOIE,
 	},
 };
 
@@ -1101,7 +1107,7 @@ static void autoconfig_16550a(struct uart_8250_port *up)
 			 */
 			DEBUG_AUTOCONF("Xscale ");
 			up->port.type = PORT_XSCALE;
-			up->capabilities |= UART_CAP_UUE;
+			up->capabilities |= UART_CAP_UUE | UART_CAP_RTOIE;
 			return;
 		}
 	} else {
@@ -1427,6 +1433,27 @@ static void serial8250_enable_ms(struct uart_port *port)
 	serial_out(up, UART_IER, up->ier);
 }
 
+/*
+ * Clear the Tegra rx fifo after a break
+ *
+ * FIXME: This needs to become a port specific callback once we have a
+ * framework for this
+ */
+static void clear_rx_fifo(struct uart_8250_port *up)
+{
+	unsigned int status, tmout = 10000;
+	do {
+		status = serial_in(up, UART_LSR);
+		if (status & (UART_LSR_FIFOE | UART_LSR_BRK_ERROR_BITS))
+			status = serial_in(up, UART_RX);
+		else
+			break;
+		if (--tmout == 0)
+			break;
+		udelay(1);
+	} while (1);
+}
+
 static void
 receive_chars(struct uart_8250_port *up, unsigned int *status)
 {
@@ -1461,6 +1488,13 @@ receive_chars(struct uart_8250_port *up, unsigned int *status)
 			if (lsr & UART_LSR_BI) {
 				lsr &= ~(UART_LSR_FE | UART_LSR_PE);
 				up->port.icount.brk++;
+				/*
+				 * If tegra port then clear the rx fifo to
+				 * accept another break/character.
+				 */
+				if (up->port.type == PORT_TEGRA)
+					clear_rx_fifo(up);
+
 				/*
 				 * We do the SysRQ and SAK checking
 				 * here because otherwise the break
@@ -1629,7 +1663,7 @@ static irqreturn_t serial8250_interrupt(int irq, void *dev_id)
 			    up->port.iotype == UPIO_DWAPB32) &&
 			  (iir & UART_IIR_BUSY) == UART_IIR_BUSY) {
 			/* The DesignWare APB UART has an Busy Detect (0x07)
-			 * interrupt meaning an LCR write attempt occured while the
+			 * interrupt meaning an LCR write attempt occurred while the
 			 * UART was busy. The interrupt must be cleared by reading
 			 * the UART status register (USR) and the LCR re-written. */
 			unsigned int status;
@@ -1785,6 +1819,8 @@ static void serial8250_backup_timeout(unsigned long data)
 	unsigned int iir, ier = 0, lsr;
 	unsigned long flags;
 
+	spin_lock_irqsave(&up->port.lock, flags);
+
 	/*
 	 * Must disable interrupts or else we risk racing with the interrupt
 	 * based handler.
@@ -1802,10 +1838,8 @@ static void serial8250_backup_timeout(unsigned long data)
 	 * the "Diva" UART used on the management processor on many HP
 	 * ia64 and parisc boxes.
 	 */
-	spin_lock_irqsave(&up->port.lock, flags);
 	lsr = serial_in(up, UART_LSR);
 	up->lsr_saved_flags |= lsr & LSR_SAVE_FLAGS;
-	spin_unlock_irqrestore(&up->port.lock, flags);
 	if ((iir & UART_IIR_NO_INT) && (up->ier & UART_IER_THRI) &&
 	    (!uart_circ_empty(&up->port.state->xmit) || up->port.x_char) &&
 	    (lsr & UART_LSR_THRE)) {
@@ -1814,10 +1848,12 @@ static void serial8250_backup_timeout(unsigned long data)
 	}
 
 	if (!(iir & UART_IIR_NO_INT))
-		serial8250_handle_port(up);
+		transmit_chars(up);
 
 	if (is_real_interrupt(up->port.irq))
 		serial_out(up, UART_IER, ier);
+
+	spin_unlock_irqrestore(&up->port.lock, flags);
 
 	/* Standard timer interval plus 0.2s to keep the port running */
 	mod_timer(&up->timer,
@@ -2405,7 +2441,9 @@ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
 			UART_ENABLE_MS(&up->port, termios->c_cflag))
 		up->ier |= UART_IER_MSI;
 	if (up->capabilities & UART_CAP_UUE)
-		up->ier |= UART_IER_UUE | UART_IER_RTOIE;
+		up->ier |= UART_IER_UUE;
+	if (up->capabilities & UART_CAP_RTOIE)
+		up->ier |= UART_IER_RTOIE;
 
 	serial_out(up, UART_IER, up->ier);
 
@@ -3282,6 +3320,7 @@ void serial8250_unregister_port(int line)
 		uart->port.flags &= ~UPF_BOOT_AUTOCONF;
 		uart->port.type = PORT_UNKNOWN;
 		uart->port.dev = &serial8250_isa_devs->dev;
+		uart->capabilities = uart_config[uart->port.type].flags;
 		uart_add_one_port(&serial8250_reg, &uart->port);
 	} else {
 		uart->port.dev = NULL;

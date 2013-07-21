@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -33,17 +33,20 @@
 #include "qfec.h"
 
 #define QFEC_NAME       "qfec"
-#define QFEC_DRV_VER    "July 14 2011"
+#define QFEC_DRV_VER    "Nov 29 2011"
 
 #define ETH_BUF_SIZE    0x600
 #define MAX_N_BD        50
 #define MAC_ADDR_SIZE	6
 
 #define RX_TX_BD_RATIO  8
-#define RX_BD_NUM       32
-#define TX_BD_NUM       (RX_BD_NUM * RX_TX_BD_RATIO)
+#define TX_BD_NUM       256
+#define RX_BD_NUM       256
 #define TX_BD_TI_RATIO  4
+#define MAX_MDIO_REG    32
 
+#define H_DPLX     0
+#define F_DPLX     1
 /*
  * logging macros
  */
@@ -52,6 +55,8 @@
 #define QFEC_LOG_DBG2   4
 #define QFEC_LOG_MDIO_W 8
 #define QFEC_LOG_MDIO_R 16
+#define QFEC_MII_EXP_MASK (EXPANSION_LCWP | EXPANSION_ENABLENPAGE \
+							| EXPANSION_NPCAPABLE)
 
 static int qfec_debug = QFEC_LOG_PR;
 
@@ -297,13 +302,15 @@ static inline int qfec_ring_empty(struct ring *p_ring)
 
 static inline void qfec_ring_head_adv(struct ring *p_ring)
 {
-	p_ring->head = ++p_ring->head % p_ring->len;
+	if (++p_ring->head == p_ring->len)
+		p_ring->head = 0;
 	p_ring->n_free--;
 };
 
 static inline void qfec_ring_tail_adv(struct ring *p_ring)
 {
-	p_ring->tail = ++p_ring->tail % p_ring->len;
+	if (++p_ring->tail == p_ring->len)
+		p_ring->tail = 0;
 	p_ring->n_free++;
 };
 
@@ -704,6 +711,56 @@ static void qfec_set_adr_regs(struct qfec_priv *priv, uint8_t *addr)
 }
 
 /*
+ * set up the RX filter
+ */
+static void qfec_set_rx_mode(struct net_device *dev)
+{
+	struct qfec_priv *priv = netdev_priv(dev);
+	uint32_t filter_conf;
+	int index;
+
+	/* Clear address filter entries */
+	for (index = 1; index < MAC_ADR_MAX; ++index) {
+		qfec_reg_write(priv, MAC_ADR_HIGH_REG_N(index), 0);
+		qfec_reg_write(priv, MAC_ADR_LOW_REG_N(index), 0);
+	}
+
+	if (dev->flags & IFF_PROMISC) {
+		/* Receive all frames */
+		filter_conf = MAC_FR_FILTER_RA;
+	} else if ((dev->flags & IFF_MULTICAST) == 0) {
+		/* Unicast filtering only */
+		filter_conf = MAC_FR_FILTER_HPF;
+	} else if ((netdev_mc_count(dev) > MAC_ADR_MAX - 1) ||
+		   (dev->flags & IFF_ALLMULTI)) {
+		/* Unicast filtering is enabled, Pass all multicast frames */
+		filter_conf = MAC_FR_FILTER_HPF | MAC_FR_FILTER_PM;
+	} else {
+		struct netdev_hw_addr *ha;
+
+		/* Both unicast and multicast filtering are enabled */
+		filter_conf = MAC_FR_FILTER_HPF;
+
+		index = 1;
+
+		netdev_for_each_mc_addr(ha, dev) {
+			uint32_t high, low;
+
+			high = (1 << 31) | (ha->addr[5] << 8) | (ha->addr[4]);
+			low = (ha->addr[3] << 24) | (ha->addr[2] << 16) |
+				(ha->addr[1] << 8) | (ha->addr[0]);
+
+			qfec_reg_write(priv, MAC_ADR_HIGH_REG_N(index), high);
+			qfec_reg_write(priv, MAC_ADR_LOW_REG_N(index), low);
+
+			index++;
+		}
+	}
+
+	qfec_reg_write(priv, MAC_FR_FILTER_REG, filter_conf);
+}
+
+/*
  * reset the controller
  */
 
@@ -758,6 +815,13 @@ static int qfec_hw_init(struct qfec_priv *priv)
 	/* clear interrupts */
 	qfec_reg_write(priv, STATUS_REG, INTRP_EN_REG_NIE | INTRP_EN_REG_RIE
 		| INTRP_EN_REG_TIE | INTRP_EN_REG_TUE | INTRP_EN_REG_ETE);
+
+	if (priv->mii.supports_gmii) {
+		/* Clear RGMII */
+		qfec_reg_read(priv, SG_RG_SMII_STATUS_REG);
+		/* Disable RGMII int */
+		qfec_reg_write(priv, INTRP_MASK_REG, 1);
+	}
 
 	return res;
 }
@@ -824,9 +888,9 @@ static inline void qfec_clkreg_write(struct qfec_priv *priv,
  * configure the PHY interface and clock routing and signal bits
  */
 enum phy_intfc  {
-	intfc_mii     = 0,
-	intfc_rgmii   = 1,
-	intfc_revmii  = 2,
+	INTFC_MII     = 0,
+	INTFC_RGMII   = 1,
+	INTFC_REVMII  = 2,
 };
 
 static int qfec_intf_sel(struct qfec_priv *priv, unsigned int intfc)
@@ -835,7 +899,7 @@ static int qfec_intf_sel(struct qfec_priv *priv, unsigned int intfc)
 
 	QFEC_LOG(QFEC_LOG_DBG2, "%s: %d\n", __func__, intfc);
 
-	if (intfc > intfc_revmii)  {
+	if (intfc > INTFC_REVMII)  {
 		QFEC_LOG_ERR("%s: range\n", __func__);
 		return -ENXIO;
 	}
@@ -922,9 +986,9 @@ static struct qfec_pll_cfg qfec_pll_cfg_tbl[] = {
 };
 
 enum speed  {
-	spd_10   = 0,
-	spd_100  = 1,
-	spd_1000 = 2,
+	SPD_10   = 0,
+	SPD_100  = 1,
+	SPD_1000 = 2,
 };
 
 /*
@@ -938,7 +1002,7 @@ static int qfec_speed_cfg(struct net_device *dev, unsigned int spd,
 
 	QFEC_LOG(QFEC_LOG_DBG2, "%s: %d spd, %d dplx\n", __func__, spd, dplx);
 
-	if (spd > spd_1000)  {
+	if (spd > SPD_1000)  {
 		QFEC_LOG_ERR("%s: range\n", __func__);
 		return -ENODEV;
 	}
@@ -949,7 +1013,7 @@ static int qfec_speed_cfg(struct net_device *dev, unsigned int spd,
 	qfec_reg_write(priv, MAC_CONFIG_REG,
 	(qfec_reg_read(priv, MAC_CONFIG_REG)
 		& ~(MAC_CONFIG_REG_SPD | MAC_CONFIG_REG_DM))
-			| p->spd | (dplx ? MAC_CONFIG_REG_DM : 0));
+			| p->spd | (dplx ? MAC_CONFIG_REG_DM : H_DPLX));
 
 	qfec_clkreg_write(priv, ETH_MD_REG, p->eth_md);
 	qfec_clkreg_write(priv, ETH_NS_REG, p->eth_ns);
@@ -1096,9 +1160,33 @@ static void qfec_mdio_write(struct net_device *dev, int phy_id, int reg,
 }
 
 /*
+ * MDIO show
+ */
+static int qfec_mdio_show(struct device *dev, struct device_attribute *attr,
+					char *buf)
+{
+	struct qfec_priv        *priv = netdev_priv(to_net_dev(dev));
+	int                      n;
+	int                      l = 0;
+	int                      count = PAGE_SIZE;
+
+	QFEC_LOG(QFEC_LOG_DBG2, "%s:\n", __func__);
+
+	for (n = 0; n < MAX_MDIO_REG; n++) {
+		if (!(n % 8))
+			l += snprintf(&buf[l], count - l, "\n   %02x: ", n);
+
+		l += snprintf(&buf[l], count - l, " %04x",
+			qfec_mdio_read(to_net_dev(dev), priv->phy_id, n));
+	}
+	l += snprintf(&buf[l], count - l, "\n");
+
+	return  l;
+}
+
+/*
  * get auto-negotiation results
  */
-
 #define QFEC_100        (LPA_100HALF | LPA_100FULL | LPA_100HALF)
 #define QFEC_100_FD     (LPA_100FULL | LPA_100BASE4)
 #define QFEC_10         (LPA_10HALF  | LPA_10FULL)
@@ -1107,28 +1195,45 @@ static void qfec_mdio_write(struct net_device *dev, int phy_id, int reg,
 static void qfec_get_an(struct net_device *dev, uint32_t *spd, uint32_t *dplx)
 {
 	struct qfec_priv   *priv = netdev_priv(dev);
-	uint32_t            status;
-	uint32_t            advert;
-	uint32_t            lpa;
-	uint32_t            flow;
+	uint32_t  advert   = qfec_mdio_read(dev, priv->phy_id, MII_ADVERTISE);
+	uint32_t  lpa      = qfec_mdio_read(dev, priv->phy_id, MII_LPA);
+	uint32_t  mastCtrl = qfec_mdio_read(dev, priv->phy_id, MII_CTRL1000);
+	uint32_t  mastStat = qfec_mdio_read(dev, priv->phy_id, MII_STAT1000);
+	uint32_t  anExp    = qfec_mdio_read(dev, priv->phy_id, MII_EXPANSION);
+	uint32_t  status   = advert & lpa;
+	uint32_t  flow;
 
-	advert = qfec_mdio_read(dev, priv->phy_id, MII_ADVERTISE);
-	lpa    = qfec_mdio_read(dev, priv->phy_id, MII_LPA);
-	status = advert & lpa;
+	if (priv->mii.supports_gmii) {
+		if (((anExp & QFEC_MII_EXP_MASK) == QFEC_MII_EXP_MASK)
+			&& (mastCtrl & ADVERTISE_1000FULL)
+			&& (mastStat & LPA_1000FULL)) {
+			*spd  = SPD_1000;
+			*dplx = F_DPLX;
+			goto pause;
+		}
 
-	/* todo: check extended status register for 1G abilities */
+		else if (((anExp & QFEC_MII_EXP_MASK) == QFEC_MII_EXP_MASK)
+			&& (mastCtrl & ADVERTISE_1000HALF)
+			&& (mastStat & LPA_1000HALF)) {
+			*spd  = SPD_1000;
+			*dplx = H_DPLX;
+			goto pause;
+		}
+	}
 
+	/* mii speeds */
 	if (status & QFEC_100)  {
-		*spd  = spd_100;
-		*dplx = status & QFEC_100_FD ? 1 : 0;
+		*spd  = SPD_100;
+		*dplx = status & QFEC_100_FD ? F_DPLX : H_DPLX;
 	}
 
 	else if (status & QFEC_10)  {
-		*spd  = spd_10;
-		*dplx = status & QFEC_10_FD ? 1 : 0;
+		*spd  = SPD_10;
+		*dplx = status & QFEC_10_FD ? F_DPLX : H_DPLX;
 	}
 
 	/* check pause */
+pause:
 	flow  = qfec_reg_read(priv, FLOW_CONTROL_REG);
 	flow &= ~(FLOW_CONTROL_TFE | FLOW_CONTROL_RFE);
 
@@ -1152,8 +1257,8 @@ static void qfec_phy_monitor(unsigned long data)
 {
 	struct net_device  *dev  = (struct net_device *) data;
 	struct qfec_priv   *priv = netdev_priv(dev);
-	unsigned int        spd  = 0;
-	unsigned int        dplx = 1;
+	unsigned int        spd  = H_DPLX;
+	unsigned int        dplx = F_DPLX;
 
 	mod_timer(&priv->phy_tmr, jiffies + HZ);
 
@@ -1559,15 +1664,8 @@ static void qfec_rx_int(struct net_device *dev)
 	CNTR_INC(priv, rx_int);
 
 	/* check that valid interrupt occurred */
-	if (unlikely(desc_status & BUF_OWN)) {
-		char  s[100];
-
-		qfec_bd_fmt(s, sizeof(s), p_bd);
-		QFEC_LOG_ERR("%s: owned by DMA, %08x, %s\n", __func__,
-			qfec_reg_read(priv, CUR_HOST_RX_DES_REG), s);
-		CNTR_INC(priv, rx_owned);
+	if (unlikely(desc_status & BUF_OWN))
 		return;
-	}
 
 	/* accumulate missed-frame count (reg reset when read) */
 	priv->stats.rx_missed_errors += mis_fr_reg
@@ -1641,6 +1739,8 @@ static void qfec_rx_int(struct net_device *dev)
 			break;
 		qfec_ring_tail_adv(p_ring);
 	}
+
+	qfec_reg_write(priv, STATUS_REG, STATUS_REG_RI);
 }
 
 /*
@@ -1685,7 +1785,7 @@ static irqreturn_t qfec_int(int irq, void *dev_id)
 		CNTR_INC(priv, norm_int);
 
 	/* receive interrupt */
-	if (status & STATUS_REG_RI)  {
+	if (status & STATUS_REG_RI) {
 		CNTR_INC(priv, rx_isr);
 		qfec_rx_int(dev);
 	}
@@ -1698,8 +1798,10 @@ static irqreturn_t qfec_int(int irq, void *dev_id)
 
 	/* gmac interrupt */
 	if (status & (STATUS_REG_GPI | STATUS_REG_GMI | STATUS_REG_GLI))  {
+		status &= ~(STATUS_REG_GPI | STATUS_REG_GMI | STATUS_REG_GLI);
 		CNTR_INC(priv, gmac_isr);
-		int_bits |= STATUS_REG_GMI;
+		int_bits |= STATUS_REG_GPI | STATUS_REG_GMI | STATUS_REG_GLI;
+		qfec_reg_read(priv, SG_RG_SMII_STATUS_REG);
 	}
 
 	/* clear interrupts */
@@ -1773,7 +1875,14 @@ static int qfec_open(struct net_device *dev)
 	qfec_ptp_cfg(priv);
 
 	/* configure PHY - must be set before reset/hw_init */
-	qfec_intf_sel(priv, intfc_mii);
+	priv->mii.supports_gmii = mii_check_gmii_support(&priv->mii);
+	if (priv->mii.supports_gmii) {
+		QFEC_LOG_ERR("%s: RGMII\n", __func__);
+		qfec_intf_sel(priv, INTFC_RGMII);
+	} else {
+		QFEC_LOG_ERR("%s: MII\n", __func__);
+		qfec_intf_sel(priv, INTFC_MII);
+	}
 
 	/* initialize controller after BDs allocated */
 	res = qfec_hw_init(priv);
@@ -1782,6 +1891,7 @@ static int qfec_open(struct net_device *dev)
 
 	/* get/set (primary) MAC address */
 	qfec_set_adr_regs(priv, dev->dev_addr);
+	qfec_set_rx_mode(dev);
 
 	/* start phy monitor */
 	QFEC_LOG(QFEC_LOG_DBG, " %s: start timer\n", __func__);
@@ -1872,6 +1982,10 @@ static int qfec_xmit(struct sk_buff *skb, struct net_device *dev)
 
 	spin_lock_irqsave(&priv->xmit_lock, flags);
 
+	/* If there is no room, on the ring try to free some up */
+	if (qfec_ring_room(p_ring) == 0)
+		qfec_tx_replenish(dev);
+
 	/* stop queuing if no resources available */
 	if (qfec_ring_room(p_ring) == 0)  {
 		qfec_queue_stop(dev);
@@ -1955,6 +2069,8 @@ static struct net_device_stats *qfec_get_stats(struct net_device *dev)
 
 	QFEC_LOG(QFEC_LOG_DBG2, "qfec_stats:\n");
 
+	priv->stats.multicast = qfec_reg_read(priv, NUM_MULTCST_FRM_RCVD_G);
+
 	return &priv->stats;
 }
 
@@ -2009,6 +2125,7 @@ static const struct net_device_ops qfec_netdev_ops = {
 	.ndo_do_ioctl           = qfec_do_ioctl,
 	.ndo_tx_timeout         = qfec_tx_timeout,
 	.ndo_set_mac_address    = qfec_set_mac_address,
+	.ndo_set_multicast_list = qfec_set_rx_mode,
 
 	.ndo_change_mtu         = eth_change_mtu,
 	.ndo_validate_addr      = eth_validate_addr,
@@ -2423,6 +2540,7 @@ static DEVICE_ATTR(clk_reg, 0444, qfec_clk_reg_show, NULL);
 static DEVICE_ATTR(cmd,     0222, NULL,              qfec_cmd);
 static DEVICE_ATTR(cntrs,   0444, qfec_cntrs_show,   NULL);
 static DEVICE_ATTR(reg,     0444, qfec_reg_show,     NULL);
+static DEVICE_ATTR(mdio,    0444, qfec_mdio_show,    NULL);
 static DEVICE_ATTR(stats,   0444, qfec_stats_show,   NULL);
 static DEVICE_ATTR(tstamp,  0444, qfec_tstamp_show,  NULL);
 
@@ -2434,6 +2552,7 @@ static void qfec_sysfs_create(struct net_device *dev)
 		device_create_file(&(dev->dev), &dev_attr_clk_reg) ||
 		device_create_file(&(dev->dev), &dev_attr_cmd) ||
 		device_create_file(&(dev->dev), &dev_attr_cntrs) ||
+		device_create_file(&(dev->dev), &dev_attr_mdio) ||
 		device_create_file(&(dev->dev), &dev_attr_reg) ||
 		device_create_file(&(dev->dev), &dev_attr_stats) ||
 		device_create_file(&(dev->dev), &dev_attr_tstamp))

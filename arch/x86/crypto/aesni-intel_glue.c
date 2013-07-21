@@ -94,6 +94,10 @@ asmlinkage void aesni_cbc_enc(struct crypto_aes_ctx *ctx, u8 *out,
 			      const u8 *in, unsigned int len, u8 *iv);
 asmlinkage void aesni_cbc_dec(struct crypto_aes_ctx *ctx, u8 *out,
 			      const u8 *in, unsigned int len, u8 *iv);
+
+int crypto_fpu_init(void);
+void crypto_fpu_exit(void);
+
 #ifdef CONFIG_X86_64
 asmlinkage void aesni_ctr_enc(struct crypto_aes_ctx *ctx, u8 *out,
 			      const u8 *in, unsigned int len, u8 *iv);
@@ -879,22 +883,18 @@ rfc4106_set_hash_subkey(u8 *hash_subkey, const u8 *key, unsigned int key_len)
 	crypto_ablkcipher_clear_flags(ctr_tfm, ~0);
 
 	ret = crypto_ablkcipher_setkey(ctr_tfm, key, key_len);
-	if (ret) {
-		crypto_free_ablkcipher(ctr_tfm);
-		return ret;
-	}
+	if (ret)
+		goto out_free_ablkcipher;
 
+	ret = -ENOMEM;
 	req = ablkcipher_request_alloc(ctr_tfm, GFP_KERNEL);
-	if (!req) {
-		crypto_free_ablkcipher(ctr_tfm);
-		return -EINVAL;
-	}
+	if (!req)
+		goto out_free_ablkcipher;
 
 	req_data = kmalloc(sizeof(*req_data), GFP_KERNEL);
-	if (!req_data) {
-		crypto_free_ablkcipher(ctr_tfm);
-		return -ENOMEM;
-	}
+	if (!req_data)
+		goto out_free_request;
+
 	memset(req_data->iv, 0, sizeof(req_data->iv));
 
 	/* Clear the data in the hash sub key container to zero.*/
@@ -919,8 +919,10 @@ rfc4106_set_hash_subkey(u8 *hash_subkey, const u8 *key, unsigned int key_len)
 		if (!ret)
 			ret = req_data->result.err;
 	}
-	ablkcipher_request_free(req);
 	kfree(req_data);
+out_free_request:
+	ablkcipher_request_free(req);
+out_free_ablkcipher:
 	crypto_free_ablkcipher(ctr_tfm);
 	return ret;
 }
@@ -1259,6 +1261,8 @@ static int __init aesni_init(void)
 		return -ENODEV;
 	}
 
+	if ((err = crypto_fpu_init()))
+		goto fpu_err;
 	if ((err = crypto_register_alg(&aesni_alg)))
 		goto aes_err;
 	if ((err = crypto_register_alg(&__aesni_alg)))
@@ -1336,6 +1340,7 @@ blk_ecb_err:
 __aes_err:
 	crypto_unregister_alg(&aesni_alg);
 aes_err:
+fpu_err:
 	return err;
 }
 
@@ -1365,6 +1370,8 @@ static void __exit aesni_exit(void)
 	crypto_unregister_alg(&blk_ecb_alg);
 	crypto_unregister_alg(&__aesni_alg);
 	crypto_unregister_alg(&aesni_alg);
+
+	crypto_fpu_exit();
 }
 
 module_init(aesni_init);

@@ -1,29 +1,13 @@
-/* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- *       copyright notice, this list of conditions and the following
- *       disclaimer in the documentation and/or other materials provided
- *       with the distribution.
- *     * Neither the name of Code Aurora Forum, Inc. nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
- * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  */
 
@@ -63,7 +47,12 @@
 #define MIPI_DSI_PANEL_WVGA	1
 #define MIPI_DSI_PANEL_WVGA_PT	2
 #define MIPI_DSI_PANEL_FWVGA_PT	3
-#define DSI_PANEL_MAX	3
+#define MIPI_DSI_PANEL_WSVGA_PT	4
+#define MIPI_DSI_PANEL_QHD_PT 5
+#define MIPI_DSI_PANEL_WXGA	6
+#define MIPI_DSI_PANEL_WUXGA	7
+#define MIPI_DSI_PANEL_720P_PT	8
+#define DSI_PANEL_MAX	8
 
 enum {		/* mipi dsi panel */
 	DSI_VIDEO_MODE,
@@ -88,6 +77,11 @@ enum {
 enum {
 	LANDSCAPE = 1,
 	PORTRAIT = 2,
+};
+
+enum dsi_trigger_type {
+	DSI_CMD_MODE_DMA,
+	DSI_CMD_MODE_MDP,
 };
 
 #define DSI_NON_BURST_SYNCH_PULSE	0
@@ -123,6 +117,9 @@ enum {
 #define DSI_INTR_CMD_DMA_DONE_MASK	BIT(1)
 #define DSI_INTR_CMD_DMA_DONE		BIT(0)
 
+#define DSI_MDP_TERM	BIT(8)
+#define DSI_CMD_TERM	BIT(0)
+
 #define DSI_CMD_TRIGGER_NONE		0x0	/* mdp trigger */
 #define DSI_CMD_TRIGGER_TE		0x02
 #define DSI_CMD_TRIGGER_SW		0x04
@@ -132,6 +129,7 @@ enum {
 extern struct device dsi_dev;
 extern int mipi_dsi_clk_on;
 extern u32 dsi_irq;
+extern u32 esc_byte_ratio;
 
 extern void  __iomem *periph_base;
 extern char *mmss_cc_base;	/* mutimedia sub system clock control */
@@ -190,8 +188,8 @@ struct dsi_clk_desc {
 #define DSI_HDR_DATA1(data)	((data) & 0x0ff)
 #define DSI_HDR_WC(wc)		((wc) & 0x0ffff)
 
-#define DSI_BUF_SIZE	1024
-#define MIPI_DSI_MRPS	0x04  /* Maximum Return Packet Size */
+#define DSI_BUF_SIZE	64
+#define MIPI_DSI_MRPS	0x04	/* Maximum Return Packet Size */
 
 #define MIPI_DSI_LEN 8 /* 4 x 4 - 6 - 2, bytes dcs header+crc-align  */
 
@@ -230,6 +228,17 @@ struct dsi_buf {
 #define DTYPE_PERIPHERAL_OFF	0x22
 #define DTYPE_PERIPHERAL_ON	0x32
 
+/*
+ * dcs response
+ */
+#define DTYPE_ACK_ERR_RESP      0x02
+#define DTYPE_EOT_RESP          0x08    /* end of tx */
+#define DTYPE_GEN_READ1_RESP    0x11    /* 1 parameter, short */
+#define DTYPE_GEN_READ2_RESP    0x12    /* 2 parameter, short */
+#define DTYPE_GEN_LREAD_RESP    0x1a
+#define DTYPE_DCS_LREAD_RESP    0x1c
+#define DTYPE_DCS_READ1_RESP    0x21    /* 1 parameter, short */
+#define DTYPE_DCS_READ2_RESP    0x22    /* 2 parameter, short */
 
 struct dsi_cmd_desc {
 	int dtype;
@@ -241,7 +250,6 @@ struct dsi_cmd_desc {
 	char *payload;
 };
 
-
 typedef void (*kickoff_act)(void *);
 
 struct dsi_kickoff_action {
@@ -251,13 +259,38 @@ struct dsi_kickoff_action {
 };
 
 
+#define CMD_REQ_MAX	4
+
+typedef void (*fxn)(u32 data);
+
+#define CMD_REQ_RX	0x0001
+#define CMD_REQ_COMMIT 0x0002
+#define CMD_REQ_NO_MAX_PKT_SIZE 0x0008
+
+struct dcs_cmd_req {
+	struct dsi_cmd_desc *cmds;
+	int cmds_cnt;
+	u32 flags;
+	int rlen;	/* rx length */
+	fxn cb;
+};
+
+struct dcs_cmd_list {
+	int put;
+	int get;
+	int tot;
+	struct dcs_cmd_req list[CMD_REQ_MAX];
+};
+
+
 char *mipi_dsi_buf_reserve_hdr(struct dsi_buf *dp, int hlen);
 char *mipi_dsi_buf_init(struct dsi_buf *dp);
 void mipi_dsi_init(void);
+void mipi_dsi_lane_cfg(void);
+void mipi_dsi_bist_ctrl(void);
 int mipi_dsi_buf_alloc(struct dsi_buf *, int size);
 int mipi_dsi_cmd_dma_add(struct dsi_buf *dp, struct dsi_cmd_desc *cm);
-int mipi_dsi_cmds_tx(struct msm_fb_data_type *mfd,
-		struct dsi_buf *dp, struct dsi_cmd_desc *cmds, int cnt);
+int mipi_dsi_cmds_tx(struct dsi_buf *dp, struct dsi_cmd_desc *cmds, int cnt);
 
 int mipi_dsi_cmd_dma_tx(struct dsi_buf *dp);
 int mipi_dsi_cmd_reg_tx(uint32 data);
@@ -269,30 +302,78 @@ void mipi_dsi_host_init(struct mipi_panel_info *pinfo);
 void mipi_dsi_op_mode_config(int mode);
 void mipi_dsi_cmd_mode_ctrl(int enable);
 void mdp4_dsi_cmd_trigger(void);
-void mipi_dsi_cmd_mdp_sw_trigger(void);
+void mipi_dsi_cmd_mdp_start(void);
+int mipi_dsi_ctrl_lock(int mdp);
+int mipi_dsi_ctrl_lock_query(void);
 void mipi_dsi_cmd_bta_sw_trigger(void);
 void mipi_dsi_ack_err_status(void);
 void mipi_dsi_set_tear_on(struct msm_fb_data_type *mfd);
 void mipi_dsi_set_tear_off(struct msm_fb_data_type *mfd);
-void mipi_dsi_clk_enable(void);
-void mipi_dsi_clk_disable(void);
+void mipi_dsi_set_backlight(struct msm_fb_data_type *mfd, int level);
+void mipi_dsi_cmd_backlight_tx(struct dsi_buf *dp);
 void mipi_dsi_pre_kickoff_action(void);
 void mipi_dsi_post_kickoff_action(void);
 void mipi_dsi_pre_kickoff_add(struct dsi_kickoff_action *act);
 void mipi_dsi_post_kickoff_add(struct dsi_kickoff_action *act);
 void mipi_dsi_pre_kickoff_del(struct dsi_kickoff_action *act);
 void mipi_dsi_post_kickoff_del(struct dsi_kickoff_action *act);
+void mipi_dsi_controller_cfg(int enable);
+void mipi_dsi_sw_reset(void);
+void mipi_dsi_mdp_busy_wait(struct msm_fb_data_type *mfd);
 
 irqreturn_t mipi_dsi_isr(int irq, void *ptr);
 
 void mipi_set_tx_power_mode(int mode);
-void mipi_dsi_phy_ctrl(int on);
 void mipi_dsi_phy_init(int panel_ndx, struct msm_panel_info const *panel_info,
 	int target_type);
 int mipi_dsi_clk_div_config(uint8 bpp, uint8 lanes,
 			    uint32 *expected_dsi_pclk);
-void mipi_dsi_clk_init(struct device *dev);
+int mipi_dsi_clk_init(struct platform_device *pdev);
 void mipi_dsi_clk_deinit(struct device *dev);
+
+#ifdef CONFIG_FB_MSM_MIPI_DSI
+void mipi_dsi_clk_enable(void);
+void mipi_dsi_clk_disable(void);
+void mipi_dsi_prepare_clocks(void);
+void mipi_dsi_unprepare_clocks(void);
+void mipi_dsi_ahb_ctrl(u32 enable);
+void mipi_dsi_phy_ctrl(int on);
+#else
+static inline void mipi_dsi_clk_enable(void)
+{
+	/* empty */
+}
+void mipi_dsi_clk_disable(void)
+{
+	/* empty */
+}
+void mipi_dsi_prepare_clocks(void)
+{
+	/* empty */
+}
+void mipi_dsi_unprepare_clocks(void)
+{
+	/* empty */
+}
+void mipi_dsi_ahb_ctrl(u32 enable)
+{
+	/* empty */
+}
+void mipi_dsi_phy_ctrl(int on)
+{
+	/* empty */
+}
+#endif
+
+void cont_splash_clk_ctrl(int enable);
+void mipi_dsi_turn_on_clks(void);
+void mipi_dsi_turn_off_clks(void);
+void mipi_dsi_clk_cfg(int on);
+
+int mipi_dsi_cmdlist_put(struct dcs_cmd_req *cmdreq);
+struct dcs_cmd_req *mipi_dsi_cmdlist_get(void);
+void mipi_dsi_cmdlist_commit(int from_mdp);
+void mipi_dsi_cmd_mdp_busy(void);
 
 #ifdef CONFIG_FB_MSM_MDP303
 void update_lane_config(struct msm_panel_info *pinfo);

@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2008-2009, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -140,7 +140,7 @@ static int dma_scopy(struct msm_dma_scopy *scopy, struct private *priv)
 					sizeof(*priv->command_ptr_ptr),
 					DMA_TO_DEVICE);
 
-	msm_dmov_exec_cmd(TEST_CHANNEL, 0,
+	msm_dmov_exec_cmd(TEST_CHANNEL,
 			  DMOV_CMD_PTR_LIST | DMOV_CMD_ADDR(mapped_cmd_ptr));
 
 	dma_unmap_single(NULL, (dma_addr_t) mapped_cmd_ptr,

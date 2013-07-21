@@ -341,7 +341,7 @@ static const struct hid_usage_entry hid_usage_table[] = {
     { 0x85, 0x83, "DesignCapacity" },
     { 0x85, 0x85, "ManufacturerDate" },
     { 0x85, 0x89, "iDeviceChemistry" },
-    { 0x85, 0x8b, "Rechargable" },
+    { 0x85, 0x8b, "Rechargeable" },
     { 0x85, 0x8f, "iOEMInformation" },
     { 0x85, 0x8d, "CapacityGranularity1" },
     { 0x85, 0xd0, "ACPresent" },
@@ -449,6 +449,11 @@ void hid_dump_field(struct hid_field *field, int n, struct seq_file *f) {
 		tab(n, f);
 		seq_printf(f, "Logical(");
 		hid_resolv_usage(field->logical, f); seq_printf(f, ")\n");
+	}
+	if (field->application) {
+		tab(n, f);
+		seq_printf(f, "Application(");
+		hid_resolv_usage(field->application, f); seq_printf(f, ")\n");
 	}
 	tab(n, f); seq_printf(f, "Usage(%d)\n", field->maxusage);
 	for (j = 0; j < field->maxusage; j++) {

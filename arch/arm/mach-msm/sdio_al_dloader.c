@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -25,7 +25,7 @@
 #include <linux/dma-mapping.h>
 #include <mach/dma.h>
 #include <linux/mmc/sdio_func.h>
-#include <sdio_al_private.h>
+#include "sdio_al_private.h"
 #include <linux/tty.h>
 #include <linux/tty_flip.h>
 #include <linux/kthread.h>

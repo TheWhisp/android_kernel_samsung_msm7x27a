@@ -1,4 +1,4 @@
-/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -12,6 +12,7 @@
  */
 #ifndef __EXTERNAL_COMMON_H__
 #define __EXTERNAL_COMMON_H__
+#include <linux/switch.h>
 
 #ifdef DEBUG
 #ifndef DEV_DBG_PREFIX
@@ -193,6 +194,12 @@ extern struct hdmi_disp_mode_timing_type
  * device */
 struct hdmi_disp_mode_list_type {
 	uint32	disp_mode_list[HDMI_VFRMT_MAX];
+#define TOP_AND_BOTTOM		0x10
+#define FRAME_PACKING		0x20
+#define SIDE_BY_SIDE_HALF	0x40
+	uint32	disp_3d_mode_list[HDMI_VFRMT_MAX];
+	uint32	disp_multi_3d_mode_list[16];
+	uint32	disp_multi_3d_mode_list_cnt;
 	uint32	num_of_elements;
 };
 #endif
@@ -202,6 +209,7 @@ struct external_common_state_type {
 	struct kobject *uevent_kobj;
 	uint32 video_resolution;
 	struct device *dev;
+	struct switch_dev sdev;
 #ifdef CONFIG_FB_MSM_HDMI_3D
 	boolean format_3d;
 	void (*switch_3d)(boolean on);
@@ -214,6 +222,13 @@ struct external_common_state_type {
 	uint8 speaker_allocation_block;
 	uint16 video_latency, audio_latency;
 	uint8 audio_data_block_cnt;
+	uint16 physical_address;
+	uint32 preferred_video_format;
+	uint8 pt_scan_info;
+	uint8 it_scan_info;
+	uint8 ce_scan_info;
+	uint8 spd_vendor_name[8];
+	uint8 spd_product_description[16];
 	boolean present_3d;
 	boolean present_hdcp;
 	uint32 audio_data_blocks[16];
@@ -225,6 +240,7 @@ struct external_common_state_type {
 /* The external interface driver needs to initialize the common state. */
 extern struct external_common_state_type *external_common_state;
 extern struct mutex external_common_state_hpd_mutex;
+extern struct mutex hdmi_msm_state_mutex;
 
 #ifdef CONFIG_FB_MSM_HDMI_COMMON
 #define VFRMT_NOT_SUPPORTED(VFRMT) \
@@ -242,7 +258,12 @@ bool hdmi_common_get_video_format_from_drv_data(struct msm_fb_data_type *mfd);
 const struct hdmi_disp_mode_timing_type *hdmi_common_get_mode(uint32 mode);
 const struct hdmi_disp_mode_timing_type *hdmi_common_get_supported_mode(
 	uint32 mode);
+const struct hdmi_disp_mode_timing_type *hdmi_mhl_get_mode(uint32 mode);
+const struct hdmi_disp_mode_timing_type *hdmi_mhl_get_supported_mode(
+	uint32 mode);
 void hdmi_common_init_panel_info(struct msm_panel_info *pinfo);
+
+ssize_t video_3d_format_2string(uint32 format, char *buf);
 #endif
 
 int external_common_state_create(struct platform_device *pdev);

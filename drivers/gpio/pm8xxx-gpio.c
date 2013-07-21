@@ -1,7 +1,7 @@
 /*
  * Qualcomm PMIC8XXX GPIO driver
  *
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -289,7 +289,8 @@ static int __devinit pm_gpio_probe(struct platform_device *pdev)
 					GFP_KERNEL);
 	if (!pm_gpio_chip->bank1) {
 		pr_err("Cannot allocate pm_gpio_chip->bank1\n");
-		return -ENOMEM;
+		ret = -ENOMEM;
+		goto free_chip;
 	}
 
 	spin_lock_init(&pm_gpio_chip->pm_lock);
@@ -332,6 +333,8 @@ remove_chip:
 		pr_err("failed to remove gpio chip\n");
 reset_drvdata:
 	platform_set_drvdata(pdev, NULL);
+	kfree(pm_gpio_chip->bank1);
+free_chip:
 	kfree(pm_gpio_chip);
 	return ret;
 }
@@ -429,7 +432,7 @@ int pm8xxx_gpio_config(int gpio, struct pm_gpio *param)
 
 	return rc;
 }
-EXPORT_SYMBOL_GPL(pm8xxx_gpio_config);
+EXPORT_SYMBOL(pm8xxx_gpio_config);
 
 static struct platform_driver pm_gpio_driver = {
 	.probe		= pm_gpio_probe,

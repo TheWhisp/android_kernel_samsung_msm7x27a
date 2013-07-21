@@ -20,9 +20,6 @@
    SOFTWARE IS DISCLAIMED.
 */
 
-#include <linux/interrupt.h>
-#include <linux/module.h>
-
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
 #include <net/bluetooth/l2cap.h>
@@ -213,7 +210,6 @@ static __u8 authreq_to_seclevel(__u8 authreq)
 static __u8 seclevel_to_authreq(__u8 level)
 {
 	switch (level) {
-	case BT_SECURITY_VERY_HIGH:
 	case BT_SECURITY_HIGH:
 		return SMP_AUTH_MITM | SMP_AUTH_BONDING;
 
@@ -447,8 +443,6 @@ int le_user_confirm_reply(struct hci_conn *hcon, u16 mgmt_op, void *cp)
 		smp_send_cmd(conn, SMP_CMD_PAIRING_FAIL, sizeof(reason),
 								&reason);
 		del_timer(&hcon->smp_timer);
-		if (hcon->disconn_cfm_cb)
-			hcon->disconn_cfm_cb(hcon, SMP_UNSPECIFIED);
 		clear_bit(HCI_CONN_ENCRYPT_PEND, &hcon->pend);
 		mgmt_auth_failed(hcon->hdev->id, conn->dst, reason);
 		hci_conn_put(hcon);
@@ -719,7 +713,6 @@ invalid_key:
 	memset(&cp, 0, sizeof(cp));
 	build_pairing_cmd(conn, &cp, NULL, rp->auth_req);
 
-	hcon->pending_sec_level = authreq_to_seclevel(rp->auth_req);
 	hcon->preq[0] = SMP_CMD_PAIRING_REQ;
 	memcpy(&hcon->preq[1], &cp, sizeof(cp));
 
@@ -759,7 +752,8 @@ int smp_conn_security(struct l2cap_conn *conn, __u8 sec_level)
 
 	hcon->smp_conn = conn;
 	hcon->pending_sec_level = sec_level;
-	if (hcon->link_mode & HCI_LM_MASTER) {
+
+	if ((hcon->link_mode & HCI_LM_MASTER) && !hcon->sec_req) {
 		struct link_key *key;
 
 		key = hci_find_link_key_type(hcon->hdev, conn->dst,

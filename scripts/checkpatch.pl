@@ -216,10 +216,10 @@ our $typeTypedefs = qr{(?x:
 
 our $logFunctions = qr{(?x:
 	printk|
-	pr_(debug|dbg|vdbg|devel|info|warning|err|notice|alert|crit|emerg|cont)|
-	(dev|netdev|netif)_(printk|dbg|vdbg|info|warn|err|notice|alert|crit|emerg|WARN)|
+	[a-z]+_(emerg|alert|crit|err|warning|warn|notice|info|debug|dbg|vdbg|devel|cont|WARN)|
 	WARN|
-	panic
+	panic|
+	MODULE_[A-Z_]+
 )};
 
 our @typeList = (
@@ -1229,7 +1229,6 @@ sub process {
 	my @setup_docs = ();
 	my $setup_docs = 0;
 
-	my $in_code_block = 0;
 	my $exec_file = "";
 
 	my $shorttext = BEFORE_SHORTTEXT;
@@ -1375,6 +1374,7 @@ sub process {
 		if ($line =~ /^diff --git.*?(\S+)$/) {
 			$realfile = $1;
 			$realfile =~ s@^([^/]*)/@@;
+			$exec_file = $realfile;
 
 		} elsif ($line =~ /^\+\+\+\s+(\S+)/) {
 			$realfile = $1;
@@ -1389,16 +1389,14 @@ sub process {
 			if ($realfile =~ m@^include/asm/@) {
 				ERROR("do not modify files in include/asm, change architecture specific files in include/asm-<architecture>\n" . "$here$rawline\n");
 			}
-			$in_code_block = 1;
+			$exec_file = "";
 			next;
 		}
 		elsif ($rawline =~ /^diff.+a\/(.+)\sb\/.+$/) {
 			$exec_file = $1;
-			$in_code_block = 0;
 		}
 		#Check state to make sure we aren't in code block.
-		elsif  (!$in_code_block			   &&
-			($exec_file =~ /^.+\.[chS]$/ or
+		elsif  (($exec_file =~ /^.+\.[chS]$/ or
 			 $exec_file =~ /^.+\.txt$/ or
 			 $exec_file =~ /^.+\.ihex$/ or
 			 $exec_file =~ /^.+\.hex$/ or
@@ -1551,7 +1549,7 @@ sub process {
 #80 column limit
 		if ($line =~ /^\+/ && $prevrawline !~ /\/\*\*/ &&
 		    $rawline !~ /^.\s*\*\s*\@$Ident\s/ &&
-		    !($line =~ /^\+\s*$logFunctions\s*\(\s*(?:(KERN_\S+\s*|[^"]*))?"[X\t]*"\s*(?:,|\)\s*;)\s*$/ ||
+		    !($line =~ /^\+\s*$logFunctions\s*\(\s*(?:(KERN_\S+\s*|[^"]*))?"[X\t]*"\s*(?:|,|\)\s*;)\s*$/ ||
 		    $line =~ /^\+\s*"[^"]*"\s*(?:\s*|,|\)\s*;)\s*$/) &&
 		    $realfile ne "scripts/checkpatch.pl" &&
 		    $length > 80)
@@ -2027,16 +2025,21 @@ sub process {
 			WARN("LINUX_VERSION_CODE should be avoided, code should be for the version to which it is merged\n" . $herecurr);
 		}
 
+# check for uses of printk_ratelimit
+		if ($line =~ /\bprintk_ratelimit\s*\(/) {
+			WARN("Prefer printk_ratelimited or pr_<level>_ratelimited to printk_ratelimit\n" . $herecurr);
+		}
+
 # printk should use KERN_* levels.  Note that follow on printk's on the
 # same line do not need a level, so we use the current block context
 # to try and find and validate the current printk.  In summary the current
-# printk includes all preceeding printk's which have no newline on the end.
+# printk includes all preceding printk's which have no newline on the end.
 # we assume the first bad printk is the one to report.
 		if ($line =~ /\bprintk\((?!KERN_)\s*"/) {
 			my $ok = 0;
 			for (my $ln = $linenr - 1; $ln >= $first_line; $ln--) {
 				#print "CHECK<$lines[$ln - 1]\n";
-				# we have a preceeding printk if it ends
+				# we have a preceding printk if it ends
 				# with "\n" ignore it, else it is to blame
 				if ($lines[$ln - 1] =~ m{\bprintk\(}) {
 					if ($rawlines[$ln - 1] !~ m{\\n"}) {
@@ -2128,7 +2131,7 @@ sub process {
 			for (my $n = 0; $n < $#elements; $n += 2) {
 				$off += length($elements[$n]);
 
-				# Pick up the preceeding and succeeding characters.
+				# Pick up the preceding and succeeding characters.
 				my $ca = substr($opline, 0, $off);
 				my $cc = '';
 				if (length($opline) >= ($off + length($elements[$n + 1]))) {
@@ -2745,11 +2748,6 @@ sub process {
 			WARN("Use of volatile is usually wrong: see Documentation/volatile-considered-harmful.txt\n" . $herecurr);
 		}
 
-# SPIN_LOCK_UNLOCKED & RW_LOCK_UNLOCKED are deprecated
-		if ($line =~ /\b(SPIN_LOCK_UNLOCKED|RW_LOCK_UNLOCKED)/) {
-			ERROR("Use of $1 is deprecated: see Documentation/spinlocks.txt\n" . $herecurr);
-		}
-
 # sys_open/read/write/close are not allowed in the kernel
 		if ($line =~ /\b(sys_(?:open|read|write|close))\b/) {
 			ERROR("$1 is inappropriate in kernel code.\n" .
@@ -2785,6 +2783,19 @@ sub process {
 			WARN("Use of dsb is discouranged: prefer mb.\n" .
 			     $herecurr);
 		}
+
+# MSM - check if a non board-gpiomux file has any gpiomux declarations
+	if ($realfile =~ /\/mach-msm\/board-[0-9]+/ &&
+	    $realfile !~ /camera/ && $realfile !~ /gpiomux/ &&
+	    $line =~ /\s*struct msm_gpiomux_config\s*/ ) {
+		WARN("Non gpiomux board file cannot have a gpiomux config declarations. Please declare gpiomux configs in board-*-gpiomux.c file.\n" . $herecurr);
+	}
+
+# MSM - check if vreg_xxx function are used
+	if ($line =~ /\b(vreg_(get|put|set_level|enable|disable))\b/) {
+		WARN("Use of $1 API is deprecated: " .
+			"use regulator APIs\n" . $herecurr);
+	}
 
 # unbounded string functions are overflow risks
 		my %str_fns = (
@@ -2907,6 +2918,11 @@ sub process {
 # check for sizeof(&)
 		if ($line =~ /\bsizeof\s*\(\s*\&/) {
 			WARN("sizeof(& should be avoided\n" . $herecurr);
+		}
+
+# check for line continuations in quoted strings with odd counts of "
+		if ($rawline =~ /\\$/ && $rawline =~ tr/"/"/ % 2) {
+			WARN("Avoid line continuations in quoted strings\n" . $herecurr);
 		}
 
 # check for new externs in .c files.
@@ -3068,6 +3084,11 @@ sub process {
 		    $line =~ /DEVICE_ATTR.*S_IWUGO/ ) {
 			WARN("Exporting world writable files is usually an error. Consider more restrictive permissions.\n" . $herecurr);
 		}
+
+		# Check for memset with swapped arguments
+		if ($line =~ /memset.*\,(\ |)(0x|)0(\ |0|)\);/) {
+			ERROR("memset size is 3rd argument, not the second.\n" . $herecurr);
+		}
 	}
 
 	# If we have no input at all, then there is nothing to report on
@@ -3110,6 +3131,7 @@ sub process {
 		if ($rpt_cleaners) {
 			print "NOTE: whitespace errors detected, you may wish to use scripts/cleanpatch or\n";
 			print "      scripts/cleanfile\n\n";
+			$rpt_cleaners = 0;
 		}
 	}
 

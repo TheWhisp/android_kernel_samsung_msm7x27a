@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -12,6 +12,11 @@
 
 #ifndef __ARCH_ARM_MACH_MSM_RPM_8660_H
 #define __ARCH_ARM_MACH_MSM_RPM_8660_H
+
+#define RPM_MAJOR_VER	2
+#define RPM_MINOR_VER	0
+#define RPM_BUILD_VER	0
+
 
 /* RPM control message RAM enums */
 enum {
@@ -310,6 +315,22 @@ enum {
 	MSM_RPMRS_ID_VDD_MEM_1 = MSM_RPM_ID_SMPS0_1,
 	MSM_RPMRS_ID_VDD_DIG_0 = MSM_RPM_ID_SMPS1_0,
 	MSM_RPMRS_ID_VDD_DIG_1 = MSM_RPM_ID_SMPS1_1
+};
+
+/* VDD values are in millivolts */
+#define MSM_RPMRS_VDD_MASK  0xfff
+enum {
+	MSM_RPMRS_VDD_MEM_RET_LOW = 500,
+	MSM_RPMRS_VDD_MEM_RET_HIGH = 750,
+	MSM_RPMRS_VDD_MEM_ACTIVE = 1000,
+	MSM_RPMRS_VDD_MEM_MAX = 1250,
+};
+
+enum {
+	MSM_RPMRS_VDD_DIG_RET_LOW = 500,
+	MSM_RPMRS_VDD_DIG_RET_HIGH = 750,
+	MSM_RPMRS_VDD_DIG_ACTIVE = 1000,
+	MSM_RPMRS_VDD_DIG_MAX = 1250,
 };
 
 enum {

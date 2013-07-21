@@ -1,29 +1,13 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- *       copyright notice, this list of conditions and the following
- *       disclaimer in the documentation and/or other materials provided
- *       with the distribution.
- *     * Neither the name of Code Aurora Forum, Inc. nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
- * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  */
 #ifndef __ASM_ARCH_MSM_IOMAP_FSM9XXX_H
@@ -80,24 +64,6 @@
 #define MSM_GRFC_PHYS	      0x94038000
 #define MSM_GRFC_SIZE	      SZ_4K
 
-#define MSM_DMOV_SD0_BASE     IOMEM(0xFA00A000)
-#define MSM_DMOV_SD0_PHYS     0x94310000
-#define MSM_DMOV_SD0_SIZE     SZ_4K
-
-#define MSM_DMOV_SD1_BASE     IOMEM(0xFA00B000)
-#define MSM_DMOV_SD1_PHYS     0x94410000
-#define MSM_DMOV_SD1_SIZE     SZ_4K
-
-#define MSM_DMOV_SD2_BASE     IOMEM(0xFA00C000)
-#define MSM_DMOV_SD2_PHYS     0x94510000
-#define MSM_DMOV_SD2_SIZE     SZ_4K
-
-#define MSM_DMOV_SD3_BASE     IOMEM(0xFA00D000)
-#define MSM_DMOV_SD3_PHYS     0x94610000
-#define MSM_DMOV_SD3_SIZE     SZ_4K
-
-#define MSM_DMOV_BASE         MSM_DMOV_SD0_BASE
-
 #define MSM_QFP_FUSE_BASE     IOMEM(0xFA010000)
 #define MSM_QFP_FUSE_PHYS     0x80000000
 #define MSM_QFP_FUSE_SIZE     SZ_32K
@@ -114,15 +80,5 @@
 
 #define MSM_UART2_PHYS        0x94100000
 #define MSM_UART2_SIZE        SZ_4K
-
-#ifdef CONFIG_MSM_DEBUG_UART
-#define MSM_DEBUG_UART_BASE   0xFB000000
-#if CONFIG_MSM_DEBUG_UART == 1
-#define MSM_DEBUG_UART_PHYS   MSM_UART1_PHYS
-#elif CONFIG_MSM_DEBUG_UART == 2
-#define MSM_DEBUG_UART_PHYS   MSM_UART2_PHYS
-#endif
-#define MSM_DEBUG_UART_SIZE   SZ_4K
-#endif
 
 #endif

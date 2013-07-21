@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -15,10 +15,14 @@
 #include "mipi_dsi.h"
 #include "mipi_toshiba.h"
 
-static struct msm_panel_common_pdata *mipi_toshiba_pdata;
+static struct pwm_device *bl_lpm;
+static struct mipi_dsi_panel_platform_data *mipi_toshiba_pdata;
+
+#define TM_GET_PID(id) (((id) & 0xff00)>>8)
 
 static struct dsi_buf toshiba_tx_buf;
 static struct dsi_buf toshiba_rx_buf;
+static int mipi_toshiba_lcd_init(void);
 
 #ifdef TOSHIBA_CMDS_UNUSED
 static char one_lane[3] = {0xEF, 0x60, 0x62};
@@ -35,7 +39,6 @@ static char display_on[2] = {0x29, 0x00};
 static char display_off[2] = {0x28, 0x00};
 static char enter_sleep[2] = {0x10, 0x00};
 
-#ifdef CONFIG_FB_MSM_MIPI_TOSHIBA_VIDEO_WVGA_PT_PANEL
 static char mcap_off[2] = {0xb2, 0x00};
 static char ena_test_reg[3] = {0xEF, 0x01, 0x01};
 static char two_lane[3] = {0xEF, 0x60, 0x63};
@@ -47,7 +50,7 @@ static char hor_addr_2A_wvga[5] = {0x2A, 0x00, 0x00, 0x01, 0xdf};
 static char hor_addr_2B_wvga[5] = {0x2B, 0x00, 0x00, 0x03, 0x55};
 static char if_sel_video[2] = {0x53, 0x01};
 
-static struct dsi_cmd_desc toshiba_display_on_cmds[] = {
+static struct dsi_cmd_desc toshiba_wvga_display_on_cmds[] = {
 	{DTYPE_GEN_LWRITE, 1, 0, 0, 0, sizeof(mcap_off), mcap_off},
 	{DTYPE_GEN_LWRITE, 1, 0, 0, 0, sizeof(ena_test_reg), ena_test_reg},
 	{DTYPE_GEN_LWRITE, 1, 0, 0, 0, sizeof(two_lane), two_lane},
@@ -67,9 +70,6 @@ static struct dsi_cmd_desc toshiba_display_on_cmds[] = {
 	{DTYPE_DCS_WRITE, 1, 0, 0, 0, sizeof(display_on), display_on}
 };
 
-#endif
-
-#ifdef CONFIG_FB_MSM_MIPI_TOSHIBA_VIDEO_WSVGA_PT_PANEL
 static char mcap_start[2] = {0xb0, 0x04};
 static char num_out_pixelform[3] = {0xb3, 0x00, 0x87};
 static char dsi_ctrl[3] = {0xb6, 0x30, 0x83};
@@ -133,7 +133,7 @@ static char set_add_mode[2] = {0x36, 0x0};
 static char set_pixel_format[2] = {0x3a, 0x70};
 
 
-static struct dsi_cmd_desc toshiba_display_on_cmds[] = {
+static struct dsi_cmd_desc toshiba_wsvga_display_on_cmds[] = {
 	{DTYPE_GEN_WRITE2, 1, 0, 0, 10, sizeof(mcap_start), mcap_start},
 	{DTYPE_GEN_LWRITE, 1, 0, 0, 10, sizeof(num_out_pixelform),
 		num_out_pixelform},
@@ -175,7 +175,6 @@ static struct dsi_cmd_desc toshiba_display_on_cmds[] = {
 	{DTYPE_DCS_WRITE, 1, 0, 0, 120, sizeof(exit_sleep), exit_sleep},
 	{DTYPE_DCS_WRITE, 1, 0, 0, 50, sizeof(display_on), display_on}
 };
-#endif
 
 static struct dsi_cmd_desc toshiba_display_off_cmds[] = {
 	{DTYPE_DCS_WRITE, 1, 0, 0, 50, sizeof(display_off), display_off},
@@ -193,8 +192,17 @@ static int mipi_toshiba_lcd_on(struct platform_device *pdev)
 	if (mfd->key != MFD_KEY)
 		return -EINVAL;
 
-	mipi_dsi_cmds_tx(mfd, &toshiba_tx_buf, toshiba_display_on_cmds,
-			ARRAY_SIZE(toshiba_display_on_cmds));
+	if (TM_GET_PID(mfd->panel.id) == MIPI_DSI_PANEL_WVGA_PT)
+		mipi_dsi_cmds_tx(&toshiba_tx_buf,
+			toshiba_wvga_display_on_cmds,
+			ARRAY_SIZE(toshiba_wvga_display_on_cmds));
+	else if (TM_GET_PID(mfd->panel.id) == MIPI_DSI_PANEL_WSVGA_PT ||
+		TM_GET_PID(mfd->panel.id) == MIPI_DSI_PANEL_WUXGA)
+		mipi_dsi_cmds_tx(&toshiba_tx_buf,
+			toshiba_wsvga_display_on_cmds,
+			ARRAY_SIZE(toshiba_wsvga_display_on_cmds));
+	else
+		return -EINVAL;
 
 	return 0;
 }
@@ -210,10 +218,44 @@ static int mipi_toshiba_lcd_off(struct platform_device *pdev)
 	if (mfd->key != MFD_KEY)
 		return -EINVAL;
 
-	mipi_dsi_cmds_tx(mfd, &toshiba_tx_buf, toshiba_display_off_cmds,
+	mipi_dsi_cmds_tx(&toshiba_tx_buf, toshiba_display_off_cmds,
 			ARRAY_SIZE(toshiba_display_off_cmds));
 
 	return 0;
+}
+
+void mipi_bklight_pwm_cfg(void)
+{
+	if (mipi_toshiba_pdata && mipi_toshiba_pdata->dsi_pwm_cfg)
+		mipi_toshiba_pdata->dsi_pwm_cfg();
+}
+
+static void mipi_toshiba_set_backlight(struct msm_fb_data_type *mfd)
+{
+	int ret;
+	static int bklight_pwm_cfg;
+
+	if (bklight_pwm_cfg == 0) {
+		mipi_bklight_pwm_cfg();
+		bklight_pwm_cfg++;
+	}
+
+	if (bl_lpm) {
+		ret = pwm_config(bl_lpm, MIPI_TOSHIBA_PWM_DUTY_LEVEL *
+			mfd->bl_level, MIPI_TOSHIBA_PWM_PERIOD_USEC);
+		if (ret) {
+			pr_err("pwm_config on lpm failed %d\n", ret);
+			return;
+		}
+		if (mfd->bl_level) {
+			ret = pwm_enable(bl_lpm);
+			if (ret)
+				pr_err("pwm enable/disable on lpm failed"
+					"for bl %d\n",	mfd->bl_level);
+		} else {
+			pwm_disable(bl_lpm);
+		}
+	}
 }
 
 static int __devinit mipi_toshiba_lcd_probe(struct platform_device *pdev)
@@ -222,6 +264,22 @@ static int __devinit mipi_toshiba_lcd_probe(struct platform_device *pdev)
 		mipi_toshiba_pdata = pdev->dev.platform_data;
 		return 0;
 	}
+
+	if (mipi_toshiba_pdata == NULL) {
+		pr_err("%s.invalid platform data.\n", __func__);
+		return -ENODEV;
+	}
+
+	if (mipi_toshiba_pdata != NULL)
+		bl_lpm = pwm_request(mipi_toshiba_pdata->gpio[0],
+			"backlight");
+
+	if (bl_lpm == NULL || IS_ERR(bl_lpm)) {
+		pr_err("%s pwm_request() failed\n", __func__);
+		bl_lpm = NULL;
+	}
+	pr_debug("bl_lpm = %p lpm = %d\n", bl_lpm,
+		mipi_toshiba_pdata->gpio[0]);
 
 	msm_fb_add_device(pdev);
 
@@ -238,6 +296,7 @@ static struct platform_driver this_driver = {
 static struct msm_fb_panel_data toshiba_panel_data = {
 	.on		= mipi_toshiba_lcd_on,
 	.off		= mipi_toshiba_lcd_off,
+	.set_backlight  = mipi_toshiba_set_backlight,
 };
 
 static int ch_used[3];
@@ -252,6 +311,12 @@ int mipi_toshiba_device_register(struct msm_panel_info *pinfo,
 		return -ENODEV;
 
 	ch_used[channel] = TRUE;
+
+	ret = mipi_toshiba_lcd_init();
+	if (ret) {
+		pr_err("mipi_toshiba_lcd_init() failed with ret %u\n", ret);
+		return ret;
+	}
 
 	pdev = platform_device_alloc("mipi_toshiba", (panel << 8)|channel);
 	if (!pdev)
@@ -281,12 +346,10 @@ err_device_put:
 	return ret;
 }
 
-static int __init mipi_toshiba_lcd_init(void)
+static int mipi_toshiba_lcd_init(void)
 {
 	mipi_dsi_buf_alloc(&toshiba_tx_buf, DSI_BUF_SIZE);
 	mipi_dsi_buf_alloc(&toshiba_rx_buf, DSI_BUF_SIZE);
 
 	return platform_driver_register(&this_driver);
 }
-
-module_init(mipi_toshiba_lcd_init);

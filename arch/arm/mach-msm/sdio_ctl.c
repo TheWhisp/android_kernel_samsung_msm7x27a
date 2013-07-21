@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -25,6 +25,7 @@
 #include <linux/mutex.h>
 #include <linux/uaccess.h>
 #include <linux/workqueue.h>
+#include <linux/poll.h>
 #include <asm/ioctls.h>
 #include <linux/platform_device.h>
 #include <mach/msm_smd.h>
@@ -35,7 +36,7 @@
 
 #define MAX_WRITE_RETRY 5
 #define MAGIC_NO_V1 0x33FC
-#define NUM_SDIO_CTL_PORTS 9
+#define NUM_SDIO_CTL_PORTS 10
 #define DEVICE_NAME "sdioctl"
 #define MAX_BUF_SIZE 2048
 #define DEBUG
@@ -102,15 +103,46 @@ do { \
 #define D(x...) do {} while (0)
 #endif
 
+static uint32_t cmux_ch_id[] = {
+	SDIO_CMUX_DATA_CTL_0,
+	SDIO_CMUX_DATA_CTL_1,
+	SDIO_CMUX_DATA_CTL_2,
+	SDIO_CMUX_DATA_CTL_3,
+	SDIO_CMUX_DATA_CTL_4,
+	SDIO_CMUX_DATA_CTL_5,
+	SDIO_CMUX_DATA_CTL_6,
+	SDIO_CMUX_DATA_CTL_7,
+	SDIO_CMUX_USB_CTL_0,
+	SDIO_CMUX_CSVT_CTL_0
+};
+
+static int get_ctl_dev_index(int id)
+{
+	int dev_index;
+	for (dev_index = 0; dev_index < NUM_SDIO_CTL_PORTS; dev_index++) {
+		if (cmux_ch_id[dev_index] == id)
+			return dev_index;
+	}
+	return -ENODEV;
+}
+
 static void sdio_ctl_receive_cb(void *data, int size, void *priv)
 {
 	struct sdio_ctl_list_elem *list_elem = NULL;
 	int id = ((struct sdio_ctl_dev *)(priv))->id;
+	int dev_index;
 
-	if (id < 0 || id >= NUM_SDIO_CTL_PORTS)
+	if (id < 0 || id > cmux_ch_id[NUM_SDIO_CTL_PORTS - 1])
 		return;
+	dev_index = get_ctl_dev_index(id);
+	if (dev_index < 0) {
+		pr_err("%s: Ch%d is not exported to user-space\n",
+			__func__, id);
+		return;
+	}
+
 	if (!data || size <= 0) {
-		wake_up(&sdio_ctl_devp[id]->read_wait_queue);
+		wake_up(&sdio_ctl_devp[dev_index]->read_wait_queue);
 		return;
 	}
 
@@ -128,20 +160,27 @@ static void sdio_ctl_receive_cb(void *data, int size, void *priv)
 	}
 	memcpy(list_elem->ctl_pkt.data, data, size);
 	list_elem->ctl_pkt.data_size = size;
-	mutex_lock(&sdio_ctl_devp[id]->rx_lock);
-	list_add_tail(&list_elem->list, &sdio_ctl_devp[id]->rx_list);
-	sdio_ctl_devp[id]->read_avail += size;
-	mutex_unlock(&sdio_ctl_devp[id]->rx_lock);
-	wake_up(&sdio_ctl_devp[id]->read_wait_queue);
+	mutex_lock(&sdio_ctl_devp[dev_index]->rx_lock);
+	list_add_tail(&list_elem->list, &sdio_ctl_devp[dev_index]->rx_list);
+	sdio_ctl_devp[dev_index]->read_avail += size;
+	mutex_unlock(&sdio_ctl_devp[dev_index]->rx_lock);
+	wake_up(&sdio_ctl_devp[dev_index]->read_wait_queue);
 }
 
 static void sdio_ctl_write_done(void *data, int size, void *priv)
 {
 	int id = ((struct sdio_ctl_dev *)(priv))->id;
-	if (id < 0 || id >= NUM_SDIO_CTL_PORTS)
+	int dev_index;
+	if (id < 0 || id > cmux_ch_id[NUM_SDIO_CTL_PORTS - 1])
 		return;
 
-	wake_up(&sdio_ctl_devp[id]->write_wait_queue);
+	dev_index = get_ctl_dev_index(id);
+	if (dev_index < 0) {
+		pr_err("%s: Ch%d is not exported to user-space\n",
+			__func__, id);
+		return;
+	}
+	wake_up(&sdio_ctl_devp[dev_index]->write_wait_queue);
 }
 
 static long sdio_ctl_ioctl(struct file *file, unsigned int cmd,
@@ -166,6 +205,34 @@ static long sdio_ctl_ioctl(struct file *file, unsigned int cmd,
 	}
 
 	return ret;
+}
+
+static unsigned int sdio_ctl_poll(struct file *file, poll_table *wait)
+{
+	struct sdio_ctl_dev *sdio_ctl_devp;
+	unsigned int mask = 0;
+
+	sdio_ctl_devp = file->private_data;
+	if (!sdio_ctl_devp) {
+		pr_err("%s: on a NULL device\n", __func__);
+		return POLLERR;
+	}
+
+	poll_wait(file, &sdio_ctl_devp->read_wait_queue, wait);
+	mutex_lock(&sdio_ctl_devp->rx_lock);
+	if (sdio_cmux_is_channel_reset(sdio_ctl_devp->id)) {
+		mutex_unlock(&sdio_ctl_devp->rx_lock);
+		pr_err("%s notifying reset for sdio_ctl_dev id:%d\n",
+			__func__, sdio_ctl_devp->id);
+		return POLLERR;
+	}
+
+	if (sdio_ctl_devp->read_avail > 0)
+		mask |= POLLIN | POLLRDNORM;
+
+	mutex_unlock(&sdio_ctl_devp->rx_lock);
+
+	return mask;
 }
 
 ssize_t sdio_ctl_read(struct file *file,
@@ -379,6 +446,7 @@ static const struct file_operations sdio_ctl_fops = {
 	.release = sdio_ctl_release,
 	.read = sdio_ctl_read,
 	.write = sdio_ctl_write,
+	.poll = sdio_ctl_poll,
 	.unlocked_ioctl = sdio_ctl_ioctl,
 };
 
@@ -397,7 +465,7 @@ static int sdio_ctl_probe(struct platform_device *pdev)
 			goto error0;
 		}
 
-		sdio_ctl_devp[i]->id = i;
+		sdio_ctl_devp[i]->id = cmux_ch_id[i];
 		sdio_ctl_devp[i]->ref_count = 0;
 
 		mutex_init(&sdio_ctl_devp[i]->dev_lock);
@@ -439,7 +507,7 @@ static int sdio_ctl_probe(struct platform_device *pdev)
 		sdio_ctl_devp[i]->devicep =
 				device_create(sdio_ctl_classp, NULL,
 				      (sdio_ctl_number + i), NULL,
-				      DEVICE_NAME "%d", i);
+				      DEVICE_NAME "%d", cmux_ch_id[i]);
 
 		if (IS_ERR(sdio_ctl_devp[i]->devicep)) {
 			pr_err("%s: device_create() ENOMEM\n", __func__);

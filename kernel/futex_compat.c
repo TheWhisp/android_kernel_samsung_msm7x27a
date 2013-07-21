@@ -10,6 +10,7 @@
 #include <linux/compat.h>
 #include <linux/nsproxy.h>
 #include <linux/futex.h>
+#include <linux/ptrace.h>
 
 #include <asm/uaccess.h>
 
@@ -136,30 +137,28 @@ compat_sys_get_robust_list(int pid, compat_uptr_t __user *head_ptr,
 {
 	struct compat_robust_list_head __user *head;
 	unsigned long ret;
-	const struct cred *cred = current_cred(), *pcred;
+	struct task_struct *p;
 
 	if (!futex_cmpxchg_enabled)
 		return -ENOSYS;
 
-	if (!pid)
-		head = current->compat_robust_list;
-	else {
-		struct task_struct *p;
+	rcu_read_lock();
 
-		ret = -ESRCH;
-		rcu_read_lock();
+	ret = -ESRCH;
+	if (!pid)
+		p = current;
+	else {
 		p = find_task_by_vpid(pid);
 		if (!p)
 			goto err_unlock;
-		ret = -EPERM;
-		pcred = __task_cred(p);
-		if (cred->euid != pcred->euid &&
-		    cred->euid != pcred->uid &&
-		    !capable(CAP_SYS_PTRACE))
-			goto err_unlock;
-		head = p->compat_robust_list;
-		rcu_read_unlock();
 	}
+
+	ret = -EPERM;
+	if (!ptrace_may_access(p, PTRACE_MODE_READ))
+		goto err_unlock;
+
+	head = p->compat_robust_list;
+	rcu_read_unlock();
 
 	if (put_user(sizeof(*head), len_ptr))
 		return -EFAULT;

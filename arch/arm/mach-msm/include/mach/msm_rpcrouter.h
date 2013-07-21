@@ -1,7 +1,7 @@
 /** include/asm-arm/arch-msm/msm_rpcrouter.h
  *
  * Copyright (C) 2007 Google, Inc.
- * Copyright (c) 2007-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
  * Author: San Mehat <san@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -253,7 +253,7 @@ struct msm_rpc_client {
 	int cb_avail;
 
 	atomic_t next_cb_id;
-	struct mutex cb_list_lock;
+	spinlock_t cb_list_lock;
 	struct list_head cb_list;
 
 	uint32_t exit_flag;

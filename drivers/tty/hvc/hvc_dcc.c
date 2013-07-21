@@ -1,4 +1,4 @@
-/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -28,54 +28,31 @@
 static inline u32 __dcc_getstatus(void)
 {
 	u32 __ret;
-
-	asm("mrc p14, 0, %0, c0, c1, 0	@ read comms ctrl reg"
+	asm volatile("mrc p14, 0, %0, c0, c1, 0	@ read comms ctrl reg"
 		: "=r" (__ret) : : "cc");
 
 	return __ret;
 }
 
 
-#if defined(CONFIG_CPU_V7)
 static inline char __dcc_getchar(void)
 {
 	char __c;
 
-	asm("get_wait:	mrc p14, 0, pc, c0, c1, 0                          \n\
-			bne get_wait                                       \n\
-			mrc p14, 0, %0, c0, c5, 0	@ read comms data reg"
-		: "=r" (__c) : : "cc");
-
-	return __c;
-}
-#else
-static inline char __dcc_getchar(void)
-{
-	char __c;
-
-	asm("mrc p14, 0, %0, c0, c5, 0	@ read comms data reg"
+	asm volatile("mrc p14, 0, %0, c0, c5, 0	@ read comms data reg"
 		: "=r" (__c));
+	isb();
 
 	return __c;
 }
-#endif
 
-#if defined(CONFIG_CPU_V7)
 static inline void __dcc_putchar(char c)
 {
-	asm("put_wait:	mrc p14, 0, pc, c0, c1, 0                 \n\
-			bcs put_wait                              \n\
-			mcr p14, 0, %0, c0, c5, 0                   "
-	: : "r" (c) : "cc");
-}
-#else
-static inline void __dcc_putchar(char c)
-{
-	asm("mcr p14, 0, %0, c0, c5, 0	@ write a char"
+	asm volatile("mcr p14, 0, %0, c0, c5, 0	@ write a char"
 		: /* no output register */
 		: "r" (c));
+	isb();
 }
-#endif
 
 static int hvc_dcc_put_chars(uint32_t vt, const char *buf, int count)
 {
@@ -85,7 +62,7 @@ static int hvc_dcc_put_chars(uint32_t vt, const char *buf, int count)
 		while (__dcc_getstatus() & DCC_STATUS_TX)
 			cpu_relax();
 
-		__dcc_putchar((char)(buf[i] & 0xFF));
+		__dcc_putchar(buf[i]);
 	}
 
 	return count;
@@ -95,15 +72,11 @@ static int hvc_dcc_get_chars(uint32_t vt, char *buf, int count)
 {
 	int i;
 
-	for (i = 0; i < count; ++i) {
-		int c = -1;
-
+	for (i = 0; i < count; ++i)
 		if (__dcc_getstatus() & DCC_STATUS_RX)
-			c = __dcc_getchar();
-		if (c < 0)
+			buf[i] = __dcc_getchar();
+		else
 			break;
-		buf[i] = c;
-	}
 
 	return i;
 }

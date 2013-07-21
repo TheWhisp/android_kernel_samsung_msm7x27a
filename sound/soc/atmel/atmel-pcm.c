@@ -3,7 +3,6 @@
  *
  *  Copyright (C) 2005 SAN People
  *  Copyright (C) 2008 Atmel
- *  Copyright (c) 2011, Code Aurora Forum. All rights reserved.
  *
  * Authors: Sedji Gaouaou <sedji.gaouaou@atmel.com>
  *

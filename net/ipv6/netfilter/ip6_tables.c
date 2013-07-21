@@ -340,6 +340,7 @@ ip6t_do_table(struct sk_buff *skb,
 	unsigned int *stackptr, origptr, cpu;
 	const struct xt_table_info *private;
 	struct xt_action_param acpar;
+	unsigned int addend;
 
 	/* Initialization */
 	indev = in ? in->name : nulldevname;
@@ -358,7 +359,8 @@ ip6t_do_table(struct sk_buff *skb,
 
 	IP_NF_ASSERT(table->valid_hooks & (1 << hook));
 
-	xt_info_rdlock_bh();
+	local_bh_disable();
+	addend = xt_write_recseq_begin();
 	private = table->private;
 	cpu        = smp_processor_id();
 	table_base = private->entries[cpu];
@@ -442,7 +444,9 @@ ip6t_do_table(struct sk_buff *skb,
 	} while (!acpar.hotdrop);
 
 	*stackptr = origptr;
-	xt_info_rdunlock_bh();
+
+ 	xt_write_recseq_end(addend);
+ 	local_bh_enable();
 
 #ifdef DEBUG_ALLOW_ALL
 	return NF_ACCEPT;
@@ -899,7 +903,7 @@ get_counters(const struct xt_table_info *t,
 	unsigned int i;
 
 	for_each_possible_cpu(cpu) {
-		seqlock_t *lock = &per_cpu(xt_info_locks, cpu).lock;
+		seqcount_t *s = &per_cpu(xt_recseq, cpu);
 
 		i = 0;
 		xt_entry_foreach(iter, t->entries[cpu], t->size) {
@@ -907,10 +911,10 @@ get_counters(const struct xt_table_info *t,
 			unsigned int start;
 
 			do {
-				start = read_seqbegin(lock);
+				start = read_seqcount_begin(s);
 				bcnt = iter->counters.bcnt;
 				pcnt = iter->counters.pcnt;
-			} while (read_seqretry(lock, start));
+			} while (read_seqcount_retry(s, start));
 
 			ADD_COUNTER(counters[i], bcnt, pcnt);
 			++i;
@@ -1076,6 +1080,7 @@ static int compat_table_info(const struct xt_table_info *info,
 	memcpy(newinfo, info, offsetof(struct xt_table_info, entries));
 	newinfo->initial_entries = 0;
 	loc_cpu_entry = info->entries[raw_smp_processor_id()];
+	xt_compat_init_offsets(AF_INET6, info->number);
 	xt_entry_foreach(iter, loc_cpu_entry, info->size) {
 		ret = compat_calc_entry(iter, info, loc_cpu_entry, newinfo);
 		if (ret != 0)
@@ -1324,6 +1329,7 @@ do_add_counters(struct net *net, const void __user *user, unsigned int len,
 	int ret = 0;
 	const void *loc_cpu_entry;
 	struct ip6t_entry *iter;
+	unsigned int addend;
 #ifdef CONFIG_COMPAT
 	struct compat_xt_counters_info compat_tmp;
 
@@ -1380,13 +1386,13 @@ do_add_counters(struct net *net, const void __user *user, unsigned int len,
 	i = 0;
 	/* Choose the copy that is on our node */
 	curcpu = smp_processor_id();
-	xt_info_wrlock(curcpu);
+	addend = xt_write_recseq_begin();
 	loc_cpu_entry = private->entries[curcpu];
 	xt_entry_foreach(iter, loc_cpu_entry, private->size) {
 		ADD_COUNTER(iter->counters, paddc[i].bcnt, paddc[i].pcnt);
 		++i;
 	}
-	xt_info_wrunlock(curcpu);
+	xt_write_recseq_end(addend);
 
  unlock_up_free:
 	local_bh_enable();
@@ -1577,7 +1583,6 @@ compat_copy_entry_from_user(struct compat_ip6t_entry *e, void **dstptr,
 			    struct xt_table_info *newinfo, unsigned char *base)
 {
 	struct xt_entry_target *t;
-	struct xt_target *target;
 	struct ip6t_entry *de;
 	unsigned int origsize;
 	int ret, h;
@@ -1599,7 +1604,6 @@ compat_copy_entry_from_user(struct compat_ip6t_entry *e, void **dstptr,
 	}
 	de->target_offset = e->target_offset - (origsize - *size);
 	t = compat_ip6t_get_target(e);
-	target = t->u.kernel.target;
 	xt_compat_target_from_user(t, dstptr, size);
 
 	de->next_offset = e->next_offset - (origsize - *size);
@@ -1680,6 +1684,7 @@ translate_compat_table(struct net *net,
 	duprintf("translate_compat_table: size %u\n", info->size);
 	j = 0;
 	xt_compat_lock(AF_INET6);
+	xt_compat_init_offsets(AF_INET6, number);
 	/* Walk through entries, checking offsets. */
 	xt_entry_foreach(iter0, entry0, total_size) {
 		ret = check_compat_entry_size_and_hooks(iter0, info, &size,
@@ -2246,7 +2251,7 @@ static int __init ip6_tables_init(void)
 	if (ret < 0)
 		goto err1;
 
-	/* Noone else will be downing sem now, so we won't sleep */
+	/* No one else will be downing sem now, so we won't sleep */
 	ret = xt_register_targets(ip6t_builtin_tg, ARRAY_SIZE(ip6t_builtin_tg));
 	if (ret < 0)
 		goto err2;
@@ -2287,16 +2292,15 @@ static void __exit ip6_tables_fini(void)
  * "No next header".
  *
  * If target header is found, its offset is set in *offset and return protocol
- * number. Otherwise, return -1.
+ * number. Otherwise, return -ENOENT or -EBADMSG.
  *
  * If the first fragment doesn't contain the final protocol header or
  * NEXTHDR_NONE it is considered invalid.
  *
  * Note that non-1st fragment is special case that "the protocol number
  * of last header" is "next header" field in Fragment header. In this case,
- * *offset is meaningless and fragment offset is stored in *fragoff if fragoff
- * isn't NULL.
- *
+ * *offset is meaningless. If fragoff is not NULL, the fragment offset is
+ * stored in *fragoff; if it is NULL, return -EINVAL.
  */
 int ipv6_find_hdr(const struct sk_buff *skb, unsigned int *offset,
 		  int target, unsigned short *fragoff)
@@ -2337,9 +2341,12 @@ int ipv6_find_hdr(const struct sk_buff *skb, unsigned int *offset,
 				if (target < 0 &&
 				    ((!ipv6_ext_hdr(hp->nexthdr)) ||
 				     hp->nexthdr == NEXTHDR_NONE)) {
-					if (fragoff)
+					if (fragoff) {
 						*fragoff = _frag_off;
-					return hp->nexthdr;
+						return hp->nexthdr;
+					} else {
+						return -EINVAL;
+					}
 				}
 				return -ENOENT;
 			}

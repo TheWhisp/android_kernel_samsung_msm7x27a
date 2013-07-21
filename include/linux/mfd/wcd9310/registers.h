@@ -1,15 +1,3 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 and
- * only version 2 as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- */
-
 #ifndef TABLA_CODEC_DIGITAL_H
 
 #define TABLA_CODEC_DIGITAL_H
@@ -220,11 +208,14 @@
 #define TABLA_A_MICB_3_INT_RBIAS__POR			(0x00000000)
 #define TABLA_A_MICB_3_MBHC			(0x0139)
 #define TABLA_A_MICB_3_MBHC__POR			(0x00000000)
-#define TABLA_A_MICB_4_CTL			(0x013A)
+#define TABLA_1_A_MICB_4_CTL			(0x013A)
+#define TABLA_2_A_MICB_4_CTL			(0x013D)
 #define TABLA_A_MICB_4_CTL__POR			(0x00000016)
-#define TABLA_A_MICB_4_INT_RBIAS			(0x013B)
+#define TABLA_1_A_MICB_4_INT_RBIAS			(0x013B)
+#define TABLA_2_A_MICB_4_INT_RBIAS			(0x013E)
 #define TABLA_A_MICB_4_INT_RBIAS__POR			(0x00000000)
-#define TABLA_A_MICB_4_MBHC			(0x013C)
+#define TABLA_1_A_MICB_4_MBHC			(0x013C)
+#define TABLA_2_A_MICB_4_MBHC			(0x013F)
 #define TABLA_A_MICB_4_MBHC__POR			(0x00000001)
 #define TABLA_A_TX_COM_BIAS			(0x014C)
 #define TABLA_A_TX_COM_BIAS__POR			(0x000000E0)
@@ -1069,7 +1060,8 @@
 /* Macros for Packing Register Writes into a U32 */
 #define TABLA_PACKED_REG_SIZE sizeof(u32)
 
-#define TABLA_CODEC_PACK_ENTRY(reg, mask, val) ((val)|(mask << 8)|(reg << 16))
+#define TABLA_CODEC_PACK_ENTRY(reg, mask, val) ((val & 0xff)|\
+	((mask & 0xff) << 8)|((reg & 0xffff) << 16))
 
 #define TABLA_CODEC_UNPACK_ENTRY(packed, reg, mask, val) \
 	do { \

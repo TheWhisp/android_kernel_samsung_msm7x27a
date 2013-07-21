@@ -69,9 +69,8 @@ xfs_synchronize_times(
 }
 
 /*
- * If the linux inode is valid, mark it dirty.
- * Used when commiting a dirty inode into a transaction so that
- * the inode will get written back by the linux code
+ * If the linux inode is valid, mark it dirty, else mark the dirty state
+ * in the XFS inode to make sure we pick it up when reclaiming the inode.
  */
 void
 xfs_mark_inode_dirty_sync(
@@ -81,6 +80,10 @@ xfs_mark_inode_dirty_sync(
 
 	if (!(inode->i_state & (I_WILL_FREE|I_FREEING)))
 		mark_inode_dirty_sync(inode);
+	else {
+		barrier();
+		ip->i_update_core = 1;
+	}
 }
 
 void
@@ -91,6 +94,11 @@ xfs_mark_inode_dirty(
 
 	if (!(inode->i_state & (I_WILL_FREE|I_FREEING)))
 		mark_inode_dirty(inode);
+	else {
+		barrier();
+		ip->i_update_core = 1;
+	}
+
 }
 
 /*
@@ -102,7 +110,8 @@ xfs_mark_inode_dirty(
 STATIC int
 xfs_init_security(
 	struct inode	*inode,
-	struct inode	*dir)
+	struct inode	*dir,
+	const struct qstr *qstr)
 {
 	struct xfs_inode *ip = XFS_I(inode);
 	size_t		length;
@@ -110,7 +119,7 @@ xfs_init_security(
 	unsigned char	*name;
 	int		error;
 
-	error = security_inode_init_security(inode, dir, (char **)&name,
+	error = security_inode_init_security(inode, dir, qstr, (char **)&name,
 					     &value, &length);
 	if (error) {
 		if (error == -EOPNOTSUPP)
@@ -181,7 +190,7 @@ xfs_vn_mknod(
 	if (IS_POSIXACL(dir)) {
 		default_acl = xfs_get_acl(dir, ACL_TYPE_DEFAULT);
 		if (IS_ERR(default_acl))
-			return -PTR_ERR(default_acl);
+			return PTR_ERR(default_acl);
 
 		if (!default_acl)
 			mode &= ~current_umask();
@@ -194,7 +203,7 @@ xfs_vn_mknod(
 
 	inode = VFS_I(ip);
 
-	error = xfs_init_security(inode, dir);
+	error = xfs_init_security(inode, dir, &dentry->d_name);
 	if (unlikely(error))
 		goto out_cleanup_inode;
 
@@ -367,7 +376,7 @@ xfs_vn_symlink(
 
 	inode = VFS_I(cip);
 
-	error = xfs_init_security(inode, dir);
+	error = xfs_init_security(inode, dir, &dentry->d_name);
 	if (unlikely(error))
 		goto out_cleanup_inode;
 
@@ -455,7 +464,7 @@ xfs_vn_getattr(
 	trace_xfs_getattr(ip);
 
 	if (XFS_FORCED_SHUTDOWN(mp))
-		return XFS_ERROR(EIO);
+		return -XFS_ERROR(EIO);
 
 	stat->size = XFS_ISIZE(ip);
 	stat->dev = inode->i_sb->s_dev;

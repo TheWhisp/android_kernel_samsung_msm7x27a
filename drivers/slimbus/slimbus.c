@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -377,8 +377,11 @@ static int slim_register_controller(struct slim_controller *ctrl)
 	dev_set_name(&ctrl->dev, "sb-%d", ctrl->nr);
 	ctrl->dev.bus = &slimbus_type;
 	ctrl->dev.type = &slim_ctrl_type;
-	ctrl->dev.parent = &slimbus_dev;
 	ctrl->num_dev = 0;
+	if (!ctrl->min_cg)
+		ctrl->min_cg = SLIM_MIN_CLK_GEAR;
+	if (!ctrl->max_cg)
+		ctrl->max_cg = SLIM_MAX_CLK_GEAR;
 	mutex_init(&ctrl->m_ctrl);
 	mutex_init(&ctrl->sched.m_reconf);
 	ret = device_register(&ctrl->dev);
@@ -425,6 +428,7 @@ static int slim_register_controller(struct slim_controller *ctrl)
 #ifdef DEBUG
 	ctrl->sched.slots = kzalloc(SLIM_SL_PER_SUPERFRAME, GFP_KERNEL);
 #endif
+	init_completion(&ctrl->pause_comp);
 	/*
 	 * If devices on a controller were registered before controller,
 	 * this will make sure that they get probed now that controller is up
@@ -576,7 +580,7 @@ void slim_msg_response(struct slim_controller *ctrl, u8 *reply, u8 tid, u8 len)
 }
 EXPORT_SYMBOL_GPL(slim_msg_response);
 
-static int slim_processtxn(struct slim_controller *ctrl, u8 dt, u8 mc, u16 ec,
+static int slim_processtxn(struct slim_controller *ctrl, u8 dt, u16 mc, u16 ec,
 			u8 mt, u8 *rbuf, const u8 *wbuf, u8 len, u8 mlen,
 			struct completion *comp, u8 la, u8 *tid)
 {
@@ -865,7 +869,7 @@ EXPORT_SYMBOL_GPL(slim_request_clear_inf_element);
  * All controllers may not support broadcast
  */
 int slim_xfer_msg(struct slim_controller *ctrl, struct slim_device *sbdev,
-			struct slim_ele_access *msg, u8 mc, u8 *rbuf,
+			struct slim_ele_access *msg, u16 mc, u8 *rbuf,
 			const u8 *wbuf, u8 len)
 {
 	DECLARE_COMPLETION_ONSTACK(complete);
@@ -900,8 +904,22 @@ int slim_xfer_msg(struct slim_controller *ctrl, struct slim_device *sbdev,
 				mc, ec, SLIM_MSG_MT_CORE, rbuf, wbuf, len, mlen,
 				msg->comp, sbdev->laddr, &tid);
 		/* sync read */
-		if (!ret && !msg->comp)
-			wait_for_completion_timeout(&complete, HZ);
+		if (!ret && !msg->comp) {
+			ret = wait_for_completion_timeout(&complete, HZ);
+			if (!ret) {
+				struct slim_msg_txn *txn;
+				dev_err(&ctrl->dev, "slimbus Read timed out");
+				mutex_lock(&ctrl->m_ctrl);
+				txn = ctrl->txnt[tid];
+				/* Invalidate the transaction */
+				ctrl->txnt[tid] = NULL;
+				mutex_unlock(&ctrl->m_ctrl);
+				kfree(txn);
+				ret = -ETIMEDOUT;
+			} else
+				ret = 0;
+		}
+
 	} else
 		ret = slim_processtxn(ctrl, SLIM_MSG_DEST_LOGICALADDR, mc, ec,
 				SLIM_MSG_MT_CORE, rbuf, wbuf, len, mlen,
@@ -930,7 +948,8 @@ EXPORT_SYMBOL_GPL(slim_xfer_msg);
 int slim_alloc_mgrports(struct slim_device *sb, enum slim_port_req req,
 				int nports, u32 *rh, int hsz)
 {
-	int i, j, ret;
+	int i, j;
+	int ret = -EINVAL;
 	int nphysp = nports;
 	struct slim_controller *ctrl = sb->ctrl;
 
@@ -1045,7 +1064,7 @@ static int connect_port_ch(struct slim_controller *ctrl, u8 ch, u32 ph,
 				enum slim_port_flow flow)
 {
 	int ret;
-	u8 mc;
+	u16 mc;
 	u8 buf[2];
 	u32 la = SLIM_HDL_TO_LA(ph);
 	u8 pn = (u8)SLIM_HDL_TO_PORT(ph);
@@ -1069,7 +1088,7 @@ static int connect_port_ch(struct slim_controller *ctrl, u8 ch, u32 ph,
 static int disconnect_port_ch(struct slim_controller *ctrl, u32 ph)
 {
 	int ret;
-	u8 mc;
+	u16 mc;
 	u32 la = SLIM_HDL_TO_LA(ph);
 	u8 pn = (u8)SLIM_HDL_TO_PORT(ph);
 
@@ -1121,6 +1140,7 @@ int slim_connect_ports(struct slim_device *sb, u32 *srch, int nsrc, u32 sinkh,
 		ret = -ENOMEM;
 		goto connect_port_err;
 	}
+
 	/* connect source */
 	for (j = 0; j < nsrc; j++) {
 		ret = connect_port_ch(ctrl, chan, srch[j], SLIM_SRC);
@@ -1165,7 +1185,9 @@ int slim_disconnect_ports(struct slim_device *sb, u32 *ph, int nph)
 {
 	struct slim_controller *ctrl = sb->ctrl;
 	int i;
+
 	mutex_lock(&ctrl->m_ctrl);
+
 	for (i = 0; i < nph; i++)
 		disconnect_port_ch(ctrl, ph[i]);
 	mutex_unlock(&ctrl->m_ctrl);
@@ -1854,7 +1876,7 @@ static int slim_sched_chans(struct slim_device *sb, u32 clkgear,
 			*ctrlw = maxctrlw1;
 		}
 	} else {
-		struct slim_ich *slc1;
+		struct slim_ich *slc1 = NULL;
 		struct slim_ich *slc3 = ctrl->sched.chc3[coeff3];
 		u32 expshft = SLIM_MAX_CLK_GEAR - clkgear;
 		int curexp, finalexp, exp1;
@@ -2200,9 +2222,17 @@ static int slim_allocbw(struct slim_device *sb, int *subfrmc, int *clkgear)
 	dev_dbg(&ctrl->dev, "pending:chan sl:%u, :msg sl:%u, clkgear:%u\n",
 				ctrl->sched.usedslots,
 				ctrl->sched.pending_msgsl, *clkgear);
-	while ((usedsl * 2 <= availsl) && (*clkgear > 1)) {
-		*clkgear -= 1;
-		usedsl *= 2;
+	/*
+	 * If number of slots are 0, that means channels are inactive.
+	 * It is very likely that the manager will call clock pause very soon.
+	 * By making sure that bus is in MAX_GEAR, clk pause sequence will take
+	 * minimum amount of time.
+	 */
+	if (ctrl->sched.usedslots != 0) {
+		while ((usedsl * 2 <= availsl) && (*clkgear > ctrl->min_cg)) {
+			*clkgear -= 1;
+			usedsl *= 2;
+		}
 	}
 
 	/*
@@ -2210,14 +2240,14 @@ static int slim_allocbw(struct slim_device *sb, int *subfrmc, int *clkgear)
 	 * can be scheduled, or reserved BW can't be satisfied, increase clock
 	 * gear and try again
 	 */
-	for (; *clkgear <= SLIM_MAX_CLK_GEAR; (*clkgear)++) {
+	for (; *clkgear <= ctrl->max_cg; (*clkgear)++) {
 		ret = slim_sched_chans(sb, *clkgear, &ctrlw, &subfrml);
 
 		if (ret == 0) {
 			*subfrmc = getsubfrmcoding(&ctrlw, &subfrml, &msgsl);
-			if ((msgsl >> (SLIM_MAX_CLK_GEAR - *clkgear) <
+			if ((msgsl >> (ctrl->max_cg - *clkgear) <
 				ctrl->sched.pending_msgsl) &&
-				(*clkgear < SLIM_MAX_CLK_GEAR))
+				(*clkgear < ctrl->max_cg))
 				continue;
 			else
 				break;
@@ -2251,6 +2281,25 @@ static int slim_allocbw(struct slim_device *sb, int *subfrmc, int *clkgear)
 	return ret;
 }
 
+static void slim_change_existing_chans(struct slim_controller *ctrl, int coeff)
+{
+	struct slim_ich **arr;
+	int len, i;
+	if (coeff == SLIM_COEFF_1) {
+		arr = ctrl->sched.chc1;
+		len = ctrl->sched.num_cc1;
+	} else {
+		arr = ctrl->sched.chc3;
+		len = ctrl->sched.num_cc3;
+	}
+	for (i = 0; i < len; i++) {
+		struct slim_ich *slc = arr[i];
+		if (slc->state == SLIM_CH_ACTIVE ||
+			slc->state == SLIM_CH_SUSPENDED)
+			slc->offset = slc->newoff;
+			slc->interval = slc->newintr;
+	}
+}
 static void slim_chan_changes(struct slim_device *sb, bool revert)
 {
 	struct slim_controller *ctrl = sb->ctrl;
@@ -2268,8 +2317,6 @@ static void slim_chan_changes(struct slim_device *sb, bool revert)
 			slim_remove_ch(ctrl, slc);
 			slc->state = SLIM_CH_DEFINED;
 		} else {
-			slc->offset = slc->newoff;
-			slc->interval = slc->newintr;
 			slc->state = SLIM_CH_ACTIVE;
 		}
 		list_del_init(&pch->pending);
@@ -2302,6 +2349,11 @@ static void slim_chan_changes(struct slim_device *sb, bool revert)
 			slc->state = SLIM_CH_ACTIVE;
 		list_del_init(&pch->pending);
 		kfree(pch);
+	}
+	/* Change already active channel if reconfig succeeded */
+	if (!revert) {
+		slim_change_existing_chans(ctrl, SLIM_COEFF_1);
+		slim_change_existing_chans(ctrl, SLIM_COEFF_3);
 	}
 }
 
@@ -2432,6 +2484,10 @@ int slim_reconfigure_now(struct slim_device *sb)
 		curexp = slc->rootexp + expshft;
 		segdist = (slc->newoff << curexp) & 0x1FF;
 		expshft = SLIM_MAX_CLK_GEAR - clkgear;
+		dev_dbg(&ctrl->dev, "new-intr:%d, old-intr:%d, dist:%d\n",
+				slc->newintr, slc->interval, segdist);
+		dev_dbg(&ctrl->dev, "new-off:%d, old-off:%d\n",
+				slc->newoff, slc->offset);
 
 		if (slc->state < SLIM_CH_ACTIVE ||
 			slc->newintr != slc->interval ||
@@ -2461,6 +2517,10 @@ int slim_reconfigure_now(struct slim_device *sb)
 		curexp = slc->rootexp + expshft;
 		segdist = (slc->newoff << curexp) & 0x1FF;
 		expshft = SLIM_MAX_CLK_GEAR - clkgear;
+		dev_dbg(&ctrl->dev, "new-intr:%d, old-intr:%d, dist:%d\n",
+				slc->newintr, slc->interval, segdist);
+		dev_dbg(&ctrl->dev, "new-off:%d, old-off:%d\n",
+				slc->newoff, slc->offset);
 
 		if (slc->state < SLIM_CH_ACTIVE ||
 			slc->newintr != slc->interval ||
@@ -2618,6 +2678,123 @@ int slim_reservemsg_bw(struct slim_device *sb, u32 bw_bps, bool commit)
 }
 EXPORT_SYMBOL_GPL(slim_reservemsg_bw);
 
+/*
+ * slim_ctrl_clk_pause: Called by slimbus controller to request clock to be
+ *	paused or woken up out of clock pause
+ * or woken up from clock pause
+ * @ctrl: controller requesting bus to be paused or woken up
+ * @wakeup: Wakeup this controller from clock pause.
+ * @restart: Restart time value per spec used for clock pause. This value
+ *	isn't used when controller is to be woken up.
+ * This API executes clock pause reconfiguration sequence if wakeup is false.
+ * If wakeup is true, controller's wakeup is called
+ * Slimbus clock is idle and can be disabled by the controller later.
+ */
+int slim_ctrl_clk_pause(struct slim_controller *ctrl, bool wakeup, u8 restart)
+{
+	int ret = 0;
+	int i;
+
+	if (wakeup == false && restart > SLIM_CLK_UNSPECIFIED)
+		return -EINVAL;
+	mutex_lock(&ctrl->m_ctrl);
+	if (wakeup) {
+		if (ctrl->clk_state == SLIM_CLK_ACTIVE) {
+			mutex_unlock(&ctrl->m_ctrl);
+			return 0;
+		}
+		wait_for_completion(&ctrl->pause_comp);
+		/*
+		 * Slimbus framework will call controller wakeup
+		 * Controller should make sure that it sets active framer
+		 * out of clock pause by doing appropriate setting
+		 */
+		if (ctrl->clk_state == SLIM_CLK_PAUSED && ctrl->wakeup)
+			ret = ctrl->wakeup(ctrl);
+		if (!ret)
+			ctrl->clk_state = SLIM_CLK_ACTIVE;
+		mutex_unlock(&ctrl->m_ctrl);
+		return ret;
+	} else {
+		switch (ctrl->clk_state) {
+		case SLIM_CLK_ENTERING_PAUSE:
+		case SLIM_CLK_PAUSE_FAILED:
+			/*
+			 * If controller is already trying to enter clock pause,
+			 * let it finish.
+			 * In case of error, retry
+			 * In both cases, previous clock pause has signalled
+			 * completion.
+			 */
+			wait_for_completion(&ctrl->pause_comp);
+			/* retry upon failure */
+			if (ctrl->clk_state == SLIM_CLK_PAUSE_FAILED) {
+				ctrl->clk_state = SLIM_CLK_ACTIVE;
+				break;
+			} else {
+				mutex_unlock(&ctrl->m_ctrl);
+				/*
+				 * Signal completion so that wakeup can wait on
+				 * it.
+				 */
+				complete(&ctrl->pause_comp);
+				return 0;
+			}
+			break;
+		case SLIM_CLK_PAUSED:
+			/* already paused */
+			mutex_unlock(&ctrl->m_ctrl);
+			return 0;
+		case SLIM_CLK_ACTIVE:
+		default:
+			break;
+		}
+	}
+	/* Pending response for a message */
+	for (i = 0; i < ctrl->last_tid; i++) {
+		if (ctrl->txnt[i]) {
+			ret = -EBUSY;
+			mutex_unlock(&ctrl->m_ctrl);
+			return -EBUSY;
+		}
+	}
+	ctrl->clk_state = SLIM_CLK_ENTERING_PAUSE;
+	mutex_unlock(&ctrl->m_ctrl);
+
+	mutex_lock(&ctrl->sched.m_reconf);
+	/* Data channels active */
+	if (ctrl->sched.usedslots) {
+		ret = -EBUSY;
+		goto clk_pause_ret;
+	}
+
+	ret = slim_processtxn(ctrl, SLIM_MSG_DEST_BROADCAST,
+		SLIM_MSG_CLK_PAUSE_SEQ_FLG | SLIM_MSG_MC_BEGIN_RECONFIGURATION,
+		0, SLIM_MSG_MT_CORE, NULL, NULL, 0, 3, NULL, 0, NULL);
+	if (ret)
+		goto clk_pause_ret;
+
+	ret = slim_processtxn(ctrl, SLIM_MSG_DEST_BROADCAST,
+		SLIM_MSG_CLK_PAUSE_SEQ_FLG | SLIM_MSG_MC_NEXT_PAUSE_CLOCK, 0,
+		SLIM_MSG_MT_CORE, NULL, &restart, 1, 4, NULL, 0, NULL);
+	if (ret)
+		goto clk_pause_ret;
+
+	ret = slim_processtxn(ctrl, SLIM_MSG_DEST_BROADCAST,
+		SLIM_MSG_CLK_PAUSE_SEQ_FLG | SLIM_MSG_MC_RECONFIGURE_NOW, 0,
+		SLIM_MSG_MT_CORE, NULL, NULL, 0, 3, NULL, 0, NULL);
+	if (ret)
+		goto clk_pause_ret;
+
+clk_pause_ret:
+	if (ret)
+		ctrl->clk_state = SLIM_CLK_PAUSE_FAILED;
+	else
+		ctrl->clk_state = SLIM_CLK_PAUSED;
+	complete(&ctrl->pause_comp);
+	mutex_unlock(&ctrl->sched.m_reconf);
+	return ret;
+}
 
 MODULE_LICENSE("GPL v2");
 MODULE_VERSION("0.1");

@@ -146,6 +146,8 @@
 DHD_SPINWAIT_SLEEP_INIT(sdioh_spinwait_sleep);
 extern int dhdcdc_set_ioctl(dhd_pub_t *dhd, int ifidx, uint cmd, void *buf, uint len);
 
+extern void bcmsdh_set_irq(int flag);
+
 #ifdef DHD_DEBUG
 /* Device console log buffer state */
 typedef struct dhd_console {
@@ -1279,7 +1281,8 @@ dhd_bus_txctl(struct dhd_bus *bus, uchar *msg, uint msglen)
 			DHD_INFO(("%s: ctrl_frame_stat == FALSE\n", __FUNCTION__));
 			ret = 0;
 		} else {
-			DHD_INFO(("%s: ctrl_frame_stat == TRUE\n", __FUNCTION__));
+			if (!bus->dhd->hang_was_sent)
+				DHD_ERROR(("%s: ctrl_frame_stat == TRUE\n", __FUNCTION__));
 			ret = -1;
 		}
 	}
@@ -5749,7 +5752,9 @@ dhd_bus_devreset(dhd_pub_t *dhdp, uint8 flag)
 			/* Expect app to have torn down any connection before calling */
 			/* Stop the bus, disable F2 */
 			dhd_bus_stop(bus, FALSE);
-
+#if defined(OOB_INTR_ONLY)
+			bcmsdh_set_irq(FALSE);
+#endif /* defined(OOB_INTR_ONLY) */
 			/* Clean tx/rx buffer pointers, detach from the dongle */
 			dhdsdio_release_dongle(bus, bus->dhd->osh, TRUE);
 
@@ -5785,6 +5790,7 @@ dhd_bus_devreset(dhd_pub_t *dhdp, uint8 flag)
 					bcmerror = dhd_bus_init((dhd_pub_t *) bus->dhd, FALSE);
 					if (bcmerror == BCME_OK) {
 #if defined(OOB_INTR_ONLY)
+						bcmsdh_set_irq(TRUE);
 						dhd_enable_oob_intr(bus, TRUE);
 #endif /* defined(OOB_INTR_ONLY) */
 						bus->dhd->dongle_reset = FALSE;

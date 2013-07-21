@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+# Copyright (c) 2011, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -10,7 +10,7 @@
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in the
 #       documentation and/or other materials provided with the distribution.
-#     * Neither the name of Code Aurora nor
+#     * Neither the name of The Linux Foundation nor
 #       the names of its contributors may be used to endorse or promote
 #       products derived from this software without specific prior written
 #       permission.
@@ -30,6 +30,7 @@
 # Invoke gcc, looking for warnings, and causing a failure if there are
 # non-whitelisted warnings.
 
+import errno
 import re
 import os
 import sys
@@ -57,8 +58,12 @@ allowed_warnings = set([
     "msm_sdcc.c:128",
     "nf_conntrack_netlink.c:790",
     "nf_nat_standalone.c:118",
-    "return_address.c:61",
+    "return_address.c:62",
     "soc-core.c:1719",
+    "xt_log.h:50",
+    "vx6953.c:3124",
+    "dma-mapping.c:238",
+    "dma-mapping.c:284",
     "xt_log.h:50",
  ])
 
@@ -70,16 +75,16 @@ def interpret_warning(line):
     """Decode the message from gcc.  The messages we care about have a filename, and a warning"""
     line = line.rstrip('\n')
     m = warning_re.match(line)
-#    if m and m.group(2) not in allowed_warnings:
-#        print "error, forbidden warning:", m.group(2)
+    if m and m.group(2) not in allowed_warnings:
+        print "error, forbidden warning:", m.group(2)
 
         # If there is a warning, remove any object if it exists.
-#        if ofile:
-#            try:
-#                os.remove(ofile)
-#            except OSError:
-#                pass
-#        sys.exit(1)
+        if ofile:
+            try:
+                os.remove(ofile)
+            except OSError:
+                pass
+        sys.exit(1)
 
 def run_gcc():
     args = sys.argv[1:]
@@ -93,12 +98,20 @@ def run_gcc():
 
     compiler = sys.argv[0]
 
-    proc = subprocess.Popen(args, stderr=subprocess.PIPE)
-    for line in proc.stderr:
-        print line,
-        interpret_warning(line)
+    try:
+        proc = subprocess.Popen(args, stderr=subprocess.PIPE)
+        for line in proc.stderr:
+            print line,
+            interpret_warning(line)
 
-    result = proc.wait()
+        result = proc.wait()
+    except OSError as e:
+        result = e.errno
+        if result == errno.ENOENT:
+            print args[0] + ':',e.strerror
+            print 'Is your PATH set correctly?'
+        else:
+            print ' '.join(args), str(e)
 
     return result
 

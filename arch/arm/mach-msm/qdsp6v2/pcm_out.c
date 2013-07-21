@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Google, Inc.
- * Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -52,7 +52,6 @@ struct pcm {
 	atomic_t out_stopped;
 	atomic_t out_prefill;
 	struct wake_lock wakelock;
-	struct wake_lock idlelock;
 };
 
 void pcm_out_cb(uint32_t opcode, uint32_t token,
@@ -67,6 +66,9 @@ void pcm_out_cb(uint32_t opcode, uint32_t token,
 		atomic_inc(&pcm->out_count);
 		wake_up(&pcm->write_wait);
 		break;
+	case RESET_EVENTS:
+		reset_device();
+		break;
 	default:
 		break;
 	}
@@ -77,14 +79,12 @@ static void audio_prevent_sleep(struct pcm *audio)
 {
 	pr_debug("%s:\n", __func__);
 	wake_lock(&audio->wakelock);
-	wake_lock(&audio->idlelock);
 }
 
 static void audio_allow_sleep(struct pcm *audio)
 {
 	pr_debug("%s:\n", __func__);
 	wake_unlock(&audio->wakelock);
-	wake_unlock(&audio->idlelock);
 }
 
 static int pcm_out_enable(struct pcm *pcm)
@@ -336,8 +336,6 @@ static int pcm_out_open(struct inode *inode, struct file *file)
 	atomic_set(&pcm->out_opened, 1);
 	snprintf(name, sizeof name, "audio_pcm_%x", pcm->ac->session);
 	wake_lock_init(&pcm->wakelock, WAKE_LOCK_SUSPEND, name);
-	snprintf(name, sizeof name, "audio_pcm_idle_%x", pcm->ac->session);
-	wake_lock_init(&pcm->idlelock, WAKE_LOCK_IDLE, name);
 
 	rc = auddev_register_evt_listner(pcm->stream_event,
 					AUDDEV_CLNT_DEC,
@@ -385,7 +383,7 @@ static ssize_t pcm_out_write(struct file *file, const char __user *buf,
 	while (count > 0) {
 		rc = wait_event_timeout(pcm->write_wait,
 				(atomic_read(&pcm->out_count) ||
-				atomic_read(&pcm->out_stopped)), 5 * HZ);
+				atomic_read(&pcm->out_stopped)), 1 * HZ);
 		if (!rc) {
 			pr_err("%s: wait_event_timeout failed for session %d\n",
 				__func__, pcm->ac->session);
@@ -441,7 +439,6 @@ static int pcm_out_release(struct inode *inode, struct file *file)
 	q6asm_audio_client_free(pcm->ac);
 	audio_allow_sleep(pcm);
 	wake_lock_destroy(&pcm->wakelock);
-	wake_lock_destroy(&pcm->idlelock);
 	mutex_destroy(&pcm->lock);
 	mutex_destroy(&pcm->write_lock);
 	kfree(pcm);

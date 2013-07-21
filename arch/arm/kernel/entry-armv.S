@@ -4,7 +4,6 @@
  *  Copyright (C) 1996,1997,1998 Russell King.
  *  ARM700 fix by Matthew Godbolt (linux-user@willothewisp.demon.co.uk)
  *  nommu support by Hyok S. Choi (hyok.choi@samsung.com)
- *  Copyright (c) 2009, Code Aurora Forum. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -17,7 +16,8 @@
  */
 
 #include <asm/memory.h>
-#include <asm/glue.h>
+#include <asm/glue-df.h>
+#include <asm/glue-pf.h>
 #include <asm/vfpmacros.h>
 #include <mach/entry-macro.S>
 #include <asm/thread_notify.h>
@@ -29,18 +29,17 @@
 #include <asm/entry-macro-multi.S>
 
 /*
- * Interrupt handling.  Preserves r7, r8, r9
+ * Interrupt handling.
  */
 	.macro	irq_handler
 #ifdef CONFIG_MULTI_IRQ_HANDLER
-	ldr	r5, =handle_arch_irq
+	ldr	r1, =handle_arch_irq
 	mov	r0, sp
-	ldr	r5, [r5]
 	adr	lr, BSYM(9997f)
-	teq	r5, #0
-	movne	pc, r5
-#endif
+	ldr	pc, [r1]
+#else
 	arch_irq_handler_default
+#endif
 9997:
 	.endm
 
@@ -435,6 +434,10 @@ __irq_usr:
 	usr_entry
 	kuser_cmpxchg_check
 
+#ifdef CONFIG_IRQSOFF_TRACER
+	bl	trace_hardirqs_off
+#endif
+
 	get_thread_info tsk
 #ifdef CONFIG_PREEMPT
 	ldr	r8, [tsk, #TI_PREEMPT]		@ get preempt count
@@ -453,7 +456,7 @@ __irq_usr:
 #endif
 
 	mov	why, #0
-	b	ret_to_user
+	b	ret_to_user_from_irq
  UNWIND(.fnend		)
 ENDPROC(__irq_usr)
 
@@ -1041,7 +1044,7 @@ __kuser_helper_end:
  * SP points to a minimal amount of processor-private memory, the address
  * of which is copied into r0 for the mode specific abort handler.
  */
-	.macro	vector_stub, name, mode, correction=0
+	.macro	vector_stub, name, mode, fixup, correction=0
 	.align	5
 
 vector_\name:
@@ -1070,6 +1073,18 @@ vector_\name:
 	and	lr, lr, #0x0f
  THUMB(	adr	r0, 1f			)
  THUMB(	ldr	lr, [r0, lr, lsl #2]	)
+	.if	\fixup
+#ifdef CONFIG_MSM_KRAIT_WFE_FIXUP
+	ldr	r0, .krait_fixup
+	ldr	r0, [r0]
+	cmp	r0, #0
+	beq	10f
+	mrc	p15, 7, r0, c15, c0, 5
+	orr	r0, r0, #0x10000
+	mcr	p15, 7, r0, c15, c0, 5
+10:	isb
+#endif
+	.endif
 	mov	r0, sp
  ARM(	ldr	lr, [pc, lr, lsl #2]	)
 	movs	pc, lr			@ branch to handler in SVC mode
@@ -1085,7 +1100,7 @@ __stubs_start:
 /*
  * Interrupt dispatcher
  */
-	vector_stub	irq, IRQ_MODE, 4
+	vector_stub	irq, IRQ_MODE, 1, 4
 
 	.long	__irq_usr			@  0  (USR_26 / USR_32)
 	.long	__irq_invalid			@  1  (FIQ_26 / FIQ_32)
@@ -1108,7 +1123,7 @@ __stubs_start:
  * Data abort dispatcher
  * Enter in ABT mode, spsr = USR CPSR, lr = USR PC
  */
-	vector_stub	dabt, ABT_MODE, 8
+	vector_stub	dabt, ABT_MODE, 0, 8
 
 	.long	__dabt_usr			@  0  (USR_26 / USR_32)
 	.long	__dabt_invalid			@  1  (FIQ_26 / FIQ_32)
@@ -1131,7 +1146,7 @@ __stubs_start:
  * Prefetch abort dispatcher
  * Enter in ABT mode, spsr = USR CPSR, lr = USR PC
  */
-	vector_stub	pabt, ABT_MODE, 4
+	vector_stub	pabt, ABT_MODE, 0, 4
 
 	.long	__pabt_usr			@  0 (USR_26 / USR_32)
 	.long	__pabt_invalid			@  1 (FIQ_26 / FIQ_32)
@@ -1154,7 +1169,7 @@ __stubs_start:
  * Undef instr entry dispatcher
  * Enter in UND mode, spsr = SVC/USR CPSR, lr = SVC/USR PC
  */
-	vector_stub	und, UND_MODE
+	vector_stub	und, UND_MODE, 0
 
 	.long	__und_usr			@  0 (USR_26 / USR_32)
 	.long	__und_invalid			@  1 (FIQ_26 / FIQ_32)
@@ -1207,6 +1222,8 @@ vector_addrexcptn:
 
 .LCvswi:
 	.word	vector_swi
+.krait_fixup:
+	.word	msm_krait_need_wfe_fixup
 
 	.globl	__stubs_end
 __stubs_end:

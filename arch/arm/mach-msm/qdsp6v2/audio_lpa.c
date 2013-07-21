@@ -2,7 +2,7 @@
  *
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
- * Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -418,8 +418,8 @@ static long audlpa_process_event_req(struct audio *audio, void __user *arg)
 		rc = -1;
 	spin_unlock(&audio->event_queue_lock);
 
-	if (drv_evt->event_type == AUDIO_EVENT_WRITE_DONE ||
-	    drv_evt->event_type == AUDIO_EVENT_READ_DONE) {
+	if (drv_evt && (drv_evt->event_type == AUDIO_EVENT_WRITE_DONE ||
+	    drv_evt->event_type == AUDIO_EVENT_READ_DONE)) {
 		pr_debug("%s: AUDIO_EVENT_WRITE_DONE completing\n", __func__);
 		mutex_lock(&audio->lock);
 		audlpa_pmem_fixup(audio, drv_evt->payload.aio_buf.buf_addr,
@@ -630,6 +630,7 @@ static int audlpa_aio_buf_add(struct audio *audio, unsigned dir,
 		audlpa_async_send_data(audio, 0, 0);
 	} else {
 		/* read */
+		kfree(buf_node);
 	}
 	return 0;
 }
@@ -667,6 +668,9 @@ void q6_audlpa_out_cb(uint32_t opcode, uint32_t token,
 		}
 		break;
 	case ASM_SESSION_CMDRSP_GET_SESSION_TIME:
+		break;
+	case RESET_EVENTS:
+		reset_device();
 		break;
 	default:
 		break;
@@ -779,11 +783,16 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			rc = -EFAULT;
 			goto fail;
 		} else {
-			struct asm_softpause_params param = {
+			struct asm_softpause_params softpause = {
 				.enable = SOFT_PAUSE_ENABLE,
 				.period = SOFT_PAUSE_PERIOD,
 				.step = SOFT_PAUSE_STEP,
 				.rampingcurve = SOFT_PAUSE_CURVE_LINEAR,
+			};
+			struct asm_softvolume_params softvol = {
+				.period = SOFT_VOLUME_PERIOD,
+				.step = SOFT_VOLUME_STEP,
+				.rampingcurve = SOFT_VOLUME_CURVE_LINEAR,
 			};
 			audio->out_enabled = 1;
 			audio->out_needed = 1;
@@ -791,9 +800,13 @@ static long audio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			if (rc < 0)
 				pr_err("%s: Send Volume command failed rc=%d\n",
 					__func__, rc);
-			rc = q6asm_set_softpause(audio->ac, &param);
+			rc = q6asm_set_softpause(audio->ac, &softpause);
 			if (rc < 0)
 				pr_err("%s: Send SoftPause Param failed rc=%d\n",
+					__func__, rc);
+			rc = q6asm_set_softvolume(audio->ac, &softvol);
+			if (rc < 0)
+				pr_err("%s: Send SoftVolume Param failed rc=%d\n",
 					__func__, rc);
 			rc = q6asm_set_lrgain(audio->ac, 0x2000, 0x2000);
 			if (rc < 0)
@@ -1071,8 +1084,8 @@ static int audio_release(struct inode *inode, struct file *file)
 	if (audio->out_enabled)
 		audlpa_async_flush(audio);
 	audio->wflush = 0;
-	audlpa_unmap_pmem_region(audio);
 	audio_disable(audio);
+	audlpa_unmap_pmem_region(audio);
 	msm_clear_session_id(audio->ac->session);
 	auddev_unregister_evt_listner(AUDDEV_CLNT_DEC, audio->ac->session);
 	q6asm_audio_client_free(audio->ac);

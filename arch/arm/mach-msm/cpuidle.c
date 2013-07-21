@@ -1,4 +1,4 @@
-/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -14,8 +14,10 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/cpuidle.h>
+#include <linux/cpu_pm.h>
 
-#include "cpuidle.h"
+#include <mach/cpuidle.h>
+
 #include "pm.h"
 
 static DEFINE_PER_CPU_SHARED_ALIGNED(struct cpuidle_device, msm_cpuidle_devs);
@@ -61,7 +63,14 @@ static int msm_cpuidle_enter(
 	atomic_notifier_call_chain(head, MSM_CPUIDLE_STATE_ENTER, NULL);
 #endif
 
+#ifdef CONFIG_CPU_PM
+	cpu_pm_enter();
+#endif
 	ret = msm_pm_idle_enter((enum msm_pm_sleep_mode) (state->driver_data));
+
+#ifdef CONFIG_CPU_PM
+	cpu_pm_exit();
+#endif
 
 #ifdef CONFIG_MSM_SLEEP_STATS
 	atomic_notifier_call_chain(head, MSM_CPUIDLE_STATE_EXIT, NULL);

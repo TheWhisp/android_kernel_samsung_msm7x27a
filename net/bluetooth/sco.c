@@ -25,7 +25,6 @@
 
 /* Bluetooth SCO sockets. */
 
-#include <linux/interrupt.h>
 #include <linux/module.h>
 
 #include <linux/types.h>
@@ -52,7 +51,7 @@
 #include <net/bluetooth/hci_core.h>
 #include <net/bluetooth/sco.h>
 
-static bool disable_esco;
+static int disable_esco;
 
 static const struct proto_ops sco_sock_ops;
 
@@ -397,10 +396,8 @@ static void __sco_sock_close(struct sock *sk)
 		if (sco_pi(sk)->conn) {
 			sk->sk_state = BT_DISCONN;
 			sco_sock_set_timer(sk, SCO_DISCONN_TIMEOUT);
-			if (sco_pi(sk)->conn->hcon != NULL) {
-				hci_conn_put(sco_pi(sk)->conn->hcon);
-				sco_pi(sk)->conn->hcon = NULL;
-			}
+			hci_conn_put(sco_pi(sk)->conn->hcon);
+			sco_pi(sk)->conn->hcon = NULL;
 		} else
 			sco_chan_del(sk, ECONNRESET);
 		break;

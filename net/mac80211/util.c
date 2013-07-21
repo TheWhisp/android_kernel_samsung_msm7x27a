@@ -986,12 +986,6 @@ int ieee80211_build_preq_ies(struct ieee80211_local *local, u8 *buffer,
 		u16 cap = sband->ht_cap.cap;
 		__le16 tmp;
 
-		if (ieee80211_disable_40mhz_24ghz &&
-		    sband->band == IEEE80211_BAND_2GHZ) {
-			cap &= ~IEEE80211_HT_CAP_SUP_WIDTH_20_40;
-			cap &= ~IEEE80211_HT_CAP_SGI_40;
-		}
-
 		*pos++ = WLAN_EID_HT_CAPABILITY;
 		*pos++ = sizeof(struct ieee80211_ht_cap);
 		memset(pos, 0, sizeof(struct ieee80211_ht_cap));
@@ -1053,6 +1047,8 @@ struct sk_buff *ieee80211_build_probe_req(struct ieee80211_sub_if_data *sdata,
 	skb = ieee80211_probereq_get(&local->hw, &sdata->vif,
 				     ssid, ssid_len,
 				     buf, buf_len);
+	if (!skb)
+		goto out;
 
 	if (dst) {
 		mgmt = (struct ieee80211_mgmt *) skb->data;
@@ -1061,6 +1057,8 @@ struct sk_buff *ieee80211_build_probe_req(struct ieee80211_sub_if_data *sdata,
 	}
 
 	IEEE80211_SKB_CB(skb)->flags |= IEEE80211_TX_INTFL_DONT_ENCRYPT;
+
+ out:
 	kfree(buf);
 
 	return skb;
@@ -1131,8 +1129,26 @@ int ieee80211_reconfig(struct ieee80211_local *local)
 	struct sta_info *sta;
 	int res;
 
+#ifdef CONFIG_PM
 	if (local->suspended)
 		local->resuming = true;
+
+	if (local->wowlan) {
+		local->wowlan = false;
+		res = drv_resume(local);
+		if (res < 0) {
+			local->resuming = false;
+			return res;
+		}
+		if (res == 0)
+			goto wake_up;
+		WARN_ON(res > 1);
+		/*
+		 * res is 1, which means the driver requested
+		 * to go through a regular reset on wakeup.
+		 */
+	}
+#endif
 
 	/* restart hardware */
 	if (local->open_count) {
@@ -1264,6 +1280,7 @@ int ieee80211_reconfig(struct ieee80211_local *local)
 		if (ieee80211_sdata_running(sdata))
 			ieee80211_enable_keys(sdata);
 
+ wake_up:
 	ieee80211_wake_queues_by_reason(hw,
 			IEEE80211_QUEUE_STOP_REASON_SUSPEND);
 
@@ -1296,7 +1313,7 @@ int ieee80211_reconfig(struct ieee80211_local *local)
 		}
 	}
 
-	add_timer(&local->sta_cleanup);
+	mod_timer(&local->sta_cleanup, jiffies + 1);
 
 	mutex_lock(&local->sta_mtx);
 	list_for_each_entry(sta, &local->sta_list, list)

@@ -94,6 +94,7 @@ struct otg_transceiver {
 
 	u8			default_a;
 	enum usb_otg_state	state;
+	enum usb_xceiv_events	last_event;
 
 	struct usb_bus		*host;
 	struct usb_gadget	*gadget;
@@ -102,7 +103,7 @@ struct otg_transceiver {
 	void __iomem			*io_priv;
 
 	/* for notification of usb_xceiv_events */
-	struct blocking_notifier_head	notifier;
+	struct atomic_notifier_head	notifier;
 
 	/* to pass extra port status to the root hub */
 	u16			port_status;
@@ -203,6 +204,7 @@ extern int otg_send_event(enum usb_otg_event event);
 #ifdef CONFIG_USB_OTG_UTILS
 extern struct otg_transceiver *otg_get_transceiver(void);
 extern void otg_put_transceiver(struct otg_transceiver *);
+extern const char *otg_state_string(enum usb_otg_state state);
 #else
 static inline struct otg_transceiver *otg_get_transceiver(void)
 {
@@ -211,6 +213,11 @@ static inline struct otg_transceiver *otg_get_transceiver(void)
 
 static inline void otg_put_transceiver(struct otg_transceiver *x)
 {
+}
+
+static inline const char *otg_state_string(enum usb_otg_state state)
+{
+	return NULL;
 }
 #endif
 
@@ -270,13 +277,13 @@ otg_start_srp(struct otg_transceiver *otg)
 static inline int
 otg_register_notifier(struct otg_transceiver *otg, struct notifier_block *nb)
 {
-	return blocking_notifier_chain_register(&otg->notifier, nb);
+	return atomic_notifier_chain_register(&otg->notifier, nb);
 }
 
 static inline void
 otg_unregister_notifier(struct otg_transceiver *otg, struct notifier_block *nb)
 {
-	blocking_notifier_chain_unregister(&otg->notifier, nb);
+	atomic_notifier_chain_unregister(&otg->notifier, nb);
 }
 
 /* for OTG controller drivers (and maybe other stuff) */

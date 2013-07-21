@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -24,7 +24,8 @@
 
 enum pm8xxx_tm_adc_type {
 	PM8XXX_TM_ADC_NONE,	/* Estimates temp based on overload level. */
-	PM8XXX_TM_ADC_PM8921_ADC,
+	PM8XXX_TM_ADC_PM8058_ADC,
+	PM8XXX_TM_ADC_PM8XXX_ADC,
 };
 
 struct pm8xxx_tm_core_data {

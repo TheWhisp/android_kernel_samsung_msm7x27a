@@ -1,18 +1,15 @@
 /* arch/arm/mach-msm/rpc_server_handset.c
  *
- * Copyright (c) 2008-2010, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2008-2010, The Linux Foundation. All rights reserved.
  *
- * This software is licensed under the terms of the GNU General Public
- * License version 2, as published by the Free Software Foundation, and
- * may be copied, distributed, and modified under those terms.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, you can find it at http://www.fsf.org.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  */
 
 #include <linux/slab.h>
@@ -29,8 +26,6 @@
 #include <mach/rpc_server_handset.h>
 
 #define DRIVER_NAME	"msm-handset"
-#define FEATURE_HEADSET_AP_DETECT
-#undef HS_DEBUG
 
 #define HS_SERVER_PROG 0x30000062
 #define HS_SERVER_VERS 0x00010001
@@ -47,22 +42,20 @@
 #define RPC_KEYPAD_PASS_KEY_CODE_PROC 2
 #define RPC_KEYPAD_SET_PWR_KEY_STATE_PROC 3
 
-#define HS_PWR_K				0x6F	/* Power key */
-#define HS_END_K				0x51	/* End key or Power key */
-#define HS_HEADSET_K  			0x7E 	/* 4pole headset */
-#define HS_STEREO_HEADSET_K		0x82
-#define HS_HEADSET_SWITCH_K		0x84	/* sendend key */
-#define HS_HEADSET_SWITCH_2_K	0xF0	/* Volume up key */
-#define HS_HEADSET_SWITCH_3_K	0xF1	/* Volume down key */
-#define HS_HEADSET_HEADPHONE_K	0xF6	/* 3pole headset */
+#define HS_PWR_K		0x6F	/* Power key */
+#define HS_END_K		0x51	/* End key or Power key */
+#define HS_STEREO_HEADSET_K	0x82
+#define HS_HEADSET_SWITCH_K	0x84
+#define HS_HEADSET_SWITCH_2_K	0xF0
+#define HS_HEADSET_SWITCH_3_K	0xF1
+#define HS_HEADSET_HEADPHONE_K	0xF6
 #define HS_HEADSET_MICROPHONE_K 0xF7
-#define HS_REL_K				0xFF	/* key release */
+#define HS_REL_K		0xFF	/* key release */
 
-#define SW_HEADPHONE_INSERT_W_MIC 1 	/* HS with mic */
+#define SW_HEADPHONE_INSERT_W_MIC 1 /* HS with mic */
 
 #define KEY(hs_key, input_key) ((hs_key << 24) | input_key)
 
-#if 0
 enum hs_event {
 	HS_EVNT_EXT_PWR = 0,	/* External Power status        */
 	HS_EVNT_HSD,		/* Headset Detection            */
@@ -78,30 +71,6 @@ enum hs_event {
 	HS_EVNT_LAST,		 /* Should always be the last event type */
 	HS_EVNT_MAX		/* Force enum to be an 32-bit number */
 };
-
-#else
-
-enum hs_event {
-	HS_EVNT_EXT_PWR = 0,
-	HS_EVNT_HSD,
-	HS_EVNT_HSTD,
-	HS_EVNT_HSSD,
-	HS_EVNT_KPD,
-	HS_EVNT_PWR_END,
-	HS_EVNT_FLIP,
-	HS_EVNT_CHARGER,
-	HS_EVNT_ENV,
-	HS_EVNT_REM,
-	HS_EVNT_DIAG,
-	HS_EVNT_ACCESSORY_DETECT,
-	HS_EVNT_HPD,
-	HS_EVNT_MIC_DETECT,
-	HS_EVNT_ACC_TYPE_DETECT,
-	HS_EVNT_LAST,
-	HS_EVNT_MAX = 0x7FFFFFFF,
-};
-
-#endif
 
 enum hs_src_state {
 	HS_SRC_STATE_UNKWN = 0,
@@ -213,29 +182,15 @@ struct hs_cmd_data_type {
 
 static const uint32_t hs_key_map[] = {
 	KEY(HS_PWR_K, KEY_POWER),
-	KEY(HS_END_K, KEY_POWER),
-#if 0
+	KEY(HS_END_K, KEY_END),
 	KEY(HS_STEREO_HEADSET_K, SW_HEADPHONE_INSERT_W_MIC),
+	KEY(HS_HEADSET_HEADPHONE_K, SW_HEADPHONE_INSERT),
 	KEY(HS_HEADSET_MICROPHONE_K, SW_MICROPHONE_INSERT),
-	KEY(HS_HEADSET_HEADPHONE_K, SW_HEADPHONE_INSERT), 			/* 3pole headset */
-	KEY(HS_HEADSET_K, SW_HEADPHONE_INSERT_W_MIC), 				/* 4pole headset */	
-#else
-	KEY(HS_HEADSET_HEADPHONE_K, SW_HEADPHONE_INSERT), 	/* 3pole headset */
-	KEY(HS_STEREO_HEADSET_K, SW_HEADPHONE_INSERT_W_MIC),    /* 4pole headset */	
-#endif
 	KEY(HS_HEADSET_SWITCH_K, KEY_MEDIA),
 	KEY(HS_HEADSET_SWITCH_2_K, KEY_VOLUMEUP),
 	KEY(HS_HEADSET_SWITCH_3_K, KEY_VOLUMEDOWN),
 	0
 };
-
-int current_jack_type = 2;		/* report current jack type */
-
-/* To support samsung factory test */
-struct switch_dev switch_sendend = {
-	.name = "send_end",
-};
-
 
 enum {
 	NO_DEVICE	= 0,
@@ -267,25 +222,6 @@ struct msm_handset {
 
 static struct msm_rpc_client *rpc_client;
 static struct msm_handset *hs;
-
-extern struct class *sec_class;
-struct device *pwr_dev;
-static int key_count;
-
-static ssize_t keyshort_test(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	int count;
-	if(key_count) {
-		count = sprintf(buf, "PRESS\n");
-	}
-	else {
-		count = sprintf(buf, "RELEASE\n");
-	}
-
-	return count;
-}
-
-static DEVICE_ATTR(key_pressed, 0664, keyshort_test, NULL);
 
 static int hs_find_key(uint32_t hscode)
 {
@@ -327,7 +263,6 @@ static void update_state(void)
  * key-press = (key_code, 0)
  * key-release = (key_code, 0xff)
  */
-int get_msm7x27a_det_jack_state(void);
 static void report_hs_key(uint32_t key_code, uint32_t key_parm)
 {
 	int key, temp_key_code;
@@ -337,76 +272,19 @@ static void report_hs_key(uint32_t key_code, uint32_t key_parm)
 	else
 		key = hs_find_key(key_code);
 
-//	printk("[KEY] key_parm: %d, key_code: %d, key: %d\n", key_parm, key_code, key);
 	temp_key_code = key_code;
 
-	if (key_parm == HS_REL_K) {
+	if (key_parm == HS_REL_K)
 		key_code = key_parm;
-	}
 
-	if ((key != KEY_POWER) && !get_msm7x27a_det_jack_state()) {
-		pr_info("%s headset is not connected %d %d\n", __func__, key, (key_code != HS_REL_K));
-		return;	
-	}
-
-#if 0
-	if( key == KEY_END && !get_msm7x27a_det_jack_state() )
-	key = KEY_POWER;
-#endif
 	switch (key) {
 	case KEY_POWER:
-		input_report_key(hs->ipdev, key, (key_code != HS_REL_K));
-#ifdef HS_DEBUG
-		pr_info("%s KEY_POWER %d\n", __func__, (key_code != HS_REL_K));
-#else
-		pr_info("%s %d\n", __func__, (key_code != HS_REL_K));
-#endif
-		key_count = (key_code != HS_REL_K);
-		break;
+	case KEY_END:
 	case KEY_MEDIA:
-		input_report_key(hs->ipdev, key, (key_code != HS_REL_K));
-#ifdef HS_DEBUG
-		pr_info("%s KEY_MEDIA %d\n", __func__, (key_code != HS_REL_K));
-#else
-		pr_info("%s %d\n", __func__, (key_code != HS_REL_K));
-#endif
-		switch_set_state(&switch_sendend, (key_code != HS_REL_K));
-		break;
 	case KEY_VOLUMEUP:
-		input_report_key(hs->ipdev, key, (key_code != HS_REL_K));
-#ifdef HS_DEBUG
-		pr_info("%s KEY_VOL+ %d\n", __func__, (key_code != HS_REL_K));
-#else
-		pr_info("%s %d\n", __func__, (key_code != HS_REL_K));
-#endif
-		break;
 	case KEY_VOLUMEDOWN:
 		input_report_key(hs->ipdev, key, (key_code != HS_REL_K));
-#ifdef HS_DEBUG
-		pr_info("%s KEY_VOL- %d\n", __func__, (key_code != HS_REL_K));
-#else
-		pr_info("%s %d\n", __func__, (key_code != HS_REL_K));
-#endif
 		break;
-	case KEY_END:
-		input_report_key(hs->ipdev, key, (key_code != HS_REL_K));
-#ifdef HS_DEBUG
-		pr_info("%s KEY_END %d\n", __func__, (key_code != HS_REL_K));
-#else
-		pr_info("%s %d\n", __func__, (key_code != HS_REL_K));
-#endif
-		break;
-#ifdef FEATURE_HEADSET_AP_DETECT
-	case SW_HEADPHONE_INSERT: 		/* 3pole headset */
-		current_jack_type = 2;
-		pr_info("%s 3pole %d\n", __func__, key);
-		break;
-
-	case SW_HEADPHONE_INSERT_W_MIC:	/* 4pole headset */
-		current_jack_type = 1;
-		pr_info("%s 4pole %d\n", __func__, key);
-		break;
-#else
 	case SW_HEADPHONE_INSERT_W_MIC:
 		hs->mic_on = hs->hs_on = (key_code != HS_REL_K) ? 1 : 0;
 		input_report_switch(hs->ipdev, SW_HEADPHONE_INSERT,
@@ -426,13 +304,10 @@ static void report_hs_key(uint32_t key_code, uint32_t key_parm)
 		input_report_switch(hs->ipdev, key, hs->mic_on);
 		update_state();
 		break;
-#endif
 	case -1:
 		printk(KERN_ERR "%s: No mapping for remote handset event %d\n",
 				 __func__, temp_key_code);
 		return;
-	default:
-		pr_err("%s another value %d\n", __func__, key);
 	}
 	input_sync(hs->ipdev);
 }
@@ -509,14 +384,8 @@ static int hs_rpc_report_event_arg(struct msm_rpc_client *client,
 
 	req->hs_event_data_ptr	= cpu_to_be32(0x1);
 	req->data.ver		= cpu_to_be32(HS_EVENT_DATA_VER);
-#if 0
 	req->data.event_type	= cpu_to_be32(HS_EVNT_HSD);
 	req->data.enum_disc	= cpu_to_be32(HS_EVNT_HSD);
-#else
-
-	req->data.event_type = cpu_to_be32(HS_EVNT_ACCESSORY_DETECT);
-	req->data.enum_disc = cpu_to_be32(HS_EVNT_ACCESSORY_DETECT);
-#endif
 	req->data.data_length	= cpu_to_be32(0x1);
 	req->data.data		= cpu_to_be32(*(enum hs_src_state *)data);
 	req->data.data_size	= cpu_to_be32(sizeof(enum hs_src_state));
@@ -542,8 +411,6 @@ void report_headset_status(bool connected)
 {
 	int rc = -1;
 	enum hs_src_state status;
-
-	pr_info("%s %d\n", __func__, connected);
 
 	if (connected == true)
 		status = HS_SRC_STATE_HI;
@@ -739,19 +606,12 @@ static int __devinit hs_probe(struct platform_device *pdev)
 	if (!hs)
 		return -ENOMEM;
 
-#ifndef FEATURE_HEADSET_AP_DETECT
 	hs->sdev.name	= "h2w";
 	hs->sdev.print_name = msm_headset_print_name;
 
 	rc = switch_dev_register(&hs->sdev);
 	if (rc)
 		goto err_switch_dev_register;
-#endif
-	rc = switch_dev_register(&switch_sendend);
-	if (rc < 0) {
-		pr_err("%s : Failed to register switch device\n", __func__);
-		goto err_switch_dev_register;
-	}
 
 	ipdev = input_allocate_device();
 	if (!ipdev) {
@@ -777,10 +637,11 @@ static int __devinit hs_probe(struct platform_device *pdev)
 	input_set_capability(ipdev, EV_KEY, KEY_MEDIA);
 	input_set_capability(ipdev, EV_KEY, KEY_VOLUMEUP);
 	input_set_capability(ipdev, EV_KEY, KEY_VOLUMEDOWN);
-	//input_set_capability(ipdev, EV_SW, SW_HEADPHONE_INSERT);
-	//input_set_capability(ipdev, EV_SW, SW_MICROPHONE_INSERT);
+	input_set_capability(ipdev, EV_SW, SW_HEADPHONE_INSERT);
+	input_set_capability(ipdev, EV_SW, SW_MICROPHONE_INSERT);
 	input_set_capability(ipdev, EV_KEY, KEY_POWER);
 	input_set_capability(ipdev, EV_KEY, KEY_END);
+
 	rc = input_register_device(ipdev);
 	if (rc) {
 		dev_err(&ipdev->dev,
@@ -796,13 +657,6 @@ static int __devinit hs_probe(struct platform_device *pdev)
 		goto err_hs_rpc_init;
 	}
 
-	pwr_dev = device_create(sec_class, NULL, 0, NULL, "pwr_key");
-	if (!pwr_dev)
-		printk("Failed to create device(pwr_key)!\n");
-	
-	if(device_create_file(pwr_dev, &dev_attr_key_pressed) < 0)
-		printk("Failed to create file(%s)!\n", dev_attr_key_pressed.attr.name);
-
 	return 0;
 
 err_hs_rpc_init:
@@ -811,9 +665,7 @@ err_hs_rpc_init:
 err_reg_input_dev:
 	input_free_device(ipdev);
 err_alloc_input_dev:
-#ifndef FEATURE_HEADSET_AP_DETECT
 	switch_dev_unregister(&hs->sdev);
-#endif
 err_switch_dev_register:
 	kfree(hs);
 	return rc;
@@ -824,10 +676,7 @@ static int __devexit hs_remove(struct platform_device *pdev)
 	struct msm_handset *hs = platform_get_drvdata(pdev);
 
 	input_unregister_device(hs->ipdev);
-#ifndef FEATURE_HEADSET_AP_DETECT
 	switch_dev_unregister(&hs->sdev);
-#endif
-	switch_dev_unregister(&switch_sendend);
 	kfree(hs);
 	hs_rpc_deinit();
 	return 0;

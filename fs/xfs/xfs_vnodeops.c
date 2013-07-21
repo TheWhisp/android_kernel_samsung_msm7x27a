@@ -535,7 +535,7 @@ xfs_readlink(
 	char		*link)
 {
 	xfs_mount_t	*mp = ip->i_mount;
-	int		pathlen;
+	xfs_fsize_t	pathlen;
 	int		error = 0;
 
 	trace_xfs_readlink(ip);
@@ -545,12 +545,19 @@ xfs_readlink(
 
 	xfs_ilock(ip, XFS_ILOCK_SHARED);
 
-	ASSERT((ip->i_d.di_mode & S_IFMT) == S_IFLNK);
-	ASSERT(ip->i_d.di_size <= MAXPATHLEN);
-
 	pathlen = ip->i_d.di_size;
 	if (!pathlen)
 		goto out;
+
+	if (pathlen < 0 || pathlen > MAXPATHLEN) {
+		xfs_alert(mp, "%s: inode (%llu) bad symlink length (%lld)",
+			 __func__, (unsigned long long) ip->i_ino,
+			 (long long) pathlen);
+		ASSERT(0);
+		error = XFS_ERROR(EFSCORRUPTED);
+		goto out;
+	}
+
 
 	if (ip->i_df.if_flags & XFS_IFINLINE) {
 		memcpy(link, ip->i_df.if_u1.if_data, pathlen);
@@ -953,15 +960,18 @@ xfs_release(
 		 * If we previously truncated this file and removed old data
 		 * in the process, we want to initiate "early" writeout on
 		 * the last close.  This is an attempt to combat the notorious
-		 * NULL files problem which is particularly noticable from a
+		 * NULL files problem which is particularly noticeable from a
 		 * truncate down, buffered (re-)write (delalloc), followed by
 		 * a crash.  What we are effectively doing here is
 		 * significantly reducing the time window where we'd otherwise
 		 * be exposed to that problem.
 		 */
 		truncated = xfs_iflags_test_and_clear(ip, XFS_ITRUNCATED);
-		if (truncated && VN_DIRTY(VFS_I(ip)) && ip->i_delayed_blks > 0)
-			xfs_flush_pages(ip, 0, -1, XBF_ASYNC, FI_NONE);
+		if (truncated) {
+			xfs_iflags_clear(ip, XFS_IDIRTY_RELEASE);
+			if (VN_DIRTY(VFS_I(ip)) && ip->i_delayed_blks > 0)
+				xfs_flush_pages(ip, 0, -1, XBF_ASYNC, FI_NONE);
+		}
 	}
 
 	if (ip->i_d.di_nlink == 0)
@@ -982,7 +992,7 @@ xfs_release(
 		 *
 		 * Further, check if the inode is being opened, written and
 		 * closed frequently and we have delayed allocation blocks
-		 * oustanding (e.g. streaming writes from the NFS server),
+		 * outstanding (e.g. streaming writes from the NFS server),
 		 * truncating the blocks past EOF will cause fragmentation to
 		 * occur.
 		 *
@@ -1189,9 +1199,8 @@ xfs_inactive(
 		 * inode might be lost for a long time or forever.
 		 */
 		if (!XFS_FORCED_SHUTDOWN(mp)) {
-			cmn_err(CE_NOTE,
-		"xfs_inactive:	xfs_ifree() returned an error = %d on %s",
-				error, mp->m_fsname);
+			xfs_notice(mp, "%s: xfs_ifree returned error %d",
+				__func__, error);
 			xfs_force_shutdown(mp, SHUTDOWN_META_IO_ERROR);
 		}
 		xfs_trans_cancel(tp, XFS_TRANS_RELEASE_LOG_RES|XFS_TRANS_ABORT);
@@ -1208,12 +1217,12 @@ xfs_inactive(
 		 */
 		error = xfs_bmap_finish(&tp,  &free_list, &committed);
 		if (error)
-			xfs_fs_cmn_err(CE_NOTE, mp, "xfs_inactive: "
-				"xfs_bmap_finish() returned error %d", error);
+			xfs_notice(mp, "%s: xfs_bmap_finish returned error %d",
+				__func__, error);
 		error = xfs_trans_commit(tp, XFS_TRANS_RELEASE_LOG_RES);
 		if (error)
-			xfs_fs_cmn_err(CE_NOTE, mp, "xfs_inactive: "
-				"xfs_trans_commit() returned error %d", error);
+			xfs_notice(mp, "%s: xfs_trans_commit returned error %d",
+				__func__, error);
 	}
 
 	/*
@@ -1310,7 +1319,7 @@ xfs_create(
 	error = xfs_qm_vop_dqalloc(dp, current_fsuid(), current_fsgid(), prid,
 			XFS_QMOPT_QUOTALL | XFS_QMOPT_INHERIT, &udqp, &gdqp);
 	if (error)
-		goto std_return;
+		return error;
 
 	if (is_dir) {
 		rdev = 0;
@@ -1390,12 +1399,6 @@ xfs_create(
 	}
 
 	/*
-	 * At this point, we've gotten a newly allocated inode.
-	 * It is locked (and joined to the transaction).
-	 */
-	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
-
-	/*
 	 * Now we join the directory inode to the transaction.  We do not do it
 	 * earlier because xfs_dir_ialloc might commit the previous transaction
 	 * (and release all the locks).  An error from here on will result in
@@ -1440,22 +1443,13 @@ xfs_create(
 	 */
 	xfs_qm_vop_create_dqattach(tp, ip, udqp, gdqp);
 
-	/*
-	 * xfs_trans_commit normally decrements the vnode ref count
-	 * when it unlocks the inode. Since we want to return the
-	 * vnode to the caller, we bump the vnode ref count now.
-	 */
-	IHOLD(ip);
-
 	error = xfs_bmap_finish(&tp, &free_list, &committed);
 	if (error)
-		goto out_abort_rele;
+		goto out_bmap_cancel;
 
 	error = xfs_trans_commit(tp, XFS_TRANS_RELEASE_LOG_RES);
-	if (error) {
-		IRELE(ip);
-		goto out_dqrele;
-	}
+	if (error)
+		goto out_release_inode;
 
 	xfs_qm_dqrele(udqp);
 	xfs_qm_dqrele(gdqp);
@@ -1469,27 +1463,21 @@ xfs_create(
 	cancel_flags |= XFS_TRANS_ABORT;
  out_trans_cancel:
 	xfs_trans_cancel(tp, cancel_flags);
- out_dqrele:
-	xfs_qm_dqrele(udqp);
-	xfs_qm_dqrele(gdqp);
-
-	if (unlock_dp_on_error)
-		xfs_iunlock(dp, XFS_ILOCK_EXCL);
- std_return:
-	return error;
-
- out_abort_rele:
+ out_release_inode:
 	/*
 	 * Wait until after the current transaction is aborted to
 	 * release the inode.  This prevents recursive transactions
 	 * and deadlocks from xfs_inactive.
 	 */
-	xfs_bmap_cancel(&free_list);
-	cancel_flags |= XFS_TRANS_ABORT;
-	xfs_trans_cancel(tp, cancel_flags);
-	IRELE(ip);
-	unlock_dp_on_error = B_FALSE;
-	goto out_dqrele;
+	if (ip)
+		IRELE(ip);
+
+	xfs_qm_dqrele(udqp);
+	xfs_qm_dqrele(gdqp);
+
+	if (unlock_dp_on_error)
+		xfs_iunlock(dp, XFS_ILOCK_EXCL);
+	return error;
 }
 
 #ifdef DEBUG
@@ -2114,9 +2102,8 @@ xfs_symlink(
 				  XFS_BMAPI_WRITE | XFS_BMAPI_METADATA,
 				  &first_block, resblks, mval, &nmaps,
 				  &free_list);
-		if (error) {
-			goto error1;
-		}
+		if (error)
+			goto error2;
 
 		if (resblks)
 			resblks -= fs_blocks;
@@ -2148,7 +2135,7 @@ xfs_symlink(
 	error = xfs_dir_createname(tp, dp, link_name, ip->i_ino,
 					&first_block, &free_list, resblks);
 	if (error)
-		goto error1;
+		goto error2;
 	xfs_trans_ichgtime(tp, dp, XFS_ICHGTIME_MOD | XFS_ICHGTIME_CHG);
 	xfs_trans_log_inode(tp, dp, XFS_ILOG_CORE);
 
@@ -2160,13 +2147,6 @@ xfs_symlink(
 	if (mp->m_flags & (XFS_MOUNT_WSYNC|XFS_MOUNT_DIRSYNC)) {
 		xfs_trans_set_sync(tp);
 	}
-
-	/*
-	 * xfs_trans_commit normally decrements the vnode ref count
-	 * when it unlocks the inode. Since we want to return the
-	 * vnode to the caller, we bump the vnode ref count now.
-	 */
-	IHOLD(ip);
 
 	error = xfs_bmap_finish(&tp, &free_list, &committed);
 	if (error) {
@@ -2861,7 +2841,8 @@ xfs_change_file_space(
 		ip->i_d.di_flags &= ~XFS_DIFLAG_PREALLOC;
 
 	xfs_trans_log_inode(tp, ip, XFS_ILOG_CORE);
-	xfs_trans_set_sync(tp);
+	if (attr_flags & XFS_ATTR_SYNC)
+		xfs_trans_set_sync(tp);
 
 	error = xfs_trans_commit(tp, 0);
 

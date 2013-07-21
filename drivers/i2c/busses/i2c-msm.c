@@ -1,7 +1,7 @@
 /* drivers/i2c/busses/i2c-msm.c
  *
  * Copyright (C) 2007 Google, Inc.
- * Copyright (c) 2009, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2009, The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -392,7 +392,7 @@ msm_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
 		/* If other processor did some transactions, we may have
 		 * interrupt pending. Clear it
 		 */
-		get_irq_chip(dev->irq)->ack(dev->irq);
+		irq_get_chip(dev->irq)->irq_ack(irq_get_irq_data(dev->irq));
 	}
 
 	if (adap == &dev->adap_pri)
@@ -590,7 +590,7 @@ msm_i2c_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "I2C region already claimed\n");
 		return -EBUSY;
 	}
-	clk = clk_get(&pdev->dev, "i2c_clk");
+	clk = clk_get(&pdev->dev, "core_clk");
 	if (IS_ERR(clk)) {
 		dev_err(&pdev->dev, "Could not get clock\n");
 		ret = PTR_ERR(clk);

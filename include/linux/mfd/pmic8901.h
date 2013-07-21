@@ -1,28 +1,13 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of Code Aurora nor
- *       the names of its contributors may be used to endorse or promote
- *       products derived from this software without specific prior written
- *       permission.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NON-INFRINGEMENT ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  */
 #ifndef __PMIC8901_H__
@@ -34,54 +19,31 @@
 
 #include <linux/irq.h>
 #include <linux/mfd/core.h>
-
-/* PM8901 interrupt numbers */
-
-#define PM8901_MPPS		4
+#include <linux/mfd/pm8xxx/irq.h>
+#include <linux/mfd/pm8xxx/mpp.h>
+#include <linux/mfd/pm8xxx/tm.h>
+#include <linux/regulator/pmic8901-regulator.h>
+#include <linux/mfd/pm8xxx/misc.h>
 
 #define PM8901_IRQ_BLOCK_BIT(block, bit) ((block) * 8 + (bit))
 
-/* MPPs [0,N) */
-#define PM8901_MPP_IRQ(base, mpp)	((base) + \
-					PM8901_IRQ_BLOCK_BIT(6, (mpp)))
+#define PM8901_NR_IRQS			72
 
-#define PM8901_TEMP_ALARM_IRQ(base)	((base) + PM8901_IRQ_BLOCK_BIT(6, 4))
-#define PM8901_TEMP_HI_ALARM_IRQ(base)	((base) + PM8901_IRQ_BLOCK_BIT(6, 5))
+/* PM8901 MPP */
+#define PM8901_MPP_BLOCK_START		6
+#define PM8901_MPPS			4
 
-struct pm8901_chip;
+/* PM8901 IRQs */
+#define PM8901_MPP_IRQ(mpp)		PM8901_IRQ_BLOCK_BIT(6, (mpp))
+#define PM8901_TEMPSTAT_IRQ		PM8901_IRQ_BLOCK_BIT(6, 4)
+#define PM8901_OVERTEMP_IRQ		PM8901_IRQ_BLOCK_BIT(6, 5)
 
 struct pm8901_platform_data {
-	/* This table is only needed for misc interrupts. */
-	int		irq_base;
-
-	int		num_subdevs;
-	struct mfd_cell *sub_devices;
-	int		irq_trigger_flags;
+	struct pm8xxx_irq_platform_data		*irq_pdata;
+	struct pm8xxx_mpp_platform_data		*mpp_pdata;
+	struct pm8xxx_misc_platform_data	*misc_pdata;
+	struct pm8901_vreg_pdata		*regulator_pdatas;
+	int					num_regulators;
 };
-
-struct pm8901_gpio_platform_data {
-	int	gpio_base;
-	int	irq_base;
-};
-
-/* chip revision */
-#define PM_8901_REV_1p0			0xF1
-#define PM_8901_REV_1p1			0xF2
-#define PM_8901_REV_2p0			0xF3
-
-int pm8901_read(struct pm8901_chip *pm_chip, u16 addr, u8 *values,
-		unsigned int len);
-int pm8901_write(struct pm8901_chip *pm_chip, u16 addr, u8 *values,
-		 unsigned int len);
-
-int pm8901_rev(struct pm8901_chip *pm_chip);
-
-int pm8901_irq_get_rt_status(struct pm8901_chip *pm_chip, int irq);
-
-#ifdef CONFIG_PMIC8901
-int pm8901_reset_pwr_off(int reset);
-#else
-static inline int pm8901_reset_pwr_off(int reset) { return 0; }
-#endif
 
 #endif /* __PMIC8901_H__ */

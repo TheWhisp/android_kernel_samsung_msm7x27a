@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,6 +16,7 @@
 #include <linux/platform_device.h>
 #include <linux/delay.h>
 #include <linux/io.h>
+#include <linux/msm_ssbi.h>
 #include <linux/mfd/pmic8058.h>
 #include <linux/regulator/pmic8058-regulator.h>
 #include <linux/i2c.h>
@@ -27,24 +28,21 @@
 #include <asm/mach/arch.h>
 #include <asm/setup.h>
 
-#include <mach/mpp.h>
 #include <mach/board.h>
 #include <mach/memory.h>
 #include <mach/msm_iomap.h>
 #include <mach/dma.h>
 #include <mach/sirc.h>
-#include <mach/pmic.h>
 
-#include <mach/vreg.h>
 #include <mach/socinfo.h>
 #include "devices.h"
 #include "timer.h"
+#include "acpuclock.h"
 #include "pm.h"
 #include "spm.h"
 #include <linux/regulator/consumer.h>
 #include <linux/regulator/machine.h>
 #include <linux/msm_adc.h>
-#include <linux/pmic8058-xoadc.h>
 #include <linux/m_adcproc.h>
 #include <linux/platform_data/qcom_crypto_device.h>
 
@@ -53,7 +51,14 @@
 #define PMIC_GPIO_SD_DET	165
 
 #define GPIO_EPHY_RST_N		37
-
+#define GPIO_MAC_TXD_3      119
+#define GPIO_MAC_TXD_2      120
+#define GPIO_MAC_TXD_1      121
+#define GPIO_MAC_TXD_0      122
+#define GPIO_MAC_TX_EN      123
+#define GPIO_MAC_MDIO       127
+#define GPIO_MAC_MDC        128
+#define GPIO_MAC_TX_CLK     133
 #define GPIO_GRFC_FTR0_0	136 /* GRFC 20 */
 #define GPIO_GRFC_FTR0_1	137 /* GRFC 21 */
 #define GPIO_GRFC_FTR1_0	145 /* GRFC 22 */
@@ -87,8 +92,11 @@
 #define FPGA_SDCC_STATUS        0x8E0001A8
 
 /* Macros assume PMIC GPIOs start at 0 */
-#define PM8058_GPIO_PM_TO_SYS(pm_gpio)	   (pm_gpio + NR_MSM_GPIOS)
-#define PM8058_GPIO_SYS_TO_PM(sys_gpio)    (sys_gpio - NR_MSM_GPIOS)
+#define PM8058_GPIO_PM_TO_SYS(pm_gpio)  (pm_gpio + NR_MSM_GPIOS)
+#define PM8058_GPIO_SYS_TO_PM(sys_gpio) (sys_gpio - NR_MSM_GPIOS)
+#define PM8058_MPP_BASE			(NR_MSM_GPIOS + PM8058_GPIOS)
+#define PM8058_MPP_PM_TO_SYS(pm_gpio)	(pm_gpio + PM8058_MPP_BASE)
+#define PM8058_MPP_SYS_TO_PM(sys_gpio)	(sys_gpio - PM8058_MPP_BASE)
 
 #define PMIC_GPIO_5V_PA_PWR	21	/* PMIC GPIO Number 22 */
 #define PMIC_GPIO_4_2V_PA_PWR	22	/* PMIC GPIO Number 23 */
@@ -100,19 +108,33 @@
 /*
  * PM8058
  */
+struct pm8xxx_mpp_init_info {
+	unsigned			mpp;
+	struct pm8xxx_mpp_config_data	config;
+};
+
+#define PM8XXX_MPP_INIT(_mpp, _type, _level, _control) \
+{ \
+	.mpp	= PM8058_MPP_PM_TO_SYS(_mpp), \
+	.config	= { \
+		.type		= PM8XXX_MPP_TYPE_##_type, \
+		.level		= _level, \
+		.control	= PM8XXX_MPP_##_control, \
+	} \
+}
 
 static int pm8058_gpios_init(void)
 {
 	int i;
 	int rc;
 	struct pm8058_gpio_cfg {
-		int gpio;
-		struct pm8058_gpio cfg;
+		int                gpio;
+		struct pm_gpio	   cfg;
 	};
 
 	struct pm8058_gpio_cfg gpio_cfgs[] = {
 		{				/* 5V PA Power */
-			PMIC_GPIO_5V_PA_PWR,
+			PM8058_GPIO_PM_TO_SYS(PMIC_GPIO_5V_PA_PWR),
 			{
 				.vin_sel = 0,
 				.direction = PM_GPIO_DIR_BOTH,
@@ -125,7 +147,7 @@ static int pm8058_gpios_init(void)
 			},
 		},
 		{				/* 4.2V PA Power */
-			PMIC_GPIO_4_2V_PA_PWR,
+			PM8058_GPIO_PM_TO_SYS(PMIC_GPIO_4_2V_PA_PWR),
 			{
 				.vin_sel = 0,
 				.direction = PM_GPIO_DIR_BOTH,
@@ -140,7 +162,7 @@ static int pm8058_gpios_init(void)
 	};
 
 	for (i = 0; i < ARRAY_SIZE(gpio_cfgs); ++i) {
-		rc = pm8058_gpio_config(gpio_cfgs[i].gpio, &gpio_cfgs[i].cfg);
+		rc = pm8xxx_gpio_config(gpio_cfgs[i].gpio, &gpio_cfgs[i].cfg);
 		if (rc < 0) {
 			pr_err("%s pmic gpio config failed\n", __func__);
 			return rc;
@@ -152,36 +174,27 @@ static int pm8058_gpios_init(void)
 
 static int pm8058_mpps_init(void)
 {
-	int rc;
+	int rc, i;
 
-	/* Set up MPP 3 and 6 as analog outputs at 1.25V */
-	rc = pm8058_mpp_config_analog_output(PMIC_MPP_3,
-			PM_MPP_AOUT_LVL_1V25_2, PM_MPP_AOUT_CTL_ENABLE);
-	if (rc) {
-		pr_err("%s: Config mpp3 on pmic 8058 failed\n", __func__);
-		return rc;
+	struct pm8xxx_mpp_init_info pm8058_mpps[] = {
+		PM8XXX_MPP_INIT(PMIC_MPP_3, A_OUTPUT,
+			PM8XXX_MPP_AOUT_LVL_1V25_2, AOUT_CTRL_ENABLE),
+		PM8XXX_MPP_INIT(PMIC_MPP_6, A_OUTPUT,
+			PM8XXX_MPP_AOUT_LVL_1V25_2, AOUT_CTRL_ENABLE),
+	};
+
+	for (i = 0; i < ARRAY_SIZE(pm8058_mpps); i++) {
+		rc = pm8xxx_mpp_config(pm8058_mpps[i].mpp,
+					&pm8058_mpps[i].config);
+		if (rc) {
+			pr_err("%s: Config %d mpp pm 8058 failed\n",
+						__func__, pm8058_mpps[i].mpp);
+			return rc;
+		}
 	}
 
-	rc = pm8058_mpp_config_analog_output(PMIC_MPP_6,
-			PM_MPP_AOUT_LVL_1V25_2, PM_MPP_AOUT_CTL_ENABLE);
-	if (rc) {
-		pr_err("%s: Config mpp5 on pmic 8058 failed\n", __func__);
-		return rc;
-	}
 	return 0;
 }
-
-static struct pm8058_gpio_platform_data pm8058_gpio_data = {
-	.gpio_base = PM8058_GPIO_PM_TO_SYS(0),
-	.irq_base = PM8058_GPIO_IRQ(PMIC8058_IRQ_BASE, 0),
-	.init = pm8058_gpios_init,
-};
-
-static struct pm8058_gpio_platform_data pm8058_mpp_data = {
-	.gpio_base = PM8058_GPIO_PM_TO_SYS(PM8058_GPIOS),
-	.irq_base = PM8058_MPP_IRQ(PMIC8058_IRQ_BASE, 0),
-	.init = pm8058_mpps_init,
-};
 
 static struct regulator_consumer_supply pm8058_vreg_supply[PM8058_VREG_MAX] = {
 	[PM8058_VREG_ID_L3] = REGULATOR_SUPPLY("8058_l3", NULL),
@@ -197,7 +210,7 @@ static struct regulator_consumer_supply pm8058_vreg_supply[PM8058_VREG_MAX] = {
 
 #define PM8058_VREG_INIT(_id, _min_uV, _max_uV, _modes, _ops, _apply_uV, \
 			_always_on, _pull_down) \
-	[_id] = { \
+	{ \
 		.init_data = { \
 			.constraints = { \
 				.valid_modes_mask = _modes, \
@@ -210,6 +223,7 @@ static struct regulator_consumer_supply pm8058_vreg_supply[PM8058_VREG_MAX] = {
 			.num_consumer_supplies = 1, \
 			.consumer_supplies = &pm8058_vreg_supply[_id], \
 		}, \
+		.id = _id, \
 		.pull_down_enable = _pull_down, \
 		.pin_ctrl = 0, \
 		.pin_fn = PM8058_VREG_PIN_FN_ENABLE, \
@@ -231,7 +245,7 @@ static struct regulator_consumer_supply pm8058_vreg_supply[PM8058_VREG_MAX] = {
 	PM8058_VREG_INIT(_id, _min_uV, _min_uV, REGULATOR_MODE_NORMAL, \
 			REGULATOR_CHANGE_STATUS, 0, 0, 1)
 
-static struct pm8058_vreg_pdata pm8058_vreg_init[PM8058_VREG_MAX] = {
+static struct pm8058_vreg_pdata pm8058_vreg_init[] = {
 	PM8058_VREG_INIT_LDO(PM8058_VREG_ID_L3, 1800000, 1800000),
 	PM8058_VREG_INIT_LDO(PM8058_VREG_ID_L8, 2200000, 2200000),
 	PM8058_VREG_INIT_LDO(PM8058_VREG_ID_L9, 2050000, 2050000),
@@ -242,22 +256,7 @@ static struct pm8058_vreg_pdata pm8058_vreg_init[PM8058_VREG_MAX] = {
 	PM8058_VREG_INIT_SMPS(PM8058_VREG_ID_S4, 1300000, 1300000),
 };
 
-#define PM8058_VREG(_id) { \
-	.name = "pm8058-regulator", \
-	.id = _id, \
-	.platform_data = &pm8058_vreg_init[_id], \
-	.data_size = sizeof(pm8058_vreg_init[_id]), \
-}
-
 #ifdef CONFIG_SENSORS_MSM_ADC
-static struct resource resources_adc[] = {
-	{
-		.start = PM8058_ADC_IRQ(PMIC8058_IRQ_BASE),
-		.end   = PM8058_ADC_IRQ(PMIC8058_IRQ_BASE),
-		.flags = IORESOURCE_IRQ,
-	},
-};
-
 static struct adc_access_fn xoadc_fn = {
 	pm8058_xoadc_select_chan_and_start_conv,
 	pm8058_xoadc_read_adc_code,
@@ -296,17 +295,21 @@ static struct platform_device msm_adc_device = {
 
 static void pmic8058_xoadc_mpp_config(void)
 {
-	int rc;
-
-	rc = pm8058_mpp_config_analog_input(XOADC_MPP_7,
-			PM_MPP_AIN_AMUX_CH5, PM_MPP_AOUT_CTL_DISABLE);
-	if (rc)
-		pr_err("%s: Config mpp7 on pmic 8058 failed\n", __func__);
-
-	rc = pm8058_mpp_config_analog_input(XOADC_MPP_10,
-			PM_MPP_AIN_AMUX_CH6, PM_MPP_AOUT_CTL_DISABLE);
-	if (rc)
-		pr_err("%s: Config mpp10 on pmic 8058 failed\n", __func__);
+	int rc, i;
+	struct pm8xxx_mpp_init_info xoadc_mpps[] = {
+		PM8XXX_MPP_INIT(PMIC_MPP_7, A_INPUT, PM8XXX_MPP_AIN_AMUX_CH5,
+							AOUT_CTRL_DISABLE),
+		PM8XXX_MPP_INIT(PMIC_MPP_10, A_INPUT, PM8XXX_MPP_AIN_AMUX_CH6,
+							AOUT_CTRL_DISABLE),
+	};
+	for (i = 0; i < ARRAY_SIZE(xoadc_mpps); i++) {
+		rc = pm8xxx_mpp_config(xoadc_mpps[i].mpp,
+					&xoadc_mpps[i].config);
+		if (rc) {
+			pr_err("%s: Config MPP %d of PM8058 failed\n",
+					__func__, xoadc_mpps[i].mpp);
+		}
+	}
 }
 
 static struct regulator *vreg_ldo18_adc;
@@ -371,7 +374,7 @@ static struct adc_properties pm8058_xoadc_data = {
 	.conversiontime         = 54,
 };
 
-static struct xoadc_platform_data xoadc_pdata = {
+static struct xoadc_platform_data pm8058_xoadc_pdata = {
 	.xoadc_prop = &pm8058_xoadc_data,
 	.xoadc_mpp_config = pmic8058_xoadc_mpp_config,
 	.xoadc_vreg_set = pmic8058_xoadc_vreg_config,
@@ -398,82 +401,67 @@ XO_CONSUMERS(A1) = {
 };
 
 #define PM8058_XO_INIT(_id, _modes, _ops, _always_on) \
-	[PM8058_XO_ID_##_id] = { \
+	{ \
 		.init_data = { \
 			.constraints = { \
 				.valid_modes_mask = _modes, \
 				.valid_ops_mask = _ops, \
+				.boot_on = 1, \
 				.always_on = _always_on, \
 			}, \
 			.num_consumer_supplies = \
 				ARRAY_SIZE(xo_consumers_##_id),\
 			.consumer_supplies = xo_consumers_##_id, \
 		}, \
+		.id = PM8058_XO_ID_##_id, \
 	}
 
 #define PM8058_XO_INIT_AX(_id) \
 	PM8058_XO_INIT(_id, REGULATOR_MODE_NORMAL, REGULATOR_CHANGE_STATUS, 0)
 
-static struct pm8058_xo_pdata pm8058_xo_init_pdata[PM8058_XO_ID_MAX] = {
+static struct pm8058_xo_pdata pm8058_xo_init_pdata[] = {
 	PM8058_XO_INIT_AX(A0),
 	PM8058_XO_INIT_AX(A1),
 };
 
-#define PM8058_XO(_id) { \
-	.name = PM8058_XO_BUFFER_DEV_NAME, \
-	.id = _id, \
-	.platform_data = &pm8058_xo_init_pdata[_id], \
-	.data_size = sizeof(pm8058_xo_init_pdata[_id]), \
-}
+#define PM8058_GPIO_INT		47
 
-/* Put sub devices with fixed location first in sub_devices array */
-static struct mfd_cell pm8058_subdevs[] = {
-	{	.name = "pm8058-mpp",
-		.platform_data	= &pm8058_mpp_data,
-		.data_size	= sizeof(pm8058_mpp_data),
-	},
-	{
-		.name = "pm8058-gpio",
-		.id = -1,
-		.platform_data = &pm8058_gpio_data,
-		.data_size = sizeof(pm8058_gpio_data),
-	},
-#ifdef CONFIG_SENSORS_MSM_ADC
-	{
-		.name = "pm8058-xoadc",
-		.id = -1,
-		.num_resources = ARRAY_SIZE(resources_adc),
-		.resources = resources_adc,
-		.platform_data = &xoadc_pdata,
-		.data_size = sizeof(xoadc_pdata),
-	},
-#endif
-	PM8058_VREG(PM8058_VREG_ID_L3),
-	PM8058_VREG(PM8058_VREG_ID_L8),
-	PM8058_VREG(PM8058_VREG_ID_L9),
-	PM8058_VREG(PM8058_VREG_ID_L14),
-	PM8058_VREG(PM8058_VREG_ID_L15),
-	PM8058_VREG(PM8058_VREG_ID_L18),
-	PM8058_VREG(PM8058_VREG_ID_S4),
-	PM8058_VREG(PM8058_VREG_ID_LVS0),
-	PM8058_XO(PM8058_XO_ID_A0),
-	PM8058_XO(PM8058_XO_ID_A1),
+static struct pm8xxx_irq_platform_data pm8xxx_irq_pdata = {
+	.irq_base		= PMIC8058_IRQ_BASE,
+	.devirq			= MSM_GPIO_TO_INT(PM8058_GPIO_INT),
+	.irq_trigger_flag	= IRQF_TRIGGER_LOW,
+};
+
+static struct pm8xxx_gpio_platform_data pm8xxx_gpio_pdata = {
+	.gpio_base	= PM8058_GPIO_PM_TO_SYS(0),
+};
+
+static struct pm8xxx_mpp_platform_data pm8xxx_mpp_pdata = {
+	.mpp_base	= PM8058_MPP_PM_TO_SYS(0),
 };
 
 static struct pm8058_platform_data pm8058_fsm9xxx_data = {
-	.irq_base = PMIC8058_IRQ_BASE,
-
-	.num_subdevs = ARRAY_SIZE(pm8058_subdevs),
-	.sub_devices = pm8058_subdevs,
+	.irq_pdata		= &pm8xxx_irq_pdata,
+	.gpio_pdata		= &pm8xxx_gpio_pdata,
+	.mpp_pdata		= &pm8xxx_mpp_pdata,
+	.regulator_pdatas	= pm8058_vreg_init,
+	.num_regulators		= ARRAY_SIZE(pm8058_vreg_init),
+	.xo_buffer_pdata	= pm8058_xo_init_pdata,
+	.num_xo_buffers		= ARRAY_SIZE(pm8058_xo_init_pdata),
+#ifdef CONFIG_SENSORS_MSM_ADC
+	.xoadc_pdata		= &pm8058_xoadc_pdata,
+#endif
 };
 
-static struct i2c_board_info pm8058_boardinfo[] __initdata = {
-	{
-		I2C_BOARD_INFO("pm8058-core", 0x55),
-		.irq = MSM_GPIO_TO_INT(47),
-		.platform_data = &pm8058_fsm9xxx_data,
+#ifdef CONFIG_MSM_SSBI
+static struct msm_ssbi_platform_data fsm9xxx_ssbi_pm8058_pdata = {
+	.controller_type = FSM_SBI_CTRL_SSBI,
+	.slave  = {
+		.name                   = "pm8058-core",
+		.platform_data          = &pm8058_fsm9xxx_data,
 	},
 };
+#endif
 
 static int __init buses_init(void)
 {
@@ -481,9 +469,6 @@ static int __init buses_init(void)
 			GPIO_CFG_NO_PULL, GPIO_CFG_2MA), GPIO_CFG_ENABLE))
 		pr_err("%s: gpio_tlmm_config (gpio=%d) failed\n",
 			__func__, PMIC_GPIO_INT);
-
-	i2c_register_board_info(0 /* I2C_SSBI ID */, pm8058_boardinfo,
-				ARRAY_SIZE(pm8058_boardinfo));
 
 	return 0;
 }
@@ -494,7 +479,23 @@ static int __init buses_init(void)
 
 static struct msm_gpio phy_config_data[] = {
 	{ GPIO_CFG(GPIO_EPHY_RST_N, 0, GPIO_CFG_OUTPUT,
-		GPIO_CFG_NO_PULL, GPIO_CFG_2MA), "MAC_RST_N" },
+		GPIO_CFG_NO_PULL, GPIO_CFG_8MA), "MAC_RST_N" },
+	{ GPIO_CFG(GPIO_MAC_TXD_3, 0, GPIO_CFG_OUTPUT,
+		GPIO_CFG_NO_PULL, GPIO_CFG_8MA), "MAC_TXD_3"},
+	{ GPIO_CFG(GPIO_MAC_TXD_2, 0, GPIO_CFG_OUTPUT,
+		GPIO_CFG_NO_PULL, GPIO_CFG_8MA), "MAC_TXD_2"},
+	{ GPIO_CFG(GPIO_MAC_TXD_1, 0, GPIO_CFG_OUTPUT,
+		GPIO_CFG_NO_PULL, GPIO_CFG_8MA), "MAC_TXD_1"},
+	{ GPIO_CFG(GPIO_MAC_TXD_0, 0, GPIO_CFG_OUTPUT,
+		GPIO_CFG_NO_PULL, GPIO_CFG_8MA), "MAC_TXD_0"},
+	{ GPIO_CFG(GPIO_MAC_TX_EN, 0, GPIO_CFG_OUTPUT,
+		GPIO_CFG_NO_PULL, GPIO_CFG_8MA), "MAC_TX_EN"},
+	{ GPIO_CFG(GPIO_MAC_TX_CLK, 0, GPIO_CFG_OUTPUT,
+		GPIO_CFG_NO_PULL, GPIO_CFG_10MA), "MAC_TX_CLK"},
+	{ GPIO_CFG(GPIO_MAC_MDIO, 0, GPIO_CFG_OUTPUT,
+		GPIO_CFG_NO_PULL, GPIO_CFG_6MA), "MDIO_MAC_MDIO"},
+	{ GPIO_CFG(GPIO_MAC_MDC, 0, GPIO_CFG_OUTPUT,
+		GPIO_CFG_NO_PULL, GPIO_CFG_6MA), "MDC_MAC_MDC"},
 };
 
 static int __init phy_init(void)
@@ -601,10 +602,6 @@ static void fsm9xxx_init_uart1(void)
  */
 
 #ifdef CONFIG_I2C_SSBI
-static struct msm_i2c_ssbi_platform_data msm_i2c_ssbi1_pdata = {
-	.controller_type = FSM_SBI_CTRL_SSBI,
-};
-
 static struct msm_i2c_ssbi_platform_data msm_i2c_ssbi2_pdata = {
 	.controller_type = FSM_SBI_CTRL_SSBI,
 };
@@ -612,7 +609,9 @@ static struct msm_i2c_ssbi_platform_data msm_i2c_ssbi2_pdata = {
 static struct msm_i2c_ssbi_platform_data msm_i2c_ssbi3_pdata = {
 	.controller_type = FSM_SBI_CTRL_SSBI,
 };
+#endif
 
+#if defined(CONFIG_I2C_SSBI) || defined(CONFIG_MSM_SSBI)
 /* Intialize GPIO configuration for SSBI */
 static struct msm_gpio ssbi_gpio_config_data[] = {
 	{ GPIO_CFG(140, 1, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_4MA),
@@ -697,6 +696,7 @@ static struct msm_ce_hw_support qcrypto_ce_hw_suppport = {
 	.shared_ce_resource = QCE_NO_SHARE_CE_RESOURCE,
 	.hw_key_support = QCE_NO_HW_KEY_SUPPORT,
 	.sha_hmac = QCE_NO_SHA_HMAC_SUPPORT,
+	.bus_scale_table = NULL,
 };
 
 struct platform_device qcrypto_device = {
@@ -747,6 +747,7 @@ static struct msm_ce_hw_support qcedev_ce_hw_suppport = {
 	.shared_ce_resource = QCE_NO_SHARE_CE_RESOURCE,
 	.hw_key_support = QCE_NO_HW_KEY_SUPPORT,
 	.sha_hmac = QCE_NO_SHA_HMAC_SUPPORT,
+	.bus_scale_table = NULL,
 };
 
 static struct platform_device qcedev_device = {
@@ -810,8 +811,10 @@ static struct platform_device *devices[] __initdata = {
 	&msm_device_smd,
 	&msm_device_dmov,
 	&msm_device_nand,
+#ifdef CONFIG_MSM_SSBI
+	&msm_device_ssbi_pmic1,
+#endif
 #ifdef CONFIG_I2C_SSBI
-	&msm_device_ssbi1,
 	&msm_device_ssbi2,
 	&msm_device_ssbi3,
 #endif
@@ -832,11 +835,6 @@ static struct platform_device *devices[] __initdata = {
 	&qcedev_device,
 	&ota_qcrypto_device,
 	&fsm_xo_device,
-};
-
-static struct msm_acpu_clock_platform_data fsm9xxx_clock_data = {
-	.acpu_switch_time_us = 50,
-	.vdd_switch_time_us = 62,
 };
 
 static void __init fsm9xxx_init_irq(void)
@@ -873,20 +871,26 @@ static struct msm_spm_platform_data msm_spm_data __initdata = {
 
 static void __init fsm9xxx_init(void)
 {
-	if (socinfo_init() < 0)
-		pr_err("%s: socinfo_init() failed!\n",
-		       __func__);
-
-	msm_acpu_clock_init(&fsm9xxx_clock_data);
+	acpuclk_init(&acpuclk_9xxx_soc_data);
 
 	regulator_has_full_constraints();
+
+#if defined(CONFIG_I2C_SSBI) || defined(CONFIG_MSM_SSBI)
+	fsm9xxx_init_ssbi_gpio();
+#endif
+#ifdef CONFIG_MSM_SSBI
+	msm_device_ssbi_pmic1.dev.platform_data =
+			&fsm9xxx_ssbi_pm8058_pdata;
+#endif
+	buses_init();
 
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 
 #ifdef CONFIG_MSM_SPM
 	msm_spm_init(&msm_spm_data, 1);
 #endif
-	buses_init();
+	pm8058_gpios_init();
+	pm8058_mpps_init();
 	phy_init();
 	grfc_init();
 	user_gpios_init();
@@ -895,8 +899,6 @@ static void __init fsm9xxx_init(void)
 	fsm9xxx_init_uart1();
 #endif
 #ifdef CONFIG_I2C_SSBI
-	fsm9xxx_init_ssbi_gpio();
-	msm_device_ssbi1.dev.platform_data = &msm_i2c_ssbi1_pdata;
 	msm_device_ssbi2.dev.platform_data = &msm_i2c_ssbi2_pdata;
 	msm_device_ssbi3.dev.platform_data = &msm_i2c_ssbi3_pdata;
 #endif
@@ -906,13 +908,18 @@ static void __init fsm9xxx_map_io(void)
 {
 	msm_shared_ram_phys = 0x00100000;
 	msm_map_fsm9xxx_io();
-	msm_clock_init(msm_clocks_fsm9xxx, msm_num_clocks_fsm9xxx);
+	msm_clock_init(&fsm9xxx_clock_init_data);
+	if (socinfo_init() < 0)
+		pr_err("%s: socinfo_init() failed!\n",
+		       __func__);
+
 }
 
 MACHINE_START(FSM9XXX_SURF, "QCT FSM9XXX")
 	.boot_params = PHYS_OFFSET + 0x100,
 	.map_io = fsm9xxx_map_io,
 	.init_irq = fsm9xxx_init_irq,
+	.handle_irq = vic_handle_irq,
 	.init_machine = fsm9xxx_init,
 	.timer = &msm_timer,
 MACHINE_END

@@ -1,13 +1,14 @@
 /*
  *  Copyright (C) 2002 ARM Ltd.
  *  All Rights Reserved
- *  Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+ *  Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
 
+#include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/cpumask.h>
 #include <linux/delay.h>
@@ -26,9 +27,7 @@
 
 #include "pm.h"
 #include "scm-boot.h"
-#include "acpuclock.h"
-
-#define SECONDARY_CPU_WAIT_MS 10
+#include "spm.h"
 
 int pen_release = -1;
 
@@ -47,53 +46,97 @@ void __init smp_init_cpus(void)
 
 	for (i = 0; i < ncores; i++)
 		cpu_set(i, cpu_possible_map);
+
+	set_smp_cross_call(gic_raise_softirq);
 }
 
-static void __cpuinit release_secondary(unsigned int cpu)
+static int __cpuinit scorpion_release_secondary(void)
 {
-	void *base_ptr;
+	void *base_ptr = ioremap_nocache(0x00902000, SZ_4K*2);
+	if (!base_ptr)
+		return -EINVAL;
 
+	writel_relaxed(0x0, base_ptr+0x15A0);
+	dmb();
+	writel_relaxed(0x0, base_ptr+0xD80);
+	writel_relaxed(0x3, base_ptr+0xE64);
+	mb();
+	iounmap(base_ptr);
+
+	return 0;
+}
+
+static int __cpuinit krait_release_secondary_sim(int cpu)
+{
+	void *base_ptr = ioremap_nocache(0x02088000 + (cpu * 0x10000), SZ_4K);
+	if (!base_ptr)
+		return -ENODEV;
+
+	if (machine_is_msm8960_sim() || machine_is_msm8960_rumi3()) {
+		writel_relaxed(0x10, base_ptr+0x04);
+		writel_relaxed(0x80, base_ptr+0x04);
+	}
+
+	if (machine_is_apq8064_sim())
+		writel_relaxed(0xf0000, base_ptr+0x04);
+
+	mb();
+	iounmap(base_ptr);
+	return 0;
+}
+
+static int __cpuinit krait_release_secondary(int cpu)
+{
+	void *base_ptr = ioremap_nocache(0x02088000 + (cpu * 0x10000), SZ_4K);
+	if (!base_ptr)
+		return -ENODEV;
+
+	msm_spm_turn_on_cpu_rail(cpu);
+
+	writel_relaxed(0x109, base_ptr+0x04);
+	writel_relaxed(0x101, base_ptr+0x04);
+	ndelay(300);
+
+	writel_relaxed(0x121, base_ptr+0x04);
+	udelay(2);
+
+	writel_relaxed(0x020, base_ptr+0x04);
+	udelay(2);
+
+	writel_relaxed(0x000, base_ptr+0x04);
+	udelay(100);
+
+	writel_relaxed(0x080, base_ptr+0x04);
+	mb();
+	iounmap(base_ptr);
+	return 0;
+}
+
+static int __cpuinit release_secondary(unsigned int cpu)
+{
 	BUG_ON(cpu >= get_core_count());
 
-	/* KraitMP or ScorpionMP ? */
-	if ((read_cpuid_id() & 0xFF0) >> 4 != 0x2D) {
-		base_ptr = ioremap_nocache(0x02098000, SZ_4K);
-		if (base_ptr) {
-			if (machine_is_msm8960_sim() ||
-			    machine_is_msm8960_rumi3()) {
-				writel_relaxed(0x10, base_ptr+0x04);
-				writel_relaxed(0x80, base_ptr+0x04);
-			} else if (get_core_count() == 2) {
-				writel_relaxed(0x109, base_ptr+0x04);
-				writel_relaxed(0x101, base_ptr+0x04);
-				ndelay(300);
+	if (cpu_is_msm8x60())
+		return scorpion_release_secondary();
 
-				writel_relaxed(0x121, base_ptr+0x04);
-				udelay(2);
+	if (machine_is_msm8960_sim() || machine_is_msm8960_rumi3() ||
+	    machine_is_apq8064_sim())
+		return krait_release_secondary_sim(cpu);
 
-				writel_relaxed(0x020, base_ptr+0x04);
-				udelay(2);
+	if (cpu_is_msm8960() || cpu_is_msm8930() || cpu_is_apq8064())
+		return krait_release_secondary(cpu);
 
-				writel_relaxed(0x000, base_ptr+0x04);
-				udelay(100);
-
-				writel_relaxed(0x080, base_ptr+0x04);
-			}
-			mb();
-			iounmap(base_ptr);
-		}
-	} else {
-		base_ptr = ioremap_nocache(0x00902000, SZ_4K*2);
-		if (base_ptr) {
-			writel_relaxed(0x0, base_ptr+0x15A0);
-			dmb();
-			writel_relaxed(0x0, base_ptr+0xD80);
-			writel_relaxed(0x3, base_ptr+0xE64);
-			mb();
-			iounmap(base_ptr);
-		}
-	}
+	WARN(1, "unknown CPU case in release_secondary\n");
+	return -EINVAL;
 }
+
+DEFINE_PER_CPU(int, cold_boot_done);
+static int cold_boot_flags[] = {
+	0,
+	SCM_FLAG_COLDBOOT_CPU1,
+	SCM_FLAG_COLDBOOT_CPU2,
+	SCM_FLAG_COLDBOOT_CPU3,
+};
 
 /* Executed by primary CPU, brings other CPUs out of reset. Called at boot
    as well as when a CPU is coming out of shutdown induced by echo 0 >
@@ -101,25 +144,30 @@ static void __cpuinit release_secondary(unsigned int cpu)
 */
 int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 {
-	static int cold_boot_done;
 	int cnt = 0;
 	int ret;
+	int flag = 0;
 
 	pr_debug("Starting secondary CPU %d\n", cpu);
 
 	/* Set preset_lpj to avoid subsequent lpj recalculations */
 	preset_lpj = loops_per_jiffy;
 
-	if (cold_boot_done == false) {
+	if (cpu > 0 && cpu < ARRAY_SIZE(cold_boot_flags))
+		flag = cold_boot_flags[cpu];
+	else
+		__WARN();
+
+	if (per_cpu(cold_boot_done, cpu) == false) {
 		ret = scm_set_boot_addr((void *)
 					virt_to_phys(msm_secondary_startup),
-					SCM_FLAG_COLDBOOT_CPU1);
+					flag);
 		if (ret == 0)
 			release_secondary(cpu);
 		else
 			printk(KERN_DEBUG "Failed to set secondary core boot "
 					  "address\n");
-		cold_boot_done = true;
+		per_cpu(cold_boot_done, cpu) = true;
 	}
 
 	pen_release = cpu;
@@ -131,13 +179,13 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 	/* Use smp_cross_call() to send a soft interrupt to wake up
 	 * the other core.
 	 */
-	smp_cross_call(cpumask_of(cpu), 1);
+	gic_raise_softirq(cpumask_of(cpu), 1);
 
 	while (pen_release != 0xFFFFFFFF) {
 		dmac_inv_range((void *)&pen_release,
 			       (void *)(&pen_release+sizeof(pen_release)));
-		msleep_interruptible(1);
-		if (cnt++ >= SECONDARY_CPU_WAIT_MS)
+		usleep(500);
+		if (cnt++ >= 10)
 			break;
 	}
 
@@ -151,9 +199,7 @@ void __cpuinit platform_secondary_init(unsigned int cpu)
 {
 	pr_debug("CPU%u: Booted secondary processor\n", cpu);
 
-#ifdef CONFIG_HOTPLUG_CPU
-	WARN_ON(msm_pm_platform_secondary_init(cpu));
-#endif
+	WARN_ON(msm_platform_secondary_init(cpu));
 
 	trace_hardirqs_off();
 
@@ -167,7 +213,4 @@ void __cpuinit platform_secondary_init(unsigned int cpu)
 		writel(0x0000FFFF, MSM_QGIC_DIST_BASE + GIC_DIST_ENABLE_SET);
 
 	gic_secondary_init(0);
-
-	/* Setup acpuclock for non-primary CPU. */
-	acpuclock_secondary_init();
 }

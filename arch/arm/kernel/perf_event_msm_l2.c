@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -10,7 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-#ifdef CONFIG_CPU_HAS_L2_PMU
+#ifdef CONFIG_ARCH_MSM8X60
 
 #include <linux/irq.h>
 
@@ -18,8 +18,10 @@
 #define MAX_BB_L2_CTRS 5
 #define BB_L2CYCLE_CTR_BIT 31
 #define BB_L2CYCLE_CTR_EVENT_IDX 4
-#define BB_L2CYCLE_CTR_RAW_CODE 0xff
+#define BB_L2CYCLE_CTR_RAW_CODE 0xfe
 #define SCORPIONL2_PMNC_E       (1 << 0)	/* Enable all counters */
+#define SCORPION_L2_EVT_PREFIX 3
+#define SCORPION_MAX_L2_REG 4
 
 /*
  * Lock to protect r/m/w sequences to the L2 PMU.
@@ -365,6 +367,26 @@ static unsigned int get_bb_l2_evtinfo(unsigned int evt_type,
 				      struct bb_l2_scorp_evt *evtinfo)
 {
 	u32 idx;
+	u8 prefix;
+	u8 reg;
+	u8 code;
+	u8 group;
+
+	prefix = (evt_type & 0xF0000) >> 16;
+	if (prefix == SCORPION_L2_EVT_PREFIX) {
+		reg   = (evt_type & 0x0F000) >> 12;
+		code  = (evt_type & 0x00FF0) >> 4;
+		group =  evt_type & 0x0000F;
+
+		if ((group > 3) || (reg > SCORPION_MAX_L2_REG))
+			return BB_L2_INV_EVTYPE;
+
+		evtinfo->val = 0x80000000 | (code << (group * 8));
+		evtinfo->grp = reg;
+		evtinfo->evt_type_act = group | (reg << 2);
+		return evtinfo->evt_type_act;
+	}
+
 	if (evt_type < BB_L2_EVT_START_IDX || evt_type >= BB_L2_MAX_EVT)
 		return BB_L2_INV_EVTYPE;
 	idx = evt_type - BB_L2_EVT_START_IDX;
@@ -405,9 +427,16 @@ static inline void bb_l2_set_evtyper(int ctr, int val)
 	asm volatile ("mcr p15, 3, %0, c15, c6, 7" : : "r" (val));
 }
 
-static void bb_l2_set_evfilter(void)
+static void bb_l2_set_evfilter_task_mode(void)
 {
 	u32 filter_val = 0x000f0030 | 1 << smp_processor_id();
+
+	asm volatile ("mcr p15, 3, %0, c15, c6, 3" : : "r" (filter_val));
+}
+
+static void bb_l2_set_evfilter_sys_mode(void)
+{
+	u32 filter_val = 0x000f003f;
 
 	asm volatile ("mcr p15, 3, %0, c15, c6, 3" : : "r" (filter_val));
 }
@@ -611,7 +640,10 @@ static void bb_l2_start_counter(struct perf_event *event, int flags)
 
 	bb_l2_set_evcntcr();
 
-	bb_l2_set_evfilter();
+	if (event->cpu < 0)
+		bb_l2_set_evfilter_task_mode();
+	else
+		bb_l2_set_evfilter_sys_mode();
 
 	bb_l2_evt_setup(evtinfo.grp, evtinfo.val);
 
@@ -841,7 +873,7 @@ static int bb_pmu_reserve_hardware(void)
 			break;
 		}
 
-		get_irq_chip(irq)->irq_unmask(irq_get_irq_data(irq));
+		irq_get_chip(irq)->irq_unmask(irq_get_irq_data(irq));
 	}
 
 	if (err) {
@@ -909,18 +941,16 @@ static int bb_l2_event_init(struct perf_event *event)
 			atomic_inc(&active_bb_l2_events);
 		else
 			return err;
-	} else {
-		if (atomic_read(&active_bb_l2_events) > (MAX_BB_L2_CTRS - 1)) {
-			pr_err("%s: No space left on PMU for event: %llx\n",
-			       __func__, event->attr.config);
-			atomic_dec(&active_bb_l2_events);
-			return -ENOSPC;
-		}
 	}
 
-	hwc->config_base = event->attr.config & 0xff;
 	hwc->config = 0;
 	hwc->event_base = 0;
+
+	/* Check if we came via perf default syms */
+	if (event->attr.config == PERF_COUNT_HW_L2_CYCLES)
+		hwc->config_base = BB_L2CYCLE_CTR_RAW_CODE;
+	else
+		hwc->config_base = event->attr.config;
 
 	/* Only one CPU can control the cycle counter */
 	if (hwc->config_base == BB_L2CYCLE_CTR_RAW_CODE) {

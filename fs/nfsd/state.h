@@ -367,16 +367,12 @@ struct nfs4_file {
 	struct list_head	fi_delegations;
 	/* One each for O_RDONLY, O_WRONLY, O_RDWR: */
 	struct file *		fi_fds[3];
-	/* One each for O_RDONLY, O_WRONLY: */
-	atomic_t		fi_access[2];
 	/*
-	 * Each open stateid contributes 1 to either fi_readers or
-	 * fi_writers, or both, depending on the open mode.  A
-	 * delegation also takes an fi_readers reference.  Lock
-	 * stateid's take none.
+	 * Each open or lock stateid contributes 1 to either
+	 * fi_access[O_RDONLY], fi_access[O_WRONLY], or both, depending
+	 * on open or lock mode:
 	 */
-	atomic_t		fi_readers;
-	atomic_t		fi_writers;
+	atomic_t		fi_access[2];
 	struct file		*fi_deleg_file;
 	struct file_lock	*fi_lease;
 	atomic_t		fi_delegees;
@@ -450,12 +446,6 @@ struct nfs4_stateid {
 #define RD_STATE	        0x00000010
 #define WR_STATE	        0x00000020
 #define CLOSE_STATE             0x00000040
-
-#define seqid_mutating_err(err)                       \
-	(((err) != nfserr_stale_clientid) &&    \
-	((err) != nfserr_bad_seqid) &&          \
-	((err) != nfserr_stale_stateid) &&      \
-	((err) != nfserr_bad_stateid))
 
 struct nfsd4_compound_state;
 

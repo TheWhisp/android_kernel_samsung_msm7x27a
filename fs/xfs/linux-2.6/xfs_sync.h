@@ -32,6 +32,8 @@ typedef struct xfs_sync_work {
 #define SYNC_WAIT		0x0001	/* wait for i/o to complete */
 #define SYNC_TRYLOCK		0x0002  /* only try to lock inodes */
 
+extern struct workqueue_struct	*xfs_syncd_wq;	/* sync workqueue */
+
 int xfs_syncd_init(struct xfs_mount *mp);
 void xfs_syncd_stop(struct xfs_mount *mp);
 
@@ -39,6 +41,8 @@ int xfs_quiesce_data(struct xfs_mount *mp);
 void xfs_quiesce_attr(struct xfs_mount *mp);
 
 void xfs_flush_inodes(struct xfs_inode *ip);
+
+int xfs_log_dirty_inode(struct xfs_inode *ip, struct xfs_perag *pag, int flags);
 
 int xfs_reclaim_inodes(struct xfs_mount *mp, int mode);
 

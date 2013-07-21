@@ -984,7 +984,7 @@ static int __init vortex_eisa_init(void)
 		 * any device have been found when we exit from
 		 * eisa_driver_register (the bus root driver may not be
 		 * initialized yet). So we blindly assume something was
-		 * found, and let the sysfs magic happend...
+		 * found, and let the sysfs magic happened...
 		 */
 		eisa_found = 1;
 	}
@@ -1842,7 +1842,7 @@ vortex_timer(unsigned long data)
 		ok = 1;
 	}
 
-	if (!netif_carrier_ok(dev))
+	if (dev->flags & IFF_SLAVE || !netif_carrier_ok(dev))
 		next_tick = 5*HZ;
 
 	if (vp->medialock)

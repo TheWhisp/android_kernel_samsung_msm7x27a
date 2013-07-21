@@ -1,4 +1,4 @@
-/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -314,7 +314,6 @@ static void sx150x_irq_mask(struct irq_data *d)
 
 	chip = container_of(ic, struct sx150x_chip, irq_chip);
 	n = d->irq - chip->irq_base;
-
 	chip->irq_masked |= (1 << n);
 	chip->irq_update = n;
 }
@@ -549,12 +548,12 @@ static int sx150x_install_irq_chip(struct sx150x_chip *chip,
 
 	for (n = 0; n < chip->dev_cfg->ngpios; ++n) {
 		irq = irq_base + n;
-		set_irq_chip_and_handler(irq, &chip->irq_chip, handle_edge_irq);
-		set_irq_nested_thread(irq, 1);
+		irq_set_chip_and_handler(irq, &chip->irq_chip, handle_edge_irq);
+		irq_set_nested_thread(irq, 1);
 #ifdef CONFIG_ARM
 		set_irq_flags(irq, IRQF_VALID);
 #else
-		set_irq_noprobe(irq);
+		irq_set_noprobe(irq);
 #endif
 	}
 
@@ -581,8 +580,7 @@ static void sx150x_remove_irq_chip(struct sx150x_chip *chip)
 
 	for (n = 0; n < chip->dev_cfg->ngpios; ++n) {
 		irq = chip->irq_base + n;
-		set_irq_handler(irq, NULL);
-		set_irq_chip(irq, NULL);
+		irq_set_chip_and_handler(irq, NULL, NULL);
 	}
 }
 

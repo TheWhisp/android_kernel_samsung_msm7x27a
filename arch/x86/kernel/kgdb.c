@@ -43,6 +43,8 @@
 #include <linux/smp.h>
 #include <linux/nmi.h>
 #include <linux/hw_breakpoint.h>
+#include <linux/uaccess.h>
+#include <linux/memory.h>
 
 #include <asm/debugreg.h>
 #include <asm/apicdef.h>
@@ -121,8 +123,8 @@ char *dbg_get_reg(int regno, void *mem, struct pt_regs *regs)
 		memcpy(mem, (void *)regs + dbg_reg_def[regno].offset,
 		       dbg_reg_def[regno].size);
 
-	switch (regno) {
 #ifdef CONFIG_X86_32
+	switch (regno) {
 	case GDB_SS:
 		if (!user_mode_vm(regs))
 			*(unsigned long *)mem = __KERNEL_DS;
@@ -135,8 +137,8 @@ char *dbg_get_reg(int regno, void *mem, struct pt_regs *regs)
 	case GDB_FS:
 		*(unsigned long *)mem = 0xFFFF;
 		break;
-#endif
 	}
+#endif
 	return dbg_reg_def[regno].name;
 }
 
@@ -278,7 +280,7 @@ static int hw_break_release_slot(int breakno)
 		pevent = per_cpu_ptr(breakinfo[breakno].pev, cpu);
 		if (dbg_release_bp_slot(*pevent))
 			/*
-			 * The debugger is responisble for handing the retry on
+			 * The debugger is responsible for handing the retry on
 			 * remove failure.
 			 */
 			return -1;
@@ -533,15 +535,6 @@ static int __kgdb_notify(struct die_args *args, unsigned long cmd)
 		}
 		return NOTIFY_DONE;
 
-	case DIE_NMIWATCHDOG:
-		if (atomic_read(&kgdb_active) != -1) {
-			/* KGDB CPU roundup: */
-			kgdb_nmicallback(raw_smp_processor_id(), regs);
-			return NOTIFY_STOP;
-		}
-		/* Enter debugger: */
-		break;
-
 	case DIE_DEBUG:
 		if (atomic_read(&kgdb_cpu_doing_single_step) != -1) {
 			if (user_mode(regs))
@@ -717,6 +710,64 @@ unsigned long kgdb_arch_pc(int exception, struct pt_regs *regs)
 void kgdb_arch_set_pc(struct pt_regs *regs, unsigned long ip)
 {
 	regs->ip = ip;
+}
+
+int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
+{
+	int err;
+	char opc[BREAK_INSTR_SIZE];
+
+	bpt->type = BP_BREAKPOINT;
+	err = probe_kernel_read(bpt->saved_instr, (char *)bpt->bpt_addr,
+				BREAK_INSTR_SIZE);
+	if (err)
+		return err;
+	err = probe_kernel_write((char *)bpt->bpt_addr,
+				 arch_kgdb_ops.gdb_bpt_instr, BREAK_INSTR_SIZE);
+#ifdef CONFIG_DEBUG_RODATA
+	if (!err)
+		return err;
+	/*
+	 * It is safe to call text_poke() because normal kernel execution
+	 * is stopped on all cores, so long as the text_mutex is not locked.
+	 */
+	if (mutex_is_locked(&text_mutex))
+		return -EBUSY;
+	text_poke((void *)bpt->bpt_addr, arch_kgdb_ops.gdb_bpt_instr,
+		  BREAK_INSTR_SIZE);
+	err = probe_kernel_read(opc, (char *)bpt->bpt_addr, BREAK_INSTR_SIZE);
+	if (err)
+		return err;
+	if (memcmp(opc, arch_kgdb_ops.gdb_bpt_instr, BREAK_INSTR_SIZE))
+		return -EINVAL;
+	bpt->type = BP_POKE_BREAKPOINT;
+#endif /* CONFIG_DEBUG_RODATA */
+	return err;
+}
+
+int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt)
+{
+#ifdef CONFIG_DEBUG_RODATA
+	int err;
+	char opc[BREAK_INSTR_SIZE];
+
+	if (bpt->type != BP_POKE_BREAKPOINT)
+		goto knl_write;
+	/*
+	 * It is safe to call text_poke() because normal kernel execution
+	 * is stopped on all cores, so long as the text_mutex is not locked.
+	 */
+	if (mutex_is_locked(&text_mutex))
+		goto knl_write;
+	text_poke((void *)bpt->bpt_addr, bpt->saved_instr, BREAK_INSTR_SIZE);
+	err = probe_kernel_read(opc, (char *)bpt->bpt_addr, BREAK_INSTR_SIZE);
+	if (err || memcmp(opc, bpt->saved_instr, BREAK_INSTR_SIZE))
+		goto knl_write;
+	return err;
+knl_write:
+#endif /* CONFIG_DEBUG_RODATA */
+	return probe_kernel_write((char *)bpt->bpt_addr,
+				  (char *)bpt->saved_instr, BREAK_INSTR_SIZE);
 }
 
 struct kgdb_arch arch_kgdb_ops = {

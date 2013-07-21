@@ -1,8 +1,12 @@
-/* Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+/*
+ * MSM MDDI Transport
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 and
- * only version 2 as published by the Free Software Foundation.
+ * Copyright (C) 2007 Google Incorporated
+ * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
+ *
+ * This software is licensed under the terms of the GNU General Public
+ * License version 2, as published by the Free Software Foundation, and
+ * may be copied, distributed, and modified under those terms.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -152,11 +156,11 @@ static void pmdh_clk_disable()
 	}
 
 	if (mddi_clk) {
-		clk_disable(mddi_clk);
+		clk_disable_unprepare(mddi_clk);
 		pmdh_clk_status = 0;
 	}
 	if (mddi_pclk)
-		clk_disable(mddi_pclk);
+		clk_disable_unprepare(mddi_pclk);
 	mutex_unlock(&pmdh_clk_lock);
 }
 
@@ -169,11 +173,11 @@ static void pmdh_clk_enable()
 	}
 
 	if (mddi_clk) {
-		clk_enable(mddi_clk);
+		clk_prepare_enable(mddi_clk);
 		pmdh_clk_status = 1;
 	}
 	if (mddi_pclk)
-		clk_enable(mddi_pclk);
+		clk_prepare_enable(mddi_pclk);
 
 	if (int_mddi_pri_flag && !irq_enabled) {
 		enable_irq(INT_MDDI_PRI);
@@ -212,7 +216,7 @@ static int mddi_off(struct platform_device *pdev)
 	mdp_bus_scale_update_request(0);
 #else
 	if (mfd->ebi1_clk)
-		clk_disable(mfd->ebi1_clk);
+		clk_disable_unprepare(mfd->ebi1_clk);
 #endif
 	pm_runtime_put(&pdev->dev);
 	return ret;
@@ -237,7 +241,8 @@ static int mddi_on(struct platform_device *pdev)
 #ifdef ENABLE_FWD_LINK_SKEW_CALIBRATION
 	if (mddi_client_type < 2) {
 		/* For skew calibration, clock should be less than 50MHz */
-		if (!clk_set_min_rate(mddi_clk, 49000000)) {
+		clk_rate = clk_round_rate(mddi_clk, 49000000);
+		if (!clk_set_rate(mddi_clk, clk_rate)) {
 			stat_reg = mddi_host_reg_in(STAT);
 			printk(KERN_DEBUG "\n stat_reg = 0x%x", stat_reg);
 			mddi_host_reg_out(CMD, MDDI_CMD_HIBERNATE);
@@ -249,7 +254,7 @@ static int mddi_on(struct platform_device *pdev)
 			mddi_host_reg_out(CMD, MDDI_CMD_SEND_RTD);
 			mddi_host_reg_out(CMD, MDDI_CMD_HIBERNATE | 1);
 		} else {
-			printk(KERN_ERR "%s: clk_set_min_rate failed\n",
+			printk(KERN_ERR "%s: clk_set_rate failed\n",
 				__func__);
 		}
 	}
@@ -265,15 +270,16 @@ static int mddi_on(struct platform_device *pdev)
 			  "%s: can't select mddi io clk targate rate = %d\n",
 			  __func__, clk_rate);
 
-	if (clk_set_min_rate(mddi_clk, clk_rate) < 0)
-		printk(KERN_ERR "%s: clk_set_min_rate failed\n",
+	clk_rate = clk_round_rate(mddi_clk, clk_rate);
+	if (clk_set_rate(mddi_clk, clk_rate) < 0)
+		printk(KERN_ERR "%s: clk_set_rate failed\n",
 			__func__);
 
 #ifdef CONFIG_MSM_BUS_SCALING
 	mdp_bus_scale_update_request(2);
 #else
 	if (mfd->ebi1_clk)
-		clk_enable(mfd->ebi1_clk);
+		clk_prepare_enable(mfd->ebi1_clk);
 #endif
 	ret = panel_next_on(pdev);
 
@@ -290,9 +296,38 @@ static int mddi_probe(struct platform_device *pdev)
 	int rc;
 	resource_size_t size ;
 	u32 clk_rate;
+	unsigned long rate;
+	int ret;
+	struct clk *ebi1_clk = NULL;
 
 	if ((pdev->id == 0) && (pdev->num_resources >= 0)) {
 		mddi_pdata = pdev->dev.platform_data;
+		pmdh_clk_status = 0;
+
+		mddi_clk = clk_get(&pdev->dev, "core_clk");
+		if (IS_ERR(mddi_clk)) {
+			pr_err("can't find mddi_clk\n");
+			return PTR_ERR(mddi_clk);
+		}
+		rate = clk_round_rate(mddi_clk, 49000000);
+		ret = clk_set_rate(mddi_clk, rate);
+		if (ret)
+			pr_err("Can't set mddi_clk min rate to %lu\n",
+									rate);
+
+		pr_info("mddi_clk init rate is %lu\n",
+			clk_get_rate(mddi_clk));
+		mddi_pclk = clk_get(&pdev->dev, "iface_clk");
+		if (IS_ERR(mddi_pclk))
+			mddi_pclk = NULL;
+		pmdh_clk_enable();
+
+#ifndef CONFIG_MSM_BUS_SCALING
+		ebi1_clk = clk_get(&pdev->dev, "mem_clk");
+		if (IS_ERR(ebi1_clk))
+			return PTR_ERR(ebi1_clk);
+		clk_set_rate(ebi1_clk, 65000000);
+#endif
 
 		size =  resource_size(&pdev->resource[0]);
 		msm_pmdh_base =  ioremap(pdev->resource[0].start, size);
@@ -314,6 +349,7 @@ static int mddi_probe(struct platform_device *pdev)
 		return -EPERM;
 
 	mfd = platform_get_drvdata(pdev);
+	mfd->ebi1_clk = ebi1_clk;
 
 	if (!mfd)
 		return -ENODEV;
@@ -391,12 +427,6 @@ static int mddi_probe(struct platform_device *pdev)
 
 	rc = 0;
 	pm_runtime_enable(&pdev->dev);
-#ifndef CONFIG_MSM_BUS_SCALING
-	mfd->ebi1_clk = clk_get(NULL, "ebi1_mddi_clk");
-	if (IS_ERR(mfd->ebi1_clk))
-		return PTR_ERR(mfd->ebi1_clk);
-	clk_set_rate(mfd->ebi1_clk, 65000000);
-#endif
 	/*
 	 * register in mdp driver
 	 */
@@ -445,9 +475,6 @@ void mddi_disable(int lock)
 	mddi_pad_ctrl = mddi_host_reg_in(PAD_CTL);
 	mddi_host_reg_out(PAD_CTL, 0x0);
 
-	if (clk_set_min_rate(mddi_clk, 0) < 0)
-		printk(KERN_ERR "%s: clk_set_min_rate failed\n", __func__);
-
 	pmdh_clk_disable();
 
 	if (mddi_pdata && mddi_pdata->mddi_power_save)
@@ -472,9 +499,6 @@ static int mddi_suspend(struct platform_device *pdev, pm_message_t state)
 
 	mddi_pad_ctrl = mddi_host_reg_in(PAD_CTL);
 	mddi_host_reg_out(PAD_CTL, 0x0);
-
-	if (clk_set_min_rate(mddi_clk, 0) < 0)
-		printk(KERN_ERR "%s: clk_set_min_rate failed\n", __func__);
 
 	pmdh_clk_disable();
 
@@ -547,23 +571,6 @@ static int mddi_register_driver(void)
 static int __init mddi_driver_init(void)
 {
 	int ret;
-	pmdh_clk_status = 0;
-
-	mddi_clk = clk_get(NULL, "mddi_clk");
-	if (IS_ERR(mddi_clk)) {
-		printk(KERN_ERR "can't find mddi_clk\n");
-		return PTR_ERR(mddi_clk);
-	}
-	ret = clk_set_min_rate(mddi_clk, 49000000);
-	if (ret)
-		printk(KERN_ERR "Can't set mddi_clk min rate to 49000000\n");
-
-	printk(KERN_INFO "mddi_clk init rate is %lu\n",
-		clk_get_rate(mddi_clk));
-	mddi_pclk = clk_get(NULL, "mddi_pclk");
-	if (IS_ERR(mddi_pclk))
-		mddi_pclk = NULL;
-	pmdh_clk_enable();
 
 	ret = mddi_register_driver();
 	if (ret) {

@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -17,17 +17,12 @@ static int dummy_clk_reset(struct clk *clk, enum clk_reset_action action)
 	return 0;
 }
 
-static int dummy_clk_set_rate(struct clk *clk, unsigned rate)
+static int dummy_clk_set_rate(struct clk *clk, unsigned long rate)
 {
 	return 0;
 }
 
-static int dummy_clk_set_min_rate(struct clk *clk, unsigned rate)
-{
-	return 0;
-}
-
-static int dummy_clk_set_max_rate(struct clk *clk, unsigned rate)
+static int dummy_clk_set_max_rate(struct clk *clk, unsigned long rate)
 {
 	return 0;
 }
@@ -37,12 +32,12 @@ static int dummy_clk_set_flags(struct clk *clk, unsigned flags)
 	return 0;
 }
 
-static unsigned dummy_clk_get_rate(struct clk *clk)
+static unsigned long dummy_clk_get_rate(struct clk *clk)
 {
 	return 0;
 }
 
-static long dummy_clk_round_rate(struct clk *clk, unsigned rate)
+static long dummy_clk_round_rate(struct clk *clk, unsigned long rate)
 {
 	return rate;
 }
@@ -55,7 +50,6 @@ static bool dummy_clk_is_local(struct clk *clk)
 static struct clk_ops clk_ops_dummy = {
 	.reset = dummy_clk_reset,
 	.set_rate = dummy_clk_set_rate,
-	.set_min_rate = dummy_clk_set_min_rate,
 	.set_max_rate = dummy_clk_set_max_rate,
 	.set_flags = dummy_clk_set_flags,
 	.get_rate = dummy_clk_get_rate,

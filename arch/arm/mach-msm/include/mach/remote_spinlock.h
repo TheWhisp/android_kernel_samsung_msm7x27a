@@ -1,29 +1,13 @@
-/* Copyright (c) 2009, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2009, 2011 The Linux Foundation. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- *       copyright notice, this list of conditions and the following
- *       disclaimer in the documentation and/or other materials provided
- *       with the distribution.
- *     * Neither the name of Code Aurora Forum, Inc. nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
- * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  */
 
@@ -35,6 +19,7 @@
 #ifndef __ASM__ARCH_QC_REMOTE_SPINLOCK_H
 #define __ASM__ARCH_QC_REMOTE_SPINLOCK_H
 
+#include <linux/io.h>
 #include <linux/types.h>
 
 /* Remote spinlock definitions. */
@@ -54,6 +39,7 @@ typedef union {
 typedef raw_remote_spinlock_t *_remote_spinlock_t;
 
 #define remote_spinlock_id_t const char *
+#define SMEM_SPINLOCK_PID_APPS 1
 
 static inline void __raw_remote_ex_spin_lock(raw_remote_spinlock_t *lock)
 {
@@ -189,14 +175,63 @@ static inline void __raw_remote_dek_spin_unlock(raw_remote_spinlock_t *lock)
 	lock->dek.self_lock = DEK_LOCK_YIELD;
 }
 
-#ifdef CONFIG_MSM_SMD
+static inline int __raw_remote_dek_spin_release(raw_remote_spinlock_t *lock,
+		uint32_t pid)
+{
+	return -EINVAL;
+}
+
+static inline void __raw_remote_sfpb_spin_lock(raw_remote_spinlock_t *lock)
+{
+	do {
+		writel_relaxed(SMEM_SPINLOCK_PID_APPS, lock);
+		smp_mb();
+	} while (readl_relaxed(lock) != SMEM_SPINLOCK_PID_APPS);
+}
+
+static inline int __raw_remote_sfpb_spin_trylock(raw_remote_spinlock_t *lock)
+{
+	return 1;
+}
+
+static inline void __raw_remote_sfpb_spin_unlock(raw_remote_spinlock_t *lock)
+{
+	writel_relaxed(0, lock);
+	smp_mb();
+}
+
+/**
+ * Release spinlock if it is owned by @pid.
+ *
+ * This is only to be used for situations where the processor owning
+ * the spinlock has crashed and the spinlock must be released.
+ *
+ * @lock - lock structure
+ * @pid - processor ID of processor to release
+ */
+static inline int __raw_remote_gen_spin_release(raw_remote_spinlock_t *lock,
+		uint32_t pid)
+{
+	int ret = 1;
+
+	if (readl_relaxed(&lock->lock) == pid) {
+		writel_relaxed(0, &lock->lock);
+		wmb();
+		ret = 0;
+	}
+	return ret;
+}
+
+#if defined(CONFIG_MSM_SMD) || defined(CONFIG_MSM_REMOTE_SPINLOCK_SFPB)
 int _remote_spin_lock_init(remote_spinlock_id_t, _remote_spinlock_t *lock);
+void _remote_spin_release_all(uint32_t pid);
 #else
 static inline
 int _remote_spin_lock_init(remote_spinlock_id_t id, _remote_spinlock_t *lock)
 {
 	return -EINVAL;
 }
+static inline void _remote_spin_release_all(uint32_t pid) {}
 #endif
 
 #if defined(CONFIG_MSM_REMOTE_SPINLOCK_DEKKERS)
@@ -205,16 +240,29 @@ int _remote_spin_lock_init(remote_spinlock_id_t id, _remote_spinlock_t *lock)
 #define _remote_spin_lock(lock)		__raw_remote_dek_spin_lock(*lock)
 #define _remote_spin_unlock(lock)	__raw_remote_dek_spin_unlock(*lock)
 #define _remote_spin_trylock(lock)	__raw_remote_dek_spin_trylock(*lock)
+#define _remote_spin_release(lock, pid)	__raw_remote_dek_spin_release(*lock,\
+		pid)
 #elif defined(CONFIG_MSM_REMOTE_SPINLOCK_SWP)
 /* Use SWP-based locks when LDREX/STREX are unavailable for shared memory. */
 #define _remote_spin_lock(lock)		__raw_remote_swp_spin_lock(*lock)
 #define _remote_spin_unlock(lock)	__raw_remote_swp_spin_unlock(*lock)
 #define _remote_spin_trylock(lock)	__raw_remote_swp_spin_trylock(*lock)
+#define _remote_spin_release(lock, pid)	__raw_remote_gen_spin_release(*lock,\
+		pid)
+#elif defined(CONFIG_MSM_REMOTE_SPINLOCK_SFPB)
+/* Use SFPB Hardware Mutex Registers */
+#define _remote_spin_lock(lock)		__raw_remote_sfpb_spin_lock(*lock)
+#define _remote_spin_unlock(lock)	__raw_remote_sfpb_spin_unlock(*lock)
+#define _remote_spin_trylock(lock)	__raw_remote_sfpb_spin_trylock(*lock)
+#define _remote_spin_release(lock, pid)	__raw_remote_gen_spin_release(*lock,\
+		pid)
 #else
 /* Use LDREX/STREX for shared memory locking, when available */
 #define _remote_spin_lock(lock)		__raw_remote_ex_spin_lock(*lock)
 #define _remote_spin_unlock(lock)	__raw_remote_ex_spin_unlock(*lock)
 #define _remote_spin_trylock(lock)	__raw_remote_ex_spin_trylock(*lock)
+#define _remote_spin_release(lock, pid)	__raw_remote_gen_spin_release(*lock, \
+		pid)
 #endif
 
 /* Remote mutex definitions. */

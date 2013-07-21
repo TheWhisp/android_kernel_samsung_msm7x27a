@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -21,7 +21,6 @@
 #include <media/msm_camera.h>
 #include <mach/gpio.h>
 #include <mach/camera.h>
-#include <mach/vreg.h>
 #include "imx072.h"
 
 /* SENSOR REGISTER DEFINES */
@@ -87,8 +86,6 @@ static uint16_t prev_line_length_pck;
 static uint16_t prev_frame_length_lines;
 static uint16_t snap_line_length_pck;
 static uint16_t snap_frame_length_lines;
-
-extern unsigned int board_hw_revision;
 
 static bool CSI_CONFIG;
 static struct imx072_ctrl_t *imx072_ctrl;
@@ -159,7 +156,7 @@ static int32_t imx072_i2c_read(unsigned short raddr,
 		return rc;
 	}
 	*rdata = (rlen == 2 ? buf[0] << 8 | buf[1] : buf[0]);
-	printk("imx072_i2c_read 0x%x val = 0x%x!\n", raddr, *rdata);
+	CDBG("imx072_i2c_read 0x%x val = 0x%x!\n", raddr, *rdata);
 	return rc;
 }
 
@@ -173,7 +170,7 @@ static int32_t imx072_i2c_write_w_sensor(unsigned short waddr,
 	buf[1] = (waddr & 0x00FF);
 	buf[2] = (wdata & 0xFF00) >> 8;
 	buf[3] = (wdata & 0x00FF);
-	printk("i2c_write_b addr = 0x%x, val = 0x%x\n", waddr, wdata);
+	CDBG("i2c_write_b addr = 0x%x, val = 0x%x\n", waddr, wdata);
 	rc = imx072_i2c_txdata(imx072_client->addr>>1, buf, 4);
 	if (rc < 0) {
 		pr_err("i2c_write_b failed, addr = 0x%x, val = 0x%x!\n",
@@ -191,7 +188,7 @@ static int32_t imx072_i2c_write_b_sensor(unsigned short waddr,
 	buf[0] = (waddr & 0xFF00) >> 8;
 	buf[1] = (waddr & 0x00FF);
 	buf[2] = bdata;
-	printk("i2c_write_b addr = 0x%x, val = 0x%x\n", waddr, bdata);
+	CDBG("i2c_write_b addr = 0x%x, val = 0x%x\n", waddr, bdata);
 	rc = imx072_i2c_txdata(imx072_client->addr>>1, buf, 3);
 	if (rc < 0)
 		pr_err("i2c_write_b failed, addr = 0x%x, val = 0x%x!\n",
@@ -419,7 +416,7 @@ static int32_t imx072_raw_snapshot_config(int mode)
 static int32_t imx072_mode_init(int mode, struct sensor_init_cfg init_info)
 {
 	int32_t rc = 0;
-	printk("%s: %d\n", __func__, __LINE__);
+	CDBG("%s: %d\n", __func__, __LINE__);
 	if (mode != imx072_ctrl->cam_mode) {
 		imx072_ctrl->prev_res = init_info.prev_res;
 		imx072_ctrl->pict_res = init_info.pict_res;
@@ -503,13 +500,13 @@ static int32_t imx072_move_focus(int direction,
 		dest_step_position = IMX072_TOTAL_STEPS_NEAR_TO_FAR;
 
 	if (dest_step_position == imx072_ctrl->curr_step_pos) {
-		printk("imx072 same position No-Move exit\n");
+		CDBG("imx072 same position No-Move exit\n");
 		return rc;
 	}
-	printk("%s Index = [%d]\n", __func__, dest_step_position);
+	CDBG("%s Index = [%d]\n", __func__, dest_step_position);
 
 	dest_lens_position = imx072_step_position_table[dest_step_position];
-	printk("%s lens_position value = %d\n", __func__, dest_lens_position);
+	CDBG("%s lens_position value = %d\n", __func__, dest_lens_position);
 	target_dist = step_direction * (dest_lens_position -
 		imx072_ctrl->curr_lens_pos);
 	if (step_direction < 0 && (target_dist >=
@@ -522,7 +519,7 @@ static int32_t imx072_move_focus(int direction,
 		imx072_sw_damping_time_wait = 20;
 	}
 
-	printk("%s: small_step:%d, wait_time:%d\n", __func__, small_step,
+	CDBG("%s: small_step:%d, wait_time:%d\n", __func__, small_step,
 		imx072_sw_damping_time_wait);
 	for (next_lens_position = imx072_ctrl->curr_lens_pos +
 		(step_direction * small_step);
@@ -532,9 +529,9 @@ static int32_t imx072_move_focus(int direction,
 
 		code_val_msb = ((next_lens_position & 0x03F0) >> 4);
 		code_val_lsb = ((next_lens_position & 0x000F) << 4);
-		printk("position value = %d\n", next_lens_position);
-		printk("movefocus vcm_msb = %d\n", code_val_msb);
-		printk("movefocus vcm_lsb = %d\n", code_val_lsb);
+		CDBG("position value = %d\n", next_lens_position);
+		CDBG("movefocus vcm_msb = %d\n", code_val_msb);
+		CDBG("movefocus vcm_lsb = %d\n", code_val_lsb);
 		rc = imx072_i2c_write_b_af(code_val_msb, code_val_lsb);
 		if (rc < 0) {
 			pr_err("imx072_move_focus failed writing i2c\n");
@@ -546,9 +543,9 @@ static int32_t imx072_move_focus(int direction,
 	if (imx072_ctrl->curr_lens_pos != dest_lens_position) {
 		code_val_msb = ((dest_lens_position & 0x03F0) >> 4);
 		code_val_lsb = ((dest_lens_position & 0x000F) << 4);
-		printk("position value = %d\n", dest_lens_position);
-		printk("movefocus vcm_msb = %d\n", code_val_msb);
-		printk("movefocus vcm_lsb = %d\n", code_val_lsb);
+		CDBG("position value = %d\n", dest_lens_position);
+		CDBG("movefocus vcm_msb = %d\n", code_val_msb);
+		CDBG("movefocus vcm_lsb = %d\n", code_val_lsb);
 		rc = imx072_i2c_write_b_af(code_val_msb, code_val_lsb);
 		if (rc < 0) {
 			pr_err("imx072_move_focus failed writing i2c\n");
@@ -592,7 +589,7 @@ static int32_t imx072_set_default_focus(void)
 	uint8_t code_val_msb, code_val_lsb;
 	int16_t dest_lens_position = 0;
 
-	printk("%s Index = [%d]\n", __func__, 0);
+	CDBG("%s Index = [%d]\n", __func__, 0);
 	if (imx072_ctrl->curr_step_pos != 0)
 		rc = imx072_move_focus(MOVE_FAR,
 		imx072_ctrl->curr_step_pos);
@@ -601,9 +598,9 @@ static int32_t imx072_set_default_focus(void)
 		code_val_msb = ((dest_lens_position & 0x03F0) >> 4);
 		code_val_lsb = ((dest_lens_position & 0x000F) << 4);
 
-		printk("position value = %d\n", dest_lens_position);
-		printk("movefocus vcm_msb = %d\n", code_val_msb);
-		printk("movefocus vcm_lsb = %d\n", code_val_lsb);
+		CDBG("position value = %d\n", dest_lens_position);
+		CDBG("movefocus vcm_msb = %d\n", code_val_msb);
+		CDBG("movefocus vcm_lsb = %d\n", code_val_lsb);
 		rc = imx072_i2c_write_b_af(code_val_msb, code_val_lsb);
 		if (rc < 0) {
 			pr_err("imx072_set_default_focus failed writing i2c\n");
@@ -626,7 +623,7 @@ static int32_t imx072_af_power_down(void)
 
 	if (imx072_ctrl->curr_lens_pos != 0) {
 		rc = imx072_set_default_focus();
-		printk("%s after imx072_set_default_focus\n", __func__);
+		CDBG("%s after imx072_set_default_focus\n", __func__);
 		msleep(40);
 		/*to avoid the sound during the power off.
 		brings the actuator to mechanical infinity gradually.*/
@@ -634,11 +631,11 @@ static int32_t imx072_af_power_down(void)
 			dest_lens_position = dest_lens_position -
 				(imx072_af_initial_code /
 					IMX072_TOTAL_STEPS_NEAR_TO_FAR);
-			printk("position value = %d\n", dest_lens_position);
+			CDBG("position value = %d\n", dest_lens_position);
 			rc = imx072_i2c_write_b_af(
 				((dest_lens_position & 0x03F0) >> 4),
 				((dest_lens_position & 0x000F) << 4));
-			printk("count = %d\n", i);
+			CDBG("count = %d\n", i);
 			msleep(20);
 			if (rc < 0) {
 				pr_err("imx072_set_default_focus failed writing i2c\n");
@@ -655,59 +652,10 @@ static int32_t imx072_af_power_down(void)
 static int32_t imx072_power_down(void)
 {
 	int32_t rc = 0;
-#if 1    
-	unsigned int mclk_cfg;
-	struct vreg *vreg_ldo6,*vreg_ldo15,*vreg_ldo17;
 
-	printk("[imx072] imx072_power_down\n");
-
-
-	if(board_hw_revision == 2)
-	{
-	  gpio_tlmm_config(GPIO_CFG(15, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_16MA), GPIO_CFG_DISABLE);
-	  
-	  mdelay(10);		 
-	  
-	  gpio_set_value_cansleep(85, 0);
-	  //gpio_set_value(96, 0); // 5M_CAM_STBY
-		 
-	  mdelay(5);	
-	  //gpio_set_value(123, 0); // CAM_A_EN 2.8
-	  vreg_ldo17 = vreg_get(NULL, "vcama");
-	  if (vreg_disable(vreg_ldo17)) {
-		 printk("[imx072]%s: reg_enable failed\n", __func__);
-	   }
-	
-	  mdelay(1);
-	  //gpio_set_value(124, 0); // CAM_IO_EN 1.8
-	  vreg_ldo15 = vreg_get(NULL, "vcamio");
-	  if (vreg_disable(vreg_ldo15)) {
-		 printk("[imx072]%s: reg_enable failed\n", __func__);
-	   }
-	
-	  mdelay(1);
-	  vreg_ldo6 = vreg_get(NULL, "vcamc");
-	  if (vreg_disable(vreg_ldo6)) {
-		 printk("[imx072]%s: reg_enable failed\n", __func__);		
-	   }
-
-	  mdelay(1);
-	  
-	  gpio_set_value(49, 0); // VCAM_AF_2V8
-	  mdelay(1);
-
-      gpio_set_value_cansleep(92, 0); //flash off
-      gpio_set_value_cansleep(84, 0);
-      mdelay(1);
-	  
-	}
-
-#endif
 	rc = imx072_af_power_down();
-
 	return rc;
 }
-
 
 static int imx072_probe_init_done(const struct msm_camera_sensor_info *data)
 {
@@ -716,127 +664,13 @@ static int imx072_probe_init_done(const struct msm_camera_sensor_info *data)
 	return 0;
 }
 
-static uint32_t camera_test_gpio_table[] = {
- GPIO_CFG(85, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
-};
-
-static void camera_test_gpio_config()
-{
- int pin, rc=0;
- int value=0;
- for (pin = 0; pin < ARRAY_SIZE(camera_test_gpio_table);
-  pin++) {
-  rc = gpio_tlmm_config(camera_test_gpio_table[pin],
-    GPIO_CFG_ENABLE);
-  if (rc < 0) {
-   printk("%s: gpio_tlmm_config(%#x)=%d\n",
-     __func__,
-     camera_test_gpio_table[pin],
-     rc);
-   goto config_fail;
-  }
- }
- gpio_set_value_cansleep(85, 1);
- value= gpio_get_value(85);
- printk("camera_test_gpio_config : value = %d",value);
- //mdelay(10);
- //gpio_set_value_cansleep(85, 0);
- //value= gpio_get_value(85);
- //printk(" camera_test_gpio_config : value = %d",value);
-  
-
-config_fail:
- if (rc < 0) {
-   pr_err("%s: camera_test_gpio_config : rc = %d",\
-     __func__, rc);
-   
- }
-} 
-
-
-
-static int imx072_probe_init_sensor(const struct msm_camera_sensor_info *data)
+static int imx072_probe_init_sensor(
+	const struct msm_camera_sensor_info *data)
 {
 	int32_t rc = 0;
 	uint16_t chipid = 0;
-	printk("[imx072] imx072_probe_init_sensor\n");
 
-#if 1
-
-	unsigned int mclk_cfg;
-	struct vreg *vreg_ldo6,*vreg_ldo15,*vreg_ldo17;
-
-
-	if(board_hw_revision == 2)
-	{
-
-	  gpio_set_value_cansleep(92, 0); //flash off
-	  gpio_set_value_cansleep(84, 0);
-	  mdelay(1);
-	
-	  printk("[imx072] vreg_ldo6\n");
-	  vreg_ldo6 = vreg_get(NULL, "vcamc");
-
-	  if(!vreg_ldo6) {
-		 printk("[imx072]%s: VREG L6 get failed\n", __func__);
-	   }
-	  if(vreg_set_level(vreg_ldo6, 1200)) {
-		 printk("[imx072]%s: vreg_set_level failed\n", __func__);	
-	   }	
-	  if(vreg_enable(vreg_ldo6)) {
-		printk("![imx072]%s: reg_enable failed\n", __func__);
-	   }
-	  mdelay(1);
-	  //gpio_set_value(124, 1); // CAM_IO_EN 1.8
-	  printk("[imx072] vreg_ldo15\n");
-	  vreg_ldo15 = vreg_get(NULL, "vcamio");
-	  if (!vreg_ldo15) {
-		 printk("[imx072]%s: VREG L15 get failed\n", __func__);
-	   }
-	  if (vreg_set_level(vreg_ldo15, 1800)) {
-		 printk("[imx072]%s: vreg_set_level failed\n", __func__);	
-	   }	
-	  if (vreg_enable(vreg_ldo15)) {
-		 printk("![imx072]%s: reg_enable failed\n", __func__);
-	   }
-	  mdelay(1);
-	  //gpio_set_value(123, 1); // CAM_A_EN 2.8
-	  printk("[imx072] vreg_ldo17\n");
-	  vreg_ldo17 = vreg_get(NULL, "vcama");
-	  if (!vreg_ldo17) {
-		 printk("[imx072]%s: VREG L17 get failed\n", __func__);
-	   }
-	  if (vreg_set_level(vreg_ldo17, 2800)) {
-		 printk("[imx072]%s: vreg_set_level failed\n", __func__);	
-	   }	
-	  if (vreg_enable(vreg_ldo17)) {
-		 printk("![imx072]%s: reg_enable failed\n", __func__);
-	   }
-
-	mdelay(10);
-	
-	camera_test_gpio_config();
-	mdelay(1);			
-	
-	gpio_tlmm_config(GPIO_CFG(15, 1, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_16MA), GPIO_CFG_ENABLE);
-	msm_camio_clk_rate_set(IMX072_MASTER_CLK_RATE);
-	mdelay(10); 		 
-	/* Enable MCLK */
-	mdelay(5);
-	
-	//gpio_set_value(79, 1); // CAM_AF_2V8
-	gpio_set_value(49, 1); // CAM_AF_2V8
-	mdelay(1);
-
-	}
-
-
-	
-
-#endif        
-   
-	printk("%s: %d\n", __func__, __LINE__);
-#if 0// kurtlee remove temp
+	CDBG("%s: %d\n", __func__, __LINE__);
 	rc = gpio_request(data->sensor_reset, "imx072");
 	CDBG(" imx072_probe_init_sensor\n");
 	if (!rc) {
@@ -847,9 +681,7 @@ static int imx072_probe_init_sensor(const struct msm_camera_sensor_info *data)
 		msleep(20);
 	} else
 		goto gpio_req_fail;
-#endif
 
-#if 0
 	CDBG(" imx072_probe_init_sensor is called\n");
 	rc = imx072_i2c_read(0x0, &chipid, 2);
 	CDBG("ID: %d\n", chipid);
@@ -859,7 +691,7 @@ static int imx072_probe_init_sensor(const struct msm_camera_sensor_info *data)
 		pr_err("imx072_probe_init_sensor chip id doesnot match\n");
 		goto init_probe_fail;
 	}
-#endif	
+
 	return rc;
 init_probe_fail:
 	pr_err(" imx072_probe_init_sensor fails\n");
@@ -877,12 +709,11 @@ gpio_req_fail:
 	return rc;
 }
 
-
 int imx072_sensor_open_init(const struct msm_camera_sensor_info *data)
 {
 	int32_t rc = 0;
 
-	printk("%s: %d\n", __func__, __LINE__);
+	CDBG("%s: %d\n", __func__, __LINE__);
 	imx072_ctrl = kzalloc(sizeof(struct imx072_ctrl_t), GFP_KERNEL);
 	if (!imx072_ctrl) {
 		pr_err("imx072_init failed!\n");
@@ -900,9 +731,9 @@ int imx072_sensor_open_init(const struct msm_camera_sensor_info *data)
 		pr_err("Calling imx072_sensor_open_init fail1\n");
 		return rc;
 	}
-	printk("%s: %d\n", __func__, __LINE__);
+	CDBG("%s: %d\n", __func__, __LINE__);
 	/* enable mclk first */
-	//msm_camio_clk_rate_set(IMX072_MASTER_CLK_RATE);
+	msm_camio_clk_rate_set(IMX072_MASTER_CLK_RATE);
 	rc = imx072_probe_init_sensor(data);
 	if (rc < 0)
 		goto init_fail;
@@ -938,7 +769,7 @@ static int imx072_i2c_probe(struct i2c_client *client,
 	const struct i2c_device_id *id)
 {
 	int rc = 0;
-	printk("imx072_probe called!\n");
+	CDBG("imx072_probe called!\n");
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		pr_err("i2c_check_functionality failed\n");
@@ -959,7 +790,7 @@ static int imx072_i2c_probe(struct i2c_client *client,
 
 	msleep(50);
 
-	printk("imx072_probe successed! rc = %d\n", rc);
+	CDBG("imx072_probe successed! rc = %d\n", rc);
 	return 0;
 
 probe_failure:
@@ -1000,7 +831,7 @@ int imx072_sensor_config(void __user *argp)
 		sizeof(struct sensor_cfg_data)))
 		return -EFAULT;
 	mutex_lock(&imx072_mut);
-	printk("imx072_sensor_config: cfgtype = %d\n",
+	CDBG("imx072_sensor_config: cfgtype = %d\n",
 		 cdata.cfgtype);
 	switch (cdata.cfgtype) {
 	case CFG_GET_PICT_FPS:
@@ -1144,43 +975,17 @@ static int imx072_sensor_probe(const struct msm_camera_sensor_info *info,
 		pr_err("I2C add driver failed");
 		goto probe_fail;
 	}
-	//msm_camio_clk_rate_set(IMX072_MASTER_CLK_RATE);
+	msm_camio_clk_rate_set(IMX072_MASTER_CLK_RATE);
 	rc = imx072_probe_init_sensor(info);
 	if (rc < 0)
 		goto probe_fail;
-
-	gpio_set_value_cansleep(85, 0);
-	   
-	mdelay(5);	  
-	if (vreg_disable(vreg_get(NULL, "vcama"))) {
-	   printk("[imx072]%s: reg_enable failed\n", __func__);
-	 }
-	
-	mdelay(1);
-	if (vreg_disable(vreg_get(NULL, "vcamio"))) {
-	   printk("[imx072]%s: reg_enable failed\n", __func__);
-	 }
-	
-	mdelay(1);
-	if (vreg_disable(vreg_get(NULL, "vcamc"))) {
-	   printk("[imx072]%s: reg_enable failed\n", __func__); 	  
-	 }
-	
-	mdelay(1);
-	
-	gpio_set_value(49, 0); // VCAM_AF_2V8
-	mdelay(1);
-
-	gpio_set_value_cansleep(92, 0); //flash off
-	gpio_set_value_cansleep(84, 0);
-	mdelay(1);
-
 	s->s_init = imx072_sensor_open_init;
 	s->s_release = imx072_sensor_release;
 	s->s_config  = imx072_sensor_config;
 	s->s_mount_angle = info->sensor_platform_info->mount_angle;
 
 	gpio_set_value_cansleep(info->sensor_reset, 0);
+	imx072_probe_init_done(info);
 	if (info->vcm_enable) {
 		rc = gpio_request(info->vcm_pwd, "imx072_af");
 		if (!rc) {
@@ -1195,7 +1000,6 @@ static int imx072_sensor_probe(const struct msm_camera_sensor_info *info,
 
 probe_fail:
 	pr_err("imx072_sensor_probe: SENSOR PROBE FAILS!\n");
-	imx072_probe_init_done(info);
 	return rc;
 }
 
@@ -1281,13 +1085,13 @@ static int imx072_af_linearity_test(void *data, u64 *val)
 	msleep(3000);
 	for (i = 0; i < imx072_linear_total_step; i++) {
 		imx072_move_focus(MOVE_NEAR, 1);
-		printk("moved to index =[%d]\n", i);
+		CDBG("moved to index =[%d]\n", i);
 		msleep(1000);
 	}
 
 	for (i = 0; i < imx072_linear_total_step; i++) {
 		imx072_move_focus(MOVE_FAR, 1);
-		printk("moved to index =[%d]\n", i);
+		CDBG("moved to index =[%d]\n", i);
 		msleep(1000);
 	}
 	return 0;

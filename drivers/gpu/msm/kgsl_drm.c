@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -295,9 +295,8 @@ kgsl_gem_alloc_memory(struct drm_gem_object *obj)
 		priv->memdesc.size = obj->size * priv->bufcount;
 
 	} else if (TYPE_IS_MEM(priv->type)) {
-		result = kgsl_sharedmem_page_alloc(&priv->memdesc,
-					priv->pagetable,
-					obj->size * priv->bufcount, 0);
+		priv->memdesc.hostptr =
+			vmalloc_user(obj->size * priv->bufcount);
 
 		if (priv->memdesc.hostptr == NULL) {
 			DRM_ERROR("Unable to allocate vmalloc memory\n");

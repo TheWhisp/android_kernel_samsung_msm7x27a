@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2007 Google, Inc.
- * Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -43,5 +43,38 @@
 
 #define APQ8064_QGIC_CPU_PHYS		0x02002000
 #define APQ8064_QGIC_CPU_SIZE		SZ_4K
+
+#define APQ8064_TLMM_PHYS		0x00800000
+#define APQ8064_TLMM_SIZE		SZ_16K
+
+#define APQ8064_ACC0_PHYS		0x02088000
+#define APQ8064_ACC0_SIZE		SZ_4K
+
+#define APQ8064_ACC1_PHYS		0x02098000
+#define APQ8064_ACC1_SIZE		SZ_4K
+
+#define APQ8064_ACC2_PHYS		0x020A8000
+#define APQ8064_ACC2_SIZE		SZ_4K
+
+#define APQ8064_ACC3_PHYS		0x020B8000
+#define APQ8064_ACC3_SIZE		SZ_4K
+
+#define APQ8064_APCS_GCC_PHYS		0x02011000
+#define APQ8064_APCS_GCC_SIZE		SZ_4K
+
+#define APQ8064_CLK_CTL_PHYS		0x00900000
+#define APQ8064_CLK_CTL_SIZE		SZ_16K
+
+#define APQ8064_MMSS_CLK_CTL_PHYS	0x04000000
+#define APQ8064_MMSS_CLK_CTL_SIZE	SZ_4K
+
+#define APQ8064_LPASS_CLK_CTL_PHYS	0x28000000
+#define APQ8064_LPASS_CLK_CTL_SIZE	SZ_4K
+
+#define APQ8064_HFPLL_PHYS		0x00903000
+#define APQ8064_HFPLL_SIZE		SZ_4K
+
+#define APQ8064_IMEM_PHYS		0x2A03F000
+#define APQ8064_IMEM_SIZE		SZ_4K
 
 #endif

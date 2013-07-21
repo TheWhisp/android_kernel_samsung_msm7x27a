@@ -50,8 +50,6 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/timer.h>
 
-#include "../drivers/misc/sec_debug.h"
-
 u64 jiffies_64 __cacheline_aligned_in_smp = INITIAL_JIFFIES;
 
 EXPORT_SYMBOL(jiffies_64);
@@ -406,6 +404,11 @@ static void timer_stats_account_timer(struct timer_list *timer) {}
 
 static struct debug_obj_descr timer_debug_descr;
 
+static void *timer_debug_hint(void *addr)
+{
+	return ((struct timer_list *) addr)->function;
+}
+
 /*
  * fixup_init is called when:
  * - an active object is initialized
@@ -477,40 +480,12 @@ static int timer_fixup_free(void *addr, enum debug_obj_state state)
 	}
 }
 
-/*
- * fixup_assert_init is called when:
- * - an untracked/uninit-ed object is found
- */
-static int timer_fixup_assert_init(void *addr, enum debug_obj_state state)
-{
-	struct timer_list *timer = addr;
-
-	switch (state) {
-	case ODEBUG_STATE_NOTAVAILABLE:
-		if (timer->entry.prev == TIMER_ENTRY_STATIC) {
-			/*
-			 * This is not really a fixup. The timer was
-			 * statically initialized. We just make sure that it
-			 * is tracked in the object tracker.
-			 */
-			debug_object_init(timer, &timer_debug_descr);
-			return 0;
-		} else {
-			WARN_ON(1);
-			init_timer(timer);
-			return 1;
-		}
-	default:
-		return 0;
-	}
-}
-
 static struct debug_obj_descr timer_debug_descr = {
-	.name			= "timer_list",
-	.fixup_init		= timer_fixup_init,
-	.fixup_activate		= timer_fixup_activate,
-	.fixup_free		= timer_fixup_free,
-	.fixup_assert_init	= timer_fixup_assert_init,
+	.name		= "timer_list",
+	.debug_hint	= timer_debug_hint,
+	.fixup_init	= timer_fixup_init,
+	.fixup_activate	= timer_fixup_activate,
+	.fixup_free	= timer_fixup_free,
 };
 
 static inline void debug_timer_init(struct timer_list *timer)
@@ -531,11 +506,6 @@ static inline void debug_timer_deactivate(struct timer_list *timer)
 static inline void debug_timer_free(struct timer_list *timer)
 {
 	debug_object_free(timer, &timer_debug_descr);
-}
-
-static inline void debug_timer_assert_init(struct timer_list *timer)
-{
-	debug_object_assert_init(timer, &timer_debug_descr);
 }
 
 static void __init_timer(struct timer_list *timer,
@@ -561,7 +531,6 @@ EXPORT_SYMBOL_GPL(destroy_timer_on_stack);
 static inline void debug_timer_init(struct timer_list *timer) { }
 static inline void debug_timer_activate(struct timer_list *timer) { }
 static inline void debug_timer_deactivate(struct timer_list *timer) { }
-static inline void debug_timer_assert_init(struct timer_list *timer) { }
 #endif
 
 static inline void debug_init(struct timer_list *timer)
@@ -581,11 +550,6 @@ static inline void debug_deactivate(struct timer_list *timer)
 {
 	debug_timer_deactivate(timer);
 	trace_timer_cancel(timer);
-}
-
-static inline void debug_assert_init(struct timer_list *timer)
-{
-	debug_timer_assert_init(timer);
 }
 
 static void __init_timer(struct timer_list *timer,
@@ -785,16 +749,15 @@ unsigned long apply_slack(struct timer_list *timer, unsigned long expires)
 	unsigned long expires_limit, mask;
 	int bit;
 
-	expires_limit = expires;
-
 	if (timer->slack >= 0) {
 		expires_limit = expires + timer->slack;
 	} else {
-		unsigned long now = jiffies;
+		long delta = expires - jiffies;
 
-		/* No slack, if already expired else auto slack 0.4% */
-		if (time_after(expires, now))
-			expires_limit = expires + (expires - now)/256;
+		if (delta < 256)
+			return expires;
+
+		expires_limit = expires + delta / 256;
 	}
 	mask = expires ^ expires_limit;
 	if (mask == 0)
@@ -831,6 +794,8 @@ unsigned long apply_slack(struct timer_list *timer, unsigned long expires)
  */
 int mod_timer(struct timer_list *timer, unsigned long expires)
 {
+	expires = apply_slack(timer, expires);
+
 	/*
 	 * This is a common optimization triggered by the
 	 * networking code - if the timer is re-modified
@@ -838,8 +803,6 @@ int mod_timer(struct timer_list *timer, unsigned long expires)
 	 */
 	if (timer_pending(timer) && timer->expires == expires)
 		return 1;
-
-	expires = apply_slack(timer, expires);
 
 	return __mod_timer(timer, expires, false, TIMER_NOT_PINNED);
 }
@@ -939,8 +902,6 @@ int del_timer(struct timer_list *timer)
 	unsigned long flags;
 	int ret = 0;
 
-	debug_assert_init(timer);
-
 	timer_stats_timer_clear_start_info(timer);
 	if (timer_pending(timer)) {
 		base = lock_timer_base(timer, &flags);
@@ -970,8 +931,6 @@ int try_to_del_timer_sync(struct timer_list *timer)
 	struct tvec_base *base;
 	unsigned long flags;
 	int ret = -1;
-
-	debug_assert_init(timer);
 
 	base = lock_timer_base(timer, &flags);
 
@@ -1010,6 +969,25 @@ EXPORT_SYMBOL(try_to_del_timer_sync);
  * add_timer_on(). Upon exit the timer is not queued and the handler is
  * not running on any CPU.
  *
+ * Note: You must not hold locks that are held in interrupt context
+ *   while calling this function. Even if the lock has nothing to do
+ *   with the timer in question.  Here's why:
+ *
+ *    CPU0                             CPU1
+ *    ----                             ----
+ *                                   <SOFTIRQ>
+ *                                   call_timer_fn();
+ *                                     base->running_timer = mytimer;
+ *  spin_lock_irq(somelock);
+ *                                     <IRQ>
+ *                                        spin_lock(somelock);
+ *  del_timer_sync(mytimer);
+ *   while (base->running_timer == mytimer);
+ *
+ * Now del_timer_sync() will never return and never release somelock.
+ * The interrupt on the other CPU is waiting to grab somelock but
+ * it has interrupted the softirq that CPU0 is waiting to finish.
+ *
  * The function returns whether it has deactivated a pending timer or not.
  */
 int del_timer_sync(struct timer_list *timer)
@@ -1017,6 +995,10 @@ int del_timer_sync(struct timer_list *timer)
 #ifdef CONFIG_LOCKDEP
 	unsigned long flags;
 
+	/*
+	 * If lockdep gives a backtrace here, please reference
+	 * the synchronization rules above.
+	 */
 	local_irq_save(flags);
 	lock_map_acquire(&timer->lockdep_map);
 	lock_map_release(&timer->lockdep_map);
@@ -1081,9 +1063,6 @@ static void call_timer_fn(struct timer_list *timer, void (*fn)(unsigned long),
 
 	trace_timer_expire_entry(timer);
 	fn(data);
-#ifdef CONFIG_SEC_DEBUG_SCHED_LOG
-	sec_debug_timer_log(3333, (int)irqs_disabled(), (void *)fn);
-#endif /* CONFIG_SEC_DEBUG_SCHED_LOG */
 	trace_timer_expire_exit(timer);
 
 	lock_map_release(&lockdep_map);
@@ -1342,19 +1321,6 @@ void run_local_timers(void)
 {
 	hrtimer_run_queues();
 	raise_softirq(TIMER_SOFTIRQ);
-}
-
-/*
- * The 64-bit jiffies value is not atomic - you MUST NOT read it
- * without sampling the sequence number in xtime_lock.
- * jiffies is defined in the linker script...
- */
-
-void do_timer(unsigned long ticks)
-{
-	jiffies_64 += ticks;
-	update_wall_time();
-	calc_global_load(ticks);
 }
 
 #ifdef __ARCH_WANT_SYS_ALARM
@@ -1809,7 +1775,7 @@ static int __sched do_usleep_range(unsigned long min, unsigned long max)
 	unsigned long delta;
 
 	kmin = ktime_set(0, min * NSEC_PER_USEC);
-	delta = max - min;
+	delta = (max - min) * NSEC_PER_USEC;
 	return schedule_hrtimeout_range(&kmin, delta, HRTIMER_MODE_REL);
 }
 

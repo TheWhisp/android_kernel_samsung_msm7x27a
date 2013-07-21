@@ -61,9 +61,6 @@ int dquot_claim_space_nodirty(struct inode *inode, qsize_t number);
 void dquot_free_inode(const struct inode *inode);
 
 int dquot_disable(struct super_block *sb, int type, unsigned int flags);
-
-void vfs_dq_drop(struct inode *inode);
-
 /* Suspend quotas on remount RO */
 static inline int dquot_suspend(struct super_block *sb, int type)
 {
@@ -256,10 +253,6 @@ static inline int dquot_resume(struct super_block *sb, int type)
 	return 0;
 }
 
-static inline void vfs_dq_drop(struct inode *inode)
-{
-}
-
 #define dquot_file_open		generic_file_open
 
 #endif /* CONFIG_QUOTA */
@@ -284,7 +277,7 @@ static inline int dquot_alloc_space(struct inode *inode, qsize_t nr)
 		/*
 		 * Mark inode fully dirty. Since we are allocating blocks, inode
 		 * would become fully dirty soon anyway and it reportedly
-		 * reduces inode_lock contention.
+		 * reduces lock contention.
 		 */
 		mark_inode_dirty(inode);
 	}

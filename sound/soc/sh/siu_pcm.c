@@ -1,7 +1,6 @@
 /*
  * siu_pcm.c - ALSA driver for Renesas SH7343, SH7722 SIU peripheral.
  *
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
  * Copyright (C) 2009-2010 Guennadi Liakhovetski <g.liakhovetski@gmx.de>
  * Copyright (C) 2006 Carlos Munoz <carlos@kenati.com>
  *

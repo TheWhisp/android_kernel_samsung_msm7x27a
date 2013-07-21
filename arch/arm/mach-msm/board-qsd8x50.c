@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -20,7 +20,6 @@
 #include <linux/i2c.h>
 #include <linux/spi/spi.h>
 #include <linux/delay.h>
-#include <linux/mfd/tps65023.h>
 #include <linux/bma150.h>
 #include <linux/power_supply.h>
 #include <linux/clk.h>
@@ -54,7 +53,9 @@
 #include "devices.h"
 #include "timer.h"
 #include "msm-keypad-devices.h"
+#include "acpuclock.h"
 #include "pm.h"
+#include "pm-boot.h"
 #include "proc_comm.h"
 #ifdef CONFIG_USB_ANDROID
 #include <linux/usb/android_composite.h>
@@ -795,6 +796,7 @@ static struct mddi_platform_data mddi_pdata = {
 
 static struct msm_panel_common_pdata mdp_pdata = {
 	.gpio = 98,
+	.mdp_rev = MDP_REV_31,
 };
 
 static void __init msm_fb_add_devices(void)
@@ -1204,48 +1206,12 @@ static const struct msm_gpio tsif_gpios[] = {
 static struct msm_tsif_platform_data tsif_platform_data = {
 	.num_gpios = ARRAY_SIZE(tsif_gpios),
 	.gpios = tsif_gpios,
-	.tsif_clk = "tsif_clk",
-	.tsif_ref_clk = "tsif_ref_clk",
+	.tsif_clk = "core_clk",
+	.tsif_ref_clk = "ref_clk",
 };
 
 #endif /* defined(CONFIG_TSIF) || defined(CONFIG_TSIF_MODULE) */
 /* TSIF end   */
-
-#ifdef CONFIG_QSD_SVS
-#define TPS65023_MAX_DCDC1	1600
-#else
-#define TPS65023_MAX_DCDC1	CONFIG_QSD_PMIC_DEFAULT_DCDC1
-#endif
-
-static int qsd8x50_tps65023_set_dcdc1(int mVolts)
-{
-	int rc = 0;
-#ifdef CONFIG_QSD_SVS
-	rc = tps65023_set_dcdc1_level(mVolts);
-	/* By default the TPS65023 will be initialized to 1.225V.
-	 * So we can safely switch to any frequency within this
-	 * voltage even if the device is not probed/ready.
-	 */
-	if (rc == -ENODEV && mVolts <= CONFIG_QSD_PMIC_DEFAULT_DCDC1)
-		rc = 0;
-#else
-	/* Disallow frequencies not supported in the default PMIC
-	 * output voltage.
-	 */
-	if (mVolts > CONFIG_QSD_PMIC_DEFAULT_DCDC1)
-		rc = -EFAULT;
-#endif
-	return rc;
-}
-
-static struct msm_acpu_clock_platform_data qsd8x50_clock_data = {
-	.acpu_switch_time_us = 20,
-	.max_speed_delta_khz = 256000,
-	.vdd_switch_time_us = 62,
-	.max_vdd = TPS65023_MAX_DCDC1,
-	.acpu_set_vdd = qsd8x50_tps65023_set_dcdc1,
-};
-
 
 static void touchpad_gpio_release(void)
 {
@@ -1801,7 +1767,6 @@ static struct msm_otg_platform_data msm_otg_pdata = {
 	.phy_can_powercollapse	 = 1,
 	.ldo_init		 = msm_hsusb_ldo_init,
 	.ldo_enable		 = msm_hsusb_ldo_enable,
-	.pclk_src_name           = "ebi1_usb_clk",
 };
 
 static struct msm_hsusb_gadget_platform_data msm_gadget_pdata;
@@ -2187,9 +2152,6 @@ static struct mmc_platform_data qsd8x50_sdc1_data = {
 	.translate_vdd	= msm_sdcc_setup_power,
 	.mmc_bus_width  = MMC_CAP_4_BIT_DATA,
 	.wpswitch	= msm_sdcc_get_wpswitch,
-#ifdef CONFIG_MMC_MSM_SDC1_DUMMY52_REQUIRED
-	.dummy52_required = 1,
-#endif
 	.msmsdcc_fmin	= 144000,
 	.msmsdcc_fmid	= 25000000,
 	.msmsdcc_fmax	= 49152000,
@@ -2203,9 +2165,6 @@ static struct mmc_platform_data qsd8x50_sdc2_data = {
 	.translate_vdd  = msm_sdcc_setup_power,
 	.mmc_bus_width  = MMC_CAP_4_BIT_DATA,
 	.wpswitch	= msm_sdcc_get_wpswitch,
-#ifdef CONFIG_MMC_MSM_SDC2_DUMMY52_REQUIRED
-	.dummy52_required = 1,
-#endif
 	.msmsdcc_fmin	= 144000,
 	.msmsdcc_fmid	= 25000000,
 	.msmsdcc_fmax	= 49152000,
@@ -2222,9 +2181,6 @@ static struct mmc_platform_data qsd8x50_sdc3_data = {
 #else
 	.mmc_bus_width  = MMC_CAP_4_BIT_DATA,
 #endif
-#ifdef CONFIG_MMC_MSM_SDC3_DUMMY52_REQUIRED
-	.dummy52_required = 1,
-#endif
 	.msmsdcc_fmin	= 144000,
 	.msmsdcc_fmid	= 25000000,
 	.msmsdcc_fmax	= 49152000,
@@ -2238,9 +2194,6 @@ static struct mmc_platform_data qsd8x50_sdc4_data = {
 	.translate_vdd  = msm_sdcc_setup_power,
 	.mmc_bus_width  = MMC_CAP_4_BIT_DATA,
 	.wpswitch	= msm_sdcc_get_wpswitch,
-#ifdef CONFIG_MMC_MSM_SDC4_DUMMY52_REQUIRED
-	.dummy52_required = 1,
-#endif
 	.msmsdcc_fmin	= 144000,
 	.msmsdcc_fmid	= 25000000,
 	.msmsdcc_fmax	= 49152000,
@@ -2341,6 +2294,11 @@ static struct msm_pm_platform_data msm_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 		.latency = 2,
 		.residency = 0,
 	},
+};
+
+static struct msm_pm_boot_platform_data msm_pm_boot_pdata __initdata = {
+	.mode = MSM_PM_BOOT_CONFIG_RESET_VECTOR_VIRT,
+	.v_addr = (unsigned int *)PAGE_OFFSET,
 };
 
 static void
@@ -2448,12 +2406,9 @@ early_param("audio_size", audio_size_setup);
 
 static void __init qsd8x50_init(void)
 {
-	if (socinfo_init() < 0)
-		printk(KERN_ERR "%s: socinfo_init() failed!\n",
-		       __func__);
-	msm_clock_init(msm_clocks_8x50, msm_num_clocks_8x50);
+	msm_clock_init(&qds8x50_clock_init_data);
 	qsd8x50_cfg_smc91x();
-	msm_acpu_clock_init(&qsd8x50_clock_data);
+	acpuclk_init(&acpuclk_8x50_soc_data);
 
 	msm_hsusb_pdata.swfi_latency =
 		msm_pm_data
@@ -2486,6 +2441,7 @@ static void __init qsd8x50_init(void)
 	spi_register_board_info(msm_spi_board_info,
 				ARRAY_SIZE(msm_spi_board_info));
 	msm_pm_set_platform_data(msm_pm_data, ARRAY_SIZE(msm_pm_data));
+	BUG_ON(msm_pm_boot_init(&msm_pm_boot_pdata));
 
 #ifdef CONFIG_SURF_FFA_GPIO_KEYPAD
 	if (machine_is_qsd8x50_ffa())
@@ -2562,10 +2518,13 @@ static void __init qsd8x50_map_io(void)
 	msm_shared_ram_phys = MSM_SHARED_RAM_PHYS;
 	msm_map_qsd8x50_io();
 	qsd8x50_allocate_memory_regions();
+	if (socinfo_init() < 0)
+		printk(KERN_ERR "%s: socinfo_init() failed!\n",
+		       __func__);
 }
 
 MACHINE_START(QSD8X50_SURF, "QCT QSD8X50 SURF")
-	.boot_params = PHYS_OFFSET + 0x100,
+	.boot_params = PLAT_PHYS_OFFSET + 0x100,
 	.map_io = qsd8x50_map_io,
 	.init_irq = qsd8x50_init_irq,
 	.init_machine = qsd8x50_init,
@@ -2573,7 +2532,7 @@ MACHINE_START(QSD8X50_SURF, "QCT QSD8X50 SURF")
 MACHINE_END
 
 MACHINE_START(QSD8X50_FFA, "QCT QSD8X50 FFA")
-	.boot_params = PHYS_OFFSET + 0x100,
+	.boot_params = PLAT_PHYS_OFFSET + 0x100,
 	.map_io = qsd8x50_map_io,
 	.init_irq = qsd8x50_init_irq,
 	.init_machine = qsd8x50_init,

@@ -54,9 +54,15 @@ loop1:
 	and	r1, r1, #7			@ mask of the bits for current cache only
 	cmp	r1, #2				@ see what cache we have at this level
 	blt	skip				@ skip if no cache, or just i-cache
+#ifdef CONFIG_PREEMPT
+	save_and_disable_irqs_notrace r9	@ make cssr&csidr read atomic
+#endif
 	mcr	p15, 2, r10, c0, c0, 0		@ select current cache level in cssr
 	isb					@ isb to sych the new cssr&csidr
 	mrc	p15, 1, r1, c0, c0, 0		@ read the new csidr
+#ifdef CONFIG_PREEMPT
+	restore_irqs_notrace r9
+#endif
 	and	r2, r1, #7			@ extract the length of the cache lines
 	add	r2, r2, #4			@ add 4 (line length offset)
 	ldr	r4, =0x3ff
@@ -96,7 +102,7 @@ ENDPROC(v7_flush_dcache_all)
  *	Flush the entire cache system.
  *  The data cache flush is now achieved using atomic clean / invalidates
  *  working outwards from L1 cache. This is done using Set/Way based cache
- *  maintainance instructions.
+ *  maintenance instructions.
  *  The instruction cache can still be invalidated back to the point of
  *  unification in a single instruction.
  *
@@ -174,6 +180,10 @@ ENTRY(v7_coherent_user_range)
 	dcache_line_size r2, r3
 	sub	r3, r2, #1
 	bic	r12, r0, r3
+#ifdef CONFIG_ARM_ERRATA_764369
+	ALT_SMP(W(dsb))
+	ALT_UP(W(nop))
+#endif
 1:
  USER(	mcr	p15, 0, r12, c7, c11, 1	)	@ clean D line to the point of unification
 	add	r12, r12, r2
@@ -221,6 +231,12 @@ ENDPROC(v7_coherent_user_range)
 ENTRY(v7_flush_kern_dcache_area)
 	dcache_line_size r2, r3
 	add	r1, r0, r1
+	sub	r3, r2, #1
+	bic	r0, r0, r3
+#ifdef CONFIG_ARM_ERRATA_764369
+	ALT_SMP(W(dsb))
+	ALT_UP(W(nop))
+#endif
 1:
 	mcr	p15, 0, r0, c7, c14, 1		@ clean & invalidate D line / unified line
 	add	r0, r0, r2
@@ -245,6 +261,10 @@ ENTRY(v7_dma_inv_range)
 	sub	r3, r2, #1
 	tst	r0, r3
 	bic	r0, r0, r3
+#ifdef CONFIG_ARM_ERRATA_764369
+	ALT_SMP(W(dsb))
+	ALT_UP(W(nop))
+#endif
 	mcrne	p15, 0, r0, c7, c14, 1		@ clean & invalidate D / U line
 
 	tst	r1, r3
@@ -268,6 +288,10 @@ ENTRY(v7_dma_clean_range)
 	dcache_line_size r2, r3
 	sub	r3, r2, #1
 	bic	r0, r0, r3
+#ifdef CONFIG_ARM_ERRATA_764369
+	ALT_SMP(W(dsb))
+	ALT_UP(W(nop))
+#endif
 1:
 	mcr	p15, 0, r0, c7, c10, 1		@ clean D / U line
 	add	r0, r0, r2
@@ -286,6 +310,10 @@ ENTRY(v7_dma_flush_range)
 	dcache_line_size r2, r3
 	sub	r3, r2, #1
 	bic	r0, r0, r3
+#ifdef CONFIG_ARM_ERRATA_764369
+	ALT_SMP(W(dsb))
+	ALT_UP(W(nop))
+#endif
 1:
 	mcr	p15, 0, r0, c7, c14, 1		@ clean & invalidate D / U line
 	add	r0, r0, r2

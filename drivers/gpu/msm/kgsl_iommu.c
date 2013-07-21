@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -34,8 +34,8 @@ struct kgsl_iommu {
 static int kgsl_iommu_pt_equal(struct kgsl_pagetable *pt,
 					unsigned int pt_base)
 {
-	struct iommu_domain *domain = pt ? pt->priv : NULL;
-	return domain && pt_base && ((unsigned int)domain == pt_base);
+	struct iommu_domain *domain = pt->priv;
+	return pt && pt_base && ((unsigned int)domain == pt_base);
 }
 
 static void kgsl_iommu_destroy_pagetable(void *mmu_specific_pt)
@@ -144,7 +144,8 @@ static int kgsl_get_iommu_ctxt(struct kgsl_iommu *iommu,
 }
 
 static void kgsl_iommu_setstate(struct kgsl_device *device,
-				struct kgsl_pagetable *pagetable)
+				struct kgsl_pagetable *pagetable,
+				unsigned int context_id)
 {
 	struct kgsl_mmu *mmu = &device->mmu;
 
@@ -153,7 +154,7 @@ static void kgsl_iommu_setstate(struct kgsl_device *device,
 		 *  specified page table
 		 */
 		if (mmu->hwpagetable != pagetable) {
-			kgsl_idle(device, KGSL_TIMEOUT_DEFAULT);
+			kgsl_idle(device);
 			kgsl_detach_pagetable_iommu_domain(mmu);
 			mmu->hwpagetable = pagetable;
 			if (mmu->hwpagetable)
@@ -307,10 +308,10 @@ kgsl_iommu_get_current_ptbase(struct kgsl_device *device)
 {
 	/* Current base is always the hwpagetables domain as we
 	 * do not use per process pagetables right not for iommu.
-	 * This will change when we switch to per process pagetables.
-	 */
+	 * This will change when we switch to per process pagetables.*/
 	return (unsigned int)device->mmu.hwpagetable->priv;
 }
+
 
 struct kgsl_mmu_ops iommu_ops = {
 	.mmu_init = kgsl_iommu_init,

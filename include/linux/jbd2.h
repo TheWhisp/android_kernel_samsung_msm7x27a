@@ -432,12 +432,34 @@ struct jbd2_journal_handle
 	int			h_err;
 
 	/* Flags [no locking] */
-	unsigned int	h_sync:		1;	/* sync-on-close */
-	unsigned int	h_jdata:	1;	/* force data journaling */
-	unsigned int	h_aborted:	1;	/* fatal error on handle */
+	unsigned int	h_sync:1;	/* sync-on-close */
+	unsigned int	h_jdata:1;	/* force data journaling */
+	unsigned int	h_aborted:1;	/* fatal error on handle */
+	unsigned int	h_cowing:1;	/* COWing block to snapshot */
+
+	/* Number of buffers requested by user:
+	 * (before adding the COW credits factor) */
+	unsigned int	h_base_credits:14;
+
+	/* Number of buffers the user is allowed to dirty:
+	 * (counts only buffers dirtied when !h_cowing) */
+	unsigned int	h_user_credits:14;
+
 
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
 	struct lockdep_map	h_lockdep_map;
+#endif
+
+#ifdef CONFIG_JBD2_DEBUG
+	/* COW debugging counters: */
+	unsigned int h_cow_moved; /* blocks moved to snapshot */
+	unsigned int h_cow_copied; /* blocks copied to snapshot */
+	unsigned int h_cow_ok_jh; /* blocks already COWed during current
+				     transaction */
+	unsigned int h_cow_ok_bitmap; /* blocks not set in COW bitmap */
+	unsigned int h_cow_ok_mapped;/* blocks already mapped in snapshot */
+	unsigned int h_cow_bitmaps; /* COW bitmaps created */
+	unsigned int h_cow_excluded; /* blocks set in exclude bitmap */
 #endif
 };
 
@@ -1002,7 +1024,6 @@ struct journal_s
 
 /* Filing buffers */
 extern void jbd2_journal_unfile_buffer(journal_t *, struct journal_head *);
-extern void __jbd2_journal_unfile_buffer(struct journal_head *);
 extern void __jbd2_journal_refile_buffer(struct journal_head *);
 extern void jbd2_journal_refile_buffer(journal_t *, struct journal_head *);
 extern void __jbd2_journal_file_buffer(struct journal_head *, transaction_t *, int);
@@ -1143,7 +1164,6 @@ extern void	   jbd2_journal_release_jbd_inode(journal_t *journal, struct jbd2_in
  */
 struct journal_head *jbd2_journal_add_journal_head(struct buffer_head *bh);
 struct journal_head *jbd2_journal_grab_journal_head(struct buffer_head *bh);
-void jbd2_journal_remove_journal_head(struct buffer_head *bh);
 void jbd2_journal_put_journal_head(struct journal_head *jh);
 
 /*

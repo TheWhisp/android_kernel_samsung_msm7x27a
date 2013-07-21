@@ -134,8 +134,10 @@ static struct module *new_module(char *modname)
 	/* strip trailing .o */
 	s = strrchr(p, '.');
 	if (s != NULL)
-		if (strcmp(s, ".o") == 0)
+		if (strcmp(s, ".o") == 0) {
 			*s = '\0';
+			mod->is_dot_o = 1;
+		}
 
 	/* add to list */
 	mod->name = p;
@@ -254,6 +256,28 @@ static enum export export_no(const char *s)
 			return export_list[i].export;
 	}
 	return export_unknown;
+}
+
+static const char *sec_name(struct elf_info *elf, int secindex);
+
+#define strstarts(str, prefix) (strncmp(str, prefix, strlen(prefix)) == 0)
+
+static enum export export_from_secname(struct elf_info *elf, unsigned int sec)
+{
+	const char *secname = sec_name(elf, sec);
+
+	if (strstarts(secname, "___ksymtab+"))
+		return export_plain;
+	else if (strstarts(secname, "___ksymtab_unused+"))
+		return export_unused;
+	else if (strstarts(secname, "___ksymtab_gpl+"))
+		return export_gpl;
+	else if (strstarts(secname, "___ksymtab_unused_gpl+"))
+		return export_unused_gpl;
+	else if (strstarts(secname, "___ksymtab_gpl_future+"))
+		return export_gpl_future;
+	else
+		return export_unknown;
 }
 
 static enum export export_from_sec(struct elf_info *elf, unsigned int sec)
@@ -422,11 +446,10 @@ static int parse_elf(struct elf_info *info, const char *filename)
 		return 0;
 	}
 
-	if (hdr->e_shnum == 0) {
+	if (hdr->e_shnum == SHN_UNDEF) {
 		/*
 		 * There are more than 64k sections,
 		 * read count from .sh_size.
-		 * note: it doesn't need shndx2secindex()
 		 */
 		info->num_sections = TO_NATIVE(sechdrs[0].sh_size);
 	}
@@ -434,8 +457,7 @@ static int parse_elf(struct elf_info *info, const char *filename)
 		info->num_sections = hdr->e_shnum;
 	}
 	if (hdr->e_shstrndx == SHN_XINDEX) {
-		info->secindex_strings =
-		    shndx2secindex(TO_NATIVE(sechdrs[0].sh_link));
+		info->secindex_strings = TO_NATIVE(sechdrs[0].sh_link);
 	}
 	else {
 		info->secindex_strings = hdr->e_shstrndx;
@@ -491,7 +513,7 @@ static int parse_elf(struct elf_info *info, const char *filename)
 			    sechdrs[i].sh_offset;
 			info->symtab_stop  = (void *)hdr +
 			    sechdrs[i].sh_offset + sechdrs[i].sh_size;
-			sh_link_idx = shndx2secindex(sechdrs[i].sh_link);
+			sh_link_idx = sechdrs[i].sh_link;
 			info->strtab       = (void *)hdr +
 			    sechdrs[sh_link_idx].sh_offset;
 		}
@@ -518,11 +540,9 @@ static int parse_elf(struct elf_info *info, const char *filename)
 
 	if (symtab_shndx_idx != ~0U) {
 		Elf32_Word *p;
-		if (symtab_idx !=
-		    shndx2secindex(sechdrs[symtab_shndx_idx].sh_link))
+		if (symtab_idx != sechdrs[symtab_shndx_idx].sh_link)
 			fatal("%s: SYMTAB_SHNDX has bad sh_link: %u!=%u\n",
-			      filename,
-			      shndx2secindex(sechdrs[symtab_shndx_idx].sh_link),
+			      filename, sechdrs[symtab_shndx_idx].sh_link,
 			      symtab_idx);
 		/* Fix endianness */
 		for (p = info->symtab_shndx_start; p < info->symtab_shndx_stop;
@@ -569,7 +589,13 @@ static void handle_modversions(struct module *mod, struct elf_info *info,
 			       Elf_Sym *sym, const char *symname)
 {
 	unsigned int crc;
-	enum export export = export_from_sec(info, get_secindex(info, sym));
+	enum export export;
+
+	if ((!is_vmlinux(mod->name) || mod->is_dot_o) &&
+	    strncmp(symname, "__ksymtab", 9) == 0)
+		export = export_from_secname(info, get_secindex(info, sym));
+	else
+		export = export_from_sec(info, get_secindex(info, sym));
 
 	switch (sym->st_shndx) {
 	case SHN_COMMON:
@@ -828,7 +854,7 @@ static void check_section(const char *modname, struct elf_info *elf,
 
 #define ALL_INIT_DATA_SECTIONS \
 	".init.setup$", ".init.rodata$", \
-	".devinit.rodata$", ".cpuinit.rodata$", ".meminit.rodata$" \
+	".devinit.rodata$", ".cpuinit.rodata$", ".meminit.rodata$", \
 	".init.data$", ".devinit.data$", ".cpuinit.data$", ".meminit.data$"
 #define ALL_EXIT_DATA_SECTIONS \
 	".exit.data$", ".devexit.data$", ".cpuexit.data$", ".memexit.data$"
@@ -1250,6 +1276,19 @@ static int is_function(Elf_Sym *sym)
 		return -1;
 }
 
+static void print_section_list(const char * const list[20])
+{
+	const char *const *s = list;
+
+	while (*s) {
+		fprintf(stderr, "%s", *s);
+		s++;
+		if (*s)
+			fprintf(stderr, ", ");
+	}
+	fprintf(stderr, "\n");
+}
+
 /*
  * Print a warning about a section mismatch.
  * Try to find symbols near it so user can find it.
@@ -1306,7 +1345,6 @@ static void report_sec_mismatch(const char *modname,
 		break;
 	case DATA_TO_ANY_INIT: {
 		prl_to = sec2annotation(tosec);
-		const char *const *s = mismatch->symbol_white_list;
 		fprintf(stderr,
 		"The variable %s references\n"
 		"the %s %s%s%s\n"
@@ -1314,9 +1352,7 @@ static void report_sec_mismatch(const char *modname,
 		"variable with __init* or __refdata (see linux/init.h) "
 		"or name the variable:\n",
 		fromsym, to, prl_to, tosym, to_p);
-		while (*s)
-			fprintf(stderr, "%s, ", *s++);
-		fprintf(stderr, "\n");
+		print_section_list(mismatch->symbol_white_list);
 		free(prl_to);
 		break;
 	}
@@ -1331,7 +1367,6 @@ static void report_sec_mismatch(const char *modname,
 		break;
 	case DATA_TO_ANY_EXIT: {
 		prl_to = sec2annotation(tosec);
-		const char *const *s = mismatch->symbol_white_list;
 		fprintf(stderr,
 		"The variable %s references\n"
 		"the %s %s%s%s\n"
@@ -1339,9 +1374,7 @@ static void report_sec_mismatch(const char *modname,
 		"variable with __exit* (see linux/init.h) or "
 		"name the variable:\n",
 		fromsym, to, prl_to, tosym, to_p);
-		while (*s)
-			fprintf(stderr, "%s, ", *s++);
-		fprintf(stderr, "\n");
+		print_section_list(mismatch->symbol_white_list);
 		free(prl_to);
 		break;
 	}
@@ -1441,7 +1474,7 @@ static unsigned int *reloc_location(struct elf_info *elf,
 				    Elf_Shdr *sechdr, Elf_Rela *r)
 {
 	Elf_Shdr *sechdrs = elf->sechdrs;
-	int section = shndx2secindex(sechdr->sh_info);
+	int section = sechdr->sh_info;
 
 	return (void *)elf->hdr + sechdrs[section].sh_offset +
 		r->r_offset;

@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -39,7 +39,7 @@ static DEFINE_MUTEX(scm_lock);
  * @id: command to be executed
  * @buf: buffer returned from scm_get_command_buffer()
  *
- * An SCM command is layed out in memory as follows:
+ * An SCM command is laid out in memory as follows:
  *
  *	------------------- <--- struct scm_command
  *	| command header  |
@@ -173,6 +173,9 @@ static u32 smc(u32 cmd_addr)
 			__asmeq("%1", "r0")
 			__asmeq("%2", "r1")
 			__asmeq("%3", "r2")
+#ifdef REQUIRES_SEC
+			".arch_extension sec\n"
+#endif
 			"smc	#0	@ switch to secure world\n"
 			: "=r" (r0)
 			: "r" (r0), "r" (r1), "r" (r2)
@@ -266,6 +269,114 @@ out:
 }
 EXPORT_SYMBOL(scm_call);
 
+#define SCM_CLASS_REGISTER	(0x2 << 8)
+#define SCM_MASK_IRQS		BIT(5)
+#define SCM_ATOMIC(svc, cmd, n) (((((svc) << 10)|((cmd) & 0x3ff)) << 12) | \
+				SCM_CLASS_REGISTER | \
+				SCM_MASK_IRQS | \
+				(n & 0xf))
+
+/**
+ * scm_call_atomic1() - Send an atomic SCM command with one argument
+ * @svc_id: service identifier
+ * @cmd_id: command identifier
+ * @arg1: first argument
+ *
+ * This shall only be used with commands that are guaranteed to be
+ * uninterruptable, atomic and SMP safe.
+ */
+s32 scm_call_atomic1(u32 svc, u32 cmd, u32 arg1)
+{
+	int context_id;
+	register u32 r0 asm("r0") = SCM_ATOMIC(svc, cmd, 1);
+	register u32 r1 asm("r1") = (u32)&context_id;
+	register u32 r2 asm("r2") = arg1;
+
+	asm volatile(
+		__asmeq("%0", "r0")
+		__asmeq("%1", "r0")
+		__asmeq("%2", "r1")
+		__asmeq("%3", "r2")
+#ifdef REQUIRES_SEC
+			".arch_extension sec\n"
+#endif
+		"smc	#0	@ switch to secure world\n"
+		: "=r" (r0)
+		: "r" (r0), "r" (r1), "r" (r2)
+		: "r3");
+	return r0;
+}
+EXPORT_SYMBOL(scm_call_atomic1);
+
+/**
+ * scm_call_atomic2() - Send an atomic SCM command with two arguments
+ * @svc_id: service identifier
+ * @cmd_id: command identifier
+ * @arg1: first argument
+ * @arg2: second argument
+ *
+ * This shall only be used with commands that are guaranteed to be
+ * uninterruptable, atomic and SMP safe.
+ */
+s32 scm_call_atomic2(u32 svc, u32 cmd, u32 arg1, u32 arg2)
+{
+	int context_id;
+	register u32 r0 asm("r0") = SCM_ATOMIC(svc, cmd, 2);
+	register u32 r1 asm("r1") = (u32)&context_id;
+	register u32 r2 asm("r2") = arg1;
+	register u32 r3 asm("r3") = arg2;
+
+	asm volatile(
+		__asmeq("%0", "r0")
+		__asmeq("%1", "r0")
+		__asmeq("%2", "r1")
+		__asmeq("%3", "r2")
+		__asmeq("%4", "r3")
+#ifdef REQUIRES_SEC
+			".arch_extension sec\n"
+#endif
+		"smc	#0	@ switch to secure world\n"
+		: "=r" (r0)
+		: "r" (r0), "r" (r1), "r" (r2), "r" (r3));
+	return r0;
+}
+EXPORT_SYMBOL(scm_call_atomic2);
+
+s32 scm_call_atomic4_3(u32 svc, u32 cmd, u32 arg1, u32 arg2,
+		u32 arg3, u32 arg4, u32 *ret1, u32 *ret2)
+{
+	int ret;
+	int context_id;
+	register u32 r0 asm("r0") = SCM_ATOMIC(svc, cmd, 4);
+	register u32 r1 asm("r1") = (u32)&context_id;
+	register u32 r2 asm("r2") = arg1;
+	register u32 r3 asm("r3") = arg2;
+	register u32 r4 asm("r4") = arg3;
+	register u32 r5 asm("r5") = arg4;
+
+	asm volatile(
+		__asmeq("%0", "r0")
+		__asmeq("%1", "r1")
+		__asmeq("%2", "r2")
+		__asmeq("%3", "r0")
+		__asmeq("%4", "r1")
+		__asmeq("%5", "r2")
+		__asmeq("%6", "r3")
+#ifdef REQUIRES_SEC
+			".arch_extension sec\n"
+#endif
+		"smc	#0	@ switch to secure world\n"
+		: "=r" (r0), "=r" (r1), "=r" (r2)
+		: "r" (r0), "r" (r1), "r" (r2), "r" (r3), "r" (r4), "r" (r5));
+	ret = r0;
+	if (ret1)
+		*ret1 = r1;
+	if (ret2)
+		*ret2 = r2;
+	return r0;
+}
+EXPORT_SYMBOL(scm_call_atomic4_3);
+
 u32 scm_get_version(void)
 {
 	int context_id;
@@ -286,6 +397,9 @@ u32 scm_get_version(void)
 			__asmeq("%1", "r1")
 			__asmeq("%2", "r0")
 			__asmeq("%3", "r1")
+#ifdef REQUIRES_SEC
+			".arch_extension sec\n"
+#endif
 			"smc	#0	@ switch to secure world\n"
 			: "=r" (r0), "=r" (r1)
 			: "r" (r0), "r" (r1)
@@ -298,6 +412,22 @@ u32 scm_get_version(void)
 	return version;
 }
 EXPORT_SYMBOL(scm_get_version);
+
+#define IS_CALL_AVAIL_CMD	1
+int scm_is_call_available(u32 svc_id, u32 cmd_id)
+{
+	int ret;
+	u32 svc_cmd = (svc_id << 10) | cmd_id;
+	u32 ret_val = 0;
+
+	ret = scm_call(SCM_SVC_INFO, IS_CALL_AVAIL_CMD, &svc_cmd,
+			sizeof(svc_cmd), &ret_val, sizeof(ret_val));
+	if (ret)
+		return ret;
+
+	return ret_val;
+}
+EXPORT_SYMBOL(scm_is_call_available);
 
 static int scm_init(void)
 {

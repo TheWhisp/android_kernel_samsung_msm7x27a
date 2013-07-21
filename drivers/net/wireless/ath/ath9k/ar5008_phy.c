@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010 Atheros Communications Inc.
+ * Copyright (c) 2008-2011 Atheros Communications Inc.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -43,6 +43,34 @@ static const int m2ThreshLowExt_off = 127;
 static const int m1ThreshExt_off = 127;
 static const int m2ThreshExt_off = 127;
 
+
+static void ar5008_rf_bank_setup(u32 *bank, struct ar5416IniArray *array,
+				 int col)
+{
+	int i;
+
+	for (i = 0; i < array->ia_rows; i++)
+		bank[i] = INI_RA(array, i, col);
+}
+
+
+#define REG_WRITE_RF_ARRAY(iniarray, regData, regWr) \
+	ar5008_write_rf_array(ah, iniarray, regData, &(regWr))
+
+static void ar5008_write_rf_array(struct ath_hw *ah, struct ar5416IniArray *array,
+				  u32 *data, unsigned int *writecnt)
+{
+	int r;
+
+	ENABLE_REGWRITE_BUFFER(ah);
+
+	for (r = 0; r < array->ia_rows; r++) {
+		REG_WRITE(ah, INI_RA(array, r, 0), data[r]);
+		DO_DELAY(*writecnt);
+	}
+
+	REGWRITE_BUFFER_FLUSH(ah);
+}
 
 /**
  * ar5008_hw_phy_modify_rx_buffer() - perform analog swizzling of parameters
@@ -142,7 +170,7 @@ static void ar5008_hw_force_bias(struct ath_hw *ah, u16 synth_freq)
 
 /**
  * ar5008_hw_set_channel - tune to a channel on the external AR2133/AR5133 radios
- * @ah: atheros hardware stucture
+ * @ah: atheros hardware structure
  * @chan:
  *
  * For the external AR2133/AR5133 radios, takes the MHz channel value and set
@@ -461,8 +489,6 @@ static int ar5008_hw_rf_alloc_ext_banks(struct ath_hw *ah)
 	ATH_ALLOC_BANK(ah->analogBank6Data, ah->iniBank6.ia_rows);
 	ATH_ALLOC_BANK(ah->analogBank6TPCData, ah->iniBank6TPC.ia_rows);
 	ATH_ALLOC_BANK(ah->analogBank7Data, ah->iniBank7.ia_rows);
-	ATH_ALLOC_BANK(ah->addac5416_21,
-		       ah->iniAddac.ia_rows * ah->iniAddac.ia_columns);
 	ATH_ALLOC_BANK(ah->bank6Temp, ah->iniBank6.ia_rows);
 
 	return 0;
@@ -491,7 +517,6 @@ static void ar5008_hw_rf_free_ext_banks(struct ath_hw *ah)
 	ATH_FREE_BANK(ah->analogBank6Data);
 	ATH_FREE_BANK(ah->analogBank6TPCData);
 	ATH_FREE_BANK(ah->analogBank7Data);
-	ATH_FREE_BANK(ah->addac5416_21);
 	ATH_FREE_BANK(ah->bank6Temp);
 
 #undef ATH_FREE_BANK
@@ -530,16 +555,16 @@ static bool ar5008_hw_set_rf_regs(struct ath_hw *ah,
 	eepMinorRev = ah->eep_ops->get_eeprom(ah, EEP_MINOR_REV);
 
 	/* Setup Bank 0 Write */
-	RF_BANK_SETUP(ah->analogBank0Data, &ah->iniBank0, 1);
+	ar5008_rf_bank_setup(ah->analogBank0Data, &ah->iniBank0, 1);
 
 	/* Setup Bank 1 Write */
-	RF_BANK_SETUP(ah->analogBank1Data, &ah->iniBank1, 1);
+	ar5008_rf_bank_setup(ah->analogBank1Data, &ah->iniBank1, 1);
 
 	/* Setup Bank 2 Write */
-	RF_BANK_SETUP(ah->analogBank2Data, &ah->iniBank2, 1);
+	ar5008_rf_bank_setup(ah->analogBank2Data, &ah->iniBank2, 1);
 
 	/* Setup Bank 6 Write */
-	RF_BANK_SETUP(ah->analogBank3Data, &ah->iniBank3,
+	ar5008_rf_bank_setup(ah->analogBank3Data, &ah->iniBank3,
 		      modesIndex);
 	{
 		int i;
@@ -569,7 +594,7 @@ static bool ar5008_hw_set_rf_regs(struct ath_hw *ah,
 	}
 
 	/* Setup Bank 7 Setup */
-	RF_BANK_SETUP(ah->analogBank7Data, &ah->iniBank7, 1);
+	ar5008_rf_bank_setup(ah->analogBank7Data, &ah->iniBank7, 1);
 
 	/* Write Analog registers */
 	REG_WRITE_RF_ARRAY(&ah->iniBank0, ah->analogBank0Data,
@@ -729,6 +754,7 @@ static int ar5008_hw_process_ini(struct ath_hw *ah,
 				 struct ath9k_channel *chan)
 {
 	struct ath_regulatory *regulatory = ath9k_hw_regulatory(ah);
+	struct ath_common *common = ath9k_hw_common(ah);
 	int i, regWrites = 0;
 	struct ieee80211_channel *channel = chan->chan;
 	u32 modesIndex, freqIndex;
@@ -770,27 +796,7 @@ static int ar5008_hw_process_ini(struct ath_hw *ah,
 	REG_WRITE(ah, AR_PHY_ADC_SERIAL_CTL, AR_PHY_SEL_EXTERNAL_RADIO);
 	ah->eep_ops->set_addac(ah, chan);
 
-	if (AR_SREV_5416_22_OR_LATER(ah)) {
-		REG_WRITE_ARRAY(&ah->iniAddac, 1, regWrites);
-	} else {
-		struct ar5416IniArray temp;
-		u32 addacSize =
-			sizeof(u32) * ah->iniAddac.ia_rows *
-			ah->iniAddac.ia_columns;
-
-		/* For AR5416 2.0/2.1 */
-		memcpy(ah->addac5416_21,
-		       ah->iniAddac.ia_array, addacSize);
-
-		/* override CLKDRV value at [row, column] = [31, 1] */
-		(ah->addac5416_21)[31 * ah->iniAddac.ia_columns + 1] = 0;
-
-		temp.ia_array = ah->addac5416_21;
-		temp.ia_columns = ah->iniAddac.ia_columns;
-		temp.ia_rows = ah->iniAddac.ia_rows;
-		REG_WRITE_ARRAY(&temp, 1, regWrites);
-	}
-
+	REG_WRITE_ARRAY(&ah->iniAddac, 1, regWrites);
 	REG_WRITE(ah, AR_PHY_ADC_SERIAL_CTL, AR_PHY_SEL_INTERNAL_ADDAC);
 
 	ENABLE_REGWRITE_BUFFER(ah);
@@ -805,7 +811,8 @@ static int ar5008_hw_process_ini(struct ath_hw *ah,
 		REG_WRITE(ah, reg, val);
 
 		if (reg >= 0x7800 && reg < 0x78a0
-		    && ah->config.analog_shiftreg) {
+		    && ah->config.analog_shiftreg
+		    && (common->bus_ops->ath_bus_type != ATH_USB)) {
 			udelay(100);
 		}
 
@@ -835,7 +842,8 @@ static int ar5008_hw_process_ini(struct ath_hw *ah,
 		REG_WRITE(ah, reg, val);
 
 		if (reg >= 0x7800 && reg < 0x78a0
-		    && ah->config.analog_shiftreg) {
+		    && ah->config.analog_shiftreg
+		    && (common->bus_ops->ath_bus_type != ATH_USB)) {
 			udelay(100);
 		}
 

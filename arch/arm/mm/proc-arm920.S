@@ -53,7 +53,7 @@
 /*
  * This is the size at which it becomes more efficient to
  * clean the whole cache, rather than using the individual
- * cache line maintainence instructions.
+ * cache line maintenance instructions.
  */
 #define CACHE_DLIMIT	65536
 
@@ -242,7 +242,7 @@ ENTRY(arm920_flush_kern_dcache_area)
  *
  * (same as v4wb)
  */
-ENTRY(arm920_dma_inv_range)
+arm920_dma_inv_range:
 	tst	r0, #CACHE_DLINESIZE - 1
 	bic	r0, r0, #CACHE_DLINESIZE - 1
 	mcrne	p15, 0, r0, c7, c10, 1		@ clean D entry
@@ -265,7 +265,7 @@ ENTRY(arm920_dma_inv_range)
  *
  * (same as v4wb)
  */
-ENTRY(arm920_dma_clean_range)
+arm920_dma_clean_range:
 	bic	r0, r0, #CACHE_DLINESIZE - 1
 1:	mcr	p15, 0, r0, c7, c10, 1		@ clean D entry
 	add	r0, r0, #CACHE_DLINESIZE
@@ -325,8 +325,6 @@ ENTRY(arm920_cache_fns)
 	.long	arm920_flush_kern_dcache_area
 	.long	arm920_dma_map_area
 	.long	arm920_dma_unmap_area
-	.long	arm920_dma_inv_range
-	.long	arm920_dma_clean_range
 	.long	arm920_dma_flush_range
 
 #endif
@@ -389,6 +387,40 @@ ENTRY(cpu_arm920_set_pte_ext)
 #endif
 	mov	pc, lr
 
+/* Suspend/resume support: taken from arch/arm/plat-s3c24xx/sleep.S */
+.globl	cpu_arm920_suspend_size
+.equ	cpu_arm920_suspend_size, 4 * 3
+#ifdef CONFIG_PM_SLEEP
+ENTRY(cpu_arm920_do_suspend)
+	stmfd	sp!, {r4 - r7, lr}
+	mrc	p15, 0, r4, c13, c0, 0	@ PID
+	mrc	p15, 0, r5, c3, c0, 0	@ Domain ID
+	mrc	p15, 0, r6, c2, c0, 0	@ TTB address
+	mrc	p15, 0, r7, c1, c0, 0	@ Control register
+	stmia	r0, {r4 - r7}
+	ldmfd	sp!, {r4 - r7, pc}
+ENDPROC(cpu_arm920_do_suspend)
+
+ENTRY(cpu_arm920_do_resume)
+	mov	ip, #0
+	mcr	p15, 0, ip, c8, c7, 0	@ invalidate I+D TLBs
+	mcr	p15, 0, ip, c7, c7, 0	@ invalidate I+D caches
+	ldmia	r0, {r4 - r7}
+	mcr	p15, 0, r4, c13, c0, 0	@ PID
+	mcr	p15, 0, r5, c3, c0, 0	@ Domain ID
+	mcr	p15, 0, r6, c2, c0, 0	@ TTB address
+	mov	r0, r7			@ control register
+	mov	r2, r6, lsr #14		@ get TTB0 base
+	mov	r2, r2, lsl #14
+	ldr	r3, =PMD_TYPE_SECT | PMD_SECT_BUFFERABLE | \
+		     PMD_SECT_CACHEABLE | PMD_BIT4 | PMD_SECT_AP_WRITE
+	b	cpu_resume_mmu
+ENDPROC(cpu_arm920_do_resume)
+#else
+#define cpu_arm920_do_suspend	0
+#define cpu_arm920_do_resume	0
+#endif
+
 	__CPUINIT
 
 	.type	__arm920_setup, #function
@@ -434,6 +466,9 @@ arm920_processor_functions:
 	.word	cpu_arm920_dcache_clean_area
 	.word	cpu_arm920_switch_mm
 	.word	cpu_arm920_set_pte_ext
+	.word	cpu_arm920_suspend_size
+	.word	cpu_arm920_do_suspend
+	.word	cpu_arm920_do_resume
 	.size	arm920_processor_functions, . - arm920_processor_functions
 
 	.section ".rodata"

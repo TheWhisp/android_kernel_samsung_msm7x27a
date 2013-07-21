@@ -2,6 +2,14 @@
 # Misc strange devices
 #
 
+# This one has to live outside of the MISC_DEVICES conditional,
+# because it may be selected by drivers/platform/x86/hp_accel.
+config SENSORS_LIS3LV02D
+	tristate
+	depends on INPUT
+	select INPUT_POLLDEV
+	default n
+
 menuconfig MISC_DEVICES
 	bool "Misc devices"
 	---help---
@@ -54,8 +62,8 @@ config AD525X_DPOT_SPI
 	  module will be called ad525x_dpot-spi.
 
 config ANDROID_PMEM
-	bool "Android pmem allocator"
-	default y
+        bool "Android pmem allocator"
+        default y
 
 config ATMEL_PWM
 	tristate "Atmel AT32/AT91 PWM support"
@@ -140,6 +148,19 @@ config PHANTOM
 	  If you choose to build module, its name will be phantom. If unsure,
 	  say N here.
 
+config INTEL_MID_PTI
+	tristate "Parallel Trace Interface for MIPI P1149.7 cJTAG standard"
+	default n
+	help
+	  The PTI (Parallel Trace Interface) driver directs
+	  trace data routed from various parts in the system out
+	  through an Intel Penwell PTI port and out of the mobile
+	  device for analysis with a debugging tool (Lauterbach or Fido).
+
+	  You should select this driver if the target kernel is meant for
+	  an Intel Atom (non-netbook) mobile device containing a MIPI
+	  P1149.7 standard implementation.
+
 config SGI_IOC4
 	tristate "SGI IOC4 Base IO support"
 	depends on PCI
@@ -212,13 +233,6 @@ config ENCLOSURE_SERVICES
 	  driver (SCSI/ATA) which supports enclosures
 	  or a SCSI enclosure device (SES) to use these services.
 
-config KERNEL_DEBUGGER_CORE
-	bool "Kernel Debugger Core"
-	default n
-	---help---
-	  Generic kernel debugging command processor used by low level
-	  (interrupt context) platform-specific debuggers.
-
 config SGI_XP
 	tristate "Support communication between SGI SSIs"
 	depends on NET
@@ -235,8 +249,7 @@ config SGI_XP
 
 config CS5535_MFGPT
 	tristate "CS5535/CS5536 Geode Multi-Function General Purpose Timer (MFGPT) support"
-	depends on PCI
-	depends on X86
+	depends on PCI && X86 && MFD_CS5535
 	default n
 	help
 	  This driver provides access to MFGPT functionality for other
@@ -390,24 +403,6 @@ config SENSORS_AK8975
 	  If you say yes here you get support for Asahi Kasei's
 	  orientation sensor AK8975.
 
-config SENSORS_AKM8973
-	tristate "AKM8973 Compass Driver"
-	depends on I2C
-	help
-	 AKM8973 Compass Driver implemented by HTC.
-
-config SENSORS_AKM8976
-	tristate "AKM8976 Compass Driver"
-	depends on I2C
-	help
-	  AKM8976 Compass Driver implemented by HTC.
-
-config VP_A1026
-	tristate "A1026 Voice Processor Driver"
-	depends on I2C
-	help
-	  A1026 Voice Processor Driver implemented by HTC.
-
 config EP93XX_PWM
 	tristate "EP93xx PWM support"
 	depends on ARCH_EP93XX
@@ -430,6 +425,16 @@ config DS1682
 
 	  This driver can also be built as a module.  If so, the module
 	  will be called ds1682.
+
+config SPEAR13XX_PCIE_GADGET
+	bool "PCIe gadget support for SPEAr13XX platform"
+	depends on ARCH_SPEAR13XX
+	default n
+	help
+	 This option enables gadget support for PCIe controller. If
+	 board file defines any controller as PCIe endpoint then a sysfs
+	 entry will be created for that controller. User can use these
+	 sysfs node to configure PCIe EP as per his requirements.
 
 config TI_DAC7512
 	tristate "Texas Instruments DAC7512"
@@ -482,13 +487,21 @@ config BMP085
 	  module will be called bmp085.
 
 config PCH_PHUB
-	tristate "PCH Packet Hub of Intel Topcliff"
+	tristate "Intel EG20T PCH/LAPIS Semicon IOH(ML7213/ML7223/ML7831) PHUB"
 	depends on PCI
 	help
 	  This driver is for PCH(Platform controller Hub) PHUB(Packet Hub) of
 	  Intel Topcliff which is an IOH(Input/Output Hub) for x86 embedded
 	  processor. The Topcliff has MAC address and Option ROM data in SROM.
 	  This driver can access MAC address and Option ROM data in SROM.
+
+	  This driver also can be used for LAPIS Semiconductor's IOH,
+	  ML7213/ML7223/ML7831.
+	  ML7213 which is for IVI(In-Vehicle Infotainment) use.
+	  ML7223 IOH is for MP(Media Phone) use.
+	  ML7831 IOH is for general purpose use.
+	  ML7213/ML7223/ML7831 is companion chip for Intel Atom E6xx series.
+	  ML7213/ML7223/ML7831 is completely compatible for Intel EG20T PCH.
 
 	  To compile this driver as a module, choose M here: the module will
 	  be called pch_phub.
@@ -549,13 +562,13 @@ config TSIF_DEBUG
 	---help---
 	  This turns on debugging information for the tsif driver
 
-
-config SAMSUNG_JACK
-	bool "3.5 PI EAR_JACK driver for Samsung devices"
-	depends on INPUT
-	default n
+config TSPP
+	depends on ARCH_MSM
+	tristate "TSPP (Transport Stream Packet Processor) Support"
 	---help---
-	  This is 3.5 PI EAR_JACK driver for Samsung devices.	  
+	Transport Stream Packet Processor is used to offload the
+	processing of MPEG transport streams from the main processor.
+	This can also be compiled as a loadable module.
 
 config HAPTIC_ISA1200
 	tristate "ISA1200 haptic support"
@@ -574,29 +587,27 @@ config PMIC8058_PWM
 	  purposes including software controlled brightness of backlight,
 	  motor control, and waveform generation.
 
-config PMIC8058_VIBRATOR
-	tristate "Qualcomm PM8058 vibrator support"
-	depends on PMIC8058 && ANDROID_TIMED_OUTPUT
-	default n
+config PMIC8XXX_VIBRATOR
+	tristate "Qualcomm Vibrator support for PMIC8XXX"
+	depends on MFD_PM8XXX && ANDROID_TIMED_OUTPUT
 	help
 	  This option enables device driver support for the vibrator
-	  on Qualcomm PM8058 chip.
+	  on the PM8XXX chips. The vibrator is controlled using the
+	  timed output class.
 
-config PMIC8058_NFC
-	tristate "Qualcomm PM8058 support for Near Field Communication"
-	depends on PMIC8058
-	default y
+config PMIC8XXX_NFC
+	tristate "Qualcomm PM8XXX support for Near Field Communication"
+	depends on MFD_PM8XXX
 	help
-	  Qualcomm PM8058 chip has a module to support NFC (Near Field
+	  Qualcomm PM8XXX chips have a module to support NFC (Near Field
 	  Communication). This option enables the driver to support it.
 
-config PMIC8058_UPL
-	tristate "Qualcomm PM8058 support for User Programmable Logic"
-	depends on PMIC8058
-	default n
+config PMIC8XXX_UPL
+	tristate "Qualcomm PM8XXX support for User Programmable Logic"
+	depends on MFD_PM8XXX
 	help
 	  This option enables device driver support for User Programmable Logic
-	  on Qualcomm PM8058 chip.  The UPL module provides a means to implement
+	  on Qualcomm PM8XXX chips. The UPL module provides a means to implement
 	  simple truth table based logic via a set of control registers. I/O may
 	  be routed in and out of the UPL module via GPIO or DTEST pins.
 
@@ -609,34 +620,19 @@ config PMIC8058_XOADC
 	  PMIC8058. Driver interface to program registers of the ADC over
 	  AMUX channels, devices on programmable MPP's and xotherm.
 
-config PMIC8058_MISC
-	tristate "Qualcomm PM8058 Misc Device driver"
-	depends on PMIC8058
-	default n
-	help
-	  Provides functionality for various small drivers utilizing the
-	  Qualcomm PM8058 chip.  Examples include: signalling when the 32kHz
-	  oscillator malfunctions.
-
-config PMIC8058_BATTALARM
-	tristate "Qualcomm PM8058 Battery Alarm Device driver"
-	depends on PMIC8058
-	help
-	  This option enables support for the battery alarm module on the
-	  Qualcomm PM8058 PMIC chip.  This support allows for configuration of
-	  the alarm module as well as interrupt handling.
-
-config FSAXXXX_USBSW
-	bool "Fairchild FSAxxxx USB switch Driver"
-	depends on I2C
-	default n
-
 config TZCOM
 	tristate "Trustzone Communicator driver"
 	default n
 	help
 	  Provides a communication interface between userspace and
 	  TrustZone Operating Environment (TZBSP) using Secure Channel
+	  Manager (SCM) interface.
+
+config QSEECOM
+	tristate "Qualcomm Secure Execution Communicator driver"
+	help
+	  Provides a communication interface between userspace and
+	  Qualcomm Secure Execution Environment (QSEE) using Secure Channel
 	  Manager (SCM) interface.
 
 config QFP_FUSE
@@ -647,28 +643,12 @@ config QFP_FUSE
 	  to the fuse block. Currently this is supported only
 	  on FSM targets.
 
-config SEC_MISC
-	bool "Samsung P series miscellaneous driver"
-	default n
-	---help---
-	  Samsung P series miscellaneous driver
-
-config SEC_DEBUG
-	bool "Samsung Debug Code"
-	default n
-	---help---
-	  Samsung debug code
-
-config PN544
-        bool "NXP PN544 NFC Controller Driver"
-        default n
-        help
-          NXP PN544 Near Field Communication controller support.
-
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"
 source "drivers/misc/iwmc3200top/Kconfig"
 source "drivers/misc/ti-st/Kconfig"
+source "drivers/misc/lis3lv02d/Kconfig"
+source "drivers/misc/carma/Kconfig"
 
 endif # MISC_DEVICES

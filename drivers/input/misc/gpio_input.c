@@ -21,7 +21,6 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 #include <linux/wakelock.h>
-#include "../../../arch/arm/mach-msm/proc_comm.h"
 
 enum {
 	DEBOUNCE_UNSTABLE     = BIT(0),	/* Got irq, while debouncing */
@@ -50,17 +49,6 @@ struct gpio_input_state {
 	struct gpio_key_state key_state[0];
 };
 
-int flip_open = 1;
-struct device *qwerty_flip_dev;
-
-static ssize_t qwerty_flip_show(struct device *dev,
-	 struct device_attribute *attr, char *buf)
-{
-	return snprintf(buf, sizeof(int), "%x\n", flip_open);
-}
-
-static DEVICE_ATTR(qwerty_flip, S_IRUGO, qwerty_flip_show, NULL);
-
 static enum hrtimer_restart gpio_event_input_timer_func(struct hrtimer *timer)
 {
 	int i;
@@ -74,6 +62,7 @@ static enum hrtimer_restart gpio_event_input_timer_func(struct hrtimer *timer)
 	struct gpio_key_state *key_state;
 	unsigned long irqflags;
 	uint8_t debounce;
+	bool sync_needed;
 
 #if 0
 	key_entry = kp->keys_info->keymap;
@@ -84,6 +73,7 @@ static enum hrtimer_restart gpio_event_input_timer_func(struct hrtimer *timer)
 #endif
 	key_entry = ds->info->keymap;
 	key_state = ds->key_state;
+	sync_needed = false;
 	spin_lock_irqsave(&ds->irq_lock, irqflags);
 	for (i = 0; i < nkeys; i++, key_entry++, key_state++) {
 		debounce = key_state->debounce;
@@ -92,14 +82,14 @@ static enum hrtimer_restart gpio_event_input_timer_func(struct hrtimer *timer)
 		if (key_state->debounce & DEBOUNCE_UNSTABLE) {
 			debounce = key_state->debounce = DEBOUNCE_UNKNOWN;
 			enable_irq(gpio_to_irq(key_entry->gpio));
-			pr_info("gpio_keys_scan_keys: key %x-%x, %d "
-				"(%d) continue debounce\n",
-				ds->info->type, key_entry->code,
-				i, key_entry->gpio);
+			if (gpio_flags & GPIOEDF_PRINT_KEY_UNSTABLE)
+				pr_info("gpio_keys_scan_keys: key %x-%x, %d "
+					"(%d) continue debounce\n",
+					ds->info->type, key_entry->code,
+					i, key_entry->gpio);
 		}
 		npolarity = !(gpio_flags & GPIOEDF_ACTIVE_HIGH);
 		pressed = gpio_get_value(key_entry->gpio) ^ npolarity;
-		flip_open = pressed;
 		if (debounce & DEBOUNCE_POLL) {
 			if (pressed == !(debounce & DEBOUNCE_PRESSED)) {
 				ds->debounce_count++;
@@ -142,6 +132,11 @@ static enum hrtimer_restart gpio_event_input_timer_func(struct hrtimer *timer)
 				key_entry->code, i, key_entry->gpio, pressed);
 		input_event(ds->input_devs->dev[key_entry->dev], ds->info->type,
 			    key_entry->code, pressed);
+		sync_needed = true;
+	}
+	if (sync_needed) {
+		for (i = 0; i < ds->input_devs->count; i++)
+			input_sync(ds->input_devs->dev[i]);
 	}
 
 #if 0
@@ -173,14 +168,9 @@ static irqreturn_t gpio_event_input_irq_handler(int irq, void *dev_id)
 	const struct gpio_event_direct_entry *key_entry;
 	unsigned long irqflags;
 	int pressed;
-#if defined(CONFIG_MACH_GEIM)
-	int data1, data2;
-#endif
 
-#if !defined(CONFIG_MACH_GEIM)
 	if (!ds->use_irq)
 		return IRQ_HANDLED;
-#endif
 
 	key_entry = &ds->info->keymap[keymap_index];
 
@@ -212,15 +202,9 @@ static irqreturn_t gpio_event_input_irq_handler(int irq, void *dev_id)
 				"(%d) changed to %d\n",
 				ds->info->type, key_entry->code, keymap_index,
 				key_entry->gpio, pressed);
-
-		flip_open = pressed;
-
-		input_event(ds->input_devs->dev[key_entry->dev],
-			 ds->info->type, key_entry->code, pressed);
-#if defined(CONFIG_MACH_GEIM)
-		data1 = !flip_open;
-		msm_proc_comm(PCOM_OEM_SLIDE_INFO, &data1, &data2);
-#endif
+		input_event(ds->input_devs->dev[key_entry->dev], ds->info->type,
+			    key_entry->code, pressed);
+		input_sync(ds->input_devs->dev[key_entry->dev]);
 	}
 	return IRQ_HANDLED;
 }
@@ -244,13 +228,25 @@ static int gpio_event_input_request_irqs(struct gpio_input_state *ds)
 				ds->info->keymap[i].gpio, irq);
 			goto err_request_irq_failed;
 		}
-		enable_irq_wake(irq);
+		if (ds->info->info.no_suspend) {
+			err = enable_irq_wake(irq);
+			if (err) {
+				pr_err("gpio_event_input_request_irqs: "
+					"enable_irq_wake failed for input %d, "
+					"irq %d\n",
+					ds->info->keymap[i].gpio, irq);
+				goto err_enable_irq_wake_failed;
+			}
+		}
 	}
 	return 0;
 
 	for (i = ds->info->keymap_size - 1; i >= 0; i--) {
-		free_irq(gpio_to_irq(ds->info->keymap[i].gpio),
-			 &ds->key_state[i]);
+		irq = gpio_to_irq(ds->info->keymap[i].gpio);
+		if (ds->info->info.no_suspend)
+			disable_irq_wake(irq);
+err_enable_irq_wake_failed:
+		free_irq(irq, &ds->key_state[i]);
 err_request_irq_failed:
 err_gpio_get_irq_num_failed:
 		;
@@ -336,16 +332,6 @@ int gpio_event_input_func(struct gpio_event_input_devs *input_devs,
 			}
 		}
 
-		qwerty_flip_dev = device_create(sec_class, NULL, 0, NULL,
-					"sec_qwerty_flip");
-		if (!qwerty_flip_dev)
-			printk(KERN_INFO"Failed to create device(sec_qwerty_flip)!\n");
-
-		if (device_create_file(qwerty_flip_dev,
-				 &dev_attr_qwerty_flip) < 0)
-			printk(KERN_INFO"Failed to create file(%s)!\n",
-				dev_attr_qwerty_flip.attr.name);
-
 		ret = gpio_event_input_request_irqs(ds);
 
 		spin_lock_irqsave(&ds->irq_lock, irqflags);
@@ -366,13 +352,16 @@ int gpio_event_input_func(struct gpio_event_input_devs *input_devs,
 	ret = 0;
 	spin_lock_irqsave(&ds->irq_lock, irqflags);
 	hrtimer_cancel(&ds->timer);
-	spin_unlock_irqrestore(&ds->irq_lock, irqflags);
 	if (ds->use_irq) {
 		for (i = di->keymap_size - 1; i >= 0; i--) {
-			free_irq(gpio_to_irq(di->keymap[i].gpio),
-				 &ds->key_state[i]);
+			int irq = gpio_to_irq(di->keymap[i].gpio);
+			if (ds->info->info.no_suspend)
+				disable_irq_wake(irq);
+			free_irq(irq, &ds->key_state[i]);
 		}
 	}
+	spin_unlock_irqrestore(&ds->irq_lock, irqflags);
+
 	for (i = di->keymap_size - 1; i >= 0; i--) {
 err_gpio_configure_failed:
 		gpio_free(di->keymap[i].gpio);

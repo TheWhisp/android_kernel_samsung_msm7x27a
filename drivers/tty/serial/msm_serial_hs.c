@@ -3,7 +3,7 @@
  * MSM 7k High speed uart driver
  *
  * Copyright (c) 2008 Google Inc.
- * Copyright (c) 2007-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
  * Modified: Nick Pelly <npelly@google.com>
  *
  * All source code in this file is licensed under the following license
@@ -18,19 +18,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, you can find it at http://www.fsf.org
+ * Has optional support for uart power management independent of linux
+ * suspend/resume:
+ *
+ * RX wakeup.
+ * UART wakeup can be triggered by RX activity (using a wakeup GPIO on the
+ * UART RX pin). This should only be used if there is not a wakeup
+ * GPIO on the UART CTS, and the first RX byte is known (for example, with the
+ * Bluetooth Texas Instruments HCILL protocol), since the first RX byte will
+ * always be lost. RTS will be asserted even while the UART is off in this mode
+ * of operation. See msm_serial_hs_platform_data.rx_wakeup_irq.
  */
 
-/* This driver has optional support for low power wakeup on a rx gpio. This is
- * useful for peripherals that send unsolicited RX such as Bluetooth.
- */
-
-#include <linux/slab.h>
 #include <linux/module.h>
 
 #include <linux/serial.h>
 #include <linux/serial_core.h>
+#include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
@@ -192,7 +196,7 @@ static ssize_t show_clock(struct device *dev, struct device_attribute *attr,
 	if (clk_state <= MSM_HS_CLK_OFF)
 		state = 0;
 
-	return sprintf(buf, "%d\n", state);
+	return snprintf(buf, PAGE_SIZE, "%d\n", state);
 }
 
 static ssize_t set_clock(struct device *dev, struct device_attribute *attr,
@@ -258,7 +262,10 @@ static void msm_hs_release_port(struct uart_port *port)
 		gsbi_resource = platform_get_resource_byname(pdev,
 							     IORESOURCE_MEM,
 							     "gsbi_resource");
-		size = gsbi_resource->end - gsbi_resource->start + 1;
+		if (unlikely(!gsbi_resource))
+			return;
+
+		size = resource_size(gsbi_resource);
 		release_mem_region(gsbi_resource->start, size);
 		iounmap(msm_uport->mapped_gsbi);
 		msm_uport->mapped_gsbi = NULL;
@@ -276,7 +283,7 @@ static int msm_hs_request_port(struct uart_port *port)
 						     IORESOURCE_MEM,
 						     "gsbi_resource");
 	if (gsbi_resource) {
-		size = gsbi_resource->end - gsbi_resource->start + 1;
+		size = resource_size(gsbi_resource);
 		if (unlikely(!request_mem_region(gsbi_resource->start, size,
 						 "msm_serial_hs")))
 			return -EBUSY;
@@ -398,9 +405,9 @@ static int __devexit msm_hs_remove(struct platform_device *pdev)
 		      msm_uport->rx.rbuffer);
 	dma_pool_destroy(msm_uport->rx.pool);
 
-	dma_unmap_single(dev, msm_uport->rx.cmdptr_dmaaddr, sizeof(u32 *),
+	dma_unmap_single(dev, msm_uport->rx.cmdptr_dmaaddr, sizeof(u32),
 			 DMA_TO_DEVICE);
-	dma_unmap_single(dev, msm_uport->tx.mapped_cmd_ptr_ptr, sizeof(u32 *),
+	dma_unmap_single(dev, msm_uport->tx.mapped_cmd_ptr_ptr, sizeof(u32),
 			 DMA_TO_DEVICE);
 	dma_unmap_single(dev, msm_uport->tx.mapped_cmd_ptr, sizeof(dmov_box),
 			 DMA_TO_DEVICE);
@@ -890,7 +897,7 @@ static void msm_hs_submit_tx_locked(struct uart_port *uport)
 	mb();
 
 	dma_sync_single_for_device(uport->dev, tx->mapped_cmd_ptr_ptr,
-				   sizeof(u32 *), DMA_TO_DEVICE);
+				   sizeof(u32), DMA_TO_DEVICE);
 
 	msm_dmov_enqueue_cmd(msm_uport->dma_tx_channel, &tx->xfer);
 }
@@ -1651,9 +1658,6 @@ static int msm_hs_startup(struct uart_port *uport)
 
 	tx->xfer.complete_func = msm_hs_dmov_tx_callback;
 
-	tx->xfer.crci_mask = msm_dmov_build_crci_mask(1,
-						      msm_uport->dma_tx_crci);
-
 	tx->command_ptr->cmd = CMD_LC |
 	    CMD_DST_CRCI(msm_uport->dma_tx_crci) | CMD_MODE_BOX;
 
@@ -1677,7 +1681,7 @@ static int msm_hs_startup(struct uart_port *uport)
 	mb();
 
 	if (use_low_power_wakeup(msm_uport)) {
-		ret = set_irq_wake(msm_uport->wakeup.irq, 1);
+		ret = irq_set_irq_wake(msm_uport->wakeup.irq, 1);
 		if (unlikely(ret))
 			return ret;
 	}
@@ -1704,7 +1708,7 @@ static int msm_hs_startup(struct uart_port *uport)
 	if (ret)
 		dev_err(uport->dev, "set active error:%d\n", ret);
 	pm_runtime_enable(uport->dev);
-	pm_runtime_get_sync(uport->dev);
+
 
 	return 0;
 }
@@ -1722,7 +1726,7 @@ static int uartdm_init_port(struct uart_port *uport)
 	if (!tx->command_ptr)
 		return -ENOMEM;
 
-	tx->command_ptr_ptr = kmalloc(sizeof(u32 *), GFP_KERNEL | __GFP_DMA);
+	tx->command_ptr_ptr = kmalloc(sizeof(u32), GFP_KERNEL | __GFP_DMA);
 	if (!tx->command_ptr_ptr) {
 		ret = -ENOMEM;
 		goto free_tx_command_ptr;
@@ -1732,7 +1736,7 @@ static int uartdm_init_port(struct uart_port *uport)
 					    sizeof(dmov_box), DMA_TO_DEVICE);
 	tx->mapped_cmd_ptr_ptr = dma_map_single(uport->dev,
 						tx->command_ptr_ptr,
-						sizeof(u32 *), DMA_TO_DEVICE);
+						sizeof(u32), DMA_TO_DEVICE);
 	tx->xfer.cmdptr = DMOV_CMD_ADDR(tx->mapped_cmd_ptr_ptr);
 
 	init_waitqueue_head(&rx->wait);
@@ -1768,7 +1772,7 @@ static int uartdm_init_port(struct uart_port *uport)
 		goto free_rx_buffer;
 	}
 
-	rx->command_ptr_ptr = kmalloc(sizeof(u32 *), GFP_KERNEL | __GFP_DMA);
+	rx->command_ptr_ptr = kmalloc(sizeof(u32), GFP_KERNEL | __GFP_DMA);
 	if (!rx->command_ptr_ptr) {
 		pr_err("%s(): cannot allocate rx->command_ptr_ptr", __func__);
 		ret = -ENOMEM;
@@ -1785,9 +1789,6 @@ static int uartdm_init_port(struct uart_port *uport)
 
 	rx->xfer.complete_func = msm_hs_dmov_rx_callback;
 
-	rx->xfer.crci_mask = msm_dmov_build_crci_mask(1,
-						      msm_uport->dma_rx_crci);
-
 	rx->command_ptr->cmd = CMD_LC |
 	    CMD_SRC_CRCI(msm_uport->dma_rx_crci) | CMD_MODE_BOX;
 
@@ -1802,7 +1803,7 @@ static int uartdm_init_port(struct uart_port *uport)
 	*rx->command_ptr_ptr = CMD_PTR_LP | DMOV_CMD_ADDR(rx->mapped_cmd_ptr);
 
 	rx->cmdptr_dmaaddr = dma_map_single(uport->dev, rx->command_ptr_ptr,
-					    sizeof(u32 *), DMA_TO_DEVICE);
+					    sizeof(u32), DMA_TO_DEVICE);
 	rx->xfer.cmdptr = DMOV_CMD_ADDR(rx->cmdptr_dmaaddr);
 
 	INIT_DELAYED_WORK(&rx->flip_insert_work, flip_insert_work);
@@ -1825,7 +1826,7 @@ exit_tasket_init:
 	tasklet_kill(&msm_uport->tx.tlet);
 	tasklet_kill(&msm_uport->rx.tlet);
 	dma_unmap_single(uport->dev, msm_uport->tx.mapped_cmd_ptr_ptr,
-			sizeof(u32 *), DMA_TO_DEVICE);
+			sizeof(u32), DMA_TO_DEVICE);
 	dma_unmap_single(uport->dev, msm_uport->tx.mapped_cmd_ptr,
 			sizeof(dmov_box), DMA_TO_DEVICE);
 	kfree(msm_uport->tx.command_ptr_ptr);
@@ -1863,7 +1864,7 @@ static int __init msm_hs_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 	uport->irq = platform_get_irq(pdev, 0);
-	if (unlikely(uport->irq < 0))
+	if (unlikely((int)uport->irq < 0))
 		return -ENXIO;
 
 	if (pdata == NULL)
@@ -1904,11 +1905,11 @@ static int __init msm_hs_probe(struct platform_device *pdev)
 	uport->uartclk = 7372800;
 	msm_uport->imr_reg = 0x0;
 
-	msm_uport->clk = clk_get(&pdev->dev, "uartdm_clk");
+	msm_uport->clk = clk_get(&pdev->dev, "core_clk");
 	if (IS_ERR(msm_uport->clk))
 		return PTR_ERR(msm_uport->clk);
 
-	msm_uport->pclk = clk_get(&pdev->dev, "uartdm_pclk");
+	msm_uport->pclk = clk_get(&pdev->dev, "iface_clk");
 	/*
 	 * Some configurations do not require explicit pclk control so
 	 * do not flag error on pclk get failure.
@@ -1998,12 +1999,12 @@ static void msm_hs_shutdown(struct uart_port *uport)
 	tasklet_kill(&msm_uport->rx.tlet);
 	cancel_delayed_work_sync(&msm_uport->rx.flip_insert_work);
 
-	spin_lock_irqsave(&uport->lock, flags);
 	clk_enable(msm_uport->clk);
 
 	pm_runtime_disable(uport->dev);
 	pm_runtime_set_suspended(uport->dev);
-	pm_runtime_put_sync(uport->dev);
+
+	spin_lock_irqsave(&uport->lock, flags);
 	/* Disable the transmitter */
 	msm_hs_write(uport, UARTDM_CR_ADDR, UARTDM_CR_TX_DISABLE_BMSK);
 	/* Disable the receiver */
@@ -2032,7 +2033,7 @@ static void msm_hs_shutdown(struct uart_port *uport)
 	spin_unlock_irqrestore(&uport->lock, flags);
 
 	if (use_low_power_wakeup(msm_uport))
-		set_irq_wake(msm_uport->wakeup.irq, 0);
+		irq_set_irq_wake(msm_uport->wakeup.irq, 0);
 
 	/* Free the interrupt */
 	free_irq(uport->irq, msm_uport);

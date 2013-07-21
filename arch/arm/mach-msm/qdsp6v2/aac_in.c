@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -214,6 +214,15 @@ static long aac_in_ioctl(struct file *file,
 			rc = -EINVAL;
 			break;
 		}
+		/* For aac-lc, min_bit_rate = min(24Kbps, 0.5*SR*num_chan);
+		max_bi_rate = min(192Kbps, 6*SR*num_chan);
+		min_sample_rate = 8000Hz, max_rate=48000 */
+		if ((cfg.bit_rate < 4000) || (cfg.bit_rate > 192000)) {
+			pr_err("%s: ERROR in setting bitrate = %d\n",
+				__func__, cfg.bit_rate);
+			rc = -EINVAL;
+			break;
+		}
 		enc_cfg->sample_rate = cfg.sample_rate;
 		enc_cfg->channels = cfg.channels;
 		enc_cfg->bit_rate = cfg.bit_rate;
@@ -280,8 +289,8 @@ static int aac_in_open(struct inode *inode, struct file *file)
 	audio = kzalloc(sizeof(struct q6audio_in), GFP_KERNEL);
 
 	if (audio == NULL) {
-		pr_err("%s:session id %d: Could not allocate memory for aac\
-				driver\n", __func__, audio->ac->session);
+		pr_err("%s: Could not allocate memory for aac\
+				driver\n", __func__);
 		return -ENOMEM;
 	}
 	/* Allocate memory for encoder config param */
@@ -338,8 +347,8 @@ static int aac_in_open(struct inode *inode, struct file *file)
 							(void *)audio);
 
 	if (!audio->ac) {
-		pr_err("%s:session id %d: Could not allocate memory for\
-				audio client\n", __func__, audio->ac->session);
+		pr_err("%s: Could not allocate memory for\
+				audio client\n", __func__);
 		kfree(audio->enc_cfg);
 		kfree(audio->codec_cfg);
 		kfree(audio);

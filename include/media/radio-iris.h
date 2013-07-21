@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2011 Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2011-2012 The Linux Foundation. All rights reserved.
  *
  * This file is based on include/net/bluetooth/hci_core.h
  *
@@ -39,6 +39,11 @@
 /* HCI data types */
 #define RADIO_HCI_COMMAND_PKT   0x11
 #define RADIO_HCI_EVENT_PKT     0x14
+/*HCI reponce packets*/
+#define MAX_RIVA_PEEK_RSP_SIZE   251
+/* default data access */
+#define DEFAULT_DATA_OFFSET 2
+#define DEFAULT_DATA_SIZE 249
 
 /* HCI timeouts */
 #define RADIO_HCI_TIMEOUT	(10000)	/* 10 seconds */
@@ -123,6 +128,17 @@ void radio_hci_event_packet(struct radio_hci_dev *hdev, struct sk_buff *skb);
 #define HCI_OCF_FM_RDS_GRP_PROCESS          0x0013
 #define HCI_OCF_FM_EN_WAN_AVD_CTRL          0x0014
 #define HCI_OCF_FM_EN_NOTCH_CTRL            0x0015
+#define HCI_OCF_FM_SET_EVENT_MASK           0x0016
+#define HCI_OCF_FM_SET_CH_DET_THRESHOLD     0x0017
+#define HCI_OCF_FM_GET_CH_DET_THRESHOLD     0x0018
+/* HCI trans control commans opcode*/
+#define HCI_OCF_FM_ENABLE_TRANS_REQ         0x0001
+#define HCI_OCF_FM_DISABLE_TRANS_REQ        0x0002
+#define HCI_OCF_FM_GET_TRANS_CONF_REQ       0x0003
+#define HCI_OCF_FM_SET_TRANS_CONF_REQ       0x0004
+#define HCI_OCF_FM_RDS_RT_REQ               0x0008
+#define HCI_OCF_FM_RDS_PS_REQ               0x0009
+
 
 /* HCI common control commands opcode */
 #define HCI_OCF_FM_TUNE_STATION_REQ         0x0001
@@ -131,6 +147,7 @@ void radio_hci_event_packet(struct radio_hci_dev *hdev, struct sk_buff *skb);
 #define HCI_OCF_FM_RESET                    0x0004
 #define HCI_OCF_FM_GET_FEATURE_LIST         0x0005
 #define HCI_OCF_FM_DO_CALIBRATION           0x0006
+#define HCI_OCF_FM_SET_CALIBRATION          0x0007
 
 /*HCI Status parameters commands*/
 #define HCI_OCF_FM_READ_GRP_COUNTERS        0x0001
@@ -141,9 +158,11 @@ void radio_hci_event_packet(struct radio_hci_dev *hdev, struct sk_buff *skb);
 #define HCI_OCF_FM_SSBI_PEEK_REG            0x0004
 #define HCI_OCF_FM_SSBI_POKE_REG            0x0005
 #define HCI_OCF_FM_STATION_DBG_PARAM        0x0007
+#define HCI_FM_SET_INTERNAL_TONE_GENRATOR   0x0008
 
 /* Opcode OGF */
 #define HCI_OGF_FM_RECV_CTRL_CMD_REQ            0x0013
+#define HCI_OGF_FM_TRANS_CTRL_CMD_REQ           0x0014
 #define HCI_OGF_FM_COMMON_CTRL_CMD_REQ          0x0015
 #define HCI_OGF_FM_STATUS_PARAMETERS_CMD_REQ    0x0016
 #define HCI_OGF_FM_TEST_CMD_REQ                 0x0017
@@ -155,6 +174,8 @@ void radio_hci_event_packet(struct radio_hci_dev *hdev, struct sk_buff *skb);
 #define hci_opcode_ocf(op)		(op & 0x03ff)
 #define hci_recv_ctrl_cmd_op_pack(ocf) \
 	(__u16) hci_opcode_pack(HCI_OGF_FM_RECV_CTRL_CMD_REQ, ocf)
+#define hci_trans_ctrl_cmd_op_pack(ocf) \
+	(__u16) hci_opcode_pack(HCI_OGF_FM_TRANS_CTRL_CMD_REQ, ocf)
 #define hci_common_cmd_op_pack(ocf)	\
 	(__u16) hci_opcode_pack(HCI_OGF_FM_COMMON_CTRL_CMD_REQ, ocf)
 #define hci_status_param_op_pack(ocf)	\
@@ -176,6 +197,14 @@ void radio_hci_event_packet(struct radio_hci_dev *hdev, struct sk_buff *skb);
 #define HCI_FM_RESET_CMD 10
 #define HCI_FM_GET_FEATURES_CMD 11
 #define HCI_FM_STATION_DBG_PARAM_CMD 12
+#define HCI_FM_ENABLE_TRANS_CMD 13
+#define HCI_FM_DISABLE_TRANS_CMD 14
+#define HCI_FM_GET_TX_CONFIG 15
+#define HCI_FM_GET_DET_CH_TH_CMD 16
+
+/* Defines for FM TX*/
+#define TX_PS_DATA_LENGTH 96
+#define TX_RT_DATA_LENGTH 64
 
 /* ----- HCI Command request ----- */
 struct hci_fm_recv_conf_req {
@@ -185,6 +214,33 @@ struct hci_fm_recv_conf_req {
 	__u8	hlsi;
 	__u32	band_low_limit;
 	__u32	band_high_limit;
+} __packed;
+
+/* ----- HCI Command request ----- */
+struct hci_fm_trans_conf_req_struct {
+	__u8	emphasis;
+	__u8	rds_std;
+	__u32	band_low_limit;
+	__u32	band_high_limit;
+} __packed;
+
+
+/* ----- HCI Command request ----- */
+struct hci_fm_tx_ps {
+	__u8    ps_control;
+	__u16	pi;
+	__u8	pty;
+	__u8	ps_repeatcount;
+	__u8	ps_len;
+	__u8    ps_data[TX_PS_DATA_LENGTH];
+} __packed;
+
+struct hci_fm_tx_rt {
+	__u8    rt_control;
+	__u16	pi;
+	__u8	pty;
+	__u8	ps_len;
+	__u8    rt_data[TX_RT_DATA_LENGTH];
 } __packed;
 
 struct hci_fm_mute_mode_req {
@@ -235,26 +291,41 @@ struct hci_fm_en_avd_ctrl_req {
 struct hci_fm_def_data_rd_req {
 	__u8    mode;
 	__u8    length;
+	__u8    param_len;
+	__u8    param;
 } __packed;
 
 struct hci_fm_def_data_wr_req {
-	struct hci_fm_def_data_rd_req data_rd;
-	__u8    data[256];
+	__u8    mode;
+	__u8    length;
+	__u8   data[DEFAULT_DATA_SIZE];
 } __packed;
 
-struct hci_fm_peek_req {
+struct hci_fm_riva_data {
+	__u8 subopcode;
 	__u32   start_addr;
 	__u8    length;
 } __packed;
 
-struct hci_fm_poke_req {
-	struct hci_fm_peek_req peek_req;
-	__u8    data[256];
+struct hci_fm_riva_poke {
+	struct hci_fm_riva_data cmd_params;
+	__u8    data[MAX_RIVA_PEEK_RSP_SIZE];
 } __packed;
 
 struct hci_fm_ssbi_req {
 	__u16   start_addr;
 	__u8    data;
+} __packed;
+struct hci_fm_ssbi_peek {
+	__u16 start_address;
+} __packed;
+
+struct hci_fm_ch_det_threshold {
+	char sinr;
+	__u8 sinr_samples;
+	__u8 low_th;
+	__u8 high_th;
+
 } __packed;
 
 /*HCI events*/
@@ -292,6 +363,8 @@ struct hci_ev_tune_status {
 	__u8    stereo_prg;
 	__u8    rds_sync_status;
 	__u8    mute_mode;
+	char    sinr;
+	__u8	intf_det_th;
 } __packed;
 
 struct hci_ev_rds_rx_data {
@@ -359,6 +432,10 @@ struct hci_fm_conf_rsp {
 	struct hci_fm_recv_conf_req recv_conf_rsp;
 } __packed;
 
+struct hci_fm_get_trans_conf_rsp {
+	__u8    status;
+	struct hci_fm_trans_conf_req_struct trans_conf_rsp;
+} __packed;
 struct hci_fm_sig_threshold_rsp {
 	__u8    status;
 	__u8    sig_threshold;
@@ -386,7 +463,7 @@ struct hci_fm_af_list_rsp {
 struct hci_fm_data_rd_rsp {
 	__u8    status;
 	__u8    ret_data_len;
-	__u8    data[256];
+	__u8    data[DEFAULT_DATA_SIZE];
 } __packed;
 
 struct hci_fm_feature_list_rsp {
@@ -420,7 +497,11 @@ struct hci_fm_dbg_param_rsp {
 #define RDS_PS_LENGTH_OFFSET 7
 #define RDS_STRING 8
 #define RDS_PS_DATA_OFFSET 8
-
+#define RDS_CONFIG_OFFSET  3
+#define RDS_AF_JUMP_OFFSET 4
+#define PI_CODE_OFFSET 4
+#define AF_SIZE_OFFSET 6
+#define AF_LIST_OFFSET 7
 /*FM states*/
 
 enum radio_state_t {
@@ -428,6 +509,7 @@ enum radio_state_t {
 	FM_RECV,
 	FM_TRANS,
 	FM_RESET,
+	FM_CALIB
 };
 
 enum v4l2_cid_private_iris_t {
@@ -450,14 +532,46 @@ enum v4l2_cid_private_iris_t {
 	V4L2_CID_PRIVATE_IRIS_LP_MODE,
 	V4L2_CID_PRIVATE_IRIS_ANTENNA,
 	V4L2_CID_PRIVATE_IRIS_RDSD_BUF,
-	V4L2_CID_PRIVATE_IRIS_PSALL,
+	V4L2_CID_PRIVATE_IRIS_PSALL,  /*0x8000014*/
+
 	/*v4l2 Tx controls*/
 	V4L2_CID_PRIVATE_IRIS_TX_SETPSREPEATCOUNT,
 	V4L2_CID_PRIVATE_IRIS_STOP_RDS_TX_PS_NAME,
 	V4L2_CID_PRIVATE_IRIS_STOP_RDS_TX_RT,
 	V4L2_CID_PRIVATE_IRIS_IOVERC,
 	V4L2_CID_PRIVATE_IRIS_INTDET,
+	V4L2_CID_PRIVATE_IRIS_MPX_DCC,
+	V4L2_CID_PRIVATE_IRIS_AF_JUMP,
+	V4L2_CID_PRIVATE_IRIS_RSSI_DELTA,
+	V4L2_CID_PRIVATE_IRIS_HLSI, /*0x800001d*/
+
+	/*Diagnostic commands*/
+	V4L2_CID_PRIVATE_IRIS_SOFT_MUTE,
+	V4L2_CID_PRIVATE_IRIS_RIVA_ACCS_ADDR,
+	V4L2_CID_PRIVATE_IRIS_RIVA_ACCS_LEN,
+	V4L2_CID_PRIVATE_IRIS_RIVA_PEEK,
+	V4L2_CID_PRIVATE_IRIS_RIVA_POKE,
+	V4L2_CID_PRIVATE_IRIS_SSBI_ACCS_ADDR,
+	V4L2_CID_PRIVATE_IRIS_SSBI_PEEK,
+	V4L2_CID_PRIVATE_IRIS_SSBI_POKE,
+	V4L2_CID_PRIVATE_IRIS_TX_TONE,
+	V4L2_CID_PRIVATE_IRIS_RDS_GRP_COUNTERS,
+	V4L2_CID_PRIVATE_IRIS_SET_NOTCH_FILTER, /* 0x8000028 */
+	V4L2_CID_PRIVATE_IRIS_SET_AUDIO_PATH, /* TAVARUA specific command */
+	V4L2_CID_PRIVATE_IRIS_DO_CALIBRATION,
+	V4L2_CID_PRIVATE_IRIS_SRCH_ALGORITHM, /* TAVARUA specific command */
+	V4L2_CID_PRIVATE_IRIS_GET_SINR,
+	V4L2_CID_PRIVATE_INTF_LOW_THRESHOLD,
+	V4L2_CID_PRIVATE_INTF_HIGH_THRESHOLD,
+	V4L2_CID_PRIVATE_SINR_THRESHOLD,
+	V4L2_CID_PRIVATE_SINR_SAMPLES,
+
+	/*using private CIDs under userclass*/
+	V4L2_CID_PRIVATE_IRIS_READ_DEFAULT = 0x00980928,
+	V4L2_CID_PRIVATE_IRIS_WRITE_DEFAULT,
+	V4L2_CID_PRIVATE_IRIS_SET_CALIBRATION,
 };
+
 
 enum iris_evt_t {
 	IRIS_EVT_RADIO_READY,
@@ -477,7 +591,29 @@ enum iris_evt_t {
 	IRIS_EVT_NEW_SRCH_LIST,
 	IRIS_EVT_NEW_AF_LIST,
 	IRIS_EVT_TXRDSDAT,
-	IRIS_EVT_TXRDSDONE
+	IRIS_EVT_TXRDSDONE,
+	IRIS_EVT_RADIO_DISABLED
+};
+enum emphasis_type {
+	FM_RX_EMP75 = 0x0,
+	FM_RX_EMP50 = 0x1
+};
+
+enum channel_space_type {
+	FM_RX_SPACE_200KHZ = 0x0,
+	FM_RX_SPACE_100KHZ = 0x1,
+	FM_RX_SPACE_50KHZ = 0x2
+};
+
+enum high_low_injection {
+	AUTO_HI_LO_INJECTION = 0x0,
+	LOW_SIDE_INJECTION = 0x1,
+	HIGH_SIDE_INJECTION = 0x2
+};
+
+enum fm_rds_type {
+	FM_RX_RDBS_SYSTEM = 0x0,
+	FM_RX_RDS_SYSTEM = 0x1
 };
 
 enum iris_region_t {
@@ -497,6 +633,11 @@ enum iris_buf_t {
 	IRIS_BUF_PS_RDS,
 	IRIS_BUF_RAW_RDS,
 	IRIS_BUF_AF_LIST,
+	IRIS_BUF_PEEK,
+	IRIS_BUF_SSBI_PEEK,
+	IRIS_BUF_RDS_CNTRS,
+	IRIS_BUF_RD_DEFAULT,
+	IRIS_BUF_CAL_DATA,
 	IRIS_BUF_MAX
 };
 
@@ -532,6 +673,15 @@ enum search_t {
 	RDS_AF_JUMP,
 };
 
+
+/* Band limits */
+#define REGION_US_EU_BAND_LOW              87500
+#define REGION_US_EU_BAND_HIGH             108000
+#define REGION_JAPAN_STANDARD_BAND_LOW     76000
+#define REGION_JAPAN_STANDARD_BAND_HIGH    90000
+#define REGION_JAPAN_WIDE_BAND_LOW         90000
+#define REGION_JAPAN_WIDE_BAND_HIGH        108000
+
 #define SRCH_MODE	0x07
 #define SRCH_DIR	0x08 /* 0-up 1-down */
 #define SCAN_DWELL	0x70
@@ -549,6 +699,13 @@ enum search_t {
 #define RDS_ON		0x01
 #define RDS_BUF_SZ  100
 
+/* constants */
+#define  RDS_BLOCKS_NUM	(4)
+#define BYTES_PER_BLOCK	(3)
+#define MAX_PS_LENGTH	(96)
+#define MAX_RT_LENGTH	(64)
+#define RDS_GRP_CNTR_LEN (36)
+#define RX_RT_DATA_LENGTH (63)
 /* Search direction */
 #define SRCH_DIR_UP		(0)
 #define SRCH_DIR_DOWN		(1)
@@ -557,7 +714,7 @@ enum search_t {
 #define SEARCH_RDS_STNS_MODE_OFFSET 4
 
 /*Search Station list */
-#define PARAMS_PER_STATION 0x07
+#define PARAMS_PER_STATION 0x08
 #define STN_NUM_OFFSET     0x01
 #define STN_FREQ_OFFSET    0x02
 #define KHZ_TO_MHZ         1000
@@ -568,15 +725,53 @@ enum search_t {
 #define CTRL_ON			(1)
 #define CTRL_OFF		(0)
 
+/*Diagnostic commands*/
+
+#define RIVA_PEEK_OPCODE 0x0D
+#define RIVA_POKE_OPCODE 0x0C
+
+#define PEEK_DATA_OFSET 0x1
+#define RIVA_PEEK_PARAM     0x6
+#define RIVA_PEEK_LEN_OFSET  0x6
+#define SSBI_PEEK_LEN    0x01
+/*Calibration data*/
+#define PROCS_CALIB_MODE  1
+#define PROCS_CALIB_SIZE  23
+#define DC_CALIB_MODE     2
+#define DC_CALIB_SIZE     48
+#define RSB_CALIB_MODE    3
+#define RSB_CALIB_SIZE    4
+#define CALIB_DATA_OFSET  2
+#define CALIB_MODE_OFSET  1
+#define MAX_CALIB_SIZE 75
+struct hci_fm_set_cal_req_proc {
+	__u8    mode;
+	/*Max process calibration data size*/
+	__u8    data[PROCS_CALIB_SIZE];
+} __packed;
+
+struct hci_fm_set_cal_req_dc {
+	__u8    mode;
+	/*Max DC calibration data size*/
+	__u8    data[DC_CALIB_SIZE];
+} __packed;
+
+struct hci_cc_do_calibration_rsp {
+	__u8 status;
+	__u8 mode;
+	__u8 data[MAX_CALIB_SIZE];
+} __packed;
+
+/* Low Power mode*/
+#define SIG_LEVEL_INTR  (1 << 0)
+#define RDS_SYNC_INTR   (1 << 1)
+#define AUDIO_CTRL_INTR (1 << 2)
+#define AF_JUMP_ENABLE  (1 << 4)
 int hci_def_data_read(struct hci_fm_def_data_rd_req *arg,
 	struct radio_hci_dev *hdev);
 int hci_def_data_write(struct hci_fm_def_data_wr_req *arg,
 	struct radio_hci_dev *hdev);
 int hci_fm_do_calibration(__u8 *arg, struct radio_hci_dev *hdev);
 int hci_fm_do_calibration(__u8 *arg, struct radio_hci_dev *hdev);
-int hci_peek_data(struct hci_fm_peek_req *arg, struct radio_hci_dev *hdev);
-int hci_poke_data(struct hci_fm_poke_req *arg, struct radio_hci_dev *hdev);
-int hci_poke_data(struct hci_fm_poke_req *arg, struct radio_hci_dev *hdev);
-int hci_poke_data(struct hci_fm_poke_req *arg, struct radio_hci_dev *hdev);
 
 #endif /* __RADIO_HCI_CORE_H */

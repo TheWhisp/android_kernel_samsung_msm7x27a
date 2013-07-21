@@ -32,7 +32,7 @@ struct jz4740_hwmon {
 
 	int irq;
 
-	struct mfd_cell *cell;
+	const struct mfd_cell *cell;
 	struct device *hwmon;
 
 	struct completion read_completion;
@@ -59,7 +59,7 @@ static ssize_t jz4740_hwmon_read_adcin(struct device *dev,
 {
 	struct jz4740_hwmon *hwmon = dev_get_drvdata(dev);
 	struct completion *completion = &hwmon->read_completion;
-	unsigned long t;
+	long t;
 	unsigned long val;
 	int ret;
 
@@ -112,7 +112,7 @@ static int __devinit jz4740_hwmon_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
-	hwmon->cell = pdev->dev.platform_data;
+	hwmon->cell = mfd_get_cell(pdev);
 
 	hwmon->irq = platform_get_irq(pdev, 0);
 	if (hwmon->irq < 0) {

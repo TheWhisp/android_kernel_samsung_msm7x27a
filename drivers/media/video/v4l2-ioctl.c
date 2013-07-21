@@ -17,7 +17,6 @@
 #include <linux/types.h>
 #include <linux/kernel.h>
 
-#define __OLD_VIDIOC_ /* To allow fixing old calls */
 #include <linux/videodev2.h>
 
 #include <media/v4l2-common.h>
@@ -25,6 +24,7 @@
 #include <media/v4l2-ctrls.h>
 #include <media/v4l2-fh.h>
 #include <media/v4l2-event.h>
+#include <media/v4l2-device.h>
 #include <media/v4l2-chip-ident.h>
 
 #define dbgarg(cmd, fmt, arg...) \
@@ -48,7 +48,7 @@
 			printk(KERN_CONT "%s: " fmt, vfd->name, ## arg);\
 		} while (0)
 
-/* Zero out the end of the struct pointed to by p.  Everthing after, but
+/* Zero out the end of the struct pointed to by p.  Everything after, but
  * not including, the specified field is cleared. */
 #define CLEAR_AFTER_FIELD(p, field) \
 	memset((u8 *)(p) + offsetof(typeof(*(p)), field) + sizeof((p)->field), \
@@ -295,135 +295,6 @@ void v4l_printk_ioctl(unsigned int cmd)
 }
 EXPORT_SYMBOL(v4l_printk_ioctl);
 
-/*
- * helper function -- handles userspace copying for ioctl arguments
- */
-
-#ifdef __OLD_VIDIOC_
-static unsigned int
-video_fix_command(unsigned int cmd)
-{
-	switch (cmd) {
-	case VIDIOC_OVERLAY_OLD:
-		cmd = VIDIOC_OVERLAY;
-		break;
-	case VIDIOC_S_PARM_OLD:
-		cmd = VIDIOC_S_PARM;
-		break;
-	case VIDIOC_S_CTRL_OLD:
-		cmd = VIDIOC_S_CTRL;
-		break;
-	case VIDIOC_G_AUDIO_OLD:
-		cmd = VIDIOC_G_AUDIO;
-		break;
-	case VIDIOC_G_AUDOUT_OLD:
-		cmd = VIDIOC_G_AUDOUT;
-		break;
-	case VIDIOC_CROPCAP_OLD:
-		cmd = VIDIOC_CROPCAP;
-		break;
-	}
-	return cmd;
-}
-#endif
-
-/*
- * Obsolete usercopy function - Should be removed soon
- */
-long
-video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
-		v4l2_kioctl func)
-{
-	char	sbuf[128];
-	void    *mbuf = NULL;
-	void	*parg = NULL;
-	long	err  = -EINVAL;
-	int     is_ext_ctrl;
-	size_t  ctrls_size = 0;
-	void __user *user_ptr = NULL;
-
-#ifdef __OLD_VIDIOC_
-	cmd = video_fix_command(cmd);
-#endif
-	is_ext_ctrl = (cmd == VIDIOC_S_EXT_CTRLS || cmd == VIDIOC_G_EXT_CTRLS ||
-		       cmd == VIDIOC_TRY_EXT_CTRLS);
-
-	/*  Copy arguments into temp kernel buffer  */
-	switch (_IOC_DIR(cmd)) {
-	case _IOC_NONE:
-		parg = NULL;
-		break;
-	case _IOC_READ:
-	case _IOC_WRITE:
-	case (_IOC_WRITE | _IOC_READ):
-		if (_IOC_SIZE(cmd) <= sizeof(sbuf)) {
-			parg = sbuf;
-		} else {
-			/* too big to allocate from stack */
-			mbuf = kmalloc(_IOC_SIZE(cmd), GFP_KERNEL);
-			if (NULL == mbuf)
-				return -ENOMEM;
-			parg = mbuf;
-		}
-
-		err = -EFAULT;
-		if (_IOC_DIR(cmd) & _IOC_WRITE)
-			if (copy_from_user(parg, (void __user *)arg, _IOC_SIZE(cmd)))
-				goto out;
-		break;
-	}
-	if (is_ext_ctrl) {
-		struct v4l2_ext_controls *p = parg;
-
-		/* In case of an error, tell the caller that it wasn't
-		   a specific control that caused it. */
-		p->error_idx = p->count;
-		user_ptr = (void __user *)p->controls;
-		if (p->count) {
-			ctrls_size = sizeof(struct v4l2_ext_control) * p->count;
-			/* Note: v4l2_ext_controls fits in sbuf[] so mbuf is still NULL. */
-			mbuf = kmalloc(ctrls_size, GFP_KERNEL);
-			err = -ENOMEM;
-			if (NULL == mbuf)
-				goto out_ext_ctrl;
-			err = -EFAULT;
-			if (copy_from_user(mbuf, user_ptr, ctrls_size))
-				goto out_ext_ctrl;
-			p->controls = mbuf;
-		}
-	}
-
-	/* call driver */
-	err = func(file, cmd, parg);
-	if (err == -ENOIOCTLCMD)
-		err = -EINVAL;
-	if (is_ext_ctrl) {
-		struct v4l2_ext_controls *p = parg;
-
-		p->controls = (void *)user_ptr;
-		if (p->count && err == 0 && copy_to_user(user_ptr, mbuf, ctrls_size))
-			err = -EFAULT;
-		goto out_ext_ctrl;
-	}
-	if (err < 0)
-		goto out;
-
-out_ext_ctrl:
-	/*  Copy results into user buffer  */
-	switch (_IOC_DIR(cmd)) {
-	case _IOC_READ:
-	case (_IOC_WRITE | _IOC_READ):
-		if (copy_to_user((void __user *)arg, parg, _IOC_SIZE(cmd)))
-			err = -EFAULT;
-		break;
-	}
-
-out:
-	kfree(mbuf);
-	return err;
-}
-EXPORT_SYMBOL(video_usercopy);
-
 static void dbgbuf(unsigned int cmd, struct video_device *vfd,
 					struct v4l2_buffer *p)
 {
@@ -668,7 +539,9 @@ static long __video_do_ioctl(struct file *file,
 	struct video_device *vfd = video_devdata(file);
 	const struct v4l2_ioctl_ops *ops = vfd->ioctl_ops;
 	void *fh = file->private_data;
+	struct v4l2_fh *vfh = NULL;
 	struct v4l2_format f_copy;
+	int use_fh_prio = 0;
 	long ret = -EINVAL;
 
 	if (ops == NULL) {
@@ -681,6 +554,45 @@ static long __video_do_ioctl(struct file *file,
 				!(vfd->debug & V4L2_DEBUG_IOCTL_ARG)) {
 		v4l_print_ioctl(vfd->name, cmd);
 		printk(KERN_CONT "\n");
+	}
+
+	if (test_bit(V4L2_FL_USES_V4L2_FH, &vfd->flags)) {
+		vfh = file->private_data;
+		use_fh_prio = test_bit(V4L2_FL_USE_FH_PRIO, &vfd->flags);
+	}
+
+	if (use_fh_prio) {
+		switch (cmd) {
+		case VIDIOC_S_CTRL:
+		case VIDIOC_S_STD:
+		case VIDIOC_S_INPUT:
+		case VIDIOC_S_OUTPUT:
+		case VIDIOC_S_TUNER:
+		case VIDIOC_S_FREQUENCY:
+		case VIDIOC_S_FMT:
+		case VIDIOC_S_CROP:
+		case VIDIOC_S_AUDIO:
+		case VIDIOC_S_AUDOUT:
+		case VIDIOC_S_EXT_CTRLS:
+		case VIDIOC_S_FBUF:
+		case VIDIOC_S_PRIORITY:
+		case VIDIOC_S_DV_PRESET:
+		case VIDIOC_S_DV_TIMINGS:
+		case VIDIOC_S_JPEGCOMP:
+		case VIDIOC_S_MODULATOR:
+		case VIDIOC_S_PARM:
+		case VIDIOC_S_HW_FREQ_SEEK:
+		case VIDIOC_ENCODER_CMD:
+		case VIDIOC_OVERLAY:
+		case VIDIOC_REQBUFS:
+		case VIDIOC_STREAMON:
+		case VIDIOC_STREAMOFF:
+			ret = v4l2_prio_check(vfd->prio, vfh->prio);
+			if (ret)
+				goto exit_prio;
+			ret = -EINVAL;
+			break;
+		}
 	}
 
 	switch (cmd) {
@@ -709,9 +621,12 @@ static long __video_do_ioctl(struct file *file,
 	{
 		enum v4l2_priority *p = arg;
 
-		if (!ops->vidioc_g_priority)
-			break;
-		ret = ops->vidioc_g_priority(file, fh, p);
+		if (ops->vidioc_g_priority) {
+			ret = ops->vidioc_g_priority(file, fh, p);
+		} else if (use_fh_prio) {
+			*p = v4l2_prio_max(&vfd->v4l2_dev->prio);
+			ret = 0;
+		}
 		if (!ret)
 			dbgarg(cmd, "priority is %d\n", *p);
 		break;
@@ -720,10 +635,13 @@ static long __video_do_ioctl(struct file *file,
 	{
 		enum v4l2_priority *p = arg;
 
-		if (!ops->vidioc_s_priority)
-			break;
+		if (!ops->vidioc_s_priority && !use_fh_prio)
+				break;
 		dbgarg(cmd, "setting priority to %d\n", *p);
-		ret = ops->vidioc_s_priority(file, fh, *p);
+		if (ops->vidioc_s_priority)
+			ret = ops->vidioc_s_priority(file, fh, *p);
+		else
+			ret = v4l2_prio_change(&vfd->v4l2_dev->prio, &vfh->prio, *p);
 		break;
 	}
 
@@ -1904,6 +1822,8 @@ static long __video_do_ioctl(struct file *file,
 		if (!ops->vidioc_g_tuner)
 			break;
 
+		p->type = (vfd->vfl_type == VFL_TYPE_RADIO) ?
+			V4L2_TUNER_RADIO : V4L2_TUNER_ANALOG_TV;
 		ret = ops->vidioc_g_tuner(file, fh, p);
 		if (!ret)
 			dbgarg(cmd, "index=%d, name=%s, type=%d, "
@@ -1922,6 +1842,8 @@ static long __video_do_ioctl(struct file *file,
 
 		if (!ops->vidioc_s_tuner)
 			break;
+		p->type = (vfd->vfl_type == VFL_TYPE_RADIO) ?
+			V4L2_TUNER_RADIO : V4L2_TUNER_ANALOG_TV;
 		dbgarg(cmd, "index=%d, name=%s, type=%d, "
 				"capability=0x%x, rangelow=%d, "
 				"rangehigh=%d, signal=%d, afc=%d, "
@@ -1940,6 +1862,8 @@ static long __video_do_ioctl(struct file *file,
 		if (!ops->vidioc_g_frequency)
 			break;
 
+		p->type = (vfd->vfl_type == VFL_TYPE_RADIO) ?
+			V4L2_TUNER_RADIO : V4L2_TUNER_ANALOG_TV;
 		ret = ops->vidioc_g_frequency(file, fh, p);
 		if (!ret)
 			dbgarg(cmd, "tuner=%d, type=%d, frequency=%d\n",
@@ -2022,13 +1946,19 @@ static long __video_do_ioctl(struct file *file,
 	case VIDIOC_S_HW_FREQ_SEEK:
 	{
 		struct v4l2_hw_freq_seek *p = arg;
+		enum v4l2_tuner_type type;
 
 		if (!ops->vidioc_s_hw_freq_seek)
 			break;
+		type = (vfd->vfl_type == VFL_TYPE_RADIO) ?
+			V4L2_TUNER_RADIO : V4L2_TUNER_ANALOG_TV;
 		dbgarg(cmd,
-			"tuner=%d, type=%d, seek_upward=%d, wrap_around=%d\n",
-			p->tuner, p->type, p->seek_upward, p->wrap_around);
-		ret = ops->vidioc_s_hw_freq_seek(file, fh, p);
+			"tuner=%u, type=%u, seek_upward=%u, wrap_around=%u, spacing=%u\n",
+			p->tuner, p->type, p->seek_upward, p->wrap_around, p->spacing);
+		if (p->type != type)
+			ret = -EINVAL;
+		else
+			ret = ops->vidioc_s_hw_freq_seek(file, fh, p);
 		break;
 	}
 	case VIDIOC_ENUM_FRAMESIZES:
@@ -2268,13 +2198,18 @@ static long __video_do_ioctl(struct file *file,
 	}
 	default:
 	{
+		bool valid_prio = true;
+
 		if (!ops->vidioc_default)
 			break;
-		ret = ops->vidioc_default(file, fh, cmd, arg);
+		if (use_fh_prio)
+			valid_prio = v4l2_prio_check(vfd->prio, vfh->prio) >= 0;
+		ret = ops->vidioc_default(file, fh, valid_prio, cmd, arg);
 		break;
 	}
 	} /* switch */
 
+exit_prio:
 	if (vfd->debug & V4L2_DEBUG_IOCTL_ARG) {
 		if (ret < 0) {
 			v4l_print_ioctl(vfd->name, cmd);
@@ -2354,6 +2289,10 @@ static int check_array_args(unsigned int cmd, void *parg, size_t *array_size,
 		struct v4l2_ext_controls *ctrls = parg;
 
 		if (ctrls->count != 0) {
+			if (ctrls->count > V4L2_CID_MAX_CTRLS) {
+				ret = -EINVAL;
+				break;
+			}
 			*user_ptr = (void __user *)ctrls->controls;
 			*kernel_ptr = (void **)&ctrls->controls;
 			*array_size = sizeof(struct v4l2_ext_control)
@@ -2367,8 +2306,9 @@ static int check_array_args(unsigned int cmd, void *parg, size_t *array_size,
 	return ret;
 }
 
-long video_ioctl2(struct file *file,
-	       unsigned int cmd, unsigned long arg)
+long
+video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
+	       v4l2_kioctl func)
 {
 	char	sbuf[128];
 	void    *mbuf = NULL;
@@ -2379,9 +2319,6 @@ long video_ioctl2(struct file *file,
 	void __user *user_ptr = NULL;
 	void	**kernel_ptr = NULL;
 
-#ifdef __OLD_VIDIOC_
-	cmd = video_fix_command(cmd);
-#endif
 	/*  Copy arguments into temp kernel buffer  */
 	if (_IOC_DIR(cmd) != _IOC_NONE) {
 		if (_IOC_SIZE(cmd) <= sizeof(sbuf)) {
@@ -2433,7 +2370,7 @@ long video_ioctl2(struct file *file,
 	}
 
 	/* Handles IOCTL */
-	err = __video_do_ioctl(file, cmd, parg);
+	err = func(file, cmd, parg);
 	if (err == -ENOIOCTLCMD)
 		err = -EINVAL;
 
@@ -2459,5 +2396,12 @@ out_array_args:
 out:
 	kfree(mbuf);
 	return err;
+}
+EXPORT_SYMBOL(video_usercopy);
+
+long video_ioctl2(struct file *file,
+	       unsigned int cmd, unsigned long arg)
+{
+	return video_usercopy(file, cmd, arg, __video_do_ioctl);
 }
 EXPORT_SYMBOL(video_ioctl2);

@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -19,9 +19,81 @@
 
 #define HDR_SIZ 8
 
+void diag_smd_cntl_notify(void *ctxt, unsigned event)
+{
+	int r1, r2;
+
+	if (!(driver->ch_cntl))
+		return;
+
+	switch (event) {
+	case SMD_EVENT_DATA:
+		r1 = smd_read_avail(driver->ch_cntl);
+		r2 = smd_cur_packet_size(driver->ch_cntl);
+		if (r1 > 0 && r1 == r2)
+			queue_work(driver->diag_wq,
+				 &(driver->diag_read_smd_cntl_work));
+		else
+			pr_debug("diag: incomplete pkt on Modem CNTL ch\n");
+		break;
+	case SMD_EVENT_OPEN:
+		queue_work(driver->diag_cntl_wq,
+			 &(driver->diag_modem_mask_update_work));
+		break;
+	}
+}
+
+void diag_smd_qdsp_cntl_notify(void *ctxt, unsigned event)
+{
+	int r1, r2;
+
+	if (!(driver->chqdsp_cntl))
+		return;
+
+	switch (event) {
+	case SMD_EVENT_DATA:
+		r1 = smd_read_avail(driver->chqdsp_cntl);
+		r2 = smd_cur_packet_size(driver->chqdsp_cntl);
+		if (r1 > 0 && r1 == r2)
+			queue_work(driver->diag_wq,
+				 &(driver->diag_read_smd_qdsp_cntl_work));
+		else
+			pr_debug("diag: incomplete pkt on LPASS CNTL ch\n");
+		break;
+	case SMD_EVENT_OPEN:
+		queue_work(driver->diag_cntl_wq,
+			 &(driver->diag_qdsp_mask_update_work));
+		break;
+	}
+}
+
+void diag_smd_wcnss_cntl_notify(void *ctxt, unsigned event)
+{
+	int r1, r2;
+
+	if (!(driver->ch_wcnss_cntl))
+		return;
+
+	switch (event) {
+	case SMD_EVENT_DATA:
+		r1 = smd_read_avail(driver->ch_wcnss_cntl);
+		r2 = smd_cur_packet_size(driver->ch_wcnss_cntl);
+		if (r1 > 0 && r1 == r2)
+			queue_work(driver->diag_wq,
+				 &(driver->diag_read_smd_wcnss_cntl_work));
+		else
+			pr_debug("diag: incomplete pkt on WCNSS CNTL ch\n");
+		break;
+	case SMD_EVENT_OPEN:
+		queue_work(driver->diag_cntl_wq,
+			 &(driver->diag_wcnss_mask_update_work));
+		break;
+	}
+}
+
 static void diag_smd_cntl_send_req(int proc_num)
 {
-	int data_len = 0, type = -1, count_bytes = 0, j, r;
+	int data_len = 0, type = -1, count_bytes = 0, j, r, flag = 0;
 	struct bindpkt_params_per_process *pkt_params =
 		 kzalloc(sizeof(struct bindpkt_params_per_process), GFP_KERNEL);
 	struct diag_ctrl_msg *msg;
@@ -29,6 +101,11 @@ static void diag_smd_cntl_send_req(int proc_num)
 	struct bindpkt_params *temp;
 	void *buf = NULL;
 	smd_channel_t *smd_ch = NULL;
+
+	if (pkt_params == NULL) {
+		pr_alert("diag: Memory allocation failure\n");
+		return;
+	}
 
 	if (proc_num == MODEM_PROC) {
 		buf = driver->buf_in_cntl;
@@ -41,8 +118,10 @@ static void diag_smd_cntl_send_req(int proc_num)
 		smd_ch = driver->ch_wcnss_cntl;
 	}
 
-	if (!smd_ch || !buf)
+	if (!smd_ch || !buf) {
+		kfree(pkt_params);
 		return;
+	}
 
 	r = smd_read_avail(smd_ch);
 	if (r > IN_BUF_SIZE) {
@@ -60,6 +139,17 @@ static void diag_smd_cntl_send_req(int proc_num)
 		while (count_bytes + HDR_SIZ <= r) {
 			type = *(uint32_t *)(buf);
 			data_len = *(uint32_t *)(buf + 4);
+			if (type < DIAG_CTRL_MSG_REG ||
+					 type > DIAG_CTRL_MSG_F3_MASK_V2) {
+				pr_alert("diag: Invalid Msg type %d proc %d",
+					 type, proc_num);
+				break;
+			}
+			if (data_len < 0 || data_len > r) {
+				pr_alert("diag: Invalid data len %d proc %d",
+					 data_len, proc_num);
+				break;
+			}
 			count_bytes = count_bytes+HDR_SIZ+data_len;
 			if (type == DIAG_CTRL_MSG_REG && r >= count_bytes) {
 				msg = buf+HDR_SIZ;
@@ -68,6 +158,10 @@ static void diag_smd_cntl_send_req(int proc_num)
 				pkt_params->count = msg->count_entries;
 				temp = kzalloc(pkt_params->count * sizeof(struct
 						 bindpkt_params), GFP_KERNEL);
+				if (temp == NULL) {
+					pr_alert("diag: Memory alloc fail\n");
+					return;
+				}
 				for (j = 0; j < pkt_params->count; j++) {
 					temp->cmd_code = msg->cmd_code;
 					temp->subsys_id = msg->subsysid;
@@ -80,14 +174,24 @@ static void diag_smd_cntl_send_req(int proc_num)
 				}
 				temp -= pkt_params->count;
 				pkt_params->params = temp;
+				flag = 1;
 				diagchar_ioctl(NULL, DIAG_IOCTL_COMMAND_REG,
 						 (unsigned long)pkt_params);
 				kfree(temp);
-				buf = buf + HDR_SIZ + data_len;
 			}
+			buf = buf + HDR_SIZ + data_len;
 		}
 	}
 	kfree(pkt_params);
+	if (flag) {
+		/* Poll SMD CNTL channels to check for data */
+		if (proc_num == MODEM_PROC)
+			diag_smd_cntl_notify(NULL, SMD_EVENT_DATA);
+		else if (proc_num == QDSP_PROC)
+			diag_smd_qdsp_cntl_notify(NULL, SMD_EVENT_DATA);
+		else if (proc_num == WCNSS_PROC)
+			diag_smd_wcnss_cntl_notify(NULL, SMD_EVENT_DATA);
+	}
 }
 
 void diag_read_smd_cntl_work_fn(struct work_struct *work)
@@ -105,29 +209,12 @@ void diag_read_smd_wcnss_cntl_work_fn(struct work_struct *work)
 	diag_smd_cntl_send_req(WCNSS_PROC);
 }
 
-static void diag_smd_cntl_notify(void *ctxt, unsigned event)
-{
-	queue_work(driver->diag_wq, &(driver->diag_read_smd_cntl_work));
-}
-
-#if defined(CONFIG_MSM_N_WAY_SMD)
-static void diag_smd_qdsp_cntl_notify(void *ctxt, unsigned event)
-{
-	queue_work(driver->diag_wq, &(driver->diag_read_smd_qdsp_cntl_work));
-}
-#endif
-
-static void diag_smd_wcnss_cntl_notify(void *ctxt, unsigned event)
-{
-	queue_work(driver->diag_wq, &(driver->diag_read_smd_wcnss_cntl_work));
-}
-
 static int diag_smd_cntl_probe(struct platform_device *pdev)
 {
 	int r = 0;
 
-	/* open control ports only on 8960 */
-	if (chk_config_get_id() == AO8960_TOOLS_ID) {
+	/* open control ports only on 8960 & newer targets */
+	if (chk_apps_only()) {
 		if (pdev->id == SMD_APPS_MODEM)
 			r = smd_open("DIAG_CNTL", &driver->ch_cntl, driver,
 							diag_smd_cntl_notify);
@@ -183,6 +270,7 @@ static struct platform_driver diag_smd_lite_cntl_driver = {
 
 void diagfwd_cntl_init(void)
 {
+	driver->diag_cntl_wq = create_singlethread_workqueue("diag_cntl_wq");
 	if (driver->buf_in_cntl == NULL) {
 		driver->buf_in_cntl = kzalloc(IN_BUF_SIZE, GFP_KERNEL);
 		if (driver->buf_in_cntl == NULL)
@@ -207,6 +295,8 @@ err:
 		kfree(driver->buf_in_cntl);
 		kfree(driver->buf_in_qdsp_cntl);
 		kfree(driver->buf_in_wcnss_cntl);
+		if (driver->diag_cntl_wq)
+			destroy_workqueue(driver->diag_cntl_wq);
 }
 
 void diagfwd_cntl_exit(void)
@@ -217,6 +307,7 @@ void diagfwd_cntl_exit(void)
 	driver->ch_cntl = 0;
 	driver->chqdsp_cntl = 0;
 	driver->ch_wcnss_cntl = 0;
+	destroy_workqueue(driver->diag_cntl_wq);
 	platform_driver_unregister(&msm_smd_ch1_cntl_driver);
 	platform_driver_unregister(&diag_smd_lite_cntl_driver);
 

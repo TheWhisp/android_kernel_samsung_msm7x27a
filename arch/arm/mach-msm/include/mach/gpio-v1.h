@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2007 Google, Inc.
- * Copyright (c) 2009-2010, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2009-2010, The Linux Foundation. All rights reserved.
  * Author: Mike Lockwood <lockwood@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -19,14 +19,6 @@
 #include <linux/interrupt.h>
 #include <asm-generic/gpio.h>
 #include <mach/irqs.h>
-
-#if defined(CONFIG_MACH_TREBON)
-#include <mach/gpio_trebon.h>
-#elif defined(CONFIG_MACH_GEIM)
-#include <mach/gpio_geim.h>
-#else
-#include <mach/gpio_jena.h>
-#endif
 
 #define FIRST_BOARD_GPIO	NR_GPIO_IRQS
 
@@ -51,7 +43,7 @@ static inline int gpio_to_irq(unsigned gpio)
 }
 
 void msm_gpio_enter_sleep(int from_idle);
-int msm_gpio_exit_sleep(void);
+void msm_gpio_exit_sleep(void);
 
 /**
  * struct msm_gpio - GPIO pin description

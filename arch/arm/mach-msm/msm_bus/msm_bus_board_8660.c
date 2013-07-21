@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -22,7 +22,8 @@
 #include "msm_bus_core.h"
 
 #define NMASTERS 39
-#define NSLAVES 67
+#define NSLAVES 68
+#define NFAB_8660 5
 
 enum msm_bus_fabric_tiered_slave_type {
 	MSM_BUS_SYSTEM_TIERED_SLAVE_FAB_APPSS = 1,
@@ -139,8 +140,8 @@ static struct msm_bus_node_info apps_fabric_info[] = {
 		.tier = tiered_slave_ebi,
 		.num_tiers = ARRAY_SIZE(tiered_slave_ebi),
 		.buswidth = 8,
-		.slaveclk[DUAL_CTX] = "ebi1_msmbus_clk",
-		.slaveclk[ACTIVE_CTX] = "ebi1_a_clk",
+		.slaveclk[DUAL_CTX] = "mem_clk",
+		.slaveclk[ACTIVE_CTX] = "mem_a_clk",
 	},
 	{
 		.id = MSM_BUS_SLAVE_AMPSS_L2,
@@ -805,80 +806,8 @@ static struct msm_bus_node_info cpss_fpb_fabric_info[] = {
 	},
 };
 
-struct msm_bus_fabric_registration msm_bus_apps_fabric_pdata = {
-	.id = MSM_BUS_FAB_APPSS,
-	.name = "msm_apps_fab",
-	.info = apps_fabric_info,
-	.len = ARRAY_SIZE(apps_fabric_info),
-	.ahb = 0,
-	.fabclk[DUAL_CTX] = "afab_clk",
-	.fabclk[ACTIVE_CTX] = "afab_a_clk",
-	.haltid = MSM_RPM_ID_APPS_FABRIC_HALT_0,
-	.offset = MSM_RPM_ID_APPS_FABRIC_ARB_0,
-	.nmasters = 4,
-	.nslaves = 4,
-	.ntieredslaves = 2,
-};
-
-struct msm_bus_fabric_registration msm_bus_sys_fabric_pdata = {
-	.id = MSM_BUS_FAB_SYSTEM,
-	.name = "msm_sys_fab",
-	system_fabric_info,
-	ARRAY_SIZE(system_fabric_info),
-	.ahb = 0,
-	.fabclk[DUAL_CTX] = "sfab_clk",
-	.fabclk[ACTIVE_CTX] = "sfab_a_clk",
-	.haltid = MSM_RPM_ID_SYSTEM_FABRIC_HALT_0,
-	.offset = MSM_RPM_ID_SYSTEM_FABRIC_ARB_0,
-	.nmasters = 17,
-	.nslaves = 9,
-	.ntieredslaves = 2,
-};
-
-struct msm_bus_fabric_registration msm_bus_mm_fabric_pdata = {
-	.id = MSM_BUS_FAB_MMSS,
-	.name = "msm_mm_fab",
-	mmss_fabric_info,
-	ARRAY_SIZE(mmss_fabric_info),
-	.ahb = 0,
-	.fabclk[DUAL_CTX] = "mmfab_clk",
-	.fabclk[ACTIVE_CTX] = "mmfab_a_clk",
-	.haltid = MSM_RPM_ID_MM_FABRIC_HALT_0,
-	.offset = MSM_RPM_ID_MM_FABRIC_ARB_0,
-	.nmasters = 14,
-	.nslaves = 4,
-	.ntieredslaves = 3,
-};
-
-struct msm_bus_fabric_registration msm_bus_sys_fpb_pdata = {
-	.id = MSM_BUS_FAB_SYSTEM_FPB,
-	.name = "msm_sys_fpb",
-	sys_fpb_fabric_info,
-	ARRAY_SIZE(sys_fpb_fabric_info),
-	.ahb = 1,
-	.fabclk[DUAL_CTX] = "sfpb_clk",
-	.fabclk[ACTIVE_CTX] = "sfpb_a_clk",
-	.nmasters = 0,
-	.nslaves = 0,
-	.ntieredslaves = 0,
-};
-
-struct msm_bus_fabric_registration msm_bus_cpss_fpb_pdata = {
-	.id = MSM_BUS_FAB_CPSS_FPB,
-	.name = "msm_cpss_fpb",
-	cpss_fpb_fabric_info,
-	ARRAY_SIZE(cpss_fpb_fabric_info),
-	.ahb = 1,
-	.fabclk[DUAL_CTX] = "cfpb_clk",
-	.fabclk[ACTIVE_CTX] = "cfpb_a_clk",
-	.nmasters = 0,
-	.nslaves = 0,
-	.ntieredslaves = 0,
-};
-
-static void msm_bus_board_get_ids(
-	struct msm_bus_fabric_registration *fabreg,
-	int fabid)
+static void msm_bus_board_assign_iids(struct msm_bus_fabric_registration
+	*fabreg, int fabid)
 {
 	int i;
 	for (i = 0; i < fabreg->len; i++) {
@@ -895,14 +824,101 @@ static void msm_bus_board_get_ids(
 	}
 }
 
-void msm_bus_board_assign_iids(struct msm_bus_fabric_registration *fabreg,
-	int fabid)
+static int msm_bus_board_8660_get_iid(int id)
 {
-	msm_bus_board_get_ids(fabreg, fabid);
-}
-int msm_bus_board_get_iid(int id)
-{
-	return ((id < SLAVE_ID_KEY) ? master_iids[id] : slave_iids[id -
-		SLAVE_ID_KEY]);
+	if ((id < SLAVE_ID_KEY && id >= NMASTERS) ||
+		id >= (SLAVE_ID_KEY + NSLAVES)) {
+		MSM_BUS_ERR("Cannot get iid. Invalid id %d passed\n", id);
+		return -EINVAL;
+	}
+
+	return CHECK_ID(((id < SLAVE_ID_KEY) ? master_iids[id] :
+		slave_iids[id - SLAVE_ID_KEY]), id);
 }
 
+static struct msm_bus_board_algorithm msm_bus_board_algo = {
+	.board_nfab = NFAB_8660,
+	.get_iid = msm_bus_board_8660_get_iid,
+	.assign_iids = msm_bus_board_assign_iids,
+};
+
+struct msm_bus_fabric_registration msm_bus_apps_fabric_pdata = {
+	.id = MSM_BUS_FAB_APPSS,
+	.name = "msm_apps_fab",
+	.info = apps_fabric_info,
+	.len = ARRAY_SIZE(apps_fabric_info),
+	.ahb = 0,
+	.fabclk[DUAL_CTX] = "bus_clk",
+	.fabclk[ACTIVE_CTX] = "bus_a_clk",
+	.haltid = MSM_RPM_ID_APPS_FABRIC_HALT_0,
+	.offset = MSM_RPM_ID_APPS_FABRIC_ARB_0,
+	.nmasters = 4,
+	.nslaves = 4,
+	.ntieredslaves = 2,
+	.board_algo = &msm_bus_board_algo,
+};
+
+struct msm_bus_fabric_registration msm_bus_sys_fabric_pdata = {
+	.id = MSM_BUS_FAB_SYSTEM,
+	.name = "msm_sys_fab",
+	system_fabric_info,
+	ARRAY_SIZE(system_fabric_info),
+	.ahb = 0,
+	.fabclk[DUAL_CTX] = "bus_clk",
+	.fabclk[ACTIVE_CTX] = "bus_a_clk",
+	.haltid = MSM_RPM_ID_SYSTEM_FABRIC_HALT_0,
+	.offset = MSM_RPM_ID_SYSTEM_FABRIC_ARB_0,
+	.nmasters = 17,
+	.nslaves = 9,
+	.ntieredslaves = 2,
+	.board_algo = &msm_bus_board_algo,
+};
+
+struct msm_bus_fabric_registration msm_bus_mm_fabric_pdata = {
+	.id = MSM_BUS_FAB_MMSS,
+	.name = "msm_mm_fab",
+	mmss_fabric_info,
+	ARRAY_SIZE(mmss_fabric_info),
+	.ahb = 0,
+	.fabclk[DUAL_CTX] = "bus_clk",
+	.fabclk[ACTIVE_CTX] = "bus_a_clk",
+	.haltid = MSM_RPM_ID_MM_FABRIC_HALT_0,
+	.offset = MSM_RPM_ID_MM_FABRIC_ARB_0,
+	.nmasters = 14,
+	.nslaves = 4,
+	.ntieredslaves = 3,
+	.board_algo = &msm_bus_board_algo,
+};
+
+struct msm_bus_fabric_registration msm_bus_sys_fpb_pdata = {
+	.id = MSM_BUS_FAB_SYSTEM_FPB,
+	.name = "msm_sys_fpb",
+	sys_fpb_fabric_info,
+	ARRAY_SIZE(sys_fpb_fabric_info),
+	.ahb = 1,
+	.fabclk[DUAL_CTX] = "bus_clk",
+	.fabclk[ACTIVE_CTX] = "bus_a_clk",
+	.nmasters = 0,
+	.nslaves = 0,
+	.ntieredslaves = 0,
+	.board_algo = &msm_bus_board_algo,
+};
+
+struct msm_bus_fabric_registration msm_bus_cpss_fpb_pdata = {
+	.id = MSM_BUS_FAB_CPSS_FPB,
+	.name = "msm_cpss_fpb",
+	cpss_fpb_fabric_info,
+	ARRAY_SIZE(cpss_fpb_fabric_info),
+	.ahb = 1,
+	.fabclk[DUAL_CTX] = "bus_clk",
+	.fabclk[ACTIVE_CTX] = "bus_a_clk",
+	.nmasters = 0,
+	.nslaves = 0,
+	.ntieredslaves = 0,
+	.board_algo = &msm_bus_board_algo,
+};
+
+int msm_bus_board_rpm_get_il_ids(uint16_t id[])
+{
+	return -ENXIO;
+}

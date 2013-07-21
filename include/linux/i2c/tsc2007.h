@@ -6,6 +6,17 @@
 struct tsc2007_platform_data {
 	u16	model;				/* 2007. */
 	u16	x_plate_ohms;
+	u16	max_rt; /* max. resistance above which samples are ignored */
+	unsigned long poll_delay; /* delay (in ms) after pen-down event
+				     before polling starts */
+	unsigned long poll_period; /* time (in ms) between samples */
+	int	fuzzx; /* fuzz factor for X, Y and pressure axes */
+	int	fuzzy;
+	int	fuzzz;
+	u16	min_x;
+	u16	min_y;
+	u16	max_x;
+	u16	max_y;
 	unsigned long irq_flags;
 	bool	invert_x;
 	bool	invert_y;

@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -280,7 +280,7 @@
 #define	CS3_BAM_XPU_IRQ				(GIC_SPI_START + 234)
 #define	CE3_IRQ					(GIC_SPI_START + 235)
 #define	SMMU_VCAP_CB_SC_SECURE_IRQ		(GIC_SPI_START + 236)
-#define	SMMU_VCAM_CP_SC_NON_SECURE_IRQ		(GIC_SPI_START + 237)
+#define	SMMU_VCAP_CB_SC_NON_SECURE_IRQ		(GIC_SPI_START + 237)
 #define	PCIE20_INT_MSI				(GIC_SPI_START + 238)
 #define	PCIE20_INTA				(GIC_SPI_START + 239)
 #define	PCIE20_INTB				(GIC_SPI_START + 240)
@@ -298,26 +298,15 @@
 /* Backwards compatible IRQ macros. */
 #define INT_ADM_AARM				ADM_0_SCSS_0_IRQ
 
-/*
- * For now, use the maximum number of interrupts until a pending GIC issue
- * is sorted out
- */
-#define NR_MSM_IRQS 256
-#define NR_GPIO_IRQS 150
-#define NR_PM8921_IRQS 256
-#define NR_TABLA_IRQS 49
-#define NR_BOARD_IRQS (NR_PM8921_IRQS + NR_TABLA_IRQS)
-#define NR_TLMM_MSM_DIR_CONN_IRQ 8 /*Need to Verify this Count*/
-#define NR_MSM_GPIOS NR_GPIO_IRQS
-
 /* smd/smsm interrupts */
-#define INT_A9_M2A_0                    MSS_TO_APPS_IRQ_0
-#define INT_A9_M2A_5                    MSS_TO_APPS_IRQ_1
-#define INT_ADSP_A11                    LPASS_SCSS_GP_HIGH_IRQ
-#define INT_ADSP_A11_SMSM               LPASS_SCSS_GP_MEDIUM_IRQ
-#define INT_DSPS_A11                    SPS_MTI_31
-#define INT_WCNSS_A11                   RIVA_APSS_SPARE_IRQ
-#define INT_WCNSS_A11_SMSM              RIVA_APPS_WLAN_SMSM_IRQ
+#define INT_A9_M2A_0		(GIC_SPI_START + 37) /*GSS_TO_APPS_IRQ_0*/
+#define INT_A9_M2A_5		(GIC_SPI_START + 38) /*GSS_TO_APPS_IRQ_1*/
+#define INT_ADSP_A11		LPASS_SCSS_GP_HIGH_IRQ
+#define INT_ADSP_A11_SMSM	LPASS_SCSS_GP_MEDIUM_IRQ
+#define INT_DSPS_A11		SPS_MTI_31
+#define INT_DSPS_A11_SMSM	SPS_MTI_30
+#define INT_WCNSS_A11		RIVA_APSS_SPARE_IRQ
+#define INT_WCNSS_A11_SMSM	RIVA_APPS_WLAN_SMSM_IRQ
 
 #endif
 

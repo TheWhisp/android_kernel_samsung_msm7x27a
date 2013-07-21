@@ -1,6 +1,6 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
-   Copyright (c) 2000-2001, 2010-2013 The Linux Foundation. All rights reserved.
+   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation. All rights reserved.
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -86,6 +86,7 @@ enum {
 	HCI_SERVICE_CACHE,
 	HCI_LINK_KEYS,
 	HCI_DEBUG_KEYS,
+	HCI_UNREGISTER,
 
 	HCI_RESET,
 };
@@ -409,11 +410,6 @@ struct hci_cp_read_remote_ext_features {
 
 #define HCI_OP_READ_REMOTE_VERSION	0x041d
 struct hci_cp_read_remote_version {
-	__le16   handle;
-} __packed;
-
-#define HCI_OP_READ_CLOCK_OFFSET	0x041f
-struct hci_cp_read_clock_offset {
 	__le16   handle;
 } __packed;
 
@@ -1143,11 +1139,6 @@ struct hci_ev_cmd_status {
 	__u8     status;
 	__u8     ncmd;
 	__le16   opcode;
-} __packed;
-
-#define HCI_EV_HARDWARE_ERROR		0x10
-struct hci_ev_hardware_error {
-	__u8   hw_err_code;
 } __packed;
 
 #define HCI_EV_ROLE_CHANGE		0x12

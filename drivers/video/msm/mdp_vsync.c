@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2009, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2008-2009, 2012 The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -71,6 +71,20 @@ static DEFINE_SPINLOCK(vsync_timer_lock);
 static struct clk *mdp_vsync_clk;
 static struct msm_fb_data_type *vsync_mfd;
 static unsigned char timer_shutdown_flag;
+static uint32 vsync_cnt_cfg;
+
+
+void vsync_clk_prepare_enable(void)
+{
+	if (mdp_vsync_clk)
+		clk_prepare_enable(mdp_vsync_clk);
+}
+
+void vsync_clk_disable_unprepare(void)
+{
+	if (mdp_vsync_clk)
+		clk_disable_unprepare(mdp_vsync_clk);
+}
 
 void mdp_hw_vsync_clk_enable(struct msm_fb_data_type *mfd)
 {
@@ -78,7 +92,7 @@ void mdp_hw_vsync_clk_enable(struct msm_fb_data_type *mfd)
 		return;
 	mutex_lock(&vsync_clk_lock);
 	if (mfd->use_mdp_vsync) {
-		clk_enable(mdp_vsync_clk);
+		clk_prepare_enable(mdp_vsync_clk);
 		vsync_clk_status = 1;
 	}
 	mutex_unlock(&vsync_clk_lock);
@@ -90,7 +104,7 @@ void mdp_hw_vsync_clk_disable(struct msm_fb_data_type *mfd)
 		return;
 	mutex_lock(&vsync_clk_lock);
 	if (mfd->use_mdp_vsync) {
-		clk_disable(mdp_vsync_clk);
+		clk_disable_unprepare(mdp_vsync_clk);
 		vsync_clk_status = 0;
 	}
 	mutex_unlock(&vsync_clk_lock);
@@ -101,9 +115,8 @@ void mdp_vsync_clk_enable(void)
 {
 	if (vsync_mfd) {
 		mdp_hw_vsync_clk_enable(vsync_mfd);
-		if (!vsync_mfd->vsync_resync_timer.function) {
+		if (!vsync_mfd->vsync_resync_timer.function)
 			mdp_set_vsync((unsigned long) vsync_mfd);
-		}
 	}
 }
 
@@ -234,9 +247,65 @@ static void mdp_set_sync_cfg_1(struct msm_fb_data_type *mfd, int vsync_cnt)
 	MDP_OUTP(MDP_BASE + MDP_SYNC_CFG_1, cfg);
 }
 #endif
+
+void mdp_vsync_cfg_regs(struct msm_fb_data_type *mfd,
+	boolean first_time)
+{
+	/* MDP cmd block enable */
+	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON,
+			  FALSE);
+	if (first_time)
+		mdp_hw_vsync_clk_enable(mfd);
+
+	mdp_set_sync_cfg_0(mfd, vsync_cnt_cfg);
+
+#ifdef CONFIG_FB_MSM_MDP40
+	if (mdp_hw_revision < MDP4_REVISION_V2_1)
+		mdp_set_sync_cfg_1(mfd, vsync_cnt_cfg);
 #endif
 
-void mdp_config_vsync(struct msm_fb_data_type *mfd)
+	/*
+	 * load the last line + 1 to be in the
+	 * safety zone
+	 */
+	vsync_load_cnt = mfd->panel_info.yres;
+
+	/* line counter init value at the next pulse */
+	MDP_OUTP(MDP_BASE + MDP_PRIM_VSYNC_INIT_VAL,
+		vsync_load_cnt);
+#ifdef CONFIG_FB_MSM_MDP40
+	if (mdp_hw_revision < MDP4_REVISION_V2_1) {
+		MDP_OUTP(MDP_BASE +	MDP_SEC_VSYNC_INIT_VAL,
+			vsync_load_cnt);
+	}
+#endif
+
+	/*
+	 * external vsync source pulse width and
+	 * polarity flip
+	 */
+	MDP_OUTP(MDP_BASE + MDP_PRIM_VSYNC_OUT_CTRL, BIT(0));
+#ifdef CONFIG_FB_MSM_MDP40
+	if (mdp_hw_revision < MDP4_REVISION_V2_1) {
+		MDP_OUTP(MDP_BASE +	MDP_SEC_VSYNC_OUT_CTRL, BIT(0));
+		MDP_OUTP(MDP_BASE +	MDP_VSYNC_SEL, 0x20);
+	}
+#endif
+
+	/* threshold */
+	MDP_OUTP(MDP_BASE + 0x200, (vsync_above_th << 16) |
+		 (vsync_start_th));
+
+	if (first_time)
+		mdp_hw_vsync_clk_disable(mfd);
+
+	/* MDP cmd block disable */
+	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_OFF, FALSE);
+}
+#endif
+
+void mdp_config_vsync(struct platform_device *pdev,
+	struct msm_fb_data_type *mfd)
 {
 	/* vsync on primary lcd only for now */
 	if ((mfd->dest != DISPLAY_LCD) || (mfd->panel_info.pdest != DISPLAY_1)
@@ -254,12 +323,12 @@ void mdp_config_vsync(struct msm_fb_data_type *mfd)
 		mfd->lcd_ref_usec_time =
 		    100000000 / mfd->panel_info.lcd.refx100;
 		mfd->vsync_handler_pending = FALSE;
-		mfd->last_vsync_timetick.tv.sec = 0;
-		mfd->last_vsync_timetick.tv.nsec = 0;
+
+		mfd->last_vsync_timetick.tv64 = 0;
 
 #ifdef MDP_HW_VSYNC
 		if (mdp_vsync_clk == NULL)
-			mdp_vsync_clk = clk_get(NULL, "mdp_vsync_clk");
+			mdp_vsync_clk = clk_get(&pdev->dev, "vsync_clk");
 
 		if (IS_ERR(mdp_vsync_clk)) {
 			printk(KERN_ERR "error: can't get mdp_vsync_clk!\n");
@@ -268,7 +337,7 @@ void mdp_config_vsync(struct msm_fb_data_type *mfd)
 			mfd->use_mdp_vsync = 1;
 
 		if (mfd->use_mdp_vsync) {
-			uint32 vsync_cnt_cfg, vsync_cnt_cfg_dem;
+			uint32 vsync_cnt_cfg_dem;
 			uint32 mdp_vsync_clk_speed_hz;
 
 			mdp_vsync_clk_speed_hz = clk_get_rate(mdp_vsync_clk);
@@ -286,60 +355,7 @@ void mdp_config_vsync(struct msm_fb_data_type *mfd)
 				vsync_cnt_cfg =
 				    (mdp_vsync_clk_speed_hz) /
 				    vsync_cnt_cfg_dem;
-
-				/* MDP cmd block enable */
-				mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON,
-					      FALSE);
-				mdp_hw_vsync_clk_enable(mfd);
-
-				mdp_set_sync_cfg_0(mfd, vsync_cnt_cfg);
-
-
-#ifdef CONFIG_FB_MSM_MDP40
-				if (mdp_hw_revision < MDP4_REVISION_V2_1)
-					mdp_set_sync_cfg_1(mfd, vsync_cnt_cfg);
-#endif
-
-				/*
-				 * load the last line + 1 to be in the
-				 * safety zone
-				 */
-				vsync_load_cnt = mfd->panel_info.yres;
-
-				/* line counter init value at the next pulse */
-				MDP_OUTP(MDP_BASE + MDP_PRIM_VSYNC_INIT_VAL,
-							vsync_load_cnt);
-#ifdef CONFIG_FB_MSM_MDP40
-				if (mdp_hw_revision < MDP4_REVISION_V2_1) {
-					MDP_OUTP(MDP_BASE +
-					MDP_SEC_VSYNC_INIT_VAL, vsync_load_cnt);
-				}
-#endif
-
-				/*
-				 * external vsync source pulse width and
-				 * polarity flip
-				 */
-				MDP_OUTP(MDP_BASE + MDP_PRIM_VSYNC_OUT_CTRL,
-							BIT(0));
-#ifdef CONFIG_FB_MSM_MDP40
-				if (mdp_hw_revision < MDP4_REVISION_V2_1) {
-					MDP_OUTP(MDP_BASE +
-					MDP_SEC_VSYNC_OUT_CTRL, BIT(0));
-					MDP_OUTP(MDP_BASE +
-						MDP_VSYNC_SEL, 0x20);
-				}
-#endif
-
-				/* threshold */
-				MDP_OUTP(MDP_BASE + 0x200,
-					 (vsync_above_th << 16) |
-					 (vsync_start_th));
-
-				mdp_hw_vsync_clk_disable(mfd);
-				/* MDP cmd block disable */
-				mdp_pipe_ctrl(MDP_CMD_BLOCK,
-					      MDP_BLOCK_POWER_OFF, FALSE);
+				mdp_vsync_cfg_regs(mfd, TRUE);
 			}
 		}
 #else
@@ -465,9 +481,8 @@ uint32 mdp_get_lcd_line_counter(struct msm_fb_data_type *mfd)
 	spin_unlock_irqrestore(&mdp_spin_lock, flag);
 
 	curr_time = ktime_get_real();
-	elapsed_usec_time =
-	    ((curr_time.tv.sec - last_vsync_timetick_local.tv.sec) * 1000000) +
-	    ((curr_time.tv.nsec - last_vsync_timetick_local.tv.nsec) / 1000);
+	elapsed_usec_time = ktime_to_us(ktime_sub(curr_time,
+						last_vsync_timetick_local));
 
 	elapsed_usec_time = elapsed_usec_time % mfd->lcd_ref_usec_time;
 

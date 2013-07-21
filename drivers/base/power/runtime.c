@@ -213,12 +213,14 @@ static int rpm_idle(struct device *dev, int rpmflags)
 
 	dev->power.idle_notification = true;
 
-	if (dev->bus && dev->bus->pm && dev->bus->pm->runtime_idle)
-		callback = dev->bus->pm->runtime_idle;
-	else if (dev->type && dev->type->pm && dev->type->pm->runtime_idle)
+	if (dev->pwr_domain)
+		callback = dev->pwr_domain->ops.runtime_idle;
+	else if (dev->type && dev->type->pm)
 		callback = dev->type->pm->runtime_idle;
 	else if (dev->class && dev->class->pm)
 		callback = dev->class->pm->runtime_idle;
+	else if (dev->bus && dev->bus->pm)
+		callback = dev->bus->pm->runtime_idle;
 	else
 		callback = NULL;
 
@@ -276,6 +278,9 @@ static int rpm_callback(int (*cb)(struct device *), struct device *dev)
  * If a deferred resume was requested while the callback was running then carry
  * it out; otherwise send an idle notification for the device (if the suspend
  * failed) or for its parent (if the suspend succeeded).
+ * If ->runtime_suspend failed with -EAGAIN or -EBUSY, and if the RPM_AUTO
+ * flag is set and the next autosuspend-delay expiration time is in the
+ * future, schedule another autosuspend attempt.
  *
  * This function must be called under dev->power.lock with interrupts disabled.
  */
@@ -372,12 +377,14 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 
 	__update_runtime_status(dev, RPM_SUSPENDING);
 
-	if (dev->bus && dev->bus->pm && dev->bus->pm->runtime_suspend)
-		callback = dev->bus->pm->runtime_suspend;
-	else if (dev->type && dev->type->pm && dev->type->pm->runtime_suspend)
+	if (dev->pwr_domain)
+		callback = dev->pwr_domain->ops.runtime_suspend;
+	else if (dev->type && dev->type->pm)
 		callback = dev->type->pm->runtime_suspend;
 	else if (dev->class && dev->class->pm)
 		callback = dev->class->pm->runtime_suspend;
+	else if (dev->bus && dev->bus->pm)
+		callback = dev->bus->pm->runtime_suspend;
 	else
 		callback = NULL;
 
@@ -385,10 +392,21 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 	if (retval) {
 		__update_runtime_status(dev, RPM_ACTIVE);
 		dev->power.deferred_resume = 0;
-		if (retval == -EAGAIN || retval == -EBUSY)
+		if (retval == -EAGAIN || retval == -EBUSY) {
 			dev->power.runtime_error = 0;
-		else
+
+			/*
+			 * If the callback routine failed an autosuspend, and
+			 * if the last_busy time has been updated so that there
+			 * is a new autosuspend expiration time, automatically
+			 * reschedule another autosuspend.
+			 */
+			if ((rpmflags & RPM_AUTO) &&
+			    pm_runtime_autosuspend_expiration(dev) != 0)
+				goto repeat;
+		} else {
 			pm_runtime_cancel_pending(dev);
+		}
 	} else {
  no_callback:
 		__update_runtime_status(dev, RPM_SUSPENDED);
@@ -431,7 +449,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
  *
  * Check if the device's run-time PM status allows it to be resumed.  Cancel
  * any scheduled or pending requests.  If another resume has been started
- * earlier, either return imediately or wait for it to finish, depending on the
+ * earlier, either return immediately or wait for it to finish, depending on the
  * RPM_NOWAIT and RPM_ASYNC flags.  Similarly, if there's a suspend running in
  * parallel with this function, either tell the other process to resume after
  * suspending (deferred_resume) or wait for it to finish.  If the RPM_ASYNC
@@ -569,12 +587,14 @@ static int rpm_resume(struct device *dev, int rpmflags)
 
 	__update_runtime_status(dev, RPM_RESUMING);
 
-	if (dev->bus && dev->bus->pm && dev->bus->pm->runtime_resume)
-		callback = dev->bus->pm->runtime_resume;
-	else if (dev->type && dev->type->pm && dev->type->pm->runtime_resume)
+	if (dev->pwr_domain)
+		callback = dev->pwr_domain->ops.runtime_resume;
+	else if (dev->type && dev->type->pm)
 		callback = dev->type->pm->runtime_resume;
 	else if (dev->class && dev->class->pm)
 		callback = dev->class->pm->runtime_resume;
+	else if (dev->bus && dev->bus->pm)
+		callback = dev->bus->pm->runtime_resume;
 	else
 		callback = NULL;
 
@@ -726,6 +746,8 @@ int __pm_runtime_idle(struct device *dev, int rpmflags)
 	unsigned long flags;
 	int retval;
 
+	might_sleep_if(!(rpmflags & RPM_ASYNC));
+
 	if (rpmflags & RPM_GET_PUT) {
 		if (!atomic_dec_and_test(&dev->power.usage_count))
 			return 0;
@@ -755,6 +777,8 @@ int __pm_runtime_suspend(struct device *dev, int rpmflags)
 	unsigned long flags;
 	int retval;
 
+	might_sleep_if(!(rpmflags & RPM_ASYNC) && !dev->power.irq_safe);
+
 	if (rpmflags & RPM_GET_PUT) {
 		if (!atomic_dec_and_test(&dev->power.usage_count))
 			return 0;
@@ -782,6 +806,8 @@ int __pm_runtime_resume(struct device *dev, int rpmflags)
 {
 	unsigned long flags;
 	int retval;
+
+	might_sleep_if(!(rpmflags & RPM_ASYNC) && !dev->power.irq_safe);
 
 	if (rpmflags & RPM_GET_PUT)
 		atomic_inc(&dev->power.usage_count);
@@ -972,6 +998,7 @@ EXPORT_SYMBOL_GPL(pm_runtime_barrier);
  */
 void __pm_runtime_disable(struct device *dev, bool check_resume)
 {
+	might_sleep();
 	spin_lock_irq(&dev->power.lock);
 
 	if (dev->power.disable_depth > 0) {
@@ -1177,6 +1204,8 @@ EXPORT_SYMBOL_GPL(pm_runtime_set_autosuspend_delay);
 void __pm_runtime_use_autosuspend(struct device *dev, bool use)
 {
 	int old_delay, old_use;
+
+	might_sleep();
 
 	spin_lock_irq(&dev->power.lock);
 	old_delay = dev->power.autosuspend_delay;

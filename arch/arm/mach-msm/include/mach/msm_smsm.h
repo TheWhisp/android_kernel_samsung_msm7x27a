@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -21,6 +21,7 @@ enum {
 	SMSM_APPS_DEM,
 	SMSM_WCNSS_STATE = SMSM_APPS_DEM,
 	SMSM_MODEM_DEM,
+	SMSM_DSPS_STATE = SMSM_MODEM_DEM,
 	SMSM_Q6_DEM,
 	SMSM_POWER_MASTER_DEM,
 	SMSM_TIME_MASTER_DEM,
@@ -81,14 +82,20 @@ extern uint32_t SMSM_NUM_HOSTS;
 #define SMSM_WKUP_REASON_TIMER	0x00000008
 #define SMSM_WKUP_REASON_ALARM	0x00000010
 #define SMSM_WKUP_REASON_RESET	0x00000020
+#define SMSM_A2_FORCE_SHUTDOWN 0x00002000
+#define SMSM_A2_RESET_BAM      0x00004000
+
+#define SMSM_VENDOR             0x00020000
 
 #define SMSM_A2_POWER_CONTROL  0x00000002
+#define SMSM_A2_POWER_CONTROL_ACK  0x00000800
 
 #define SMSM_WLAN_TX_RINGS_EMPTY 0x00000200
 #define SMSM_WLAN_TX_ENABLE	0x00000400
 
 
 void *smem_alloc(unsigned id, unsigned size);
+void *smem_alloc2(unsigned id, unsigned size_in);
 void *smem_get_entry(unsigned id, unsigned *size);
 int smsm_change_state(uint32_t smsm_entry,
 		      uint32_t clear_mask, uint32_t set_mask);
@@ -202,7 +209,13 @@ enum {
 	SMEM_SMEM_LOG_MPROC_WRAP,
 	SMEM_BOOT_INFO_FOR_APPS,
 	SMEM_SMSM_SIZE_INFO,
-	SMEM_MEM_LAST = SMEM_SMSM_SIZE_INFO,
+	SMEM_SMD_LOOPBACK_REGISTER,
+	SMEM_SSR_REASON_MSS0,
+	SMEM_SSR_REASON_WCNSS0,
+	SMEM_SSR_REASON_LPASS0,
+	SMEM_SSR_REASON_DSPS0,
+	SMEM_SSR_REASON_VCODEC0,
+	SMEM_MEM_LAST = SMEM_SSR_REASON_VCODEC0,
 	SMEM_NUM_ITEMS,
 };
 

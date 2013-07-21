@@ -1,29 +1,13 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- *       copyright notice, this list of conditions and the following
- *       disclaimer in the documentation and/or other materials provided
- *       with the distribution.
- *     * Neither the name of Code Aurora Forum, Inc. nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
  *
- * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  */
 
@@ -100,6 +84,12 @@
 
 #define DDL_MAX_NUM_IN_INPUTFRAME_POOL          (DDL_MAX_NUM_OF_B_FRAME + 1)
 
+enum ddl_mem_area {
+	DDL_FW_MEM	= 0x0,
+	DDL_MM_MEM	= 0x1,
+	DDL_CMD_MEM	= 0x2
+};
+
 struct ddl_buf_addr{
 	u8  *virtual_base_addr;
 	u8  *physical_base_addr;
@@ -107,7 +97,10 @@ struct ddl_buf_addr{
 	u8  *align_virtual_addr;
 	phys_addr_t alloced_phys_addr;
 	struct msm_mapped_buffer *mapped_buffer;
+	struct ion_handle *alloc_handle;
 	u32 buffer_size;
+	enum ddl_mem_area mem_type;
+	void *pil_cookie;
 };
 enum ddl_cmd_state{
 	DDL_CMD_INVALID         = 0x0,
@@ -121,6 +114,7 @@ enum ddl_cmd_state{
 	DDL_CMD_ENCODE_FRAME    = 0x8,
 	DDL_CMD_EOS             = 0x9,
 	DDL_CMD_CHANNEL_END     = 0xA,
+	DDL_CMD_ENCODE_CONTINUE = 0xB,
 	DDL_CMD_32BIT           = 0x7FFFFFFF
 };
 enum ddl_client_state{
@@ -137,6 +131,7 @@ enum ddl_client_state{
 	DDL_CLIENT_WAIT_FOR_CHEND          = 0xA,
 	DDL_CLIENT_FATAL_ERROR             = 0xB,
 	DDL_CLIENT_FAVIDC_ERROR            = 0xC,
+	DDL_CLIENT_WAIT_FOR_CONTINUE       = 0xD,
 	DDL_CLIENT_32BIT                   = 0x7FFFFFFF
 };
 struct ddl_hw_interface{
@@ -223,6 +218,15 @@ struct ddl_enc_buffers{
 struct ddl_codec_data_hdr{
 	u32  decoding;
 };
+struct ddl_batch_frame_data {
+	struct ddl_buf_addr slice_batch_in;
+	struct ddl_buf_addr slice_batch_out;
+	struct ddl_frame_data_tag input_frame;
+	struct ddl_frame_data_tag output_frame
+			[DDL_MAX_NUM_BFRS_FOR_SLICE_BATCH];
+	u32 num_output_frames;
+	u32 out_frm_next_frmindex;
+};
 struct ddl_encoder_data{
 	struct ddl_codec_data_hdr   hdr;
 	struct vcd_property_codec   codec;
@@ -247,6 +251,7 @@ struct ddl_encoder_data{
 	struct vcd_property_intra_refresh_mb_number  intra_refresh;
 	struct vcd_property_buffer_format  buf_format;
 	struct vcd_property_buffer_format  recon_buf_format;
+	struct vcd_property_sps_pps_for_idr_enable sps_pps;
 	struct ddl_buf_addr  seq_header;
 	struct vcd_buffer_requirement  input_buf_req;
 	struct vcd_buffer_requirement  output_buf_req;
@@ -268,6 +273,9 @@ struct ddl_encoder_data{
 	u32  mb_info_enable;
 	u32  ext_enc_control_val;
 	u32  num_references_for_p_frame;
+	u32  closed_gop;
+	struct vcd_property_slice_delivery_info slice_delivery_info;
+	struct ddl_batch_frame_data batch_frame;
 };
 struct ddl_decoder_data {
 	struct ddl_codec_data_hdr  hdr;
@@ -307,6 +315,8 @@ struct ddl_decoder_data {
 	u32  field_needed_for_prev_ip;
 	u32  prev_ip_frm_tag;
 	u32  cont_mode;
+	u32  reconfig_detected;
+	u32  dmx_disable;
 };
 union ddl_codec_data{
 	struct ddl_codec_data_hdr  hdr;
@@ -332,6 +342,7 @@ struct ddl_context{
 	struct ddl_buf_addr dram_base_a;
 	struct ddl_buf_addr dram_base_b;
 	struct ddl_hw_interface ddl_hw_response;
+	struct ion_client *video_ion_client;
 	void (*ddl_callback) (u32 event, u32 status, void *payload,
 		size_t sz, u32 *ddl_handle, void *const client_data);
 	void (*interrupt_clr) (void);
@@ -346,6 +357,8 @@ struct ddl_context{
 	void(*vidc_encode_seq_start[2])
 		(struct vidc_1080p_enc_seq_start_param *param);
 	void(*vidc_encode_frame_start[2])
+		(struct vidc_1080p_enc_frame_start_param *param);
+	void(*vidc_encode_slice_batch_start[2])
 		(struct vidc_1080p_enc_frame_start_param *param);
 	u32 frame_channel_depth;
 };
@@ -378,9 +391,12 @@ void ddl_vidc_channel_set(struct ddl_client_context *);
 void ddl_vidc_channel_end(struct ddl_client_context *);
 void ddl_vidc_encode_init_codec(struct ddl_client_context *);
 void ddl_vidc_decode_init_codec(struct ddl_client_context *);
+void ddl_vidc_encode_frame_continue(struct ddl_client_context *);
 void ddl_vidc_encode_frame_run(struct ddl_client_context *);
+void ddl_vidc_encode_slice_batch_run(struct ddl_client_context *);
 void ddl_vidc_decode_frame_run(struct ddl_client_context *);
 void ddl_vidc_decode_eos_run(struct ddl_client_context *ddl);
+void ddl_vidc_encode_eos_run(struct ddl_client_context *ddl);
 void ddl_release_context_buffers(struct ddl_context *);
 void ddl_release_client_internal_buffers(struct ddl_client_context *ddl);
 u32  ddl_vidc_decode_set_buffers(struct ddl_client_context *);
@@ -441,12 +457,16 @@ void ddl_pmem_free(struct ddl_buf_addr *addr);
 
 u32 ddl_get_input_frame_from_pool(struct ddl_client_context *ddl,
 	u8 *input_buffer_address);
+u32 ddl_get_stream_buf_from_batch_pool(struct ddl_client_context *ddl,
+	struct ddl_frame_data_tag *stream_buffer);
 u32 ddl_insert_input_frame_to_pool(struct ddl_client_context *ddl,
 	struct ddl_frame_data_tag *ddl_input_frame);
-
 void ddl_decoder_chroma_dpb_change(struct ddl_client_context *ddl);
 u32  ddl_check_reconfig(struct ddl_client_context *ddl);
 void ddl_handle_reconfig(u32 res_change, struct ddl_client_context *ddl);
+void ddl_fill_dec_desc_buffer(struct ddl_client_context *ddl);
+void ddl_set_vidc_timeout(struct ddl_client_context *ddl);
+
 
 #ifdef DDL_BUF_LOG
 void ddl_list_buffers(struct ddl_client_context *ddl);
@@ -460,5 +480,5 @@ extern u32 vidc_video_codec_fw_size;
 u32 ddl_fw_init(struct ddl_buf_addr *dram_base);
 void ddl_get_fw_info(const unsigned char **fw_array_addr,
 	unsigned int *fw_size);
-void ddl_fw_release(void);
+void ddl_fw_release(struct ddl_buf_addr *);
 #endif

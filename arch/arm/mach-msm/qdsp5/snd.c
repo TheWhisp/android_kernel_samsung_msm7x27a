@@ -3,7 +3,7 @@
  * interface to "snd" service on the baseband cpu
  *
  * Copyright (C) 2008 HTC Corporation
- * Copyright (c) 2009, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2009, The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -196,13 +196,11 @@ static long snd_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 		vmsg.args.device = cpu_to_be32(vol.device);
 		vmsg.args.method = cpu_to_be32(vol.method);
-#if !defined(CONFIG_MACH_TREBON_CHN)
 		if (vol.method != SND_METHOD_VOICE) {
 			MM_ERR("set volume: invalid method\n");
 			rc = -EINVAL;
 			break;
 		}
-#endif
 
 		vmsg.args.volume = cpu_to_be32(vol.volume);
 		vmsg.args.cb_func = -1;
@@ -499,13 +497,11 @@ static long snd_vol_enable(const char *arg)
 
 	vmsg.args.device = cpu_to_be32(vol.device);
 	vmsg.args.method = cpu_to_be32(vol.method);
-#if !defined(CONFIG_MACH_TREBON_CHN)
 	if (vol.method != SND_METHOD_VOICE) {
 		MM_ERR("snd_ioctl set volume: invalid method\n");
 		rc = -EINVAL;
 		return rc;
 	}
-#endif
 
 	vmsg.args.volume = cpu_to_be32(vol.volume);
 	vmsg.args.cb_func = -1;

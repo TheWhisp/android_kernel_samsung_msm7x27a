@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -22,6 +22,8 @@
 #include <linux/io.h>
 #include <linux/err.h>
 #include <linux/types.h>
+#include <mach/msm_iomap.h>
+#include <mach/socinfo.h>
 
 #define DRIVER_NAME "msm_rng"
 
@@ -35,10 +37,11 @@
 #define PRNG_LFSR_CFG_MASK	0xFFFF0000
 #define PRNG_LFSR_CFG_CLOCKS	0x0000DDDD
 #define PRNG_CONFIG_MASK	0xFFFFFFFD
-#define PRNG_CONFIG_ENABLE	0x00000002
+#define PRNG_HW_ENABLE		0x00000002
 
 #define MAX_HW_FIFO_DEPTH 16                     /* FIFO is 16 words deep */
 #define MAX_HW_FIFO_SIZE (MAX_HW_FIFO_DEPTH * 4) /* FIFO is 32 bits wide  */
+
 
 struct msm_rng_device {
 	struct platform_device *pdev;
@@ -78,11 +81,11 @@ static int msm_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
 	/* read random data from h/w */
 	do {
 		/* check status bit if data is available */
-		if (!(readl(base + PRNG_STATUS_OFFSET) & 0x00000001))
+		if (!(readl_relaxed(base + PRNG_STATUS_OFFSET) & 0x00000001))
 			break;	/* no data to read so just bail */
 
 		/* read FIFO */
-		val = readl(base + PRNG_DATA_OUT_OFFSET);
+		val = readl_relaxed(base + PRNG_DATA_OUT_OFFSET);
 		if (!val)
 			break;	/* no data to read so just bail */
 
@@ -105,6 +108,48 @@ static struct hwrng msm_rng = {
 	.name = DRIVER_NAME,
 	.read = msm_rng_read,
 };
+
+static int __devinit msm_rng_enable_hw(struct msm_rng_device *msm_rng_dev)
+{
+	unsigned long val = 0;
+	unsigned long reg_val = 0;
+	int ret = 0;
+
+	/* Enable the PRNG CLK */
+	ret = clk_enable(msm_rng_dev->prng_clk);
+	if (ret) {
+		dev_err(&(msm_rng_dev->pdev)->dev,
+				"failed to enable clock in probe\n");
+		return -EPERM;
+	}
+	/* Enable PRNG h/w only if it is NOT ON */
+	val = readl_relaxed(msm_rng_dev->base + PRNG_CONFIG_OFFSET) &
+					PRNG_HW_ENABLE;
+	/* PRNG H/W is not ON */
+	if (val != PRNG_HW_ENABLE) {
+		val = readl_relaxed(msm_rng_dev->base + PRNG_LFSR_CFG_OFFSET) &
+					PRNG_LFSR_CFG_MASK;
+		val |= PRNG_LFSR_CFG_MASK;
+		writel_relaxed(val, msm_rng_dev->base + PRNG_LFSR_CFG_OFFSET);
+
+		/* The PRNG CONFIG register should be first written */
+		mb();
+
+		reg_val = readl_relaxed(msm_rng_dev->base + PRNG_CONFIG_OFFSET)
+						& PRNG_CONFIG_MASK;
+		reg_val |= PRNG_HW_ENABLE;
+		writel_relaxed(reg_val, msm_rng_dev->base + PRNG_CONFIG_OFFSET);
+
+		/* The PRNG clk should be disabled only after we enable the
+		* PRNG h/w by writing to the PRNG CONFIG register.
+		*/
+		mb();
+	}
+
+	clk_disable(msm_rng_dev->prng_clk);
+
+	return 0;
+}
 
 static int __devinit msm_rng_probe(struct platform_device *pdev)
 {
@@ -136,7 +181,7 @@ static int __devinit msm_rng_probe(struct platform_device *pdev)
 	msm_rng_dev->base = base;
 
 	/* create a handle for clock control */
-	msm_rng_dev->prng_clk = clk_get(NULL, "prng_clk");
+	msm_rng_dev->prng_clk = clk_get(&pdev->dev, "core_clk");
 	if (IS_ERR(msm_rng_dev->prng_clk)) {
 		dev_err(&pdev->dev, "failed to register clock source\n");
 		error = -EPERM;
@@ -147,18 +192,24 @@ static int __devinit msm_rng_probe(struct platform_device *pdev)
 	msm_rng_dev->pdev = pdev;
 	platform_set_drvdata(pdev, msm_rng_dev);
 
+	/* Enable rng h/w */
+	error = msm_rng_enable_hw(msm_rng_dev);
+
+	if (error)
+		goto rollback_clk;
+
 	/* register with hwrng framework */
 	msm_rng.priv = (unsigned long) msm_rng_dev;
 	error = hwrng_register(&msm_rng);
 	if (error) {
 		dev_err(&pdev->dev, "failed to register hwrng\n");
 		error = -EPERM;
-		goto err_hw_register;
+		goto rollback_clk;
 	}
 
 	return 0;
 
-err_hw_register:
+rollback_clk:
 	clk_put(msm_rng_dev->prng_clk);
 err_clk_get:
 	iounmap(msm_rng_dev->base);
@@ -203,6 +254,6 @@ static void __exit msm_rng_exit(void)
 
 module_exit(msm_rng_exit);
 
-MODULE_AUTHOR("Code Aurora Forum");
+MODULE_AUTHOR("The Linux Foundation");
 MODULE_DESCRIPTION("Qualcomm MSM Random Number Driver");
 MODULE_LICENSE("GPL v2");

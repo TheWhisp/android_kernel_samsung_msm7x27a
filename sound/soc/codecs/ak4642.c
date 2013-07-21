@@ -116,6 +116,12 @@
 #define BCKO_MASK	(1 << 3)
 #define BCKO_64		BCKO_MASK
 
+#define DIF_MASK	(3 << 0)
+#define DSP		(0 << 0)
+#define RIGHT_J		(1 << 0)
+#define LEFT_J		(2 << 0)
+#define I2S		(3 << 0)
+
 /* MD_CTL2 */
 #define FS0		(1 << 0)
 #define FS1		(1 << 1)
@@ -137,7 +143,7 @@
  * min : 0xFE : -115.0 dB
  * mute: 0xFF
  */
-static const DECLARE_TLV_DB_SCALE(out_tlv, -11500, 50, 1);
+static const DECLARE_TLV_DB_SCALE(out_tlv, -11550, 50, 1);
 
 static const struct snd_kcontrol_new ak4642_snd_controls[] = {
 
@@ -156,17 +162,17 @@ struct ak4642_priv {
 /*
  * ak4642 register cache
  */
-static const u16 ak4642_reg[AK4642_CACHEREGNUM] = {
-	0x0000, 0x0000, 0x0001, 0x0000,
-	0x0002, 0x0000, 0x0000, 0x0000,
-	0x00e1, 0x00e1, 0x0018, 0x0000,
-	0x00e1, 0x0018, 0x0011, 0x0008,
-	0x0000, 0x0000, 0x0000, 0x0000,
-	0x0000, 0x0000, 0x0000, 0x0000,
-	0x0000, 0x0000, 0x0000, 0x0000,
-	0x0000, 0x0000, 0x0000, 0x0000,
-	0x0000, 0x0000, 0x0000, 0x0000,
-	0x0000,
+static const u8 ak4642_reg[AK4642_CACHEREGNUM] = {
+	0x00, 0x00, 0x01, 0x00,
+	0x02, 0x00, 0x00, 0x00,
+	0xe1, 0xe1, 0x18, 0x00,
+	0xe1, 0x18, 0x11, 0x08,
+	0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00,
+	0x00,
 };
 
 /*
@@ -351,8 +357,26 @@ static int ak4642_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	default:
 		return -EINVAL;
 	}
-	snd_soc_update_bits(codec, PW_MGMT2, MS, data);
+	snd_soc_update_bits(codec, PW_MGMT2, MS | MCKO | PMPLL, data);
 	snd_soc_update_bits(codec, MD_CTL1, BCKO_MASK, bcko);
+
+	/* format type */
+	data = 0;
+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+	case SND_SOC_DAIFMT_LEFT_J:
+		data = LEFT_J;
+		break;
+	case SND_SOC_DAIFMT_I2S:
+		data = I2S;
+		break;
+	/* FIXME
+	 * Please add RIGHT_J / DSP support here
+	 */
+	default:
+		return -EINVAL;
+		break;
+	}
+	snd_soc_update_bits(codec, MD_CTL1, DIF_MASK, data);
 
 	return 0;
 }

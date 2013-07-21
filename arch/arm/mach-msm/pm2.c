@@ -3,7 +3,7 @@
  * MSM Power Management Routines
  *
  * Copyright (C) 2007 Google, Inc.
- * Copyright (c) 2008-2011 Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2008-2011 The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -29,10 +29,6 @@
 #include <linux/uaccess.h>
 #include <linux/io.h>
 #include <linux/memory.h>
-
-#include <mach/vreg.h>
-#include <mach/gpio-v1.h>
-
 #ifdef CONFIG_HAS_WAKELOCK
 #include <linux/wakelock.h>
 #endif
@@ -65,8 +61,7 @@
 #include "pm.h"
 #include "spm.h"
 #include "sirc.h"
-
-#include <linux/sec_param.h>
+#include "pm-boot.h"
 
 /******************************************************************************
  * Debug Definitions
@@ -82,8 +77,7 @@ enum {
 	MSM_PM_DEBUG_IDLE = 1U << 6,
 };
 
-static int msm_pm_debug_mask = MSM_PM_DEBUG_POWER_COLLAPSE
-					| MSM_PM_DEBUG_SMSM_STATE;
+static int msm_pm_debug_mask;
 module_param_named(
 	debug_mask, msm_pm_debug_mask, int, S_IRUGO | S_IWUSR | S_IWGRP
 );
@@ -176,9 +170,6 @@ static struct kobject *msm_pm_mode_kobjs[MSM_PM_SLEEP_MODE_NR];
 static struct attribute_group *msm_pm_mode_attr_group[MSM_PM_SLEEP_MODE_NR];
 static struct attribute **msm_pm_mode_attrs[MSM_PM_SLEEP_MODE_NR];
 static struct kobj_attribute *msm_pm_mode_kobj_attrs[MSM_PM_SLEEP_MODE_NR];
-
-static DEFINE_SPINLOCK(pm_lock);
-int power_off_done;
 
 /*
  * Write out the attribute.
@@ -972,7 +963,6 @@ struct msm_pm_smem_t {
  *
  *****************************************************************************/
 static struct msm_pm_smem_t *msm_pm_smem_data;
-static uint32_t *msm_pm_reset_vector;
 static atomic_t msm_pm_init_done = ATOMIC_INIT(0);
 
 static int msm_pm_modem_busy(void)
@@ -1001,15 +991,12 @@ static int msm_pm_power_collapse
 {
 	struct msm_pm_polled_group state_grps[2];
 	unsigned long saved_acpuclk_rate;
-	uint32_t saved_vector[2];
 	int collapsed = 0;
 	int ret;
 
 	MSM_PM_DPRINTK(MSM_PM_DEBUG_SUSPEND|MSM_PM_DEBUG_POWER_COLLAPSE,
 		KERN_INFO, "%s(): idle %d, delay %u, limit %u\n", __func__,
 		(int)from_idle, sleep_delay, sleep_limit);
-
-	vreg_suspend_stats();
 
 	if (!(smsm_get_state(SMSM_POWER_MASTER_DEM) & DEM_MASTER_SMSM_READY)) {
 		MSM_PM_DPRINTK(
@@ -1090,15 +1077,8 @@ static int msm_pm_power_collapse
 		goto power_collapse_early_exit;
 	}
 
-	saved_vector[0] = msm_pm_reset_vector[0];
-	saved_vector[1] = msm_pm_reset_vector[1];
-	msm_pm_reset_vector[0] = 0xE51FF004; /* ldr pc, 4 */
-	msm_pm_reset_vector[1] = virt_to_phys(msm_pm_collapse_exit);
-
-	MSM_PM_DPRINTK(MSM_PM_DEBUG_RESET_VECTOR, KERN_INFO,
-		"%s(): vector %x %x -> %x %x\n", __func__,
-		saved_vector[0], saved_vector[1],
-		msm_pm_reset_vector[0], msm_pm_reset_vector[1]);
+	msm_pm_boot_config_before_pc(smp_processor_id(),
+			virt_to_phys(msm_pm_collapse_exit));
 
 #ifdef CONFIG_VFP
 	if (from_idle)
@@ -1115,8 +1095,7 @@ static int msm_pm_power_collapse
 	l2x0_resume(collapsed);
 #endif
 
-	msm_pm_reset_vector[0] = saved_vector[0];
-	msm_pm_reset_vector[1] = saved_vector[1];
+	msm_pm_boot_config_after_pc(smp_processor_id());
 
 	if (collapsed) {
 #ifdef CONFIG_VFP
@@ -1134,7 +1113,6 @@ static int msm_pm_power_collapse
 	MSM_PM_DPRINTK(MSM_PM_DEBUG_CLOCK, KERN_INFO,
 		"%s(): restore clock rate to %lu\n", __func__,
 		saved_acpuclk_rate);
-
 	if (acpuclk_set_rate(smp_processor_id(), saved_acpuclk_rate,
 			SETRATE_PC) < 0)
 		printk(KERN_ERR "%s(): failed to restore clock rate(%lu)\n",
@@ -1223,15 +1201,8 @@ static int msm_pm_power_collapse
 	msm_irq_exit_sleep3(msm_pm_smem_data->irq_mask,
 		msm_pm_smem_data->wakeup_reason,
 		msm_pm_smem_data->pending_irqs);
-	ret = msm_gpio_exit_sleep();
+	msm_gpio_exit_sleep();
 	msm_sirc_exit_sleep();
-
-	if (ret && (acpuclk_max_rate > 0)) {
-		if (acpuclk_set_rate(smp_processor_id(), acpuclk_max_rate,
-			SETRATE_PC) < 0)
-			printk(KERN_ERR "%s(): failed to set max clock rate(%lu)\n",
-					__func__, saved_acpuclk_rate);
-	}
 
 	smsm_change_state(SMSM_APPS_DEM,
 		DEM_SLAVE_SMSM_WFPI, DEM_SLAVE_SMSM_RUN);
@@ -1303,7 +1274,6 @@ power_collapse_bail:
  */
 static int msm_pm_power_collapse_standalone(void)
 {
-	uint32_t saved_vector[2];
 	int collapsed = 0;
 	int ret;
 
@@ -1313,15 +1283,8 @@ static int msm_pm_power_collapse_standalone(void)
 	ret = msm_spm_set_low_power_mode(MSM_SPM_MODE_POWER_COLLAPSE, false);
 	WARN_ON(ret);
 
-	saved_vector[0] = msm_pm_reset_vector[0];
-	saved_vector[1] = msm_pm_reset_vector[1];
-	msm_pm_reset_vector[0] = 0xE51FF004; /* ldr pc, 4 */
-	msm_pm_reset_vector[1] = virt_to_phys(msm_pm_collapse_exit);
-
-	MSM_PM_DPRINTK(MSM_PM_DEBUG_RESET_VECTOR, KERN_INFO,
-		"%s(): vector %x %x -> %x %x\n", __func__,
-		saved_vector[0], saved_vector[1],
-		msm_pm_reset_vector[0], msm_pm_reset_vector[1]);
+	msm_pm_boot_config_before_pc(smp_processor_id(),
+			virt_to_phys(msm_pm_collapse_exit));
 
 #ifdef CONFIG_VFP
 	vfp_flush_context();
@@ -1337,8 +1300,7 @@ static int msm_pm_power_collapse_standalone(void)
 	l2x0_resume(collapsed);
 #endif
 
-	msm_pm_reset_vector[0] = saved_vector[0];
-	msm_pm_reset_vector[1] = saved_vector[1];
+	msm_pm_boot_config_after_pc(smp_processor_id());
 
 	if (collapsed) {
 #ifdef CONFIG_VFP
@@ -1760,99 +1722,39 @@ static uint32_t restart_reason = 0x776655AA;
 
 static void msm_pm_power_off(void)
 {
-	unsigned long flags;
-	unsigned int power_off_reason;
-
-	printk(KERN_INFO " %s\n", __func__);
 	msm_rpcrouter_close();
-
-#if defined(CONFIG_SEC_DEBUG) && defined(CONFIG_SEC_MISC)
-	sec_get_param(param_power_off_reason, &power_off_reason);
-	power_off_reason = power_off_reason | 0x40;
-	sec_set_param(param_power_off_reason, &power_off_reason);
-#endif
-	printk(KERN_INFO " %s before proc_comm\n", __func__);
 	msm_proc_comm(PCOM_POWER_DOWN, 0, 0);
-
-	power_off_done = 1;
-
-	spin_lock_irqsave(&pm_lock, flags);
 	for (;;)
 		;
-	spin_unlock_irqrestore(&pm_lock, flags);
 }
 
 static void msm_pm_restart(char str, const char *cmd)
 {
-	unsigned size;
-	unsigned long flags;
-	unsigned int power_off_reason;
-	samsung_vendor1_id *smem_vendor1 = \
-		(samsung_vendor1_id *)smem_get_entry(SMEM_ID_VENDOR1, &size);
-
-	if (smem_vendor1) {
-		smem_vendor1->silent_reset = 0xAEAEAEAE;
-		smem_vendor1->reboot_reason = restart_reason;
-	} else {
-		printk(KERN_EMERG "smem_flag is NULL\n");
-	}
-
-#if !defined(CONFIG_MACH_JENA)
 	msm_rpcrouter_close();
-#endif
+	msm_proc_comm(PCOM_RESET_CHIP, &restart_reason, 0);
 
-#if defined(CONFIG_SEC_DEBUG) && defined(CONFIG_SEC_MISC)
-	sec_get_param(param_power_off_reason, &power_off_reason);
-	power_off_reason = power_off_reason | 0x10;
-	sec_set_param(param_power_off_reason, &power_off_reason);
-#endif
-
-#if defined(CONFIG_MACH_JENA)
-	msm_rpcrouter_close();
-#endif
-
-	msm_proc_comm(PCOM_RESET_CHIP_IMM, &restart_reason, 0);
-
-	power_off_done = 1;
-
-	spin_lock_irqsave(&pm_lock, flags);
 	for (;;)
 		;
-	spin_unlock_irqrestore(&pm_lock, flags);
 }
 
 static int msm_reboot_call
 	(struct notifier_block *this, unsigned long code, void *_cmd)
 {
-	unsigned int debug_level;
-
 	if ((code == SYS_RESTART) && _cmd) {
 		char *cmd = _cmd;
 		if (!strcmp(cmd, "bootloader")) {
 			restart_reason = 0x77665500;
 		} else if (!strcmp(cmd, "recovery")) {
 			restart_reason = 0x77665502;
-		} else if (!strcmp(cmd, "recovery_done")) {
-#if defined(CONFIG_SEC_MISC)
-			sec_get_param(param_index_debuglevel, &debug_level);
-			debug_level = 0;
-			sec_set_param(param_index_debuglevel, &debug_level);
-#endif
-			restart_reason = 0x77665503;			
 		} else if (!strcmp(cmd, "eraseflash")) {
 			restart_reason = 0x776655EF;
-		} else if (!strcmp(cmd, "download")) {
-			restart_reason = 0x776655FF;	
 		} else if (!strncmp(cmd, "oem-", 4)) {
 			unsigned code = simple_strtoul(cmd + 4, 0, 16) & 0xff;
 			restart_reason = 0x6f656d00 | code;
-		} else if (!strncmp(cmd, "arm11_fota", 10)) {
-			restart_reason = 0x77665504;
 		} else {
 			restart_reason = 0x77665501;
 		}
 	}
-	
 	return NOTIFY_DONE;
 }
 
@@ -1916,21 +1818,6 @@ static int __init msm_pm_init(void)
 		printk(KERN_ERR "%s: failed to get smsm_data\n", __func__);
 		return -ENODEV;
 	}
-#if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
-	/* The bootloader is responsible for initializing many of Scorpion's
-	 * coprocessor registers for things like cache timing. The state of
-	 * these coprocessor registers is lost on reset, so part of the
-	 * bootloader must be re-executed. Do not overwrite the reset vector
-	 * or bootloader area.
-	 */
-	msm_pm_reset_vector = (uint32_t *) PAGE_OFFSET;
-#else
-	msm_pm_reset_vector = ioremap(0, PAGE_SIZE);
-	if (msm_pm_reset_vector == NULL) {
-		printk(KERN_ERR "%s: failed to map reset vector\n", __func__);
-		return -ENODEV;
-	}
-#endif /* CONFIG_ARCH_MSM_SCORPION */
 
 	ret = msm_timer_init_time_sync(msm_pm_timeout);
 	if (ret)

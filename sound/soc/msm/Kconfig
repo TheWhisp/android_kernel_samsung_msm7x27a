@@ -71,29 +71,21 @@ config SND_SOC_MSM8X60
 config SND_SOC_MSM_HOSTLESS_PCM
 	tristate
 
-config SND_SOC_MSM8660_PCM
+config SND_SOC_LPASS_PCM
 	tristate
 
 config SND_SOC_MSM8660_LPAIF
 	tristate
 
-config SND_SOC_MSM8660
-	tristate "SoC Machine driver for MSM8660"
-	depends on !SND_SOC_MSM8X60 && ARCH_MSM8X60
-	select SND_SOC_MSM8660_PCM
-	select SND_SOC_MSM8660_LPAIF
-	select SND_SOC_TIMPANI
-	select MARIMBA_CORE
-	select SND_SOC_MSM_QDSP6_INTF
-	default n
-	help
-	 To add support for SoC audio on MSM8660 for direct playback
-	 to LPA buffer over DMA.The interface bypasses DSP and hence
-	 does not support any post/pre processing features.The driver
-	 would support full duplex playback/record sessions.
-
 config SND_VOIP_PCM
 	tristate
+
+config SND_SOC_MSM_QDSP6_HDMI_AUDIO
+	tristate "Soc QDSP6 HDMI Audio DAI driver"
+	depends on FB_MSM_HDMI_MSM_PANEL
+	default n
+	help
+	 To support HDMI Audio on MSM8960 over QDSP6.
 
 config MSM_8x60_VOIP
 	tristate "SoC Machine driver for voip"
@@ -106,26 +98,19 @@ config MSM_8x60_VOIP
 	 This driver communicates with QDSP6, for getting
 	 uplink and downlink voice packets.
 
-config SND_SOC_MSM8660_QRDC
-	tristate "SoC Machine driver for MSM8660 QRDC"
-	depends on ARCH_MSM8X60
-	select SND_SOC_MSM8660_PCM
-	select SND_SOC_MSM8660_LPAIF
-	select SND_SOC_WM8994
-	select SND_SOC_WM_HUBS
-	select MFD_WM8994
-	select SND_SOC_MSM_QDSP6_INTF
-	default n
-	help
-	 To add support for SoC audio on MSM8660 QRDC for direct playback
-	 and capture over hardware DMA.
-
 config SND_SOC_MSM_QDSP6_INTF
 	bool "SoC Q6 audio driver for MSM8960"
 	depends on MSM_QDSP6_APR
 	default n
 	help
 	 To add support for SoC audio on MSM8960.
+
+config SND_SOC_VOICE
+	bool "SoC Q6 voice driver for MSM8960"
+	depends on SND_SOC_MSM_QDSP6_INTF
+	default n
+	help
+	 To add support for SoC voice on MSM8960.
 
 config SND_SOC_QDSP6
 	tristate "SoC ALSA audio driver for QDSP6"
@@ -135,14 +120,25 @@ config SND_SOC_QDSP6
 	 To add support for MSM QDSP6 Soc Audio.
 
 config SND_SOC_MSM8960
-	tristate "SoC Machine driver for MSM8960 boards"
-	depends on ARCH_MSM8960
+	tristate "SoC Machine driver for MSM8960 and APQ8064 boards"
+	depends on ARCH_MSM8960 || ARCH_APQ8064
+	select SND_SOC_VOICE
 	select SND_SOC_QDSP6
 	select SND_SOC_MSM_STUB
 	select SND_SOC_WCD9310
 	select SND_SOC_MSM_HOSTLESS_PCM
+	select SND_SOC_MSM_QDSP6_HDMI_AUDIO
 	default n
 	help
-	 To add support for SoC audio on MSM8960 boards
+	 To add support for SoC audio on MSM8960 and APQ8064 boards
 
+config SND_SOC_MSM8660_APQ
+        tristate "Soc Machine driver for APQ8060 WM8903 codec"
+        depends on ARCH_MSM8X60
+        select SND_SOC_QDSP6
+        select SND_SOC_WM8903
+        select SND_SOC_MSM_STUB
+        default n
+        help
+         To add support for SoC audio on APQ8060 board
 endmenu

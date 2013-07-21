@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2007 Google, Inc.
- * Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
  * Author: Mike Lockwood <lockwood@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -25,6 +25,8 @@
 #include <mach/irqs.h>
 
 #define FIRST_BOARD_GPIO	NR_GPIO_IRQS
+
+extern struct irq_chip msm_gpio_irq_extn;
 
 static inline int gpio_get_value(unsigned gpio)
 {

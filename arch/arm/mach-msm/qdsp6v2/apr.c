@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -191,6 +191,7 @@ static void apr_cb_func(void *buf, int len, void *priv)
 		if (svc == APR_SVC_AFE || svc == APR_SVC_ASM ||
 			svc == APR_SVC_VSM || svc == APR_SVC_VPM ||
 			svc == APR_SVC_ADM || svc == APR_SVC_ADSP_CORE ||
+			svc == APR_SVC_USM ||
 			svc == APR_SVC_TEST_CLIENT || svc == APR_SVC_ADSP_MVM ||
 			svc == APR_SVC_ADSP_CVS || svc == APR_SVC_ADSP_CVP)
 			clnt = APR_CLIENT_AUDIO;
@@ -264,20 +265,24 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 
 	if ((dest_id == APR_DEST_QDSP6) &&
 				(atomic_read(&dsp_state) == 0)) {
-		rc = wait_event_timeout(dsp_wait,
-				(atomic_read(&dsp_state) == 1), 5*HZ);
+		pr_info("%s: Wait for Lpass to bootup\n", __func__);
+		rc = wait_event_interruptible_timeout(dsp_wait,
+				(atomic_read(&dsp_state) == 1), (1 * HZ));
 		if (rc == 0) {
-			pr_err("apr: Still dsp is not Up\n");
+			pr_err("%s: DSP is not Up\n", __func__);
 			return NULL;
 		}
+		pr_info("%s: Lpass Up\n", __func__);
 	} else if ((dest_id == APR_DEST_MODEM) &&
 					(atomic_read(&modem_state) == 0)) {
-		rc = wait_event_timeout(modem_wait,
-			(atomic_read(&modem_state) == 1), 5*HZ);
+		pr_info("%s: Wait for modem to bootup\n", __func__);
+		rc = wait_event_interruptible_timeout(modem_wait,
+			(atomic_read(&modem_state) == 1), (1 * HZ));
 		if (rc == 0) {
-			pr_err("apr: Still Modem is not Up\n");
+			pr_err("%s: Modem is not Up\n", __func__);
 			return NULL;
 		}
+		pr_info("%s: modem Up\n", __func__);
 	}
 
 	if (!strcmp(svc_name, "AFE")) {
@@ -351,6 +356,10 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 		client_id = APR_CLIENT_VOICE;
 		svc_idx = 6;
 		svc_id = APR_SVC_SRD;
+	} else if (!strncmp(svc_name, "USM", 3)) {
+		client_id = APR_CLIENT_AUDIO;
+		svc_idx = 8;
+		svc_id = APR_SVC_USM;
 	} else {
 		pr_err("APR: Wrong svc name\n");
 		goto done;
@@ -396,7 +405,7 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 	if (src_port != 0xFFFFFFFF) {
 		temp_port = ((src_port >> 8) * 8) + (src_port & 0xFF);
 		pr_debug("port = %d t_port = %d\n", src_port, temp_port);
-		if (temp_port > APR_MAX_PORTS || temp_port < 0) {
+		if (temp_port >= APR_MAX_PORTS || temp_port < 0) {
 			pr_err("APR: temp_port out of bounds\n");
 			mutex_unlock(&svc->m_lock);
 			return NULL;
@@ -491,12 +500,19 @@ void apr_reset(void *handle)
 		return;
 	pr_debug("%s: handle[%p]\n", __func__, handle);
 
+	if (apr_reset_workqueue == NULL) {
+		pr_err("%s: apr_reset_workqueue is NULL\n", __func__);
+		return;
+	}
+
 	apr_reset_worker = kzalloc(sizeof(struct apr_reset_work),
-					GFP_ATOMIC);
-	if (apr_reset_worker == NULL || apr_reset_workqueue == NULL) {
+							GFP_ATOMIC);
+
+	if (apr_reset_worker == NULL) {
 		pr_err("%s: mem failure\n", __func__);
 		return;
 	}
+
 	apr_reset_worker->handle = handle;
 	INIT_WORK(&apr_reset_worker->work, apr_reset_deregister);
 	queue_work(apr_reset_workqueue, &apr_reset_worker->work);

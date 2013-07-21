@@ -31,6 +31,7 @@
 #include <linux/uio.h>
 #include <linux/security.h>
 #include <linux/gfp.h>
+#include <linux/socket.h>
 
 /*
  * Attempt to steal a page from a pipe buffer. This should perhaps go into
@@ -162,6 +163,14 @@ static const struct pipe_buf_operations user_page_pipe_buf_ops = {
 	.get = generic_pipe_buf_get,
 };
 
+static void wakeup_pipe_readers(struct pipe_inode_info *pipe)
+{
+	smp_mb();
+	if (waitqueue_active(&pipe->wait))
+		wake_up_interruptible(&pipe->wait);
+	kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
+}
+
 /**
  * splice_to_pipe - fill passed data into a pipe
  * @pipe:	pipe to fill
@@ -247,12 +256,8 @@ ssize_t splice_to_pipe(struct pipe_inode_info *pipe,
 
 	pipe_unlock(pipe);
 
-	if (do_wakeup) {
-		smp_mb();
-		if (waitqueue_active(&pipe->wait))
-			wake_up_interruptible(&pipe->wait);
-		kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
-	}
+	if (do_wakeup)
+		wakeup_pipe_readers(pipe);
 
 	while (page_nr < spd_pages)
 		spd->spd_release(spd, page_nr++);
@@ -687,7 +692,9 @@ static int pipe_to_sendpage(struct pipe_inode_info *pipe,
 	if (!likely(file->f_op && file->f_op->sendpage))
 		return -EINVAL;
 
-	more = (sd->flags & SPLICE_F_MORE) || sd->len < sd->total_len;
+	more = (sd->flags & SPLICE_F_MORE) ? MSG_MORE : 0;
+	if (sd->len < sd->total_len)
+		more |= MSG_SENDPAGE_NOTLAST;
 	return file->f_op->sendpage(file, buf->page, buf->offset,
 				    sd->len, &pos, more);
 }
@@ -1892,12 +1899,9 @@ retry:
 	/*
 	 * If we put data in the output pipe, wakeup any potential readers.
 	 */
-	if (ret > 0) {
-		smp_mb();
-		if (waitqueue_active(&opipe->wait))
-			wake_up_interruptible(&opipe->wait);
-		kill_fasync(&opipe->fasync_readers, SIGIO, POLL_IN);
-	}
+	if (ret > 0)
+		wakeup_pipe_readers(opipe);
+
 	if (input_wakeup)
 		wakeup_pipe_writers(ipipe);
 
@@ -1976,12 +1980,8 @@ static int link_pipe(struct pipe_inode_info *ipipe,
 	/*
 	 * If we put data in the output pipe, wakeup any potential readers.
 	 */
-	if (ret > 0) {
-		smp_mb();
-		if (waitqueue_active(&opipe->wait))
-			wake_up_interruptible(&opipe->wait);
-		kill_fasync(&opipe->fasync_readers, SIGIO, POLL_IN);
-	}
+	if (ret > 0)
+		wakeup_pipe_readers(opipe);
 
 	return ret;
 }

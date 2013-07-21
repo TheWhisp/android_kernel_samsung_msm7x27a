@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -28,6 +28,7 @@
 #include <linux/wakelock.h>
 #include <linux/if_arp.h>
 #include <linux/msm_rmnet.h>
+#include <linux/platform_device.h>
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
 #include <linux/earlysuspend.h>
@@ -76,11 +77,13 @@ struct rmnet_private {
 	unsigned long wakeups_rcv;
 	unsigned long timeout_us;
 #endif
-	struct sk_buff *skb;
+	struct sk_buff *waiting_for_ul_skb;
 	spinlock_t lock;
+	spinlock_t tx_queue_lock;
 	struct tasklet_struct tsklt;
 	u32 operation_mode; /* IOCTL specified mode (protocol, QoS header) */
 	uint8_t device_up;
+	uint8_t in_reset;
 };
 
 #ifdef CONFIG_MSM_RMNET_DEBUG
@@ -303,15 +306,27 @@ static int _rmnet_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 
 	dev->trans_start = jiffies;
+	/* if write() succeeds, skb access is unsafe in this process */
 	bam_ret = msm_bam_dmux_write(p->ch_id, skb);
 
-	if (bam_ret != 0) {
+	if (bam_ret != 0 && bam_ret != -EAGAIN && bam_ret != -EFAULT) {
 		pr_err("[%s] %s: write returned error %d",
 			dev->name, __func__, bam_ret);
-		goto xmit_out;
+		return -EPERM;
 	}
 
-	if (count_this_packet(skb->data, skb->len)) {
+	return bam_ret;
+}
+
+static void bam_write_done(void *dev, struct sk_buff *skb)
+{
+	struct rmnet_private *p = netdev_priv(dev);
+	u32 opmode = p->operation_mode;
+	unsigned long flags;
+
+	DBG1("%s: write complete\n", __func__);
+	if (RMNET_IS_MODE_IP(opmode) ||
+				count_this_packet(skb->data, skb->len)) {
 		p->stats.tx_packets++;
 		p->stats.tx_bytes += skb->len;
 #ifdef CONFIG_MSM_RMNET_DEBUG
@@ -319,20 +334,55 @@ static int _rmnet_xmit(struct sk_buff *skb, struct net_device *dev)
 #endif
 	}
 	DBG1("[%s] Tx packet #%lu len=%d mark=0x%x\n",
-	    dev->name, p->stats.tx_packets, skb->len, skb->mark);
-
-	return 0;
-xmit_out:
-	/* data xmited, safe to release skb */
+	    ((struct net_device *)(dev))->name, p->stats.tx_packets,
+	    skb->len, skb->mark);
 	dev_kfree_skb_any(skb);
-	return 0;
+
+	spin_lock_irqsave(&p->tx_queue_lock, flags);
+	if (netif_queue_stopped(dev) &&
+	    msm_bam_dmux_is_ch_low(p->ch_id)) {
+		DBG0("%s: Low WM hit, waking queue=%p\n",
+		      __func__, skb);
+		netif_wake_queue(dev);
+	}
+	spin_unlock_irqrestore(&p->tx_queue_lock, flags);
 }
 
-static void bam_write_done(void *dev, struct sk_buff *skb)
+static void bam_notify(void *dev, int event, unsigned long data)
 {
-	DBG1("%s: write complete\n", __func__);
-	dev_kfree_skb_any(skb);
-	netif_wake_queue(dev);
+	struct rmnet_private *p = netdev_priv(dev);
+	unsigned long flags;
+
+	switch (event) {
+	case BAM_DMUX_RECEIVE:
+		bam_recv_notify(dev, (struct sk_buff *)(data));
+		break;
+	case BAM_DMUX_WRITE_DONE:
+		bam_write_done(dev, (struct sk_buff *)(data));
+		break;
+	case BAM_DMUX_UL_CONNECTED:
+		spin_lock_irqsave(&p->lock, flags);
+		if (p->waiting_for_ul_skb != NULL) {
+			struct sk_buff *skb;
+			int ret;
+
+			skb = p->waiting_for_ul_skb;
+			p->waiting_for_ul_skb = NULL;
+			spin_unlock_irqrestore(&p->lock, flags);
+			ret = _rmnet_xmit(skb, dev);
+			if (ret) {
+				pr_err("%s: error %d dropping delayed TX SKB %p\n",
+						__func__, ret, skb);
+				dev_kfree_skb_any(skb);
+			}
+			netif_wake_queue(dev);
+		} else {
+			spin_unlock_irqrestore(&p->lock, flags);
+		}
+		break;
+	case BAM_DMUX_UL_DISCONNECTED:
+		break;
+	}
 }
 
 static int __rmnet_open(struct net_device *dev)
@@ -343,11 +393,13 @@ static int __rmnet_open(struct net_device *dev)
 	DBG0("[%s] __rmnet_open()\n", dev->name);
 
 	if (!p->device_up) {
-		r = msm_bam_dmux_open(p->ch_id, dev,
-				       bam_recv_notify, bam_write_done);
+		r = msm_bam_dmux_open(p->ch_id, dev, bam_notify);
 
-		if (r < 0)
+		if (r < 0) {
+			DBG0("%s: ch=%d failed with rc %d\n",
+					__func__, p->ch_id, r);
 			return -ENODEV;
+		}
 	}
 
 	p->device_up = DEVICE_ACTIVE;
@@ -408,16 +460,70 @@ static int rmnet_change_mtu(struct net_device *dev, int new_mtu)
 
 static int rmnet_xmit(struct sk_buff *skb, struct net_device *dev)
 {
+	struct rmnet_private *p = netdev_priv(dev);
+	unsigned long flags;
+	int awake;
+	int ret = 0;
+
 	if (netif_queue_stopped(dev)) {
 		pr_err("[%s]fatal: rmnet_xmit called when "
 			"netif_queue is stopped", dev->name);
 		return 0;
 	}
 
-	netif_stop_queue(dev);
-	_rmnet_xmit(skb, dev);
+	spin_lock_irqsave(&p->lock, flags);
+	awake = msm_bam_dmux_ul_power_vote();
+	if (!awake) {
+		/* send SKB once wakeup is complete */
+		netif_stop_queue(dev);
+		p->waiting_for_ul_skb = skb;
+		spin_unlock_irqrestore(&p->lock, flags);
+		ret = 0;
+		goto exit;
+	}
+	spin_unlock_irqrestore(&p->lock, flags);
 
-	return 0;
+	ret = _rmnet_xmit(skb, dev);
+	if (ret == -EPERM) {
+		ret = NETDEV_TX_BUSY;
+		goto exit;
+	}
+
+	/*
+	 * detected SSR a bit early.  shut some things down now, and leave
+	 * the rest to the main ssr handling code when that happens later
+	 */
+	if (ret == -EFAULT) {
+		netif_carrier_off(dev);
+		dev_kfree_skb_any(skb);
+		ret = 0;
+		goto exit;
+	}
+
+	if (ret == -EAGAIN) {
+		/*
+		 * This should not happen
+		 * EAGAIN means we attempted to overflow the high watermark
+		 * Clearly the queue is not stopped like it should be, so
+		 * stop it and return BUSY to the TCP/IP framework.  It will
+		 * retry this packet with the queue is restarted which happens
+		 * in the write_done callback when the low watermark is hit.
+		 */
+		netif_stop_queue(dev);
+		ret = NETDEV_TX_BUSY;
+		goto exit;
+	}
+
+	spin_lock_irqsave(&p->tx_queue_lock, flags);
+	if (msm_bam_dmux_is_ch_full(p->ch_id)) {
+		netif_stop_queue(dev);
+		DBG0("%s: High WM hit, stopping queue=%p\n",    __func__, skb);
+	}
+	spin_unlock_irqrestore(&p->tx_queue_lock, flags);
+
+exit:
+	msm_bam_dmux_ul_power_unvote();
+	return ret;
 }
 
 static struct net_device_stats *rmnet_get_stats(struct net_device *dev)
@@ -585,6 +691,55 @@ static void __init rmnet_setup(struct net_device *dev)
 	dev->watchdog_timeo = 1000; /* 10 seconds? */
 }
 
+static struct net_device *netdevs[RMNET_DEVICE_COUNT];
+static struct platform_driver bam_rmnet_drivers[RMNET_DEVICE_COUNT];
+
+static int bam_rmnet_probe(struct platform_device *pdev)
+{
+	int i;
+	char name[BAM_DMUX_CH_NAME_MAX_LEN];
+	struct rmnet_private *p;
+
+	for (i = 0; i < RMNET_DEVICE_COUNT; ++i) {
+		scnprintf(name, BAM_DMUX_CH_NAME_MAX_LEN, "bam_dmux_ch_%d", i);
+		if (!strncmp(pdev->name, name, BAM_DMUX_CH_NAME_MAX_LEN))
+			break;
+	}
+
+	p = netdev_priv(netdevs[i]);
+	if (p->in_reset) {
+		p->in_reset = 0;
+		msm_bam_dmux_open(p->ch_id, netdevs[i], bam_notify);
+		netif_carrier_on(netdevs[i]);
+		netif_start_queue(netdevs[i]);
+	}
+
+	return 0;
+}
+
+static int bam_rmnet_remove(struct platform_device *pdev)
+{
+	int i;
+	char name[BAM_DMUX_CH_NAME_MAX_LEN];
+	struct rmnet_private *p;
+
+	for (i = 0; i < RMNET_DEVICE_COUNT; ++i) {
+		scnprintf(name, BAM_DMUX_CH_NAME_MAX_LEN, "bam_dmux_ch_%d", i);
+		if (!strncmp(pdev->name, name, BAM_DMUX_CH_NAME_MAX_LEN))
+			break;
+	}
+
+	p = netdev_priv(netdevs[i]);
+	p->in_reset = 1;
+	if (p->waiting_for_ul_skb != NULL) {
+		dev_kfree_skb_any(p->waiting_for_ul_skb);
+		p->waiting_for_ul_skb = NULL;
+	}
+	msm_bam_dmux_close(p->ch_id);
+	netif_carrier_off(netdevs[i]);
+	netif_stop_queue(netdevs[i]);
+	return 0;
+}
 
 static int __init rmnet_init(void)
 {
@@ -593,6 +748,7 @@ static int __init rmnet_init(void)
 	struct net_device *dev;
 	struct rmnet_private *p;
 	unsigned n;
+	char *tempname;
 
 	pr_info("%s: BAM devices[%d]\n", __func__, RMNET_DEVICE_COUNT);
 
@@ -607,15 +763,21 @@ static int __init rmnet_init(void)
 		dev = alloc_netdev(sizeof(struct rmnet_private),
 				   "rmnet%d", rmnet_setup);
 
-		if (!dev)
+		if (!dev) {
+			pr_err("%s: no memory for netdev %d\n", __func__, n);
 			return -ENOMEM;
+		}
 
+		netdevs[n] = dev;
 		d = &(dev->dev);
 		p = netdev_priv(dev);
 		/* Initial config uses Ethernet */
 		p->operation_mode = RMNET_MODE_LLP_ETH;
 		p->ch_id = n;
+		p->waiting_for_ul_skb = NULL;
+		p->in_reset = 0;
 		spin_lock_init(&p->lock);
+		spin_lock_init(&p->tx_queue_lock);
 #ifdef CONFIG_MSM_RMNET_DEBUG
 		p->timeout_us = timeout_us;
 		p->wakeups_xmit = p->wakeups_rcv = 0;
@@ -623,6 +785,8 @@ static int __init rmnet_init(void)
 
 		ret = register_netdev(dev);
 		if (ret) {
+			pr_err("%s: unable to register netdev"
+				   " %d rc=%d\n", __func__, n, ret);
 			free_netdev(dev);
 			return ret;
 		}
@@ -643,6 +807,21 @@ static int __init rmnet_init(void)
 			rmnet0 = d;
 #endif
 #endif
+		bam_rmnet_drivers[n].probe = bam_rmnet_probe;
+		bam_rmnet_drivers[n].remove = bam_rmnet_remove;
+		tempname = kmalloc(BAM_DMUX_CH_NAME_MAX_LEN, GFP_KERNEL);
+		if (tempname == NULL)
+			return -ENOMEM;
+		scnprintf(tempname, BAM_DMUX_CH_NAME_MAX_LEN, "bam_dmux_ch_%d",
+									n);
+		bam_rmnet_drivers[n].driver.name = tempname;
+		bam_rmnet_drivers[n].driver.owner = THIS_MODULE;
+		ret = platform_driver_register(&bam_rmnet_drivers[n]);
+		if (ret) {
+			pr_err("%s: registration failed n=%d rc=%d\n",
+					__func__, n, ret);
+			return ret;
+		}
 	}
 	return 0;
 }

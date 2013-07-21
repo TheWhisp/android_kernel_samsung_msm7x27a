@@ -1,6 +1,6 @@
 /* arch/arm/mach-msm/proc_comm.h
  *
- * Copyright (c) 2007-2009,2011 Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2007-2009,2011 The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -144,16 +144,11 @@ enum {
 enum {
 	PCOM_OEM_FIRST_CMD = 0x10000000,
 	PCOM_OEM_TEST_CMD = PCOM_OEM_FIRST_CMD,
-	PCOM_OEM_CHARGING_INFO,
-	PCOM_OEM_POWER_KEY_GET,
-#if defined(CONFIG_MACH_GEIM)
-	PCOM_OEM_SLIDE_INFO,
-#endif
-	PCOM_OEM_SYS_CMD,
-	PCOM_OEM_SAMSUNG_LAST,
-	PCOM_OEM_LAST = PCOM_OEM_SAMSUNG_LAST,
-};
 
+	/* add OEM PROC COMM commands here */
+
+	PCOM_OEM_LAST = PCOM_OEM_TEST_CMD,
+};
 
 enum {
 	PCOM_INVALID_STATUS = 0x0,

@@ -1,4 +1,4 @@
-/* Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -502,15 +502,16 @@ static void pm8xxx_batt_alarm_isr_work(struct work_struct *work)
 		= container_of(work, struct pm8xxx_batt_alarm_chip, irq_work);
 	int status;
 
-	if (chip) {
-		status = pm8xxx_batt_alarm_status_read();
+	if (!chip)
+		return;
 
-		if (status < 0)
-			pr_err("failed to read status, rc=%d\n", status);
-		else
-			srcu_notifier_call_chain(&chip->irq_notifier_list,
-						 status, NULL);
-	}
+	status = pm8xxx_batt_alarm_status_read();
+
+	if (status < 0)
+		pr_err("failed to read status, rc=%d\n", status);
+	else
+		srcu_notifier_call_chain(&chip->irq_notifier_list,
+						status, NULL);
 
 	enable_irq(chip->irq);
 }
@@ -542,7 +543,7 @@ int pm8xxx_batt_alarm_register_notifier(struct notifier_block *nb)
 	if (rc == 0) {
 		if (chip->notifier_count == 0) {
 			enable_irq(chip->irq);
-			rc = set_irq_wake(chip->irq, 1);
+			rc = irq_set_irq_wake(chip->irq, 1);
 		}
 
 		chip->notifier_count++;
@@ -577,7 +578,7 @@ int pm8xxx_batt_alarm_unregister_notifier(struct notifier_block *nb)
 		chip->notifier_count--;
 
 		if (chip->notifier_count == 0) {
-			rc = set_irq_wake(chip->irq, 0);
+			rc = irq_set_irq_wake(chip->irq, 0);
 			disable_irq(chip->irq);
 		}
 
@@ -765,7 +766,7 @@ static int __devexit pm8xxx_batt_alarm_remove(struct platform_device *pdev)
 
 	if (chip) {
 		platform_set_drvdata(pdev, NULL);
-		set_irq_wake(chip->irq, 0);
+		irq_set_irq_wake(chip->irq, 0);
 		free_irq(chip->irq, chip);
 		cancel_work_sync(&chip->irq_work);
 		srcu_cleanup_notifier_head(&chip->irq_notifier_list);

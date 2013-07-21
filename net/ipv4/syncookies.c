@@ -276,7 +276,8 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb,
 	int mss;
 	struct rtable *rt;
 	__u8 rcv_wscale;
-	bool ecn_ok;
+	bool ecn_ok = false;
+	struct flowi4 fl4;
 
 	if (!sysctl_tcp_syncookies || !th->ack || th->rst)
 		goto out;
@@ -321,10 +322,10 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb,
 	 * the ACK carries the same options again (see RFC1122 4.2.3.8)
 	 */
 	if (opt && opt->optlen) {
-		int opt_size = sizeof(struct ip_options) + opt->optlen;
+		int opt_size = sizeof(struct ip_options_rcu) + opt->optlen;
 
 		ireq->opt = kmalloc(opt_size, GFP_ATOMIC);
-		if (ireq->opt != NULL && ip_options_echo(ireq->opt, skb)) {
+		if (ireq->opt != NULL && ip_options_echo(&ireq->opt->opt, skb)) {
 			kfree(ireq->opt);
 			ireq->opt = NULL;
 		}
@@ -344,21 +345,16 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb,
 	 * hasn't changed since we received the original syn, but I see
 	 * no easy way to do this.
 	 */
-	{
-		struct flowi fl = { .mark = sk->sk_mark,
-				    .fl4_dst = ((opt && opt->srr) ?
-						opt->faddr : ireq->rmt_addr),
-				    .fl4_src = ireq->loc_addr,
-				    .fl4_tos = RT_CONN_FLAGS(sk),
-				    .proto = IPPROTO_TCP,
-				    .flags = inet_sk_flowi_flags(sk),
-				    .fl_ip_sport = th->dest,
-				    .fl_ip_dport = th->source };
-		security_req_classify_flow(req, &fl);
-		if (ip_route_output_key(sock_net(sk), &rt, &fl)) {
-			reqsk_free(req);
-			goto out;
-		}
+	flowi4_init_output(&fl4, 0, sk->sk_mark, RT_CONN_FLAGS(sk),
+			   RT_SCOPE_UNIVERSE, IPPROTO_TCP,
+			   inet_sk_flowi_flags(sk),
+			   (opt && opt->srr) ? opt->faddr : ireq->rmt_addr,
+			   ireq->loc_addr, th->source, th->dest);
+	security_req_classify_flow(req, flowi4_to_flowi(&fl4));
+	rt = ip_route_output_key(sock_net(sk), &fl4);
+	if (IS_ERR(rt)) {
+		reqsk_free(req);
+		goto out;
 	}
 
 	/* Try to redo what tcp_v4_send_synack did. */
@@ -372,5 +368,10 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb,
 	ireq->rcv_wscale  = rcv_wscale;
 
 	ret = get_cookie_sock(sk, skb, req, &rt->dst);
+	/* ip_queue_xmit() depends on our flow being setup
+	 * Normal sockets get it right from inet_csk_route_child_sock()
+	 */
+	if (ret)
+		inet_sk(ret)->cork.fl.u.ip4 = fl4;
 out:	return ret;
 }

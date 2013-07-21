@@ -65,6 +65,8 @@
 #define sysexit_audit	syscall_exit_work
 #endif
 
+	.section .entry.text, "ax"
+
 /*
  * We use macros for low-level operations which need to be overridden
  * for paravirtualization.  The following will never clobber any registers:
@@ -95,12 +97,6 @@
 1:
 #endif
 .endm
-
-#ifdef CONFIG_VM86
-#define resume_userspace_sig	check_userspace
-#else
-#define resume_userspace_sig	resume_userspace
-#endif
 
 /*
  * User gs save/restore
@@ -325,10 +321,19 @@ ret_from_exception:
 	preempt_stop(CLBR_ANY)
 ret_from_intr:
 	GET_THREAD_INFO(%ebp)
-check_userspace:
+resume_userspace_sig:
+#ifdef CONFIG_VM86
 	movl PT_EFLAGS(%esp), %eax	# mix EFLAGS and CS
 	movb PT_CS(%esp), %al
 	andl $(X86_EFLAGS_VM | SEGMENT_RPL_MASK), %eax
+#else
+	/*
+	 * We can be coming here from a syscall done in the kernel space,
+	 * e.g. a failed kernel_execve().
+	 */
+	movl PT_CS(%esp), %eax
+	andl $SEGMENT_RPL_MASK, %eax
+#endif
 	cmpl $USER_RPL, %eax
 	jb resume_kernel		# not returning to v8086 or userspace
 
@@ -395,7 +400,7 @@ sysenter_past_esp:
 	 * A tiny bit of offset fixup is necessary - 4*4 means the 4 words
 	 * pushed above; +8 corresponds to copy_thread's esp0 setting.
 	 */
-	pushl_cfi ((TI_sysenter_return)-THREAD_SIZE_asm+8+4*4)(%esp)
+	pushl_cfi ((TI_sysenter_return)-THREAD_SIZE+8+4*4)(%esp)
 	CFI_REL_OFFSET eip, 0
 
 	pushl_cfi %eax
@@ -788,7 +793,7 @@ ENDPROC(ptregs_clone)
  */
 .section .init.rodata,"a"
 ENTRY(interrupt)
-.text
+.section .entry.text, "ax"
 	.p2align 5
 	.p2align CONFIG_X86_L1_CACHE_SHIFT
 ENTRY(irq_entries_start)
@@ -807,7 +812,7 @@ vector=FIRST_EXTERNAL_VECTOR
       .endif
       .previous
 	.long 1b
-      .text
+      .section .entry.text, "ax"
 vector=vector+1
     .endif
   .endr
@@ -1409,8 +1414,7 @@ END(general_protection)
 #ifdef CONFIG_KVM_GUEST
 ENTRY(async_page_fault)
 	RING0_EC_FRAME
-	pushl $do_async_page_fault
-	CFI_ADJUST_CFA_OFFSET 4
+	pushl_cfi $do_async_page_fault
 	jmp error_code
 	CFI_ENDPROC
 END(async_page_fault)

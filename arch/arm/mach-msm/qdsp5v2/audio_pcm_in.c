@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
- * Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -27,7 +27,7 @@
 #include <linux/wait.h>
 #include <linux/dma-mapping.h>
 #include <linux/msm_audio.h>
-#include <linux/android_pmem.h>
+#include <linux/ion.h>
 #include <linux/memory_alloc.h>
 #include <mach/msm_memtypes.h>
 
@@ -36,6 +36,7 @@
 #include <mach/msm_subsystem_map.h>
 
 #include <mach/msm_adsp.h>
+#include <mach/socinfo.h>
 #include <mach/qdsp5v2/qdsp5audreccmdi.h>
 #include <mach/qdsp5v2/qdsp5audrecmsg.h>
 #include <mach/qdsp5v2/audpreproc.h>
@@ -120,6 +121,9 @@ struct audio_in {
 	int stopped; /* set when stopped, cleared on flush */
 	int abort; /* set when error, like sample rate mismatch */
 	int dual_mic_config;
+	char *build_id;
+	struct ion_client *client;
+	struct ion_handle *output_buff_handle;
 };
 
 static struct audio_in the_audio_in;
@@ -370,7 +374,13 @@ static int audpcm_in_enc_config(struct audio_in *audio, int enable)
 	struct audpreproc_audrec_cmd_enc_cfg cmd;
 
 	memset(&cmd, 0, sizeof(cmd));
-	cmd.cmd_id = AUDPREPROC_AUDREC_CMD_ENC_CFG_2;
+	if (audio->build_id[17] == '1') {
+		cmd.cmd_id = AUDPREPROC_AUDREC_CMD_ENC_CFG_2;
+		MM_ERR("sending AUDPREPROC_AUDREC_CMD_ENC_CFG_2 command");
+	} else {
+		cmd.cmd_id = AUDPREPROC_AUDREC_CMD_ENC_CFG;
+		MM_ERR("sending AUDPREPROC_AUDREC_CMD_ENC_CFG command");
+	}
 	cmd.stream_id = audio->enc_id;
 
 	if (enable)
@@ -630,29 +640,49 @@ static long audpcm_in_ioctl(struct file *file,
 			rc = -EFAULT;
 			break;
 		}
-		if (cfg.channel_count == 1) {
-			cfg.channel_count = AUDREC_CMD_MODE_MONO;
-			if ((cfg.buffer_size == MONO_DATA_SIZE_256) ||
-			    (cfg.buffer_size == MONO_DATA_SIZE_512) ||
-			    (cfg.buffer_size == MONO_DATA_SIZE_1024)) {
-				audio->buffer_size = cfg.buffer_size;
+		if (audio->build_id[17] == '1') {
+			audio->enc_type = ENC_TYPE_EXT_WAV | audio->mode;
+			if (cfg.channel_count == 1) {
+				cfg.channel_count = AUDREC_CMD_MODE_MONO;
+				if ((cfg.buffer_size == MONO_DATA_SIZE_256) ||
+					(cfg.buffer_size ==
+						MONO_DATA_SIZE_512) ||
+					(cfg.buffer_size ==
+						MONO_DATA_SIZE_1024)) {
+					audio->buffer_size = cfg.buffer_size;
+				} else {
+					rc = -EINVAL;
+					break;
+				}
+			} else if (cfg.channel_count == 2) {
+				cfg.channel_count = AUDREC_CMD_MODE_STEREO;
+				if ((cfg.buffer_size ==
+						STEREO_DATA_SIZE_256) ||
+					(cfg.buffer_size ==
+						STEREO_DATA_SIZE_512) ||
+					(cfg.buffer_size ==
+						STEREO_DATA_SIZE_1024)) {
+					audio->buffer_size = cfg.buffer_size;
+				} else {
+					rc = -EINVAL;
+					break;
+				}
 			} else {
 				rc = -EINVAL;
 				break;
 			}
-		} else if (cfg.channel_count == 2) {
-			cfg.channel_count = AUDREC_CMD_MODE_STEREO;
-			if ((cfg.buffer_size == STEREO_DATA_SIZE_256) ||
-			    (cfg.buffer_size == STEREO_DATA_SIZE_512) ||
-			    (cfg.buffer_size == STEREO_DATA_SIZE_1024)) {
-				audio->buffer_size = cfg.buffer_size;
-			} else {
-				rc = -EINVAL;
-				break;
+		} else if (audio->build_id[17] == '0') {
+			audio->enc_type = ENC_TYPE_WAV | audio->mode;
+			if (cfg.channel_count == 1) {
+				cfg.channel_count = AUDREC_CMD_MODE_MONO;
+				audio->buffer_size = MONO_DATA_SIZE_1024;
+			} else if (cfg.channel_count == 2) {
+				cfg.channel_count = AUDREC_CMD_MODE_STEREO;
+				audio->buffer_size = STEREO_DATA_SIZE_1024;
 			}
 		} else {
-			rc = -EINVAL;
-			break;
+			MM_ERR("wrong build_id = %s\n", audio->build_id);
+			return -ENODEV;
 		}
 		audio->samp_rate = cfg.sample_rate;
 		audio->channel_mode = cfg.channel_count;
@@ -815,10 +845,11 @@ static int audpcm_in_release(struct inode *inode, struct file *file)
 	audio->audrec = NULL;
 	audio->opened = 0;
 	if (audio->data) {
-		msm_subsystem_unmap_buffer(audio->map_v_read);
-		free_contiguous_memory_by_paddr(audio->phys);
+		ion_unmap_kernel(audio->client, audio->output_buff_handle);
+		ion_free(audio->client, audio->output_buff_handle);
 		audio->data = NULL;
 	}
+	ion_client_destroy(audio->client);
 	mutex_unlock(&audio->lock);
 	return 0;
 }
@@ -828,29 +859,68 @@ static int audpcm_in_open(struct inode *inode, struct file *file)
 	struct audio_in *audio = &the_audio_in;
 	int rc;
 	int encid;
+	int len = 0;
+	unsigned long ionflag = 0;
+	ion_phys_addr_t addr = 0;
+	struct ion_handle *handle = NULL;
+	struct ion_client *client = NULL;
 
 	mutex_lock(&audio->lock);
 	if (audio->opened) {
 		rc = -EBUSY;
 		goto done;
 	}
-	audio->phys = allocate_contiguous_ebi_nomap(DMASZ, SZ_4K);
-	if (audio->phys) {
-		audio->map_v_read = msm_subsystem_map_buffer(
-					audio->phys, DMASZ,
-					MSM_SUBSYSTEM_MAP_KADDR, NULL, 0);
-		if (IS_ERR(audio->map_v_read)) {
-			MM_ERR("could not map read phys buffers\n");
-			rc = -ENOMEM;
-			free_contiguous_memory_by_paddr(audio->phys);
-			goto done;
-		}
-		audio->data = audio->map_v_read->vaddr;
-	} else {
-		MM_ERR("could not allocate read buffers\n");
+
+	client = msm_ion_client_create(UINT_MAX, "Audio_PCM_in_client");
+	if (IS_ERR_OR_NULL(client)) {
+		MM_ERR("Unable to create ION client\n");
 		rc = -ENOMEM;
-		goto done;
+		goto client_create_error;
 	}
+	audio->client = client;
+
+	MM_DBG("allocating mem sz = %d\n", DMASZ);
+	handle = ion_alloc(client, DMASZ, SZ_4K,
+		ION_HEAP(ION_AUDIO_HEAP_ID));
+	if (IS_ERR_OR_NULL(handle)) {
+		MM_ERR("Unable to create allocate O/P buffers\n");
+		rc = -ENOMEM;
+		goto output_buff_alloc_error;
+	}
+
+	audio->output_buff_handle = handle;
+
+	rc = ion_phys(client , handle, &addr, &len);
+	if (rc) {
+		MM_ERR("O/P buffers:Invalid phy: %x sz: %x\n",
+			(unsigned int) addr, (unsigned int) len);
+		rc = -ENOMEM;
+		goto output_buff_get_phys_error;
+	} else {
+		MM_INFO("O/P buffers:valid phy: %x sz: %x\n",
+			(unsigned int) addr, (unsigned int) len);
+	}
+	audio->phys = (int32_t)addr;
+
+	rc = ion_handle_get_flags(client, handle, &ionflag);
+	if (rc) {
+		MM_ERR("could not get flags for the handle\n");
+		rc = -ENOMEM;
+		goto output_buff_get_flags_error;
+	}
+
+	audio->map_v_read = ion_map_kernel(client, handle, ionflag);
+	if (IS_ERR(audio->data)) {
+		MM_ERR("could not map read buffers,freeing instance 0x%08x\n",
+				(int)audio);
+		rc = -ENOMEM;
+		goto output_buff_map_error;
+	}
+	MM_DBG("read buf: phy addr 0x%08x kernel addr 0x%08x\n",
+		audio->phys, (int)audio->data);
+
+	audio->data = (char *)audio->map_v_read;
+
 	MM_DBG("Memory addr = 0x%8x  phy addr = 0x%8x\n",\
 		(int) audio->data, (int) audio->phys);
 	if ((file->f_mode & FMODE_WRITE) &&
@@ -910,10 +980,19 @@ static int audpcm_in_open(struct inode *inode, struct file *file)
 	file->private_data = audio;
 	audio->opened = 1;
 	rc = 0;
+	audio->build_id = socinfo_get_build_id();
+	MM_DBG("Modem build id = %s\n", audio->build_id);
 done:
 	mutex_unlock(&audio->lock);
 	return rc;
 evt_error:
+output_buff_map_error:
+output_buff_get_phys_error:
+output_buff_get_flags_error:
+	ion_free(client, audio->output_buff_handle);
+output_buff_alloc_error:
+	ion_client_destroy(client);
+client_create_error:
 	msm_adsp_put(audio->audrec);
 	audpreproc_aenc_free(audio->enc_id);
 	mutex_unlock(&audio->lock);

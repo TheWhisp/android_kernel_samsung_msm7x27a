@@ -38,37 +38,36 @@ snd-soc-msm-mvs-objs := msm-mvs.o
 obj-$(CONFIG_SND_MVS_SOC) += snd-soc-msm-mvs.o
 
 # 8660 ALSA Support
-snd-soc-msm8660-lpa-objs := msm8660-i2s.o msm8660-dma.o
-obj-$(CONFIG_SND_SOC_MSM8660_LPAIF) += snd-soc-msm8660-lpa.o
+snd-soc-lpass-objs := lpass-i2s.o lpass-dma.o
+obj-$(CONFIG_SND_SOC_MSM8660_LPAIF) += snd-soc-lpass.o
 
-snd-soc-msm8660-pcm-objs := msm8660-pcm.o
-obj-$(CONFIG_SND_SOC_MSM8660_PCM) += snd-soc-msm8660-pcm.o
-
-snd-soc-msm8660-objs := msm8660.o
-obj-$(CONFIG_SND_SOC_MSM8660) += snd-soc-msm8660.o
+snd-soc-lpass-pcm-objs := lpass-pcm.o
+obj-$(CONFIG_SND_SOC_LPASS_PCM) += snd-soc-lpass-pcm.o
 
 #8660 VOIP Driver Support
 
 snd-soc-msm-voip-objs := msm-voip.o
 obj-$(CONFIG_SND_VOIP_PCM) += snd-soc-msm-voip.o
 
-snd-soc-msm8660-qrdc-objs := msm8660-qrdc.o
-obj-$(CONFIG_SND_SOC_MSM8660_QRDC) += snd-soc-msm8660-qrdc.o
-
-snd-soc-msm8660-dma-objs := msm8660-dma.o
-obj-$(CONFIG_SND_SOC_MSM8X60) += snd-soc-msm8660-dma.o
+snd-soc-lpass-dma-objs := lpass-dma.o
+obj-$(CONFIG_SND_SOC_MSM8X60) += snd-soc-lpass-dma.o
 
 # for MSM 8960 sound card driver
 
 obj-$(CONFIG_SND_SOC_MSM_QDSP6_INTF) += qdsp6/
 
-snd-soc-qdsp6-objs := msm-dai-q6.o msm-pcm-q6.o msm-pcm-routing.o msm-dai-fe.o msm-pcm-voice.o msm-pcm-voip.o
-snd-soc-qdsp6-objs += msm-pcm-lpa.o
+snd-soc-qdsp6-objs := msm-dai-q6.o msm-pcm-q6.o msm-multi-ch-pcm-q6.o msm-pcm-routing.o msm-dai-fe.o msm-compr-q6.o
+obj-$(CONFIG_SND_SOC_MSM_QDSP6_HDMI_AUDIO) += msm-dai-q6-hdmi.o
+obj-$(CONFIG_SND_SOC_VOICE) += msm-pcm-voice.o msm-pcm-voip.o
+snd-soc-qdsp6-objs += msm-pcm-lpa.o msm-pcm-afe.o
 obj-$(CONFIG_SND_SOC_QDSP6) += snd-soc-qdsp6.o
 
-snd-soc-msm8960-objs := msm8960.o
+snd-soc-msm8960-objs := msm8960.o apq8064.o
 obj-$(CONFIG_SND_SOC_MSM8960) += snd-soc-msm8960.o
 
 # Generic MSM drivers
 snd-soc-hostless-pcm-objs := msm-pcm-hostless.o
 obj-$(CONFIG_SND_SOC_MSM_HOSTLESS_PCM) += snd-soc-hostless-pcm.o
+
+snd-soc-msm8660-apq-objs := msm8660-apq-wm8903.o
+obj-$(CONFIG_SND_SOC_MSM8660_APQ) += snd-soc-msm8660-apq.o

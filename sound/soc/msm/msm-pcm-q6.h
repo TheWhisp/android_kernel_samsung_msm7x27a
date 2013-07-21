@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2008 Google, Inc.
  * Copyright (C) 2008 HTC Corporation
- * Copyright (c) 2008-2009,2011 Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2008-2009,2011 The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -43,6 +43,7 @@ struct buffer_rec {
 };
 
 struct audio_locks {
+	spinlock_t event_lock;
 	wait_queue_head_t read_wait;
 	wait_queue_head_t write_wait;
 	wait_queue_head_t eos_wait;
@@ -76,7 +77,7 @@ struct msm_audio {
 	int out_head;
 	int periods;
 	int mmap_flag;
-	int pending_buffer;
+	atomic_t pending_buffer;
 };
 
 #endif /*_MSM_PCM_H*/

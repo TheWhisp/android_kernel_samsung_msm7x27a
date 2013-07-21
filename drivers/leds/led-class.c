@@ -20,50 +20,11 @@
 #include <linux/err.h>
 #include <linux/ctype.h>
 #include <linux/leds.h>
-#include <linux/slab.h>
 #include "leds.h"
 
+#define LED_BUFF_SIZE 50
+
 static struct class *leds_class;
-
-#ifdef CONFIG_HAS_EARLYSUSPEND
-
-static void change_brightness(struct work_struct *brightness_change_data)
-{
-	struct deferred_brightness_change *brightness_change = container_of(
-			brightness_change_data,
-			struct deferred_brightness_change,
-			brightness_change_work);
-	struct led_classdev *led_cdev = brightness_change->led_cdev;
-	enum led_brightness value = brightness_change->value;
-
-	led_cdev->brightness_set(led_cdev, value);
-
-	/* Free up memory for the brightness_change structure. */
-	kfree(brightness_change);
-}
-
-int queue_brightness_change(struct led_classdev *led_cdev,
-	enum led_brightness value)
-{
-	/* Initialize the brightness_change_work and its super-struct. */
-	struct deferred_brightness_change *brightness_change =
-		kzalloc(sizeof(struct deferred_brightness_change), GFP_KERNEL);
-
-	if (!brightness_change)
-		return -ENOMEM;
-
-	brightness_change->led_cdev = led_cdev;
-	brightness_change->value = value;
-
-	INIT_WORK(&(brightness_change->brightness_change_work),
-		change_brightness);
-	queue_work(suspend_work_queue,
-		&(brightness_change->brightness_change_work));
-
-	return 0;
-}
-
-#endif
 
 static void led_update_brightness(struct led_classdev *led_cdev)
 {
@@ -79,7 +40,7 @@ static ssize_t led_brightness_show(struct device *dev,
 	/* no lock needed for this */
 	led_update_brightness(led_cdev);
 
-	return sprintf(buf, "%u\n", led_cdev->brightness);
+	return snprintf(buf, LED_BUFF_SIZE, "%u\n", led_cdev->brightness);
 }
 
 static ssize_t led_brightness_store(struct device *dev,
@@ -129,7 +90,7 @@ static ssize_t led_max_brightness_show(struct device *dev,
 {
 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
 
-	return sprintf(buf, "%u\n", led_cdev->max_brightness);
+	return snprintf(buf, LED_BUFF_SIZE, "%u\n", led_cdev->max_brightness);
 }
 
 static struct device_attribute led_class_attrs[] = {
@@ -192,7 +153,8 @@ static void led_set_software_blink(struct led_classdev *led_cdev,
 	if (!led_cdev->blink_brightness)
 		led_cdev->blink_brightness = led_cdev->max_brightness;
 
-	if (delay_on == led_cdev->blink_delay_on &&
+	if (led_get_trigger_data(led_cdev) &&
+	    delay_on == led_cdev->blink_delay_on &&
 	    delay_off == led_cdev->blink_delay_off)
 		return;
 
@@ -327,6 +289,8 @@ void led_blink_set(struct led_classdev *led_cdev,
 		   unsigned long *delay_on,
 		   unsigned long *delay_off)
 {
+	del_timer_sync(&led_cdev->blink_timer);
+
 	if (led_cdev->blink_set &&
 	    !led_cdev->blink_set(led_cdev, delay_on, delay_off))
 		return;

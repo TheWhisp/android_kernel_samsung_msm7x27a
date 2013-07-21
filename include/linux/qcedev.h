@@ -1,32 +1,3 @@
-/* Qualcomm Crypto Engine driver QCEDEV API
- *
- * Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- *       copyright notice, this list of conditions and the following
- *       disclaimer in the documentation and/or other materials provided
- *       with the distribution.
- *     * Neither the name of Code Aurora Forum, Inc. nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
- * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 #ifndef __QCEDEV__H
 #define __QCEDEV__H
 
@@ -140,17 +111,6 @@ struct	qcedev_vbuf_info {
 	struct buf_info	dst[QCEDEV_MAX_BUFFERS];
 };
 
-struct	qcedev_sha_ctxt{
-	uint32_t		auth_data[4];
-	uint8_t			digest[QCEDEV_MAX_SHA_DIGEST];
-	uint32_t		diglen;
-	uint8_t			trailing_buf[64];
-	uint32_t		trailing_buf_len;
-	uint8_t			first_blk;
-	uint8_t			last_blk;
-	uint8_t			authkey[QCEDEV_MAX_SHA_BLOCK_SIZE];
-};
-
 /**
 * struct qcedev_pmem_info - Stores PMEM buffer information
 * @fd_src:			Handle to /dev/adsp_pmem used to allocate
@@ -245,7 +205,6 @@ struct	qcedev_cipher_op_req {
 * @authkey (IN):		Pointer to authentication key for HMAC
 * @authklen (IN):		Size of the authentication key
 * @alg (IN):			Secure Hash algorithm
-* @ctxt (Reserved):		RESERVED: User should not modify this data.
 */
 struct	qcedev_sha_op_req {
 	struct buf_info			data[QCEDEV_MAX_BUFFERS];
@@ -256,7 +215,6 @@ struct	qcedev_sha_op_req {
 	uint8_t				*authkey;
 	uint32_t			authklen;
 	enum qcedev_sha_alg_enum	alg;
-	struct qcedev_sha_ctxt		ctxt;
 };
 
 

@@ -34,10 +34,9 @@
 #include <linux/vt_kern.h>
 #include <linux/selection.h>
 
-#include <linux/smp_lock.h>	/* For the moment */
-
 #include <linux/kmod.h>
 #include <linux/nsproxy.h>
+#include <linux/ratelimit.h>
 
 /*
  *	This guards the refcounted line discipline lists. The lock
@@ -531,21 +530,35 @@ static void tty_ldisc_restore(struct tty_struct *tty, struct tty_ldisc *old)
 static int tty_ldisc_halt(struct tty_struct *tty)
 {
 	clear_bit(TTY_LDISC, &tty->flags);
-	return cancel_delayed_work_sync(&tty->buf.work);
+	return cancel_work_sync(&tty->buf.work);
+}
+
+/**
+ *	tty_ldisc_flush_works	-	flush all works of a tty
+ *	@tty: tty device to flush works for
+ *
+ *	Sync flush all works belonging to @tty.
+ */
+static void tty_ldisc_flush_works(struct tty_struct *tty)
+{
+	flush_work_sync(&tty->hangup_work);
+	flush_work_sync(&tty->SAK_work);
+	flush_work_sync(&tty->buf.work);
 }
 
 /**
  *	tty_ldisc_wait_idle	-	wait for the ldisc to become idle
  *	@tty: tty to wait for
+ *	@timeout: for how long to wait at most
  *
  *	Wait for the line discipline to become idle. The discipline must
  *	have been halted for this to guarantee it remains idle.
  */
-static int tty_ldisc_wait_idle(struct tty_struct *tty)
+static int tty_ldisc_wait_idle(struct tty_struct *tty, long timeout)
 {
-	int ret;
-	ret = wait_event_interruptible_timeout(tty_ldisc_idle,
-			atomic_read(&tty->ldisc->users) == 1, 5 * HZ);
+	long ret;
+	ret = wait_event_timeout(tty_ldisc_idle,
+			atomic_read(&tty->ldisc->users) == 1, timeout);
 	if (ret < 0)
 		return ret;
 	return ret > 0 ? 0 : -EBUSY;
@@ -653,9 +666,9 @@ int tty_set_ldisc(struct tty_struct *tty, int ldisc)
 
 	mutex_unlock(&tty->ldisc_mutex);
 
-	flush_scheduled_work();
+	tty_ldisc_flush_works(tty);
 
-	retval = tty_ldisc_wait_idle(tty);
+	retval = tty_ldisc_wait_idle(tty, 5 * HZ);
 
 	tty_lock();
 	mutex_lock(&tty->ldisc_mutex);
@@ -711,9 +724,9 @@ enable:
 	/* Restart the work queue in case no characters kick it off. Safe if
 	   already running */
 	if (work)
-		schedule_delayed_work(&tty->buf.work, 1);
+		schedule_work(&tty->buf.work);
 	if (o_work)
-		schedule_delayed_work(&o_tty->buf.work, 1);
+		schedule_work(&o_tty->buf.work);
 	mutex_unlock(&tty->ldisc_mutex);
 	tty_unlock();
 	return retval;
@@ -819,14 +832,14 @@ void tty_ldisc_hangup(struct tty_struct *tty)
 
 	/*
 	 * this is like tty_ldisc_halt, but we need to give up
-	 * the BTM before calling cancel_delayed_work_sync,
-	 * which may need to wait for another function taking the BTM
+	 * the BTM before calling cancel_work_sync, which may
+	 * need to wait for another function taking the BTM
 	 */
 	clear_bit(TTY_LDISC, &tty->flags);
 	tty_unlock();
-	cancel_delayed_work_sync(&tty->buf.work);
+	cancel_work_sync(&tty->buf.work);
 	mutex_unlock(&tty->ldisc_mutex);
-
+retry:
 	tty_lock();
 	mutex_lock(&tty->ldisc_mutex);
 
@@ -835,6 +848,22 @@ void tty_ldisc_hangup(struct tty_struct *tty)
 	   it means auditing a lot of other paths so this is
 	   a FIXME */
 	if (tty->ldisc) {	/* Not yet closed */
+		if (atomic_read(&tty->ldisc->users) != 1) {
+			char cur_n[TASK_COMM_LEN], tty_n[64];
+			long timeout = 3 * HZ;
+			tty_unlock();
+
+			while (tty_ldisc_wait_idle(tty, timeout) == -EBUSY) {
+				timeout = MAX_SCHEDULE_TIMEOUT;
+				printk_ratelimited(KERN_WARNING
+					"%s: waiting (%s) for %s took too long, but we keep waiting...\n",
+					__func__, get_task_comm(cur_n, current),
+					tty_name(tty, tty_n));
+			}
+			mutex_unlock(&tty->ldisc_mutex);
+			goto retry;
+		}
+
 		if (reset == 0) {
 
 			if (!tty_ldisc_reinit(tty, tty->termios->c_line))
@@ -905,7 +934,7 @@ void tty_ldisc_release(struct tty_struct *tty, struct tty_struct *o_tty)
 
 	tty_unlock();
 	tty_ldisc_halt(tty);
-	flush_scheduled_work();
+	tty_ldisc_flush_works(tty);
 	tty_lock();
 
 	mutex_lock(&tty->ldisc_mutex);
@@ -943,6 +972,19 @@ void tty_ldisc_init(struct tty_struct *tty)
 	if (IS_ERR(ld))
 		panic("n_tty: init_tty");
 	tty_ldisc_assign(tty, ld);
+}
+
+/**
+ *	tty_ldisc_init		-	ldisc cleanup for new tty
+ *	@tty: tty that was allocated recently
+ *
+ *	The tty structure must not becompletely set up (tty_ldisc_setup) when
+ *      this call is made.
+ */
+void tty_ldisc_deinit(struct tty_struct *tty)
+{
+	put_ldisc(tty->ldisc);
+	tty_ldisc_assign(tty, NULL);
 }
 
 void tty_ldisc_begin(void)
