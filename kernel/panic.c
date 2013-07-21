@@ -23,6 +23,7 @@
 #include <linux/init.h>
 #include <linux/nmi.h>
 #include <linux/dmi.h>
+#include <asm/cacheflush.h>
 
 #define PANIC_TIMER_STEP 100
 #define PANIC_BLINK_SPD 18
@@ -55,6 +56,14 @@ static long no_blink(int state)
 long (*panic_blink)(int state);
 EXPORT_SYMBOL(panic_blink);
 
+#if defined(CONFIG_MACH_TREBON) || defined(CONFIG_MACH_GEIM) || defined(CONFIG_MACH_JENA)
+#include "../arch/arm/mach-msm/smd_private.h"
+#include "../arch/arm/mach-msm/proc_comm.h"
+#include <mach/msm_iomap-7xxx.h>
+#include <mach/msm_iomap.h>
+#include <asm/io.h>
+
+#endif
 /**
  *	panic - halt the system
  *	@fmt: The text string to print
@@ -63,6 +72,10 @@ EXPORT_SYMBOL(panic_blink);
  *
  *	This function never returns.
  */
+#ifdef CONFIG_APPLY_GA_SOLUTION
+extern void dump_all_task_info();
+extern void dump_cpu_stat();
+#endif
 NORET_TYPE void panic(const char * fmt, ...)
 {
 	static char buf[1024];
@@ -87,6 +100,44 @@ NORET_TYPE void panic(const char * fmt, ...)
 	dump_stack();
 #endif
 
+#if defined(CONFIG_SEC_DEBUG)
+	do {
+		extern void sec_save_final_context(void);
+		sec_save_final_context();
+	} while (0);
+#endif
+
+#ifdef CONFIG_APPLY_GA_SOLUTION
+	dump_all_task_info();
+	dump_cpu_stat();
+#endif
+
+#if defined(CONFIG_SEC_DEBUG)
+	unsigned size;
+	samsung_vendor1_id *smem_vendor1 = (samsung_vendor1_id *) \
+			smem_get_entry(SMEM_ID_VENDOR1, &size);
+
+	if (smem_vendor1 && smem_vendor1->ram_dump_level) {
+		writel_relaxed(0xCCCC, MSM_SHARED_RAM_BASE + 0x30);
+	} else {
+		if (smem_vendor1)
+			smem_vendor1->silent_reset = 0xAEAEAEAE;
+		else
+			printk(KERN_EMERG "smem_vendor1 is NULL\n");
+	}
+
+	if ((strncmp(buf, "[Crash Key]", 11) == 0) && (smem_vendor1 != NULL))
+		memcpy(&(smem_vendor1->apps_dump.apps_string),\
+				"USER_FORCED_UPLOAD",\
+				sizeof("USER_FORCED_UPLOAD"));
+
+	printk(KERN_EMERG "[PANIC] call msm_proc_comm_reset_modem_now func\n");
+
+	flush_cache_all();
+	outer_flush_all();
+
+	msm_proc_comm_reset_modem_now();
+#endif
 	/*
 	 * If we have crashed and we have a crash kernel loaded let it handle
 	 * everything else.
