@@ -163,6 +163,13 @@ config MSM_CAMERA_FLASH_SC628A
 	  It is a samtech charge pump flash driver and it
 	  supports spotlight and flash light modes with
 	  differrent current levels.
+	  
+config SR300PC20
+	bool "Sensor sr300pc20 (3M)"
+	depends on MSM_CAMERA && !ARCH_MSM8X60 && !MSM_CAMERA_V4L2
+	default n
+	---help---
+	  Siliconfile 3M Sensor with Autofocus
 
 config IMX072
 	bool "Sensor imx072 (Sony 5M)"
