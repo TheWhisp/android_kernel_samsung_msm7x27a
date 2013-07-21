@@ -256,6 +256,21 @@ config FB_MSM_LCDC_SAMSUNG_OLED_PT
 	select FB_MSM_LCDC_PANEL
 	default n
 
+config FB_MSM_LCDC_TREBON_HVGA
+	bool
+	select FB_MSM_LCDC_PANEL
+	default n
+
+config FB_MSM_LCDC_JENA_HVGA
+	bool
+	select FB_MSM_LCDC_PANEL
+	default n
+
+config FB_MSM_LCDC_GEIM_HVGA
+	bool
+	select FB_MSM_LCDC_PANEL
+	default n
+
 config FB_MSM_LCDC_NT35582_WVGA
 	bool
 	select FB_MSM_LCDC_PANEL
@@ -413,6 +428,36 @@ config FB_MSM_LCDC_TOSHIBA_FWVGA_PT_PANEL
 	  configuration has to be selected to support the Toshiba
 	  FWVGA (480x864) portrait panel.
 
+config FB_MSM_LCDC_TREBON_HVGA_PANEL
+	depends on FB_MSM_LCDC_HW
+	bool "FB MSM LCDC TREBON HVGA Panel"
+	select FB_MSM_LCDC_TREBON_HVGA
+	default n
+	---help---
+	  Support for LCDC TREBON HVGA (320x480) panel
+	  .
+	  .
+
+config FB_MSM_LCDC_JENA_HVGA_PANEL
+	depends on FB_MSM_LCDC_HW
+	bool "FB MSM LCDC JENA HVGA Panel"
+	select FB_MSM_LCDC_JENA_HVGA
+	default n
+	---help---
+	  Support for LCDC JENA HVGA (320x480) panel
+	  .
+	  .
+
+config FB_MSM_LCDC_GEIM_HVGA_PANEL
+	depends on FB_MSM_LCDC_HW
+	bool "FB MSM LCDC GEIM HVGA Panel"
+	select FB_MSM_LCDC_GEIM_HVGA
+	default n
+	---help---
+	  Support for LCDC GEIM HVGA (320x480) panel
+	  .
+	  .
+
 config FB_MSM_LCDC_SHARP_WVGA_PT_PANEL
 	depends on FB_MSM_LCDC_HW
 	bool "LCDC Sharp WVGA PT Panel"
@@ -450,6 +495,9 @@ config FB_MSM_TRY_MDDI_CATCH_LCDC_PRISM
 	select FB_MSM_LCDC_WXGA
 	select FB_MSM_LCDC_TOSHIBA_WVGA_PT
 	select FB_MSM_LCDC_TOSHIBA_FWVGA_PT
+	select FB_MSM_LCDC_TREBON_HVGA
+	select FB_MSM_LCDC_GEIM_HVGA
+	select FB_MSM_LCDC_JENA_HVGA
 	select FB_MSM_LCDC_SHARP_WVGA_PT
 	select FB_MSM_LCDC_ST15_WXGA
 	---help---
@@ -818,4 +866,10 @@ config FB_MSM_EBI2_PANEL_DETECT
 	default n
 	---help---
 	  Support for EBI2 panel auto detect
+
+config BACKLIGHT_KTD253
+	bool "CONFIG_BACKLIGHT_KTD253"
+	default n
+	help
+	  support for KTD253 backlight IC
 endif
