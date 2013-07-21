@@ -48,6 +48,12 @@
 #include "mdp.h"
 #include "mdp4.h"
 
+#ifdef CONFIG_FB_MSM_LOGO
+#define INIT_IMAGE_FILE		"/GT-S7500.rle" /*"/initlogo.rle"*/
+extern int load_565rle_image(char *filename, bool bf_supported);
+extern int draw_rgb888_screen(void);
+#endif
+
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
 #define MSM_FB_NUM	3
 #endif
@@ -1432,9 +1438,37 @@ static int msm_fb_register(struct msm_fb_data_type *mfd)
 	     mfd->index, fbi->var.xres, fbi->var.yres, fbi->fix.smem_len);
 
 #ifdef CONFIG_FB_MSM_LOGO
-	/* Flip buffer */
-	if (!load_565rle_image(INIT_IMAGE_FILE, bf_supported))
+	/*draw_rgb888_screen();*/
+#if defined(CONFIG_MACH_TREBON)	
+#if defined(CONFIG_TARGET_LOCALE_EUR_VODA)
+	if (!load_565rle_image("GT-S7509.rle", bf_supported))
 		;
+#else
+	if (charging_boot != 1)
+		if (!load_565rle_image("GT-S7500.rle", bf_supported))	/* Flip buffer */
+			;
+#endif
+#elif defined(CONFIG_MACH_GEIM)	
+	if (charging_boot != 1)
+		if (!load_565rle_image("SGH-I827.rle", bf_supported))	/* Flip buffer */
+			;
+#elif defined(CONFIG_MACH_JENA)
+	if (charging_boot != 1)
+		if (!load_565rle_image("GT-S6500.rle", bf_supported))	/* Flip buffer */
+			;
+#else
+	if (charging_boot != 1)
+		if (!load_565rle_image("GT-S7500.rle", bf_supported))	/* Flip buffer */
+			;
+#endif
+#if !defined(CONFIG_TARGET_LOCALE_EUR_VODA)
+	/*
+	*Check the LPM Mode
+	*If the value of charging_boot is '1', that is LPM Mode.
+	*/
+	if (charging_boot == 1)
+		draw_rgb888_black_screen();
+#endif
 #endif
 	ret = 0;
 
