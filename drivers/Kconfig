@@ -132,4 +132,6 @@ source "drivers/clocksource/Kconfig"
 
 source "drivers/dpram/Kconfig"
 
+source "drivers/sensors/Kconfig"
+
 endmenu

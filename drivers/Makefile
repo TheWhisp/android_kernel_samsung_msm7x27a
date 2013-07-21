@@ -126,3 +126,4 @@ obj-y				+= clk/
 
 obj-$(CONFIG_HWSPINLOCK)	+= hwspinlock/
 obj-$(CONFIG_DPRAM)	+= 	dpram/
+obj-y				+= sensors/
