@@ -708,6 +708,43 @@ config MACH_FSM9XXX_SURF
 
 endmenu
 
+config MACH_TREBON_HWREV
+        hex "MSM7x27A TREBON HWREV"
+		depends on MACH_TREBON
+		default "0x2"
+		help
+          Qualcomm TREBON H/W revision.
+
+config TARGET_LOCALE_EUR_VODA
+        bool "EUR VODA"
+	default n
+        help
+          Support for the EUR VODA Board.
+
+config MACH_GEIM_HWREV
+        hex "MSM7x27A GEIM HWREV"
+		depends on MACH_GEIM
+		default "0x0"
+		help
+          Qualcomm GEIM H/W revision.
+
+config MACH_JENA_HWREV
+        hex "MSM7x27A JENA HWREV"
+		depends on MACH_JENA
+		default "0x0"
+
+config BQ27425_FUEL_GAUGE
+	bool "CONFIG_BQ27425_FUEL_GAUGE"
+	default n
+	help
+	  Support for ti fuelgague
+
+config FUEL_GPIO
+	bool "CONFIG_FUEL_GPIO"
+	default n
+	help
+	  Support I827 feature
+
 config MSM_STACKED_MEMORY
 	bool "Stacked Memory"
 	default y
@@ -2007,6 +2044,31 @@ config MSM_L2_SPM
 	  control of L2 cache low power mode with a Subsystem Power manager.
 	  Enabling this driver allows configuring L2 SPM for low power modes
 	  on supported chipsets.
+
+config MACH_JENA
+        bool "JENA platform"
+		depends on ARCH_MSM7X27A
+        default n
+
+config MACH_JENA_NON_NFC
+        bool "JENA NON NFC platform"
+		depends on MACH_JENA
+        default n
+
+config MACH_JENA_TELSTRA
+        bool "JENA TELSTRA platform"
+		depends on MACH_JENA
+        default n
+
+config MACH_JENA_AUSVHA
+        bool "JENA AUS_VHA platform"
+		depends on MACH_JENA
+        default n        
+
+config JENA_UART_TEST
+        bool "JENA uart test"
+		depends on ARCH_MSM7X27A
+        default n
 
 config MSM_MULTIMEDIA_USE_ION
 	bool "Multimedia suport using Ion"
