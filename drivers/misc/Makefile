@@ -68,3 +68,4 @@ obj-$(CONFIG_QSEECOM) += qseecom.o
 obj-$(CONFIG_QFP_FUSE) += qfp_fuse.o
 obj-$(CONFIG_SEC_MISC) += sec_misc.o sec_param.o
 obj-$(CONFIG_SEC_DEBUG) += sec_debug.o
+obj-$(CONFIG_SAMSUNG_JACK) += sec_jack.o
