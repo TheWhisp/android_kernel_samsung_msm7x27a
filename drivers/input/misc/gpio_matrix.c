@@ -45,7 +45,6 @@ struct gpio_kp {
 	unsigned int disabled_irq:1;
 	unsigned long keys_pressed[0];
 };
-
 static struct gpio_kp *pgpio_key;
 
 extern struct class *sec_class;
@@ -183,7 +182,6 @@ static enum hrtimer_restart gpio_keypad_timer_func(struct hrtimer *timer)
 	int out, in;
 	int key_index;
 	int gpio;
-
 	struct gpio_kp *kp = container_of(timer, struct gpio_kp, timer);
 	struct gpio_event_matrix_info *mi = kp->keypad_info;
 	unsigned gpio_keypad_flags = mi->flags;
@@ -235,7 +233,6 @@ static enum hrtimer_restart gpio_keypad_timer_func(struct hrtimer *timer)
 		}
 		kp->key_state_changed = kp->last_key_state_changed;
 	}
-
 	if (kp->key_state_changed) {
 		if (gpio_keypad_flags & GPIOKPF_REMOVE_SOME_PHANTOM_KEYS)
 			remove_phantom_keys(kp);
@@ -294,7 +291,6 @@ static irqreturn_t gpio_keypad_irq_handler(int irq_in, void *dev_id)
 
 static int gpio_keypad_request_irqs(struct gpio_kp *kp)
 {
-
 	int i;
 	int err;
 	unsigned int irq;
@@ -365,20 +361,25 @@ int gpio_event_matrix_func(struct gpio_event_input_devs *input_devs,
 	if (func == GPIO_EVENT_FUNC_SUSPEND || func == GPIO_EVENT_FUNC_RESUME) {
 		/* TODO: disable scanning */
 		wakeup_keys_status = gpio_event_get_wakeup_keys_status() & 0x01;
-		if (irq_status != wakeup_keys_status) {
+
+		if (irq_status != wakeup_keys_status)
 			irq_status = wakeup_keys_status;
-		} else {
+		else
 			return 0;
-		}
+
 
 		for (i = 0; i < mi->ninputs; i++) {
 			irq = gpio_to_irq(mi->input_gpios[i]);
-			err = set_irq_wake(irq, irq_status);
+
+			if (irq_status == 1)
+				err = enable_irq_wake(irq);
+			else
+				err = disable_irq_wake(irq);
 		}
 		/* HOME Key is wakeup source */
 		for (i = 0; i < mi->nwakeups; i++) {
 			irq = gpio_to_irq(mi->wakeup_gpios[i]);
-			err = set_irq_wake(irq, 1);
+			err = enable_irq_wake(irq);
 		}
 
 		return 0;
@@ -468,11 +469,10 @@ int gpio_event_matrix_func(struct gpio_event_input_devs *input_devs,
 
 		kpd_dev = device_create(sec_class, NULL, 0, NULL, "sec_key");
 		if (!kpd_dev)
-			printk("Failed to create device(sec_key)!\n");
-
-		if(device_create_file(kpd_dev, &dev_attr_key_pressed) < 0)
-			printk("Failed to create file(%s)!\n", dev_attr_key_pressed.attr.name);
-
+			printk(KERN_WARNING "Failed to create device(sec_key)!\n");
+		if (device_create_file(kpd_dev, &dev_attr_key_pressed) < 0)
+			printk(KERN_WARNING "Failed to create file(%s)!\n"
+				, dev_attr_key_pressed.attr.name);
 		pr_info("GPIO Matrix Keypad Driver: Start keypad matrix for "
 			"%s%s in %s mode\n", input_devs->dev[0]->name,
 			(input_devs->count > 1) ? "..." : "",

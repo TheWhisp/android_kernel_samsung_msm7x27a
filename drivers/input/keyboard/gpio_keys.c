@@ -361,10 +361,8 @@ out:
 	kfree(bits);
 	return count;
 }
-
 static DEVICE_ATTR(key_pressed, 0664, key_pressed_show, NULL);
 static DEVICE_ATTR(wakeup_keys, S_IWUSR, NULL, wakeup_enable);
-
 static struct attribute *gpio_keys_attrs[] = {
 	&dev_attr_keys.attr,
 	&dev_attr_switches.attr,
@@ -389,8 +387,7 @@ static void gpio_keys_report_event(struct gpio_button_data *bdata)
 	printk(KERN_INFO"[KEY] key: %s gpio_keys_report_event state = %d\n",
 		button->desc, state);
 	bdata->key_state = !!state;
-
-	input_event(input, type, button->code, !!state);
+		input_event(input, type, button->code, !!state);
 	input_sync(input);
 #if defined(CONFIG_MACH_TREBON) || defined(CONFIG_MACH_GEIM) \
 						 || defined(CONFIG_MACH_JENA)
