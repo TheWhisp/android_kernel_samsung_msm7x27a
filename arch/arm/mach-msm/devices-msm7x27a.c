@@ -239,6 +239,26 @@ struct platform_device msm_device_uart1 = {
 	.resource	= resources_uart1,
 };
 
+static struct resource resources_uart3[] = {
+	{
+		.start	= INT_UART3,
+		.end	= INT_UART3,
+		.flags	= IORESOURCE_IRQ,
+	},
+	{
+		.start	= MSM_UART3_PHYS,
+		.end	= MSM_UART3_PHYS + MSM_UART3_SIZE - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+};
+
+struct platform_device msm_device_uart3 = {
+	.name	= "msm_serial",
+	.id	= 2,
+	.num_resources	= ARRAY_SIZE(resources_uart3),
+	.resource	= resources_uart3,
+};
+
 #define MSM_UART1DM_PHYS      0xA0200000
 static struct resource msm_uart1_dm_resources[] = {
 	{
@@ -753,6 +773,8 @@ struct platform_device led_pdev = {
 	},
 };
 
+extern unsigned int kernel_uart_flag;
+
 struct platform_device asoc_msm_pcm = {
 	.name   = "msm-dsp-audio",
 	.id     = 0,
@@ -808,16 +830,16 @@ int __init msm7x2x_misc_init(void)
 #ifdef CONFIG_CACHE_L2X0
 static int __init msm7x27x_cache_init(void)
 {
-	int aux_ctrl = 0;
+       int aux_ctrl = 0;
 
-	/* Way Size 010(0x2) 32KB */
-	aux_ctrl = (0x1 << L2X0_AUX_CTRL_SHARE_OVERRIDE_SHIFT) | \
-		   (0x2 << L2X0_AUX_CTRL_WAY_SIZE_SHIFT) | \
-		   (0x1 << L2X0_AUX_CTRL_EVNT_MON_BUS_EN_SHIFT);
+       /* Way Size 010(0x2) 32KB */
+       aux_ctrl = (0x1 << L2X0_AUX_CTRL_SHARE_OVERRIDE_SHIFT) | \
+                  (0x2 << L2X0_AUX_CTRL_WAY_SIZE_SHIFT) | \
+                  (0x1 << L2X0_AUX_CTRL_EVNT_MON_BUS_EN_SHIFT);
 
-	l2x0_init(MSM_L2CC_BASE, aux_ctrl, L2X0_AUX_CTRL_MASK);
+       l2x0_init(MSM_L2CC_BASE, aux_ctrl, L2X0_AUX_CTRL_MASK);
 
-	return 0;
+       return 0;
 }
 #else
 static int __init msm7x27x_cache_init(void){ return 0; }

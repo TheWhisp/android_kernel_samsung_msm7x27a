@@ -19,6 +19,7 @@
 #include <linux/types.h>
 #include <linux/spinlock.h>
 #include <mach/msm_smsm.h>
+#include "smem_vendor_type.h"
 
 #define PC_APPS  0
 #define PC_MODEM 1

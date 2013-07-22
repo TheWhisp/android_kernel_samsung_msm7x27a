@@ -23,4 +23,5 @@ extern struct platform_device msm7x27a_device_vfe;
 extern struct platform_device msm7x27a_device_csic0;
 extern struct platform_device msm7x27a_device_csic1;
 extern struct platform_device msm7x27a_device_clkctl;
+extern int ar6000_prealloc_init(void);
 #endif

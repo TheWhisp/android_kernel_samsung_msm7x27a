@@ -29,10 +29,6 @@
 #include <linux/uaccess.h>
 #include <linux/io.h>
 #include <linux/memory.h>
-
-#include <mach/vreg.h>
-#include <mach/gpio-v1.h>
-
 #ifdef CONFIG_HAS_WAKELOCK
 #include <linux/wakelock.h>
 #endif
@@ -83,8 +79,7 @@ enum {
 	MSM_PM_DEBUG_IDLE = 1U << 6,
 };
 
-static int msm_pm_debug_mask = MSM_PM_DEBUG_POWER_COLLAPSE
-					| MSM_PM_DEBUG_SMSM_STATE;
+static int msm_pm_debug_mask;
 module_param_named(
 	debug_mask, msm_pm_debug_mask, int, S_IRUGO | S_IWUSR | S_IWGRP
 );
@@ -973,8 +968,6 @@ struct msm_pm_smem_t {
  *
  *****************************************************************************/
 static struct msm_pm_smem_t *msm_pm_smem_data;
-
-static uint32_t *msm_pm_reset_vector;
 static atomic_t msm_pm_init_done = ATOMIC_INIT(0);
 
 static int msm_pm_modem_busy(void)
@@ -1003,15 +996,12 @@ static int msm_pm_power_collapse
 {
 	struct msm_pm_polled_group state_grps[2];
 	unsigned long saved_acpuclk_rate;
-	uint32_t saved_vector[2];
 	int collapsed = 0;
 	int ret;
 
 	MSM_PM_DPRINTK(MSM_PM_DEBUG_SUSPEND|MSM_PM_DEBUG_POWER_COLLAPSE,
 		KERN_INFO, "%s(): idle %d, delay %u, limit %u\n", __func__,
 		(int)from_idle, sleep_delay, sleep_limit);
-
-	vreg_suspend_stats();
 
 	if (!(smsm_get_state(SMSM_POWER_MASTER_DEM) & DEM_MASTER_SMSM_READY)) {
 		MSM_PM_DPRINTK(
@@ -1092,15 +1082,8 @@ static int msm_pm_power_collapse
 		goto power_collapse_early_exit;
 	}
 
-	saved_vector[0] = msm_pm_reset_vector[0];
-	saved_vector[1] = msm_pm_reset_vector[1];
-	msm_pm_reset_vector[0] = 0xE51FF004; /* ldr pc, 4 */
-	msm_pm_reset_vector[1] = virt_to_phys(msm_pm_collapse_exit);
-
-	MSM_PM_DPRINTK(MSM_PM_DEBUG_RESET_VECTOR, KERN_INFO,
-		"%s(): vector %x %x -> %x %x\n", __func__,
-		saved_vector[0], saved_vector[1],
-		msm_pm_reset_vector[0], msm_pm_reset_vector[1]);
+	msm_pm_boot_config_before_pc(smp_processor_id(),
+			virt_to_phys(msm_pm_collapse_exit));
 
 #ifdef CONFIG_VFP
 	if (from_idle)
@@ -1117,9 +1100,7 @@ static int msm_pm_power_collapse
 	l2x0_resume(collapsed);
 #endif
 
-
-	msm_pm_reset_vector[0] = saved_vector[0];
-	msm_pm_reset_vector[1] = saved_vector[1];
+	msm_pm_boot_config_after_pc(smp_processor_id());
 
 	if (collapsed) {
 #ifdef CONFIG_VFP
@@ -1137,7 +1118,6 @@ static int msm_pm_power_collapse
 	MSM_PM_DPRINTK(MSM_PM_DEBUG_CLOCK, KERN_INFO,
 		"%s(): restore clock rate to %lu\n", __func__,
 		saved_acpuclk_rate);
-
 	if (acpuclk_set_rate(smp_processor_id(), saved_acpuclk_rate,
 			SETRATE_PC) < 0)
 		printk(KERN_ERR "%s(): failed to restore clock rate(%lu)\n",
@@ -1226,15 +1206,8 @@ static int msm_pm_power_collapse
 	msm_irq_exit_sleep3(msm_pm_smem_data->irq_mask,
 		msm_pm_smem_data->wakeup_reason,
 		msm_pm_smem_data->pending_irqs);
-	ret = msm_gpio_exit_sleep();
+	msm_gpio_exit_sleep();
 	msm_sirc_exit_sleep();
-
-	if (ret && (acpuclk_max_rate > 0)) {
-		if (acpuclk_set_rate(smp_processor_id(), acpuclk_max_rate,
-			SETRATE_PC) < 0)
-			printk(KERN_ERR "%s(): failed to set max clock rate(%lu)\n",
-					__func__, saved_acpuclk_rate);
-	}
 
 	smsm_change_state(SMSM_APPS_DEM,
 		DEM_SLAVE_SMSM_WFPI, DEM_SLAVE_SMSM_RUN);
@@ -1306,7 +1279,6 @@ power_collapse_bail:
  */
 static int msm_pm_power_collapse_standalone(void)
 {
-	uint32_t saved_vector[2];
 	int collapsed = 0;
 	int ret;
 
@@ -1316,15 +1288,8 @@ static int msm_pm_power_collapse_standalone(void)
 	ret = msm_spm_set_low_power_mode(MSM_SPM_MODE_POWER_COLLAPSE, false);
 	WARN_ON(ret);
 
-	saved_vector[0] = msm_pm_reset_vector[0];
-	saved_vector[1] = msm_pm_reset_vector[1];
-	msm_pm_reset_vector[0] = 0xE51FF004; /* ldr pc, 4 */
-	msm_pm_reset_vector[1] = virt_to_phys(msm_pm_collapse_exit);
-
-	MSM_PM_DPRINTK(MSM_PM_DEBUG_RESET_VECTOR, KERN_INFO,
-		"%s(): vector %x %x -> %x %x\n", __func__,
-		saved_vector[0], saved_vector[1],
-		msm_pm_reset_vector[0], msm_pm_reset_vector[1]);
+	msm_pm_boot_config_before_pc(smp_processor_id(),
+			virt_to_phys(msm_pm_collapse_exit));
 
 #ifdef CONFIG_VFP
 	vfp_flush_context();
@@ -1340,8 +1305,7 @@ static int msm_pm_power_collapse_standalone(void)
 	l2x0_resume(collapsed);
 #endif
 
-	msm_pm_reset_vector[0] = saved_vector[0];
-	msm_pm_reset_vector[1] = saved_vector[1];
+	msm_pm_boot_config_after_pc(smp_processor_id());
 
 	if (collapsed) {
 #ifdef CONFIG_VFP
@@ -1856,7 +1820,6 @@ static int msm_reboot_call
 			restart_reason = 0x77665501;
 		}
 	}
-	
 	return NOTIFY_DONE;
 }
 

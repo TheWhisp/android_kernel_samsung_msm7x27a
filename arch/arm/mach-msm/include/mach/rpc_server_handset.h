@@ -20,5 +20,5 @@ struct msm_handset_platform_data {
 };
 
 void report_headset_status(bool connected);
-
+extern int current_jack_type;
 #endif
