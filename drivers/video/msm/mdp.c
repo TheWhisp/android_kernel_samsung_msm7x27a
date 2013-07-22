@@ -1272,7 +1272,7 @@ error:
 }
 #endif
 
-#ifdef CONFIG_FB_MSM_MDP303
+#if defined(CONFIG_FB_MSM_MDP303) || defined(CONFIG_FB_MSM_MDP30)
 /* vsync_isr_handler: Called from isr context*/
 static void vsync_isr_handler(void)
 {
@@ -2091,7 +2091,7 @@ static int mdp_off(struct platform_device *pdev)
 	return ret;
 }
 
-#ifdef CONFIG_FB_MSM_MDP303
+#if defined(CONFIG_FB_MSM_MDP303) || defined(CONFIG_FB_MSM_MDP30)
 unsigned is_mdp4_hw_reset(void)
 {
 	return 0;
@@ -2661,7 +2661,7 @@ static int mdp_probe(struct platform_device *pdev)
 	case HDMI_PANEL:
 	case LCDC_PANEL:
 	case LVDS_PANEL:
-#ifdef CONFIG_FB_MSM_MDP303
+#if defined(CONFIG_FB_MSM_MDP303) || defined(CONFIG_FB_MSM_MDP30)
 		pdata->on = mdp_lcdc_on;
 		pdata->off = mdp_lcdc_off;
 #endif
@@ -2849,10 +2849,12 @@ void mdp_footswitch_ctrl(boolean on)
 	if (dsi_pll_vdda)
 		regulator_enable(dsi_pll_vdda);
 
+#if 0
 	mipi_dsi_prepare_clocks();
 	mipi_dsi_ahb_ctrl(1);
 	mipi_dsi_phy_ctrl(1);
 	mipi_dsi_clk_enable();
+#endif
 
 	if (on && !mdp_footswitch_on) {
 		pr_debug("Enable MDP FS\n");
@@ -2863,11 +2865,12 @@ void mdp_footswitch_ctrl(boolean on)
 		regulator_disable(footswitch);
 		mdp_footswitch_on = 0;
 	}
-
+#if 0
 	mipi_dsi_clk_disable();
 	mipi_dsi_phy_ctrl(0);
 	mipi_dsi_ahb_ctrl(0);
 	mipi_dsi_unprepare_clocks();
+#endif
 
 	if (dsi_pll_vdda)
 		regulator_disable(dsi_pll_vdda);

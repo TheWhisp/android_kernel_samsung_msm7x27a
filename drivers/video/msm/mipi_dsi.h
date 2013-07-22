@@ -339,6 +339,7 @@ void mipi_dsi_unprepare_clocks(void);
 void mipi_dsi_ahb_ctrl(u32 enable);
 void mipi_dsi_phy_ctrl(int on);
 #else
+#if 0
 static inline void mipi_dsi_clk_enable(void)
 {
 	/* empty */
@@ -363,6 +364,7 @@ void mipi_dsi_phy_ctrl(int on)
 {
 	/* empty */
 }
+#endif
 #endif
 
 void cont_splash_clk_ctrl(int enable);
