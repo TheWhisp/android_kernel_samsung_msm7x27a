@@ -1968,6 +1968,13 @@ void *smem_alloc2(unsigned id, unsigned size_in)
 }
 EXPORT_SYMBOL(smem_alloc2);
 
+#if 1 //trebon_dpram_port_temp remove this when CP side is ready
+void *smem_do_alloc(unsigned id, unsigned size_in)
+{
+	return smem_alloc2(id, size_in);
+}
+#endif
+
 void *smem_get_entry(unsigned id, unsigned *size)
 {
 	struct smem_shared *shared = (void *) MSM_SHARED_RAM_BASE;
