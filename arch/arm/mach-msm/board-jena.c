@@ -21,19 +21,18 @@
 #include <mach/rpc_hsusb.h>
 #include <mach/rpc_pmapp.h>
 #include <mach/usbdiag.h>
-//#include <mach/usb_gadget_fserial.h>
+#include <mach/usb_gadget_fserial.h>
 #include <mach/msm_memtypes.h>
 #include <mach/msm_serial_hs.h>
+#include <linux/usb/android.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
-#include <linux/slab.h>
 //#include <mach/gpio-v1.h>
 #ifdef CONFIG_MACH_JENA
 #include <mach/gpio_jena.h>
 #else
 #include <mach/gpio_trebon.h>
 #endif
-#include <mach/vreg.h>
 #include <mach/pmic.h>
 #include <mach/socinfo.h>
 #include <linux/mtd/nand.h>
@@ -41,36 +40,30 @@
 #include <asm/mach/mmc.h>
 #include <linux/i2c.h>
 #include <linux/i2c/sx150x.h>
-//#include <linux/gpio.h>
+#include <linux/gpio.h>
 #include <linux/android_pmem.h>
 #include <linux/bootmem.h>
 #include <linux/mfd/marimba.h>
 #include <mach/vreg.h>
 #include <linux/power_supply.h>
+#include <linux/regulator/consumer.h>
 #include <mach/rpc_pmapp.h>
-
 #include <mach/msm_battery_jena.h>
 #include <linux/smsc911x.h>
-//#include <linux/atmel_maxtouch.h>
 #include "devices.h"
 #include "timer.h"
 #include "board-msm7x27a-regulator.h"
 #include "devices-msm7x2xa.h"
 #include "pm.h"
-#include "proc_comm.h"
 #ifdef CONFIG_SAMSUNG_JACK
 #include <linux/sec_jack.h>
-//#include "proc_comm.h"
 #endif
 #include <mach/rpc_server_handset.h>
 #include <mach/socinfo.h>
-
-#ifdef CONFIG_USB_G_ANDROID
-#include <linux/usb/android.h>
-#include <mach/usbdiag.h>
-#endif
-
 #include <linux/fsaxxxx_usbsw.h>
+#include "proc_comm.h"
+#include "pm-boot.h"
+//#include "board-msm7627a.h"
 #ifdef CONFIG_PROXIMITY_SENSOR
 #include <linux/gp2a.h>
 #endif
@@ -104,7 +97,6 @@
 
 int charging_boot;
 EXPORT_SYMBOL(charging_boot);
-
 int	fota_boot;
 EXPORT_SYMBOL(fota_boot);
 
@@ -1358,16 +1350,16 @@ static struct i2c_board_info sensor_devices[] = {
 };
 	#if defined(CONFIG_SENSORS_HSCD) || defined(CONFIG_PROXIMITY_SENSOR)
 static struct i2c_gpio_platform_data sensor_i2c_gpio_data = {
-	.sda_pin    = GPIO_SENSOR_SDA,
-	.scl_pin    = GPIO_SENSOR_SCL,
-	.udelay	= 1,
+	.sda_pin =GPIO_SENSOR_SDA,
+	.scl_pin =GPIO_SENSOR_SCL,
+	.udelay =1,
 };
 
 static struct platform_device sensor_i2c_gpio_device = {
-	.name       = "i2c-gpio",
-	.id     =  4,
-	.dev        = {
-		.platform_data  = &sensor_i2c_gpio_data,
+	.name ="i2c-gpio",
+	.id= 4,
+	.dev = {
+		.platform_data =&sensor_i2c_gpio_data,
 	},
 };
 	#endif
@@ -1414,7 +1406,6 @@ static struct i2c_gpio_platform_data touch_i2c_gpio_data = {
 	.scl_pin    = GPIO_TSP_SCL,
 	.udelay	= 1,
 };
-
 static struct platform_device touch_i2c_gpio_device = {
 	.name       = "i2c-gpio",
 	.id     =  2,
@@ -1422,7 +1413,6 @@ static struct platform_device touch_i2c_gpio_device = {
 		.platform_data  = &touch_i2c_gpio_data,
 	},
 };
-
 /* I2C 2 */
 static struct i2c_board_info touch_i2c_devices[] = {
 	{
@@ -1497,20 +1487,6 @@ int fsa880_get_charger_status(void)
 
 static void jena_usb_power(int onoff, char *path)
 {
-/*
-	struct vreg *usb_vreg = vreg_get("");
-
-	if (IS_ERR(regulator))
-		return;
-
-	if (onoff) {
-		if (!regulator_use_count(regulator))
-			regulator_enable(regulator);
-	} else {
-		if (regulator_use_count(regulator))
-			regulator_force_disable(regulator);
-	}
-*/
 }
 
 void trebon_chg_connected(enum chg_type chgtype)
@@ -1639,7 +1615,6 @@ static struct i2c_board_info fsa880_i2c_devices[] = {
 		.irq = MSM_GPIO_TO_INT(GPIO_MUSB_INT),
 	},
 };
-
 #ifdef CONFIG_BQ27425_FUEL_GAUGE
 /* Fuel_gauge */
 static struct i2c_gpio_platform_data fuelgauge_i2c_gpio_data = {
@@ -1654,11 +1629,10 @@ static struct platform_device fuelgauge_i2c_gpio_device = {
 	.platform_data	= &fuelgauge_i2c_gpio_data,
 	},
 };
-
 static struct i2c_board_info fg_i2c_devices[] = {
- {
-	I2C_BOARD_INFO( "bq27425", 0xAA>>1 ),
- },
+	{
+		I2C_BOARD_INFO( "bq27425", 0xAA>>1 ),
+	},
 };
 #endif
 #if defined(CONFIG_I2C) && defined(CONFIG_GPIO_SX150X)
@@ -1732,15 +1706,11 @@ static void gsbi_qup_i2c_gpio_config(int adap_id, int config_type)
 
 static struct msm_i2c_platform_data msm_gsbi0_qup_i2c_pdata = {
 	.clk_freq		= 400000,
-//	.clk			= "gsbi_qup_clk",
-//	.pclk			= "gsbi_qup_pclk",
 	.msm_i2c_config_gpio	= gsbi_qup_i2c_gpio_config,
 };
 
 static struct msm_i2c_platform_data msm_gsbi1_qup_i2c_pdata = {
 	.clk_freq		= 100000,
-//	.clk			= "gsbi_qup_clk",
-//	.pclk			= "gsbi_qup_pclk",
 	.msm_i2c_config_gpio	= gsbi_qup_i2c_gpio_config,
 };
 
@@ -1766,19 +1736,17 @@ static struct msm_i2c_platform_data msm_gsbi1_qup_i2c_pdata = {
 #endif /* defined(_CONFIG_MACH_JENA) || ... */
 #endif /* CONFIG_ARCH_MSM7X27A */
 
-#ifdef CONFIG_USB_G_ANDROID
 static struct android_usb_platform_data android_usb_pdata = {
-        .update_pid_and_serial_num = usb_diag_update_pid_and_serial_num,
+	.update_pid_and_serial_num = usb_diag_update_pid_and_serial_num,
 };
 
 static struct platform_device android_usb_device = {
-        .name       = "android_usb",
-        .id         = -1,
-        .dev        = {
-                .platform_data = &android_usb_pdata,
-        },
+	.name	= "android_usb",
+	.id	= -1,
+	.dev	= {
+		.platform_data = &android_usb_pdata,
+	},
 };
-#endif
 
 static int __init boot_mode_boot(char *onoff)
 {
@@ -1806,11 +1774,11 @@ static void msm_hsusb_vbus_power(unsigned phy_info, int on)
 
 	gpio = GPIO_HOST_VBUS_EN;
 
-		rc = gpio_request(gpio, "i2c_host_vbus_en");
-		if (rc < 0) {
-			pr_err("failed to request %d GPIO\n", gpio);
-			return;
-		}
+	rc = gpio_request(gpio, "i2c_host_vbus_en");
+	if (rc < 0) {
+		pr_err("failed to request %d GPIO\n", gpio);
+		return;
+	}
 	gpio_direction_output(gpio, !!on);
 	gpio_set_value_cansleep(gpio, !!on);
 	gpio_free(gpio);
@@ -1835,49 +1803,52 @@ static int hsusb_rpc_connect(int connect)
 		return msm_hsusb_rpc_close();
 }
 
-static struct vreg *vreg_3p3;
-static struct vreg *vreg_1p8;
-
+static struct regulator *reg_hsusb;
 static int msm_hsusb_ldo_init(int init)
 {
+	int rc = 0;
+
 	if (init) {
-		vreg_3p3 = vreg_get(NULL, "vreg_usb30");
+		reg_hsusb = regulator_get(NULL, "usb");
+		if (IS_ERR(reg_hsusb)) {
+			rc = PTR_ERR(reg_hsusb);
+			pr_err("%s: sandeep could not get regulator: %d\n",
+					__func__, rc);
+			goto out;
+		}
 
-		if (IS_ERR(vreg_3p3))
-			return PTR_ERR(vreg_3p3);
+		rc = regulator_set_voltage(reg_hsusb, 3300000, 3300000);
+		if (rc) {
+			pr_err("%s:sandeep could not set voltage: %d\n",
+					__func__, rc);
+			goto reg_free;
+		}
 
-		vreg_1p8 = vreg_get(NULL, "vreg_usb18");
-		if (IS_ERR(vreg_1p8))
-			return PTR_ERR(vreg_1p8);
-	} else {
-		vreg_put(vreg_3p3);
-		vreg_put(vreg_1p8);
+		return 0;
 	}
-
-	return 0;
+	/* else fall through */
+reg_free:
+	regulator_put(reg_hsusb);
+out:
+	reg_hsusb = NULL;
+	return rc;
 }
 
 static int msm_hsusb_ldo_enable(int enable)
 {
 	static int ldo_status;
 
-	if (!vreg_3p3 || IS_ERR(vreg_3p3))
-		return -ENODEV;
-	if (!vreg_1p8 || IS_ERR(vreg_1p8))
-		return -ENODEV;
+	if (IS_ERR_OR_NULL(reg_hsusb))
+		return reg_hsusb ? PTR_ERR(reg_hsusb) : -ENODEV;
 
 	if (ldo_status == enable)
 		return 0;
 
 	ldo_status = enable;
 
-	if (enable) {
-		vreg_enable(vreg_3p3);
-		return vreg_enable(vreg_1p8);
-	}
-
-	vreg_disable(vreg_1p8);
-	return vreg_disable(vreg_3p3);
+	return enable ?
+		regulator_enable(reg_hsusb) :
+		regulator_disable(reg_hsusb);
 }
 
 #ifndef CONFIG_USB_EHCI_MSM_72K
@@ -1901,24 +1872,24 @@ static struct msm_otg_platform_data msm_otg_pdata = {
 	.vbus_power		 = msm_hsusb_vbus_power,
 #endif
 	.rpc_connect		 = hsusb_rpc_connect,
-//	.core_clk		 = 1,
 	.pemp_level		 = PRE_EMPHASIS_WITH_20_PERCENT,
 	.cdr_autoreset		 = CDR_AUTO_RESET_DISABLE,
-	.drv_ampl		 = HS_DRV_AMPLITUDE_75_PERCENT, //HS_DRV_AMPLITUDE_DEFAULT,
+	.drv_ampl		 = HS_DRV_AMPLITUDE_75_PERCENT,
 	.se1_gating		 = SE1_GATING_DISABLE,
 	.ldo_init		 = msm_hsusb_ldo_init,
 	.ldo_enable		 = msm_hsusb_ldo_enable,
 	.chg_init		 = hsusb_chg_init,
-	.phy_can_powercollapse = 1,
 	/* check charger cable type for USB phy off */
 	.chg_connect_type = checkChargerType,
 	/* XXX: block charger current setting */
-#if 0
 	.chg_connected		 = hsusb_chg_connected,
 	.chg_vbus_draw		 = hsusb_chg_vbus_draw,
-#endif
 };
 #endif
+
+static struct msm_hsusb_gadget_platform_data msm_gadget_pdata = {
+	.is_phy_status_timer_on = 1,
+};
 
 static struct resource smc91x_resources[] = {
 	[0] = {
@@ -1939,7 +1910,6 @@ static struct platform_device smc91x_device = {
 	.num_resources  = ARRAY_SIZE(smc91x_resources),
 	.resource       = smc91x_resources,
 };
-
 
 #define WLAN_HOST_WAKE
 
@@ -2170,7 +2140,6 @@ static int wlan_power_init(void)
 
 	return WLAN_OK;
 }
-
 
 #if (defined(CONFIG_MMC_MSM_SDC1_SUPPORT)\
 	|| defined(CONFIG_MMC_MSM_SDC2_SUPPORT)\
@@ -2437,8 +2406,7 @@ static struct mmc_platform_data sdc2_plat_data = {
 	.ocr_mask	= MMC_VDD_28_29 | MMC_VDD_165_195,
 	.translate_vdd  = msm_sdcc_setup_power,
 	.mmc_bus_width  = MMC_CAP_4_BIT_DATA,
-//QCA 20111221
-#if 0 /*CONFIG_MMC_MSM_SDIO_SUPPORT*/
+#if 0  /* def CONFIG_MMC_MSM_SDIO_SUPPORT */
 	.sdiowakeup_irq = MSM_GPIO_TO_INT(66),
 #endif
 #ifndef ATH_POLLING
@@ -2857,6 +2825,7 @@ static void tsp_power_on(void)
 	if (rc < 0) {
 		pr_err("failed to request touch_en\n");
 	}
+
 	gpio_tlmm_config(GPIO_CFG(41, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
 	gpio_direction_output(41, 1);
 }
@@ -2922,16 +2891,6 @@ static int msm_fb_detect_panel(const char *name)
 			ret = 0;
 		else
 			ret = -ENODEV;
-#else
-#if 0 // toshiba panel
-	if (machine_is_msm7x27a_surf()) {
-		if (!strncmp(name, "lcdc_toshiba_fwvga_pt", 21))
-			ret = 0;
-	} else {
-		ret = -ENODEV;
-	}
-
-#endif
 #endif
     return ret;
 }
@@ -2980,19 +2939,19 @@ static struct platform_device mipi_dsi_renesas_panel_device = {
 
 static void __init msm7x27a_init_mmc(void)
 {
-	vreg_emmc = vreg_get(NULL, "vreg_msme");
-	if (IS_ERR(vreg_emmc)) {
-		pr_err("%s: vreg get failed (%ld)\n",
-				__func__, PTR_ERR(vreg_emmc));
-		return;
-	}
+        vreg_emmc = vreg_get(NULL,"msme1");
+        if (IS_ERR(vreg_emmc)) {
+                pr_err("%s: vreg get failed (%ld)\n",
+                                __func__, PTR_ERR(vreg_emmc));
+                return;
+        }
 
-	vreg_mmc = vreg_get(NULL, "vreg_tflash");
-	if (IS_ERR(vreg_mmc)) {
-		pr_err("%s: vreg get failed (%ld)\n",
-				__func__, PTR_ERR(vreg_mmc));
-		return;
-	}
+        vreg_mmc = vreg_get(NULL,"mmc");
+        if (IS_ERR(vreg_mmc)) {
+                pr_err("%s: vreg get failed (%ld)\n",
+                                __func__, PTR_ERR(vreg_mmc));
+                return;
+        }
 
 	/* eMMC slot */
 #ifdef CONFIG_MMC_MSM_SDC3_SUPPORT
@@ -3078,6 +3037,10 @@ static struct snd_endpoint snd_endpoints_list[] = {
 	SND(VOICE_RECORDER_SPK, 47),
 	SND(FM_ANALOG_STEREO_HEADSET, 50),
 	SND(FM_ANALOG_STEREO_HEADSET_CODEC, 51),
+	SND(HANDSET_VT, 52),
+	SND(STEREO_HEADSET_VT, 53),
+	SND(SPEAKER_PHONE_VT, 54),
+	SND(BT_VT, 55),
 	SND(CURRENT, 0x7FFFFFFE),
 };
 #undef SND
@@ -3850,7 +3813,7 @@ static struct platform_device *rumi_sim_devices[] __initdata = {
 	&msm_device_nand,
 	&msm_device_uart_dm1,
 	&msm_gsbi0_qup_i2c_device,
-	&msm_gsbi1_qup_i2c_device,
+	&msm_gsbi1_qup_i2c_device
 };
 
 static struct platform_device *surf_ffa_devices[] __initdata = {
@@ -4055,6 +4018,7 @@ static struct msm_panel_common_pdata mdp_pdata = {
 #define GPIO_LCDC_BRDG_RESET_N	129
 
 #define LCDC_RESET_PHYS		0x90008014
+
 static	void __iomem *lcdc_reset_ptr;
 
 static unsigned mipi_dsi_gpio[] = {
@@ -4065,21 +4029,21 @@ static unsigned mipi_dsi_gpio[] = {
 };
 
 enum {
-       DSI_SINGLE_LANE = 1,
-       DSI_TWO_LANES,
+	DSI_SINGLE_LANE = 1,
+	DSI_TWO_LANES,
 };
 
 static int msm_fb_get_lane_config(void)
 {
-       int rc = DSI_TWO_LANES;
+	int rc = DSI_TWO_LANES;
 
-	if (cpu_is_msm7x25a() || cpu_is_msm7x25aa()) {
-               rc = DSI_SINGLE_LANE;
-               pr_info("DSI Single Lane\n");
-       } else {
-               pr_info("DSI Two Lanes\n");
-       }
-       return rc;
+	if (machine_is_msm7625a_surf() || machine_is_msm7625a_ffa()) {
+		rc = DSI_SINGLE_LANE;
+		pr_info("DSI Single Lane\n");
+	} else {
+		pr_info("DSI Two Lanes\n");
+	}
+	return rc;
 }
 
 static int msm_fb_dsi_client_reset(void)
@@ -4349,85 +4313,68 @@ static void __init msm7x27a_init_ebi2(void)
 
 #if 0
 #define ATMEL_TS_I2C_NAME "maXTouch"
-static struct vreg *vreg_l12;
-static struct vreg *vreg_s3;
+
+static struct regulator_bulk_data regs_atmel[] = {
+	{ .supply = "ldo2",  .min_uV = 2850000, .max_uV = 2850000 },
+	{ .supply = "smps3", .min_uV = 1800000, .max_uV = 1800000 },
+};
 
 #define ATMEL_TS_GPIO_IRQ 82
 
 static int atmel_ts_power_on(bool on)
 {
-	int rc;
+	int rc = on ?
+		regulator_bulk_enable(ARRAY_SIZE(regs_atmel), regs_atmel) :
+		regulator_bulk_disable(ARRAY_SIZE(regs_atmel), regs_atmel);
 
-	rc = on ? vreg_enable(vreg_l12) : vreg_disable(vreg_l12);
-	if (rc) {
-		pr_err("%s: vreg %sable failed (%d)\n",
-		       __func__, on ? "en" : "dis", rc);
-		return rc;
-	}
+	if (rc)
+		pr_err("%s: could not %sable regulators: %d\n",
+				__func__, on ? "en" : "dis", rc);
+	else
+		msleep(50);
 
-	rc = on ? vreg_enable(vreg_s3) : vreg_disable(vreg_s3);
-	if (rc) {
-		pr_err("%s: vreg %sable failed (%d) for S3\n",
-		       __func__, on ? "en" : "dis", rc);
-		!on ? vreg_enable(vreg_l12) : vreg_disable(vreg_l12);
-		return rc;
-	}
-	/* vreg stabilization delay */
-	msleep(50);
-	return 0;
+	return rc;
 }
 
 static int atmel_ts_platform_init(struct i2c_client *client)
 {
 	int rc;
+	struct device *dev = &client->dev;
 
-	vreg_l12 = vreg_get(NULL, "gp2");
-	if (IS_ERR(vreg_l12)) {
-		pr_err("%s: vreg_get for L2 failed\n", __func__);
-		return PTR_ERR(vreg_l12);
-	}
-
-	rc = vreg_set_level(vreg_l12, 2850);
+	rc = regulator_bulk_get(dev, ARRAY_SIZE(regs_atmel), regs_atmel);
 	if (rc) {
-		pr_err("%s: vreg set level failed (%d) for l2\n",
-		       __func__, rc);
-		goto vreg_put_l2;
+		dev_err(dev, "%s: could not get regulators: %d\n",
+				__func__, rc);
+		goto out;
 	}
 
-	vreg_s3 = vreg_get(NULL, "vreg_msme");
-	if (IS_ERR(vreg_s3)) {
-		pr_err("%s: vreg_get for S3 failed\n", __func__);
-		rc = PTR_ERR(vreg_s3);
-		goto vreg_put_l2;
-	}
-
-	rc = vreg_set_level(vreg_s3, 1800);
+	rc = regulator_bulk_set_voltage(ARRAY_SIZE(regs_atmel), regs_atmel);
 	if (rc) {
-		pr_err("%s: vreg set level failed (%d) for S3\n",
-		       __func__, rc);
-		goto vreg_put_s3;
+		dev_err(dev, "%s: could not set voltages: %d\n",
+				__func__, rc);
+		goto reg_free;
 	}
 
 	rc = gpio_tlmm_config(GPIO_CFG(ATMEL_TS_GPIO_IRQ, 0,
 				GPIO_CFG_INPUT, GPIO_CFG_PULL_UP,
 				GPIO_CFG_8MA), GPIO_CFG_ENABLE);
 	if (rc) {
-		pr_err("%s: gpio_tlmm_config for %d failed\n",
+		dev_err(dev, "%s: gpio_tlmm_config for %d failed\n",
 			__func__, ATMEL_TS_GPIO_IRQ);
-		goto vreg_put_s3;
+		goto reg_free;
 	}
 
 	/* configure touchscreen interrupt gpio */
 	rc = gpio_request(ATMEL_TS_GPIO_IRQ, "atmel_maxtouch_gpio");
 	if (rc) {
-		pr_err("%s: unable to request gpio %d\n",
+		dev_err(dev, "%s: unable to request gpio %d\n",
 			__func__, ATMEL_TS_GPIO_IRQ);
 		goto ts_gpio_tlmm_unconfig;
 	}
 
 	rc = gpio_direction_input(ATMEL_TS_GPIO_IRQ);
 	if (rc < 0) {
-		pr_err("%s: unable to set the direction of gpio %d\n",
+		dev_err(dev, "%s: unable to set the direction of gpio %d\n",
 			__func__, ATMEL_TS_GPIO_IRQ);
 		goto free_ts_gpio;
 	}
@@ -4439,10 +4386,9 @@ ts_gpio_tlmm_unconfig:
 	gpio_tlmm_config(GPIO_CFG(ATMEL_TS_GPIO_IRQ, 0,
 				GPIO_CFG_INPUT, GPIO_CFG_NO_PULL,
 				GPIO_CFG_2MA), GPIO_CFG_DISABLE);
-vreg_put_s3:
-	vreg_put(vreg_s3);
-vreg_put_l2:
-	vreg_put(vreg_l12);
+reg_free:
+	regulator_bulk_free(ARRAY_SIZE(regs_atmel), regs_atmel);
+out:
 	return rc;
 }
 
@@ -4452,10 +4398,7 @@ static int atmel_ts_platform_exit(struct i2c_client *client)
 	gpio_tlmm_config(GPIO_CFG(ATMEL_TS_GPIO_IRQ, 0,
 				GPIO_CFG_INPUT, GPIO_CFG_NO_PULL,
 				GPIO_CFG_2MA), GPIO_CFG_DISABLE);
-	vreg_disable(vreg_s3);
-	vreg_put(vreg_s3);
-	vreg_disable(vreg_l12);
-	vreg_put(vreg_l12);
+	regulator_bulk_free(ARRAY_SIZE(regs_atmel), regs_atmel);
 	return 0;
 }
 
@@ -4472,7 +4415,7 @@ static u8 atmel_ts_valid_interrupt(void)
 #define ATMEL_X_OFFSET 13
 #define ATMEL_Y_OFFSET 0
 
-static struct mxt_platform_data atmel_ts_pdata = {
+static struct maxtouch_platform_data atmel_ts_pdata = {
 	.numtouch = 4,
 	.init_platform_hw = atmel_ts_platform_init,
 	.exit_platform_hw = atmel_ts_platform_exit,
@@ -4509,29 +4452,10 @@ static void keypad_gpio_init(void)
 						GPIO_CFG_2MA), GPIO_CFG_ENABLE);
 	gpio_tlmm_config(GPIO_CFG(31, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, \
 						GPIO_CFG_2MA), GPIO_CFG_ENABLE);
-
 	gpio_set_value_cansleep(31, 0);
 }
 
 #define KP_INDEX(row, col) ((row)*ARRAY_SIZE(kp_col_gpios) + (col))
-/*
-//if (board_hw_revision==0){
-	static unsigned int kp_row_gpios[] = {39, 36, 37, 38};
-	static unsigned int kp_col_gpios[] = {31 };
-
-	static const unsigned short keymap[ARRAY_SIZE(kp_col_gpios) *
-					  ARRAY_SIZE(kp_row_gpios)] = {
-		[KP_INDEX(0, 0)] = KEY_VOLUMEUP,
-
-		[KP_INDEX(1, 0)] = KEY_VOLUMEDOWN,
-
-		[KP_INDEX(2, 0)] = KEY_HOME,
-
-		[KP_INDEX(3, 0)] = KEY_VOLUMEUP,
-	};
-
-}else{
-*/
 	static unsigned int kp_row_gpios[] = {36, 37, 39};
 	static unsigned int kp_col_gpios[] = {31};
 	static unsigned int kp_wakeup_gpios[] = {37};
@@ -4543,10 +4467,6 @@ static void keypad_gpio_init(void)
 
 		[KP_INDEX(2, 0)] = KEY_VOLUMEUP,
 	};
-
-/*
-}
-*/
 
 /* SURF keypad platform device information */
 static struct gpio_event_matrix_info kp_matrix_info = {
@@ -4596,15 +4516,6 @@ static struct platform_device hs_pdev = {
 	},
 };
 
-#define LED_GPIO_PDM		96
-#define UART1DM_RX_GPIO		45
-
-static int __init msm7x27a_init_ar6000pm(void)
-{
-	return platform_device_register(&msm_wlan_ar6000_pm_device);
-}
-
-
 static struct platform_device msm_proccomm_regulator_dev = {
 	.name   = PROCCOMM_REGULATOR_DEV_NAME,
 	.id     = -1,
@@ -4612,6 +4523,21 @@ static struct platform_device msm_proccomm_regulator_dev = {
 		.platform_data = &msm7x27a_proccomm_regulator_data
 	}
 };
+
+static void __init msm7627a_rumi3_init(void)
+{
+	msm7x27a_init_ebi2();
+	platform_add_devices(rumi_sim_devices,
+			ARRAY_SIZE(rumi_sim_devices));
+}
+
+#define LED_GPIO_PDM		96
+#define UART1DM_RX_GPIO		45
+
+static int __init msm7x27a_init_ar6000pm(void)
+{
+	return platform_device_register(&msm_wlan_ar6000_pm_device);
+}
 
 static void __init msm7x27a_init_regulators(void)
 {
@@ -4765,79 +4691,53 @@ static void msm7x27a_enable_regulators(void)
 static void __init msm7x2x_init(void)
 {
     msm7x2x_misc_init();
-	/* FIXME: disable clock id 86 initialy.
-	 * this clock block CP sleep.
-	 * this problem looks like Qualcomm issue.
-	 * Use follow code temporary until solve that.
-	 */
-#if 1
-	int id = 86;
-
-	msm_proc_comm(PCOM_CLKCTL_RPC_DISABLE, &id, NULL);
-#endif
-
 	/* Initialize the regulators */
 	msm7x27a_init_regulators();
 
 	/* Enable the Required regulators */
     msm7x27a_enable_regulators();
 
-#if 0
-	if (!kernel_uart_flag)
-		msm_clock_init(msm_clocks_7x27a_uart, msm_num_clocks_7x27a_uart);
-	else
-	msm_clock_init(msm_clocks_7x27a, msm_num_clocks_7x27a);
-
-	msm_acpu_clock_init(&msm7x2x_clock_data);
-#endif
-
 	/* Common functions for SURF/FFA/RUMI3 */
 	msm_device_i2c_init();
-//QCA 20111221
-//	msm7x27a_init_ar6000pm();
-//	msm7x27a_init_mmc();
 	msm7x27a_init_ebi2();
-	//msm7x27a_cfg_uart2dm_serial();
+
+//	msm7x27a_cfg_uart2dm_serial();
 #ifdef CONFIG_SERIAL_MSM_HS
 	msm_uart_dm1_pdata.wakeup_irq = gpio_to_irq(UART1DM_RX_GPIO);
 	msm_device_uart_dm1.dev.platform_data = &msm_uart_dm1_pdata;
 #endif
 
-	if (machine_is_msm7x27a_rumi3()) {
-		platform_add_devices(rumi_sim_devices,
-				ARRAY_SIZE(rumi_sim_devices));
-	}
-	if (machine_is_msm7x27a_surf() || machine_is_msm7x27a_ffa()) {
 #ifdef CONFIG_USB_MSM_OTG_72K
-		msm_otg_pdata.swfi_latency =
-			msm7x27a_pm_data
+	msm_otg_pdata.swfi_latency =
+		msm7x27a_pm_data
 		[MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT].latency;
-		msm_device_otg.dev.platform_data = &msm_otg_pdata;
+	msm_device_otg.dev.platform_data = &msm_otg_pdata;
 #endif
-		//msm7x27a_cfg_smsc911x();
+	msm_device_gadget_peripheral.dev.platform_data =
+		&msm_gadget_pdata;
+	msm7x27a_cfg_smsc911x();
 #ifdef CONFIG_SAMSUNG_JACK
 		sec_jack_gpio_init();
 #endif
-		platform_add_devices(msm_footswitch_devices,
-			     msm_num_footswitch_devices);
-		platform_add_devices(surf_ffa_devices,
-				ARRAY_SIZE(surf_ffa_devices));
-
+	platform_add_devices(msm_footswitch_devices,
+			msm_num_footswitch_devices);
+	platform_add_devices(surf_ffa_devices,
+			ARRAY_SIZE(surf_ffa_devices));
 		if (!kernel_uart_flag)
 		{
 			platform_device_register(&msm_device_uart3);
 		}
-//QCA 20111221
-		/*Ensure ar6000pm device is registered before MMC/SDC */
-		msm7x27a_init_ar6000pm();
-		msm7x27a_init_mmc();
+	/* Ensure ar6000pm device is registered before MMC/SDC */
+	msm7x27a_init_ar6000pm();
+	msm7x27a_init_mmc();
 
-		lcdc_trebon_gpio_init();
-		msm_fb_add_devices();
+	lcdc_trebon_gpio_init();
+	msm_fb_add_devices();
+
+
 #ifdef CONFIG_USB_EHCI_MSM_72K
-//		msm7x2x_init_host();
+	msm7x2x_init_host();
 #endif
-	}
 
 	msm_pm_set_platform_data(msm7x27a_pm_data,
 				ARRAY_SIZE(msm7x27a_pm_data));
@@ -4856,22 +4756,12 @@ static void __init msm7x2x_init(void)
 	tsp_power_on();
 #endif
 
-#ifdef CONFIG_TOUCHSCREEN_MELFAS
-/* tsp_power_on(); */
-#endif
-
 	samsung_sys_class_init();
-// HASH0521
 	i2c_register_board_info( 2, touch_i2c_devices, ARRAY_SIZE(touch_i2c_devices));
-
-	i2c_register_board_info(3, fsa880_i2c_devices,
-			ARRAY_SIZE(fsa880_i2c_devices));
+	i2c_register_board_info( 3, fsa880_i2c_devices, ARRAY_SIZE(fsa880_i2c_devices));
 #ifdef CONFIG_BQ27425_FUEL_GAUGE
 	i2c_register_board_info(6, fg_i2c_devices, ARRAY_SIZE(fg_i2c_devices));
 #endif
-//	i2c_register_board_info(MSM_GSBI1_QUP_I2C_BUS_ID,
-//		atmel_ts_i2c_info,
-//		ARRAY_SIZE(atmel_ts_i2c_info));
 
 	i2c_register_board_info(MSM_GSBI0_QUP_I2C_BUS_ID,
 			i2c_camera_devices,
@@ -4890,7 +4780,7 @@ static void __init msm7x2x_init(void)
 		platform_device_register(&led_pdev);
 
 #ifdef CONFIG_MSM_RPC_VIBRATOR
-	if (machine_is_msm7x27a_ffa())
+	if (machine_is_msm7x27a_ffa() || machine_is_msm7625a_ffa())
 		msm_init_pmic_vibrator();
 #endif
        /*7x25a kgsl initializations*/
@@ -4916,9 +4806,10 @@ MACHINE_START(MSM7X27A_RUMI3, "QCT MSM7x27a RUMI3")
 	.map_io		= msm_common_io_init,
 	.reserve	= msm7x27a_reserve,
 	.init_irq	= msm_init_irq,
-	.init_machine	= msm7x2x_init,
+	.init_machine	= msm7627a_rumi3_init,
 	.timer		= &msm_timer,
 	.init_early     = msm7x2x_init_early,
+	.handle_irq	= vic_handle_irq,
 MACHINE_END
 MACHINE_START(MSM7X27A_SURF, "QCT MSM7x27a SURF")
 	.boot_params	= PHYS_OFFSET + 0x100,
@@ -4928,6 +4819,7 @@ MACHINE_START(MSM7X27A_SURF, "QCT MSM7x27a SURF")
 	.init_machine	= msm7x2x_init,
 	.timer		= &msm_timer,
 	.init_early     = msm7x2x_init_early,
+	.handle_irq	= vic_handle_irq,
 MACHINE_END
 MACHINE_START(MSM7X27A_FFA, "QCT MSM7x27a FFA")
 	.boot_params	= PHYS_OFFSET + 0x100,
@@ -4937,4 +4829,25 @@ MACHINE_START(MSM7X27A_FFA, "QCT MSM7x27a FFA")
 	.init_machine	= msm7x2x_init,
 	.timer		= &msm_timer,
 	.init_early     = msm7x2x_init_early,
+	.handle_irq	= vic_handle_irq,
+MACHINE_END
+MACHINE_START(MSM7625A_SURF, "QCT MSM7625a SURF")
+	.boot_params    = PHYS_OFFSET + 0x100,
+	.map_io         = msm_common_io_init,
+	.reserve        = msm7x27a_reserve,
+	.init_irq       = msm_init_irq,
+	.init_machine   = msm7x2x_init,
+	.timer          = &msm_timer,
+	.init_early     = msm7x2x_init_early,
+	.handle_irq	= vic_handle_irq,
+MACHINE_END
+MACHINE_START(MSM7625A_FFA, "QCT MSM7625a FFA")
+	.boot_params    = PHYS_OFFSET + 0x100,
+	.map_io         = msm_common_io_init,
+	.reserve        = msm7x27a_reserve,
+	.init_irq       = msm_init_irq,
+	.init_machine   = msm7x2x_init,
+	.timer          = &msm_timer,
+	.init_early     = msm7x2x_init_early,
+	.handle_irq	= vic_handle_irq,
 MACHINE_END
