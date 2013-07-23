@@ -1046,6 +1046,14 @@ menuconfig MSM_CAMERA
 	  Say Y here to enable selecting the video adapters for
 	  Qualcomm msm camera and video encoding
 
+menuconfig MSM_CAMERA_LEGACY
+	bool "Qualcomm legacy MSM camera and video capture support"
+	depends on MSM_CAMERA
+	default y
+	help
+	  Say Y here to enable camera suppor for legacy
+	  Qualcomm msm camera and video encoding
+
 config MSM_CAMERA_DEBUG
 	bool "Qualcomm MSM camera debugging with printk"
 	depends on MSM_CAMERA

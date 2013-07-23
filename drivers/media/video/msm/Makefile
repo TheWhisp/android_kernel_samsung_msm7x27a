@@ -10,15 +10,27 @@ ifeq ($(CONFIG_MSM_CAMERA_V4L2),y)
   obj-$(CONFIG_MSM_CAMERA) += msm_isp.o msm.o msm_mem.o msm_mctl.o msm_mctl_buf.o msm_mctl_pp.o
   obj-$(CONFIG_MSM_CAMERA) += io/ sensors/ actuators/ csi/
 else
-  obj-$(CONFIG_MSM_CAMERA) += msm_camera.o
+  ifeq ($(CONFIG_MSM_CAMERA_LEGACY),y)
+    obj-$(CONFIG_MSM_CAMERA) += msm_camera_legacy.o
+  else
+    obj-$(CONFIG_MSM_CAMERA) += msm_camera.o
+  endif
 endif
 obj-$(CONFIG_MSM_CAMERA) += msm_axi_qos.o gemini/
-obj-$(CONFIG_MSM_CAMERA_FLASH) += flash.o
+ifeq ($(CONFIG_MSM_CAMERA_LEGACY),y)
+	obj-$(CONFIG_MSM_CAMERA_FLASH) += flash_legacy.o
+else
+	obj-$(CONFIG_MSM_CAMERA_FLASH) += flash_legacy.o
+endif	
 obj-$(CONFIG_ARCH_MSM_ARM11) += msm_vfe7x.o msm_io7x.o
 ifeq ($(CONFIG_MSM_CAMERA_V4L2),y)
   obj-$(CONFIG_ARCH_MSM7X27A) += msm_vfe7x27a_v4l2.o msm_io_7x27a_v4l2.o
 else
-  obj-$(CONFIG_ARCH_MSM7X27A) += msm_vfe7x27a.o msm_io_7x27a.o
+	ifeq ($(CONFIG_MSM_CAMERA_LEGACY),y)
+  		obj-$(CONFIG_ARCH_MSM7X27A) += msm_vfe7x27a_legacy.o msm_io_7x27a_legacy.o
+  	else
+  		obj-$(CONFIG_ARCH_MSM7X27A) += msm_vfe7x27a.o msm_io_7x27a.o
+	endif  	
 endif
 obj-$(CONFIG_ARCH_QSD8X50) += msm_vfe8x.o msm_vfe8x_proc.o msm_io8x.o
 ifeq ($(CONFIG_MSM_CAMERA_V4L2),y)
