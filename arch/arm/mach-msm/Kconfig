@@ -1392,7 +1392,15 @@ config MSM_CPU_FREQ_SET_MIN_MAX
 config MSM_CPU_FREQ_MAX
 	int "Max CPU Frequency"
 	depends on MSM_CPU_FREQ_SET_MIN_MAX
-	default 384000
+	default 100800
+
+config MSM7X27A_OVERCLOCK
+  	bool "Enable overclock for MSM7X27AA"
+  	depends on MSM_CPU_FREQ_SET_MIN_MAX
+  	default n
+  	help
+    	Enable overclock for MSM7X27AA. Make sure to set
+    	CONFIG_MSM_CPU_FREQ_MAX to 1008000.	
 
 config MSM_CPU_FREQ_MIN
 	int "Min CPU Frequency"
