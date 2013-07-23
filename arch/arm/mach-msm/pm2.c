@@ -79,7 +79,8 @@ enum {
 	MSM_PM_DEBUG_IDLE = 1U << 6,
 };
 
-static int msm_pm_debug_mask;
+static int msm_pm_debug_mask = MSM_PM_DEBUG_POWER_COLLAPSE
+					| MSM_PM_DEBUG_SMSM_STATE;
 module_param_named(
 	debug_mask, msm_pm_debug_mask, int, S_IRUGO | S_IWUSR | S_IWGRP
 );
@@ -1776,7 +1777,6 @@ static void msm_pm_restart(char str, const char *cmd)
 
 #if defined(CONFIG_MACH_JENA)
 	msm_rpcrouter_close();
-	msm_proc_comm(PCOM_RESET_CHIP, &restart_reason, 0);
 #endif
 
 	msm_proc_comm(PCOM_RESET_CHIP_IMM, &restart_reason, 0);
