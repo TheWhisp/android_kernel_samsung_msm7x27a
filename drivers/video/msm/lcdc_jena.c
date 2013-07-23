@@ -21,7 +21,7 @@
 #include <linux/lcd.h>
 #include <mach/gpio.h>
 #include <mach/pmic.h>
-#include <mach/vreg.h>
+#include <linux/regulator/consumer.h>
 #include "msm_fb.h"
 
 #ifdef CONFIG_FB_MSM_TRY_MDDI_CATCH_LCDC_PRISM
@@ -513,38 +513,38 @@ static void spi_standby(void)
 
 }
 
-#define VREG_ENABLE	1
-#define VREG_DISABLE	0
+#define REGULATOR_ENABLE	1
+#define REGULATOR_DISABLE	0
 
-static void trebon_vreg_config(int vreg_en)
+static void trebon_regulator_config(int regulator_en)
 {
 	int rc;
-	struct vreg *vreg_lcd = NULL;
+	struct regulator *regulator_lcd = NULL;
 
-	if (vreg_lcd == NULL) {
-		vreg_lcd = vreg_get(NULL, "vlcd");
+	if (regulator_lcd == NULL) {
+		regulator_lcd = regulator_get(NULL, "vlcd");
 
-		if (IS_ERR(vreg_lcd)) {
-			printk(KERN_ERR "%s: vreg_get(%s) failed (%ld)\n",
-				__func__, "vlcd4", PTR_ERR(vreg_lcd));
+		if (IS_ERR(regulator_lcd)) {
+			printk(KERN_ERR "%s: regulator_get(%s) failed (%ld)\n",
+				__func__, "vlcd4", PTR_ERR(regulator_lcd));
 			return;
 		}
 
-		rc = vreg_set_level(vreg_lcd, 3000);
+		rc = regulator_set_voltage(regulator_lcd, 3000000, 3000000);
 		if (rc) {
-			printk(KERN_ERR "%s: LCD set_level failed (%d)\n",
+			printk(KERN_ERR "%s: LCD set_voltage failed (%d)\n",
 				__func__, rc);
 		}
 	}
 
-	if (vreg_en) {
-		rc = vreg_enable(vreg_lcd);
+	if (regulator_en) {
+		rc = regulator_enable(regulator_lcd);
 		if (rc) {
 			printk(KERN_ERR "%s: LCD enable failed (%d)\n",
 				 __func__, rc);
 		}
 	} else {
-		rc = vreg_disable(vreg_lcd);
+		rc = regulator_disable(regulator_lcd);
 		if (rc) {
 			printk(KERN_ERR "%s: LCD disable failed (%d)\n",
 				 __func__, rc);
@@ -576,7 +576,7 @@ static void trebon_disp_powerup(void)
 
 	if (!disp_state.disp_powered_up && !disp_state.display_on) {
 
-		trebon_vreg_config(VREG_ENABLE);
+		trebon_regulator_config(REGULATOR_ENABLE);
 		usleep(10000);
 		trebon_disp_reset(1);
 
@@ -593,7 +593,7 @@ static void trebon_disp_powerdown(void)
 					, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
 	gpio_set_value(lcd_reset, 0);
 
-	trebon_vreg_config(VREG_DISABLE);
+	trebon_regulator_config(REGULATOR_DISABLE);
 	msleep(1);
 
 	disp_state.disp_powered_up = FALSE;
@@ -941,7 +941,7 @@ static struct platform_device this_device = {
 #define LCDC_PCLK	((LCDC_FB_XRES + LCDC_HBP + LCDC_HPW + LCDC_HFP) \
 			* (LCDC_FB_YRES + LCDC_VBP + LCDC_VPW + LCDC_VFP) * 60)
 #endif
-static int __init lcdc_trebon_panel_init(void)
+static int __devinit lcdc_trebon_panel_init(void)
 {
 	int ret;
 	struct msm_panel_info *pinfo;
