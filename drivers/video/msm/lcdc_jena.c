@@ -532,7 +532,7 @@ static void trebon_regulator_config(int regulator_en)
 
 		rc = regulator_set_voltage(regulator_lcd, 3000000, 3000000);
 		if (rc) {
-			printk(KERN_ERR "%s: LCD set_voltage failed (%d)\n",
+			printk(KERN_ERR "%s: LCD powerup: set_voltage failed (%d)\n",
 				__func__, rc);
 		}
 	}
@@ -544,6 +544,11 @@ static void trebon_regulator_config(int regulator_en)
 				 __func__, rc);
 		}
 	} else {
+		rc = regulator_set_voltage(regulator_lcd, 3000000, 3000000);
+		if (rc) {
+			printk(KERN_ERR "%s: LCD powerdown: set_voltage failed (%d)\n",
+				__func__, rc);
+		}
 		rc = regulator_disable(regulator_lcd);
 		if (rc) {
 			printk(KERN_ERR "%s: LCD disable failed (%d)\n",
