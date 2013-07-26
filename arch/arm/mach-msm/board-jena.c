@@ -662,7 +662,9 @@ struct bahama_config_register {
 
 static const char * const regulators_bahama_name[] = {
 	"vreg_msme",
+#if (CONFIG_MACH_TREBON_HWREV != 0x0)
 	"vbt",
+#endif
 };
 
 static struct regulator *regulators_bahama[ARRAY_SIZE(regulators_bahama_name)];
@@ -830,7 +832,7 @@ static int bluetooth_switch_regulators(int on)
 
 		rc = on ? regulator_set_voltage(regulators_bahama[i],
 					i ? 2900000 : 1800000,
-						i ? 3300000 : 1800000) : 0;
+						i ? 2900000 : 1800000) : 0;
 
 		if (rc < 0) {
 			pr_err("%s: regulator set level failed (%d)\n",
@@ -1059,7 +1061,7 @@ static int bluetooth_power(int on)
 		  }
 			msleep(100);
 		#endif
-		/*setup BT GPIO lines*/
+		/* Setup BT GPIO lines*/
 		for (pin = 0; pin < ARRAY_SIZE(bt_config_power_on);
 			pin++) {
 			rc = gpio_tlmm_config(bt_config_power_on[pin],
@@ -1683,10 +1685,10 @@ static struct platform_device android_usb_device = {
 
 static int __init boot_mode_boot(char *onoff)
 {
-	if (strncmp(onoff, "batt", 5) == 0) {
+	if (strncmp(onoff, "true", 4) == 0) {
 		charging_boot = 1;
 		fota_boot = 0;
-		pr_info("%s[BATT]charging_boot: %d\n",
+		pr_info("%s[BATT] charging_boot: %d\n",
 			__func__, charging_boot);
 	} else if (strncmp(onoff, "fota", 5) == 0) {
 		fota_boot = 1;
@@ -1697,7 +1699,7 @@ static int __init boot_mode_boot(char *onoff)
 	}
 	return 1;
 }
-__setup("androidboot.boot_pause=", boot_mode_boot);
+__setup("androidboot.boot_battchg=", boot_mode_boot);
 
 #ifdef CONFIG_USB_EHCI_MSM_72K
 static void msm_hsusb_vbus_power(unsigned phy_info, int on)
@@ -2730,14 +2732,14 @@ static struct platform_device mipi_dsi_renesas_panel_device = {
 
 static void __init msm7x27a_init_mmc(void)
 {
-        vreg_emmc = vreg_get(NULL,"msme1");
+        vreg_emmc = vreg_get(NULL,"vreg_msme");
         if (IS_ERR(vreg_emmc)) {
                 pr_err("%s: vreg get failed (%ld)\n",
                                 __func__, PTR_ERR(vreg_emmc));
                 return;
         }
 
-        vreg_mmc = vreg_get(NULL,"mmc");
+        vreg_mmc = vreg_get(NULL,"vreg_tflash");
         if (IS_ERR(vreg_mmc)) {
                 pr_err("%s: vreg get failed (%ld)\n",
                                 __func__, PTR_ERR(vreg_mmc));
@@ -4234,7 +4236,7 @@ static void __init msm7x2x_init(void)
        /*7x25a kgsl initializations*/
        msm7x25a_kgsl_3d0_init();
 
-		ar6000_prealloc_init();
+	   //ar6000_prealloc_init();
 
 #if defined(CONFIG_PN544)
 	config_gpio_table_for_nfc();
