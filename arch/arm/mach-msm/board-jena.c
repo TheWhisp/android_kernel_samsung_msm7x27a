@@ -1679,7 +1679,7 @@ static struct platform_device android_usb_device = {
 	.name	= "android_usb",
 	.id	= -1,
 	.dev	= {
-	.platform_data = &android_usb_pdata,
+		.platform_data = &android_usb_pdata,
 	},
 };
 
@@ -1699,7 +1699,8 @@ static int __init boot_mode_boot(char *onoff)
 	}
 	return 1;
 }
-__setup("androidboot.boot_battchg=", boot_mode_boot);
+__setup("androidboot.battchg_pause", boot_mode_boot);
+
 
 #ifdef CONFIG_USB_EHCI_MSM_72K
 static void msm_hsusb_vbus_power(unsigned phy_info, int on)
@@ -1815,7 +1816,7 @@ static struct msm_otg_platform_data msm_otg_pdata = {
 	.ldo_enable		 = msm_hsusb_ldo_enable,
 	.chg_init		 = hsusb_chg_init,
 	/* check charger cable type for USB phy off */
-	.chg_connect_type = checkChargerType,
+//	.chg_connect_type = checkChargerType,
 	/* XXX: block charger current setting */
 	.chg_connected		 = hsusb_chg_connected,
 	.chg_vbus_draw		 = hsusb_chg_vbus_draw,
@@ -1959,7 +1960,7 @@ static int wlan_set_gpio(unsigned gpio, int on)
 
 
 #ifdef WLAN_33V_CONTROL_FOR_BT_ANTENNA
-static int wlan_setup_ldo_33v(int input_flag, int on)
+int wlan_setup_ldo_33v(int input_flag, int on)
 {
 	int skip = 0;
 	int temp_flag = wlan_33v_flag;
@@ -2336,6 +2337,9 @@ static struct mmc_platform_data sdc2_plat_data = {
 	.ocr_mask	= MMC_VDD_28_29 | MMC_VDD_165_195,
 	.translate_vdd  = msm_sdcc_setup_power,
 	.mmc_bus_width  = MMC_CAP_4_BIT_DATA,
+#if 0  /* def CONFIG_MMC_MSM_SDIO_SUPPORT */
+	.sdiowakeup_irq = MSM_GPIO_TO_INT(66),
+#endif
 #ifndef ATH_POLLING
 	.status = wlan_status,
 	.register_status_notify = register_wlan_status_notify,
@@ -2417,6 +2421,31 @@ static struct msm_pm_platform_data msm7x27a_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 					.latency = 2,
 					.residency = 0,
 	},
+};
+
+u32 msm7627a_power_collapse_latency(enum msm_pm_sleep_mode mode)
+{
+	switch (mode) {
+	case MSM_PM_SLEEP_MODE_POWER_COLLAPSE:
+		return msm7x27a_pm_data
+		[MSM_PM_SLEEP_MODE_POWER_COLLAPSE].latency;
+	case MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN:
+		return msm7x27a_pm_data
+		[MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN].latency;
+	case MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT:
+		return msm7x27a_pm_data
+		[MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT].latency;
+	case MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT:
+		return msm7x27a_pm_data
+		[MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT].latency;
+	default:
+		return 0;
+	}
+}
+
+static struct msm_pm_boot_platform_data msm_pm_boot_pdata __initdata = {
+	.mode = MSM_PM_BOOT_CONFIG_RESET_VECTOR_PHYS,
+	.p_addr = 0,
 };
 
 static struct android_pmem_platform_data android_pmem_adsp_pdata = {
@@ -2732,14 +2761,14 @@ static struct platform_device mipi_dsi_renesas_panel_device = {
 
 static void __init msm7x27a_init_mmc(void)
 {
-        vreg_emmc = vreg_get(NULL,"vreg_msme");
+        vreg_emmc = vreg_get(NULL,"msme1");
         if (IS_ERR(vreg_emmc)) {
                 pr_err("%s: vreg get failed (%ld)\n",
                                 __func__, PTR_ERR(vreg_emmc));
                 return;
         }
 
-        vreg_mmc = vreg_get(NULL,"vreg_tflash");
+        vreg_mmc = vreg_get(NULL,"mmc");
         if (IS_ERR(vreg_mmc)) {
                 pr_err("%s: vreg get failed (%ld)\n",
                                 __func__, PTR_ERR(vreg_mmc));
@@ -4191,6 +4220,8 @@ static void __init msm7x2x_init(void)
 
 	msm_pm_set_platform_data(msm7x27a_pm_data,
 				ARRAY_SIZE(msm7x27a_pm_data));
+
+	BUG_ON(msm_pm_boot_init(&msm_pm_boot_pdata));
 
 #if defined(CONFIG_I2C) && defined(CONFIG_GPIO_SX150X)
 	register_i2c_devices();
