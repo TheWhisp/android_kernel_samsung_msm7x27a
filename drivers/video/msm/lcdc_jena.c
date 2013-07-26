@@ -42,6 +42,7 @@
 
 static int sl_value = 200; // in ms
 static int use_hack = 1;
+static int enabled = 0;
 
 static int spi_cs;
 static int spi_sclk;
@@ -538,22 +539,33 @@ static void trebon_regulator_config(int regulator_en)
 	}
 
 	if (regulator_en) {
-		rc = regulator_enable(regulator_lcd);
-		if (rc) {
-			printk(KERN_ERR "%s: LCD enable failed (%d)\n",
-				 __func__, rc);
-		}
+		printk("[LCDC_JENA] About to turn on\n");
+		if(!enabled) {
+			printk("[LCDC_JENA] Enable regulator\n");
+			enabled = 1;
+			rc = regulator_enable(regulator_lcd);
+			if (rc) {
+				printk(KERN_ERR "%s: LCD regulator enable failed (%d)\n",
+					 __func__, rc);
+			}
+		} else { printk("[LCDC_JENA] Already enabled, how did this happen?\n"); }
 	} else {
-		rc = regulator_set_voltage(regulator_lcd, 3000000, 3000000);
-		if (rc) {
-			printk(KERN_ERR "%s: LCD powerdown: set_voltage failed (%d)\n",
-				__func__, rc);
-		}
-		rc = regulator_disable(regulator_lcd);
-		if (rc) {
-			printk(KERN_ERR "%s: LCD disable failed (%d)\n",
-				 __func__, rc);
-		}
+		printk("[LCDC_JENA] About to turn off\n");
+		if(enabled) {
+			printk("[LCDC_JENA] Disabling regulator\n");
+			enabled = 0;
+			rc = regulator_set_voltage(regulator_lcd, 3000000, 3000000);
+			if (rc) {
+				printk(KERN_ERR "%s: LCD powerdown: set_voltage failed (%d)\n",
+					__func__, rc);
+			}
+
+			rc = regulator_disable(regulator_lcd);
+			if (rc) {
+				printk(KERN_ERR "%s: LCD regulator disable failed (%d)\n",
+					 __func__, rc);
+			}
+		} else { printk("[LCDC_JENA] Already disabled, how did this happen?\n"); }
 	}
 }
 
@@ -763,7 +775,7 @@ static void lcdc_trebon_set_backlight(struct msm_fb_data_type *mfd)
 	*/
 	if(disp_state.disp_powered_up && use_hack == 1){
 		msleep(sl_value);
-		printk("[lcdc_jena - sleeping for %dms\n", sl_value);
+		printk("[LCDC_JENA] Sleeping for %dms\n", sl_value);
 		use_hack = 0;
 	}
 
