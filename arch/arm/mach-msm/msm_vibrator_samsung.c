@@ -22,8 +22,6 @@
 #include <linux/sched.h>
 
 #include <mach/msm_rpcrouter.h>
-
-//#include <mach/clk.h>
 #include <mach/samsung_vibe.h>
 #include <mach/gpio.h>
 #include <linux/regulator/consumer.h>
@@ -38,15 +36,14 @@ struct clk *android_vib_clk; /* core_clk */
 #define IMM_PWM_MULTIPLIER		    17778	/* Must be integer */
 
 /*
- * ** Global variables for LRA PWM M,N and D values.
- * */
+ * Global variables for LRA PWM M,N and D values.
+ */
 VibeInt32 g_nLRA_CORE_CLK_M = CORE_CLK_M_DEFAULT;
 VibeInt32 g_nLRA_CORE_CLK_N = CORE_CLK_N_DEFAULT;
 VibeInt32 g_nLRA_CORE_CLK_D = CORE_CLK_N_DEFAULT;
 VibeInt32 g_nLRA_CORE_CLK_PWM_MUL = IMM_PWM_MULTIPLIER;
 
 static struct hrtimer vibe_timer;
-static int is_vibe_on = 0;
 static int enabled = 0;
 
 
@@ -66,7 +63,7 @@ VibeInt32 g_nForce_32 = 0;
  * 
  */
 
-/* for the suspend/resume VIBRATOR Module */
+/* For the suspend/resume VIBRATOR Module */
 static struct platform_driver msm_vibrator_platdriver = 
 {
 	.probe   = msm_vibrator_probe,
@@ -75,15 +72,15 @@ static struct platform_driver msm_vibrator_platdriver =
 	.remove  = __devexit_p(msm_vibrator_exit),
 	.driver = 
 	{
-			.name = MODULE_NAME,
-			.owner = THIS_MODULE,
+		.name = MODULE_NAME,
+		.owner = THIS_MODULE,
 	},
 };
 
 static int msm_vibrator_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	msm_vibrator_power(VIBRATION_OFF);
-	printk("[VIB] susepend\n");
+	printk("[VIB] suspend\n");
 	return VIBE_S_SUCCESS;
 }
 
@@ -95,76 +92,72 @@ static int msm_vibrator_resume(struct platform_device *pdev)
 
 static int __devexit msm_vibrator_exit(struct platform_device *pdev)
 {
-		printk("[VIB] EXIT\n");
-		return 0;
+	printk("[VIB] EXIT\n");
+	return 0;
 }
 
 static int msm_vibrator_power(int on)
 {
-	struct regulator *vreg_msm_vibrator;
-	int ret = 0;
+	struct regulator *regulator_msm_vibrator;
+	int ret;
+
+	regulator_msm_vibrator = regulator_get(NULL, "vreg_vib");
 
 	if (on) {
-		printk("[VIB] About to turn on\n");
-		ret = regulator_set_voltage(vreg_msm_vibrator, 3000000, 3000000);
-		if (ret) {
-			printk(KERN_ERR "%s: regulator (enable vib) set voltage failed (%d)\n",
-					__func__, ret);
-			return -EIO;
-		}
-		if (!enabled) {
+		if(!enabled) {
 			enabled = 1;
-			ret = regulator_enable(vreg_msm_vibrator);
+
+			ret = regulator_set_voltage(regulator_msm_vibrator, 3000000, 3000000);
+			if (ret) {
+				printk(KERN_ERR "%s: regulator (enable vib) set voltage failed (%d)\n",
+						__func__, ret);
+				return -EIO;
+			}
+
+			ret = regulator_enable(regulator_msm_vibrator);
+			if (ret) {
+				printk(KERN_ERR "%s: regulator enable failed (%d)\n",
+						__func__, ret);
+				return -EIO;
+			}
+			mdelay(15);
 		}
-		if (ret) {
-			printk(KERN_ERR "%s: regulator enable failed (%d)\n",
-					__func__, ret);
-			return -EIO;
-		}
-		mdelay(10);
-	}
-	else {
-		printk("[VIB] About to turn off\n");
+	} else {
 		if(enabled) {
-			printk("[VIB] Was on, keep going\n");
 			enabled = 0;
-			ret = regulator_set_voltage(vreg_msm_vibrator, 3000000, 3000000);
+
+			ret = regulator_set_voltage(regulator_msm_vibrator, 3000000, 3000000);
 			if (ret) {
 				printk(KERN_ERR "%s: regulator (disable vib) set voltage failed (%d)\n",
 					__func__, ret);
 				return -EIO;
 			}
 
-			ret = regulator_disable(vreg_msm_vibrator);
+			ret = regulator_disable(regulator_msm_vibrator);
 			if (ret) {
 				printk(KERN_ERR "%s: regulator disable failed (%d)\n",
-						__func__, ret);
+								__func__,ret);
 				return -EIO;
 			}
-		} else { printk("[VIB] Wasn't on, stop\n"); }
+		}
 	}
+
 	return VIBE_S_SUCCESS;
 }
 
 static void vibrator_enable(struct timed_output_dev *dev, int value)
 {
-	unsigned long flags;
 	hrtimer_cancel(&vibe_timer);
 
 	if (value == 0) {
-		printk("[VIB] OFF\n");
 		msm_vibrator_power(VIBRATION_OFF);
-	}
-	else {
-
-		if(value < 0)
+	} else {
+		if(value < 0) {
 			value = ~value;
-		printk("[VIB] ON, %d ms\n",value);
+		}
 
 		value = (value > 15000 ? 15000 : value);
-
 		msm_vibrator_power(VIBRATION_ON);
-
 		hrtimer_start(&vibe_timer,
 			      ktime_set(value / 1000, (value % 1000) * 1000000),
 			      HRTIMER_MODE_REL);
@@ -182,26 +175,22 @@ static int vibrator_get_time(struct timed_output_dev *dev)
 
 static enum hrtimer_restart vibrator_timer_func(struct hrtimer *timer)
 {
-#if 0
-		timed_vibrator_off(NULL);
-		return HRTIMER_NORESTART;
-#else
-		unsigned int remain;
+	unsigned int remain;
 
-		if(hrtimer_active(&vibe_timer)) {
-				ktime_t r = hrtimer_get_remaining(&vibe_timer);
-				remain = ktime_to_ms(r);
-				remain = remain / 1000;
-				if(ktime_to_ms(r) < 0) {
-						remain = 0;
-				}
-				if(!remain) 
-					msm_vibrator_power(VIBRATION_OFF);
-		} else {
-				msm_vibrator_power(VIBRATION_OFF);
+	if(hrtimer_active(&vibe_timer)) {
+		ktime_t r = hrtimer_get_remaining(&vibe_timer);
+		remain = ktime_to_ms(r);
+		remain = remain / 1000;
+		if(ktime_to_ms(r) < 0) {
+			remain = 0;
 		}
-		return HRTIMER_NORESTART;
-#endif
+		if(!remain) 
+			msm_vibrator_power(VIBRATION_OFF);
+	} else {
+		msm_vibrator_power(VIBRATION_OFF);
+	}
+
+	return HRTIMER_NORESTART;
 }
 
 static struct timed_output_dev pmic_vibrator = {
@@ -214,34 +203,13 @@ static int __devinit msm_vibrator_probe(struct platform_device *pdev)
 {
 	hrtimer_init(&vibe_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	vibe_timer.function = vibrator_timer_func;
-
 	timed_output_dev_register(&pmic_vibrator);
-
-#if 0
-	msm_vibrator_power(VIBRATION_ON);
-	
-		/* Vibrator init sequence 
-		 * 1. power on ( regulator get )
-		 * 2. clock get & enable ( core_clk )
-		 * 3. VIB_EN on
-		 */
-	
-		android_vib_clk = clk_get(NULL,"core_clk");
-	
-		if(IS_ERR(android_vib_clk)) {
-			printk("android vib clk failed!!!\n");
-		} else {
-			printk("THNAK YOU!!\n");
-		}
-		vibe_set_pwm_freq(216);
-#endif
 	return 0;
 }
 
 static int __init msm_init_pmic_vibrator(void)
 {
 	int nRet;
-
 	nRet = platform_driver_register(&msm_vibrator_platdriver);
 
 	printk("[VIB] platform driver register result : %d\n",nRet);
@@ -251,18 +219,15 @@ static int __init msm_init_pmic_vibrator(void)
 	}
 
 	return nRet;
-
 }
 
 static void __exit msm_exit_pmic_vibrator(void)
 {
 	platform_driver_unregister(&msm_vibrator_platdriver);
-
 }
 
 module_init(msm_init_pmic_vibrator);
 module_exit(msm_exit_pmic_vibrator);
-
 
 MODULE_DESCRIPTION("Samsung vibrator device");
 MODULE_LICENSE("GPL");

@@ -222,7 +222,7 @@ static struct platform_device sec_device_jack = {
 	.name           = "sec_jack",
 	.id             = -1,
 	.dev            = {
-	.platform_data  = &sec_jack_data,
+		.platform_data  = &sec_jack_data,
 	},
 };
 #endif
@@ -612,9 +612,10 @@ static void fm_radio_shutdown(struct marimba_fm_platform_data *pdata)
 static void (*wlan_status_notify_cb)(int card_present, void *dev_id);
 void *wlan_devid;
 
-static int register_wlan_status_notify(void (*callback)(int card_present, void *dev_id), void *dev_id)
+static int register_wlan_status_notify(void (*callback)(int card_present,
+					void *dev_id), void *dev_id)
 {
-	printk("%s --enter\n", __func__);
+	printk(KERN_INFO "%s --enter\n", __func__);
 
 	wlan_status_notify_cb = callback;
 	wlan_devid = dev_id;
@@ -625,7 +626,7 @@ static unsigned int wlan_status(struct device *dev)
 {
 	int rc;
 
-	printk("%s entered\n", __func__);
+	printk(KERN_INFO "%s entered\n", __func__);
 
 	rc = gpio_get_value(GPIO_WLAN_RESET_N/*gpio_wlan_reset_n*/);
 
@@ -1434,8 +1435,8 @@ void trebon_chg_connected(enum chg_type chgtype)
 			"CARKIT",
 			"DEDICATED CHARGER",
 			"INVALID"};
-	unsigned int data1 = 0;
-	unsigned int data2 = 0;
+	unsigned *data1 = NULL;
+	unsigned *data2 = NULL;
 	int ret = 0;
 
 	switch (chgtype) {
@@ -1611,7 +1612,6 @@ static struct msm_gpio qup_i2c_gpios_io[] = {
 		"qup_scl" },
 	{ GPIO_CFG(61, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_8MA),
 		"qup_sda" },
-/*conflict with fuel_gauge_gpio */
 	{ GPIO_CFG(131, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_8MA),
 		"qup_scl" },
 	{ GPIO_CFG(132, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_8MA),
@@ -2032,6 +2032,8 @@ void wlan_setup_power(int on, int detect)
 		if (wlan_set_gpio(GPIO_WLAN_RESET_N, 0))
 			return;
 
+		udelay(100);
+
 #ifdef WLAN_33V_CONTROL_FOR_BT_ANTENNA
 		/* GPIO_WLAN_33V_EN - Off */
 		if (wlan_setup_ldo_33v(WLAN_33V_WIFI_FLAG, 0))
@@ -2451,7 +2453,7 @@ static struct msm_pm_boot_platform_data msm_pm_boot_pdata __initdata = {
 static struct android_pmem_platform_data android_pmem_adsp_pdata = {
 	.name = "pmem_adsp",
 	.allocator_type = PMEM_ALLOCATORTYPE_BITMAP,
-	.cached = 0,
+	.cached = 1,
 	.memory_type = MEMTYPE_EBI1,
 };
 
@@ -2837,10 +2839,6 @@ static struct snd_endpoint snd_endpoints_list[] = {
 	SND(VOICE_RECORDER_SPK, 47),
 	SND(FM_ANALOG_STEREO_HEADSET, 50),
 	SND(FM_ANALOG_STEREO_HEADSET_CODEC, 51),
-	SND(HANDSET_VT, 52),
-	SND(STEREO_HEADSET_VT, 53),
-	SND(SPEAKER_PHONE_VT, 54),
-	SND(BT_VT, 55),
 	SND(CURRENT, 0x7FFFFFFE),
 };
 #undef SND
@@ -3530,7 +3528,7 @@ static struct platform_device *surf_ffa_devices[] __initdata = {
 	&msm_gsbi1_qup_i2c_device,
 	&msm_device_otg,
 	&msm_device_gadget_peripheral,
-    &android_usb_device,
+	&android_usb_device,
 	&android_pmem_device,
 	&android_pmem_adsp_device,
 	&android_pmem_audio_device,
@@ -3683,7 +3681,7 @@ static void __init msm_device_i2c_init(void)
 	gpio_tlmm_config(GPIO_CFG(GPIO_TSP_SCL, 0, GPIO_CFG_OUTPUT,
 				GPIO_CFG_PULL_UP, GPIO_CFG_2MA),GPIO_CFG_ENABLE);
 	gpio_tlmm_config(GPIO_CFG(GPIO_MUS_SDA, 0, GPIO_CFG_OUTPUT,
-				GPIO_CFG_PULL_UP, GPIO_CFG_2MA),GPIO_CFG_ENABLE);
+			GPIO_CFG_PULL_UP, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
 	gpio_tlmm_config(GPIO_CFG(GPIO_MUS_SCL, 0, GPIO_CFG_OUTPUT,
 				GPIO_CFG_PULL_UP, GPIO_CFG_2MA),GPIO_CFG_ENABLE);
 #if (CONFIG_MACH_TREBON_HWREV == 0x0)
