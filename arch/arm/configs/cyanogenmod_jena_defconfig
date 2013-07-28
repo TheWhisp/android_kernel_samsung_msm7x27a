@@ -1,6 +1,6 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 3.0.31 Kernel Configuration
+# Linux/arm 3.0.66 Kernel Configuration
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -421,6 +421,7 @@ CONFIG_MACH_JENA=y
 # CONFIG_JENA_UART_TEST is not set
 # CONFIG_MSM_RTB is not set
 # CONFIG_MSM_CACHE_DUMP is not set
+CONFIG_WIFI_REVSION_01=y
 
 #
 # System MMU
@@ -1100,7 +1101,7 @@ CONFIG_FSAXXXX_USBSW=y
 # CONFIG_QFP_FUSE is not set
 CONFIG_SEC_MISC=y
 CONFIG_SEC_DEBUG=y
-CONFIG_PN544=y
+# CONFIG_PN544 is not set
 # CONFIG_C2PORT is not set
 
 #
@@ -2384,6 +2385,7 @@ CONFIG_LEDS_MSM_PDM=y
 # CONFIG_LEDS_REGULATOR is not set
 # CONFIG_LEDS_BD2802 is not set
 CONFIG_LEDS_MSM_PMIC=y
+CONFIG_KEYPAD_TOUCH_BLN=y
 # CONFIG_LEDS_LT3593 is not set
 # CONFIG_LEDS_TRIGGERS is not set
 
