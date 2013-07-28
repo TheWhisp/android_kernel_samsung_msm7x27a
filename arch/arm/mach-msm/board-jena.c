@@ -1105,6 +1105,7 @@ static int bluetooth_power(int on)
 		if (rc < 0)
 			pr_err("%s:Pin Control Failed, rc = %d",
 					__func__, rc);
+
 	} else {
 		rc = bahama_bt(0);
 		if (rc < 0)
@@ -1193,7 +1194,7 @@ static struct marimba_platform_data marimba_pdata = {
 	.bahama_setup                        = msm_bahama_setup_power,
 	.bahama_shutdown                     = msm_bahama_shutdown_power,
 	.bahama_core_config                  = msm_bahama_core_config,
-	.fm				     			     = &marimba_fm_pdata,
+	.fm				     = &marimba_fm_pdata,
 };
 
 #endif
@@ -1223,7 +1224,7 @@ static struct platform_device pn544_i2c_gpio_device = {
 	.name       = "i2c-gpio",
 	.id         = 5,
 	.dev        = {
-	.platform_data  = &pn544_i2c_gpio_data,
+		.platform_data  = &pn544_i2c_gpio_data,
 	},
 };
 
@@ -1305,14 +1306,14 @@ static struct i2c_board_info sensor_devices[] = {
 
 	#if defined(CONFIG_SENSORS_HSCD) || defined(CONFIG_PROXIMITY_SENSOR)
 static struct i2c_gpio_platform_data sensor_i2c_gpio_data = {
-	.sda_pin =GPIO_SENSOR_SDA,
-	.scl_pin =GPIO_SENSOR_SCL,
-	.udelay =1,
+	.sda_pin = GPIO_SENSOR_SDA,
+	.scl_pin = GPIO_SENSOR_SCL,
+	.udelay = 1,
 };
 
 static struct platform_device sensor_i2c_gpio_device = {
 	.name ="i2c-gpio",
-	.id= 4,
+	.id = 4,
 	.dev = {
 		.platform_data =&sensor_i2c_gpio_data,
 	},
@@ -1427,7 +1428,7 @@ int fsa880_get_charger_status(void)
 	return fsa_cable_type;
 }
 
-static void jena_usb_power(int onoff, char *path) {}
+static void jena_usb_power(int onoff, char *path) { }
 
 void trebon_chg_connected(enum chg_type chgtype)
 {
@@ -1816,10 +1817,12 @@ static struct msm_otg_platform_data msm_otg_pdata = {
 	.ldo_enable		 = msm_hsusb_ldo_enable,
 	.chg_init		 = hsusb_chg_init,
 	/* check charger cable type for USB phy off */
-//	.chg_connect_type = checkChargerType,
+	.chg_connect_type = checkChargerType,
 	/* XXX: block charger current setting */
+#if 0
 	.chg_connected		 = hsusb_chg_connected,
 	.chg_vbus_draw		 = hsusb_chg_vbus_draw,
+#endif
 };
 #endif
 
@@ -2032,7 +2035,7 @@ void wlan_setup_power(int on, int detect)
 		if (wlan_set_gpio(GPIO_WLAN_RESET_N, 0))
 			return;
 
-		udelay(100);
+		udelay(120);
 
 #ifdef WLAN_33V_CONTROL_FOR_BT_ANTENNA
 		/* GPIO_WLAN_33V_EN - Off */
@@ -2042,7 +2045,7 @@ void wlan_setup_power(int on, int detect)
 	}
 
 #ifndef ATH_POLLING
-	mdelay(100);
+	mdelay(120);
 
 	if (detect) {
 		/* Detect card */
