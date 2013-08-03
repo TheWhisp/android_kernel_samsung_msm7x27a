@@ -44,8 +44,7 @@ VibeInt32 g_nLRA_CORE_CLK_D = CORE_CLK_N_DEFAULT;
 VibeInt32 g_nLRA_CORE_CLK_PWM_MUL = IMM_PWM_MULTIPLIER;
 
 static struct hrtimer vibe_timer;
-static int enabled = 0; // to avoid unbalanced regulators
-static int power_off = 0; // to avoid oops
+static int enabled = 0;
 
 
 static int msm_vibrator_suspend(struct platform_device *pdev, pm_message_t state);
@@ -80,7 +79,6 @@ static struct platform_driver msm_vibrator_platdriver =
 
 static int msm_vibrator_suspend(struct platform_device *pdev, pm_message_t state)
 {
-	//msm_vibrator_power(VIBRATION_OFF);
 	printk("[VIB] suspend\n");
 	return VIBE_S_SUCCESS;
 }
