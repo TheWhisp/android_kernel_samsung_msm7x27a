@@ -44,7 +44,8 @@ VibeInt32 g_nLRA_CORE_CLK_D = CORE_CLK_N_DEFAULT;
 VibeInt32 g_nLRA_CORE_CLK_PWM_MUL = IMM_PWM_MULTIPLIER;
 
 static struct hrtimer vibe_timer;
-static int enabled = 0;
+static int enabled = 0; // to avoid unbalanced regulators
+static int power_off = 0; // to avoid oops
 
 
 static int msm_vibrator_suspend(struct platform_device *pdev, pm_message_t state);
@@ -79,7 +80,7 @@ static struct platform_driver msm_vibrator_platdriver =
 
 static int msm_vibrator_suspend(struct platform_device *pdev, pm_message_t state)
 {
-	msm_vibrator_power(VIBRATION_OFF);
+	//msm_vibrator_power(VIBRATION_OFF);
 	printk("[VIB] suspend\n");
 	return VIBE_S_SUCCESS;
 }
@@ -173,22 +174,32 @@ static int vibrator_get_time(struct timed_output_dev *dev)
 		return 0;
 }
 
-static enum hrtimer_restart vibrator_timer_func(struct hrtimer *timer)
+static int vibrator_timer_do_work(struct work_struct *ignored)
 {
 	unsigned int remain;
 
-	if(hrtimer_active(&vibe_timer)) {
+	if (hrtimer_active(&vibe_timer)) {
 		ktime_t r = hrtimer_get_remaining(&vibe_timer);
 		remain = ktime_to_ms(r);
 		remain = remain / 1000;
-		if(ktime_to_ms(r) < 0) {
+		if (ktime_to_ms(r) < 0) {
 			remain = 0;
 		}
-		if(!remain) 
+		if (!remain)
 			msm_vibrator_power(VIBRATION_OFF);
-	} else {
+	}
+	else {
 		msm_vibrator_power(VIBRATION_OFF);
 	}
+
+	return 0;
+}
+
+static DECLARE_WORK(vibrator_timer_work, vibrator_timer_do_work);
+
+static enum hrtimer_restart vibrator_timer_func(struct hrtimer *timer)
+{
+	schedule_work(&vibrator_timer_work);
 
 	return HRTIMER_NORESTART;
 }
