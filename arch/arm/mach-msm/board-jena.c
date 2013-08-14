@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2013, Code Aurora Forum. All rights reserved.
+/* Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -1658,7 +1658,7 @@ static struct msm_i2c_platform_data msm_gsbi1_qup_i2c_pdata = {
 
 #ifdef CONFIG_ARCH_MSM7X27A
 #define MSM_PMEM_MDP_SIZE       0x1DD1000
-#define MSM_PMEM_ADSP_SIZE      0x1000000
+#define MSM_PMEM_ADSP_SIZE      0x1100000
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
 /* prim = 320 x 480 x 4(bpp) x 3(pages) */
 #define MSM_FB_SIZE             320 * 480 * 4 * 3
