@@ -70,6 +70,13 @@ boolean mdp_is_in_isr = FALSE;
 
 struct vsync vsync_cntrl;
 
+#if defined(CONFIG_MACH_JENA)
+/* Add a global flag to indicate supporting of the feature:
+   continuous display from app bootloader to kernel/android
+*/
+boolean mdp_continues_display = true;
+#endif
+
 /*
  * legacy mdp_in_processing is only for DMA2-MDDI
  * this applies to DMA2 block only

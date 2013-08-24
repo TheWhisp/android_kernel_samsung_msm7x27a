@@ -51,6 +51,12 @@ extern uint32 mdp_intr_mask;
 int first_pixel_start_x;
 int first_pixel_start_y;
 
+#if defined(CONFIG_MACH_JENA)
+extern unsigned long mdp_timer_duration;
+/* Defined in mdp.c to indicate support appboot logo display*/
+extern boolean mdp_continues_display;
+#endif
+
 static ssize_t vsync_show_event(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -142,7 +148,11 @@ int mdp_lcdc_on(struct platform_device *pdev)
 
 	buf += calc_fb_offset(mfd, fbi, bpp);
 
+#if defined(CONFIG_MACH_JENA)
+	dma2_cfg_reg = DMA_PACK_ALIGN_LSB | DMA_DITHER_EN | DMA_OUT_SEL_LCDC;
+#else
 	dma2_cfg_reg = DMA_PACK_ALIGN_LSB | DMA_OUT_SEL_LCDC;
+#endif
 
 	if (mfd->fb_imgType == MDP_BGR_565)
 		dma2_cfg_reg |= DMA_PACK_PATTERN_BGR;
@@ -324,6 +334,12 @@ int mdp_lcdc_on(struct platform_device *pdev)
 		vsync_cntrl.sysfs_created = 1;
 	}
 
+#if defined(CONFIG_MACH_JENA)
+if (mdp_continues_display) {
+	mdp_continues_display = FALSE;
+	mdp_timer_duration = (HZ);
+}
+#endif
 	return ret;
 }
 
