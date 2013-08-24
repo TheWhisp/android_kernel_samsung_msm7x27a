@@ -2035,8 +2035,6 @@ void wlan_setup_power(int on, int detect)
 		if (wlan_set_gpio(GPIO_WLAN_RESET_N, 0))
 			return;
 
-		udelay(120);
-
 #ifdef WLAN_33V_CONTROL_FOR_BT_ANTENNA
 		/* GPIO_WLAN_33V_EN - Off */
 		if (wlan_setup_ldo_33v(WLAN_33V_WIFI_FLAG, 0))
@@ -2045,7 +2043,7 @@ void wlan_setup_power(int on, int detect)
 	}
 
 #ifndef ATH_POLLING
-	mdelay(120);
+	mdelay(100);
 
 	if (detect) {
 		/* Detect card */
