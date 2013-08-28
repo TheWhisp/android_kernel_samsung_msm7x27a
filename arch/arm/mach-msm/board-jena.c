@@ -1686,10 +1686,10 @@ static struct platform_device android_usb_device = {
 
 static int __init boot_mode_boot(char *onoff)
 {
-	if (strncmp(onoff, "true", 4) == 0) {
+	if (strncmp(onoff, "batt", 5) == 0) {
 		charging_boot = 1;
 		fota_boot = 0;
-		pr_info("%s[BATT] charging_boot: %d\n",
+		pr_info("%s[BATT]charging_boot: %d\n",
 			__func__, charging_boot);
 	} else if (strncmp(onoff, "fota", 5) == 0) {
 		fota_boot = 1;
@@ -1700,7 +1700,7 @@ static int __init boot_mode_boot(char *onoff)
 	}
 	return 1;
 }
-__setup("androidboot.battchg_pause", boot_mode_boot);
+__setup("androidboot.boot_pause=", boot_mode_boot);
 
 
 #ifdef CONFIG_USB_EHCI_MSM_72K
