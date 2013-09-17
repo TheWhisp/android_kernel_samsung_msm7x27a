@@ -1818,11 +1818,9 @@ static struct msm_otg_platform_data msm_otg_pdata = {
 	.chg_init		 = hsusb_chg_init,
 	/* check charger cable type for USB phy off */
 	.chg_connect_type = checkChargerType,
-	/* XXX: block charger current setting */
-#if 0
+	/*  										*/
 	.chg_connected		 = hsusb_chg_connected,
 	.chg_vbus_draw		 = hsusb_chg_vbus_draw,
-#endif
 };
 #endif
 
