@@ -71,3 +71,8 @@ obj-$(CONFIG_MSM_MEMORY_LOW_POWER_MODE_SUSPEND_DEEP_POWER_DOWN) \
 obj-$(CONFIG_PMIC8058_XOADC) += pmic8058-xoadc.o
 obj-$(CONFIG_QSEECOM) += qseecom.o
 obj-$(CONFIG_QFP_FUSE) += qfp_fuse.o
+obj-$(CONFIG_SEC_MISC) += sec_misc.o sec_param.o
+obj-$(CONFIG_SEC_DEBUG) += sec_debug.o
+obj-$(CONFIG_SAMSUNG_JACK) += sec_jack.o
+obj-$(CONFIG_PN544) += pn544.o
+obj-$(CONFIG_FSAXXXX_USBSW)  += fsaxxxx_usbsw.o
