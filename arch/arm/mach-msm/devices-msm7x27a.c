@@ -2233,7 +2233,9 @@ void __init msm_common_io_init(void)
 
 void __init msm8625_init_irq(void)
 {
+#if 0
 	msm_gic_irq_extn_init();
+#endif
 	gic_init(0, GIC_PPI_START, MSM_QGIC_DIST_BASE,
 			(void *)MSM_QGIC_CPU_BASE);
 }
