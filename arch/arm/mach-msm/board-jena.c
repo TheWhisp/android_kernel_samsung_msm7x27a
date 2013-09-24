@@ -64,6 +64,10 @@
 #include <linux/gp2a.h>
 #endif
 
+#ifndef CONFIG_MSM_CAMERA
+#define CONFIG_MSM_CAMERA
+#endif
+
 #define _CONFIG_MACH_JENA // Temporary flag
 #define _CONFIG_MACH_TREBON // Temporary flag
 
@@ -3170,8 +3174,8 @@ struct msm_camera_device_platform_data msm_camera_device_data_rear = {
 	.ioext.csiirq = INT_CSI_IRQ_1,
 	.ioclk.mclk_clk_rate = 24000000,
 	.ioclk.vfe_clk_rate  = 192000000,
-	.ioext.appphy = MSM_CLK_CTL_PHYS,
-	.ioext.appsz  = MSM_CLK_CTL_SIZE,
+	.ioext.appphy = MSM7XXX_CLK_CTL_PHYS,
+	.ioext.appsz  = MSM7XXX_CLK_CTL_SIZE,
 };
 
 struct msm_camera_device_platform_data msm_camera_device_data_front = {
@@ -3182,8 +3186,8 @@ struct msm_camera_device_platform_data msm_camera_device_data_front = {
 	.ioext.csiirq = INT_CSI_IRQ_0,
 	.ioclk.mclk_clk_rate = 24000000,
 	.ioclk.vfe_clk_rate  = 192000000,
-	.ioext.appphy = MSM_CLK_CTL_PHYS,
-	.ioext.appsz  = MSM_CLK_CTL_SIZE,
+	.ioext.appphy = MSM7XXX_CLK_CTL_PHYS,
+	.ioext.appsz  = MSM7XXX_CLK_CTL_SIZE,
 };
 
 #ifdef CONFIG_S5K4E1
@@ -3530,7 +3534,7 @@ static struct platform_device *rumi_sim_devices[] __initdata = {
 	&msm_gsbi1_qup_i2c_device
 };
 
-static struct platform_device *surf_ffa_devices[] __initdata = {
+static struct platform_device *msm7627a_surf_ffa_devices[] __initdata = {
 	&msm_device_dmov,
 	&msm_device_smd,
 	&msm_device_uart1,
@@ -4145,13 +4149,11 @@ static struct gpio_event_matrix_info kp_matrix_info = {
 	.keymap		= keymap,
 	.output_gpios	= kp_col_gpios,
 	.input_gpios	= kp_row_gpios,
-	.wakeup_gpios	= kp_wakeup_gpios,
-	.nwakeups	= ARRAY_SIZE(kp_wakeup_gpios),
 	.noutputs	= ARRAY_SIZE(kp_col_gpios),
 	.ninputs	= ARRAY_SIZE(kp_row_gpios),
-	.settle_time.tv_nsec = 40 * NSEC_PER_USEC,
-	.poll_time.tv_nsec = 20 * NSEC_PER_MSEC,
-	.debounce_delay.tv_nsec = 20 * NSEC_PER_MSEC,
+	.settle_time.tv64 = 40 * NSEC_PER_USEC,
+	.poll_time.tv64 = 20 * NSEC_PER_MSEC,
+	.debounce_delay.tv64 = 20 * NSEC_PER_MSEC,
 	.flags		= GPIOKPF_LEVEL_TRIGGERED_IRQ | GPIOKPF_DRIVE_INACTIVE |
 			  GPIOKPF_PRINT_UNMAPPED_KEYS | GPIOKPF_DEBOUNCE,
 };
@@ -4204,6 +4206,44 @@ static void __init msm7627a_rumi3_init(void)
 
 #define LED_GPIO_PDM		96
 #define UART1DM_RX_GPIO		45
+
+static void __init msm7x27a_add_footswitch_devices(void)
+{
+	platform_add_devices(msm_footswitch_devices,
+			msm_num_footswitch_devices);
+}
+
+static void __init msm7x27a_add_platform_devices(void)
+{
+	platform_add_devices(msm7627a_surf_ffa_devices,
+		ARRAY_SIZE(msm7627a_surf_ffa_devices));
+}
+
+static void __init msm7x27a_uartdm_config(void)
+{
+	msm7x27a_cfg_uart2dm_serial();
+	msm_uart_dm1_pdata.wakeup_irq = gpio_to_irq(UART1DM_RX_GPIO);
+	msm_device_uart_dm1.dev.platform_data = &msm_uart_dm1_pdata;
+}
+
+static void __init msm7x27a_otg_gadget(void)
+{
+	msm_otg_pdata.swfi_latency =
+	msm7x27a_pm_data[
+	MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT].latency;
+	msm_device_otg.dev.platform_data = &msm_otg_pdata;
+	msm_device_gadget_peripheral.dev.platform_data =
+		&msm_gadget_pdata;
+}
+
+static void __init msm7x27a_pm_init(void)
+{
+	msm_pm_set_platform_data(msm7x27a_pm_data,
+			ARRAY_SIZE(msm7x27a_pm_data));
+	BUG_ON(msm_pm_boot_init(&msm_pm_boot_pdata));
+
+	msm_pm_register_irqs();
+}
 
 static int __init msm7x27a_init_ar6000pm(void)
 {
@@ -4284,31 +4324,19 @@ static void __init msm7x2x_init(void)
 	msm_device_i2c_init();
 	msm7x27a_init_ebi2();
 
-#ifdef CONFIG_SERIAL_MSM_HS
-	msm_uart_dm1_pdata.wakeup_irq = gpio_to_irq(UART1DM_RX_GPIO);
-	msm_device_uart_dm1.dev.platform_data = &msm_uart_dm1_pdata;
-#endif
-
-#ifdef CONFIG_USB_MSM_OTG_72K
-	msm_otg_pdata.swfi_latency =
-		msm7x27a_pm_data
-		[MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT].latency;
-	msm_device_otg.dev.platform_data = &msm_otg_pdata;
-#endif
-	msm_device_gadget_peripheral.dev.platform_data =
-		&msm_gadget_pdata;
 	msm7x27a_cfg_smsc911x();
 #ifdef CONFIG_SAMSUNG_JACK
-		sec_jack_gpio_init();
+	sec_jack_gpio_init();
 #endif
-	platform_add_devices(msm_footswitch_devices,
-			msm_num_footswitch_devices);
-	platform_add_devices(surf_ffa_devices,
-			ARRAY_SIZE(surf_ffa_devices));
-		if (!kernel_uart_flag)
-		{
-			platform_device_register(&msm_device_uart3);
-		}
+	msm7x27a_otg_gadget();
+
+	if (!kernel_uart_flag)
+	{
+		platform_device_register(&msm_device_uart3);
+	}
+
+	msm7x27a_add_footswitch_devices();
+	msm7x27a_add_platform_devices();
 
 	/* Ensure ar6000pm device is registered before MMC/SDC */
 	msm7x27a_init_ar6000pm();
@@ -4316,14 +4344,8 @@ static void __init msm7x2x_init(void)
 
 	lcdc_trebon_gpio_init();
 	msm_fb_add_devices();
-
-
-#ifdef CONFIG_USB_EHCI_MSM_72K
 	msm7x2x_init_host();
-#endif
-
-	msm_pm_set_platform_data(msm7x27a_pm_data,
-				ARRAY_SIZE(msm7x27a_pm_data));
+	msm7x27a_pm_init();
 
 	BUG_ON(msm_pm_boot_init(&msm_pm_boot_pdata));
 
@@ -4385,7 +4407,7 @@ static void __init msm7x2x_init_early(void)
 }
 
 MACHINE_START(MSM7X27A_FFA, "QCT MSM7x27a FFA")
-	.boot_params	= PHYS_OFFSET + 0x100,
+	.atag_offset    = 0x100,
 	.map_io		= msm_common_io_init,
 	.reserve	= msm7x27a_reserve,
 	.init_irq	= msm_init_irq,

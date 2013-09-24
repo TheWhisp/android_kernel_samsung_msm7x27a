@@ -26,7 +26,7 @@
 #include <mach/gpio.h>
 #include <linux/regulator/consumer.h>
 #include <linux/delay.h>
-
+#include <linux/module.h>
 
 struct clk *android_vib_clk; /* core_clk */
 
