@@ -58,7 +58,7 @@
 #include <mach/rpc_server_handset.h>
 #include <mach/socinfo.h>
 #include <linux/fsaxxxx_usbsw.h>
-#include "proc_comm.h"
+#include <mach/proc_comm.h>
 #include "pm-boot.h"
 #ifdef CONFIG_PROXIMITY_SENSOR
 #include <linux/gp2a.h>
@@ -2400,6 +2400,7 @@ static struct msm_serial_hs_platform_data msm_uart_dm1_pdata = {
 	.rx_to_inject		= 0xFD,
 };
 #endif
+
 static struct msm_pm_platform_data msm7x27a_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 	[MSM_PM_SLEEP_MODE_POWER_COLLAPSE] = {
 					.idle_supported = 1,
@@ -4370,8 +4371,6 @@ static void __init msm7x2x_init(void)
        /*7x25a kgsl initializations*/
        msm7x25a_kgsl_3d0_init();
 
-	   //ar6000_prealloc_init();
-
 #if defined(CONFIG_PN544)
 	config_gpio_table_for_nfc();
 	platform_device_register(&pn544_i2c_gpio_device);
@@ -4385,26 +4384,6 @@ static void __init msm7x2x_init_early(void)
 	msm_msm7x2x_allocate_memory_regions();
 }
 
-MACHINE_START(MSM7X27A_RUMI3, "QCT MSM7x27a RUMI3")
-	.boot_params	= PHYS_OFFSET + 0x100,
-	.map_io		= msm_common_io_init,
-	.reserve	= msm7x27a_reserve,
-	.init_irq	= msm_init_irq,
-	.init_machine	= msm7627a_rumi3_init,
-	.timer		= &msm_timer,
-	.init_early     = msm7x2x_init_early,
-	.handle_irq	= vic_handle_irq,
-MACHINE_END
-MACHINE_START(MSM7X27A_SURF, "QCT MSM7x27a SURF")
-	.boot_params	= PHYS_OFFSET + 0x100,
-	.map_io		= msm_common_io_init,
-	.reserve	= msm7x27a_reserve,
-	.init_irq	= msm_init_irq,
-	.init_machine	= msm7x2x_init,
-	.timer		= &msm_timer,
-	.init_early     = msm7x2x_init_early,
-	.handle_irq	= vic_handle_irq,
-MACHINE_END
 MACHINE_START(MSM7X27A_FFA, "QCT MSM7x27a FFA")
 	.boot_params	= PHYS_OFFSET + 0x100,
 	.map_io		= msm_common_io_init,
@@ -4412,26 +4391,6 @@ MACHINE_START(MSM7X27A_FFA, "QCT MSM7x27a FFA")
 	.init_irq	= msm_init_irq,
 	.init_machine	= msm7x2x_init,
 	.timer		= &msm_timer,
-	.init_early     = msm7x2x_init_early,
-	.handle_irq	= vic_handle_irq,
-MACHINE_END
-MACHINE_START(MSM7625A_SURF, "QCT MSM7625a SURF")
-	.boot_params    = PHYS_OFFSET + 0x100,
-	.map_io         = msm_common_io_init,
-	.reserve        = msm7x27a_reserve,
-	.init_irq       = msm_init_irq,
-	.init_machine   = msm7x2x_init,
-	.timer          = &msm_timer,
-	.init_early     = msm7x2x_init_early,
-	.handle_irq	= vic_handle_irq,
-MACHINE_END
-MACHINE_START(MSM7625A_FFA, "QCT MSM7625a FFA")
-	.boot_params    = PHYS_OFFSET + 0x100,
-	.map_io         = msm_common_io_init,
-	.reserve        = msm7x27a_reserve,
-	.init_irq       = msm_init_irq,
-	.init_machine   = msm7x2x_init,
-	.timer          = &msm_timer,
 	.init_early     = msm7x2x_init_early,
 	.handle_irq	= vic_handle_irq,
 MACHINE_END
