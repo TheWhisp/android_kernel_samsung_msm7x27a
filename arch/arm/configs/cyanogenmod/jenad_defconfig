@@ -1,6 +1,6 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 3.0.93 Kernel Configuration
+# Linux/arm 3.0.96 Kernel Configuration
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -1100,7 +1100,7 @@ CONFIG_FSAXXXX_USBSW=y
 # CONFIG_QFP_FUSE is not set
 CONFIG_SEC_MISC=y
 CONFIG_SEC_DEBUG=y
-CONFIG_PN544=y
+# CONFIG_PN544 is not set
 # CONFIG_C2PORT is not set
 
 #
