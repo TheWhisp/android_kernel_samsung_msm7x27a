@@ -2296,8 +2296,7 @@ out:
 
 #define GPIO_SDC1_HW_DET 94
 
-#if defined(CONFIG_MMC_MSM_SDC1_SUPPORT) \
-	&& defined(CONFIG_MMC_MSM_CARD_HW_DETECTION)
+#if defined(CONFIG_MMC_MSM_SDC1_SUPPORT)
 static unsigned int msm7x2xa_sdcc_slot_status(struct device *dev)
 {
 	int status;
@@ -2335,11 +2334,9 @@ static struct mmc_platform_data sdc1_plat_data = {
 	.msmsdcc_fmin	= 144000,
 	.msmsdcc_fmid	= 24576000,
 	.msmsdcc_fmax	= 49152000,
-#ifdef CONFIG_MMC_MSM_CARD_HW_DETECTION
 	.status      = msm7x2xa_sdcc_slot_status,
 	.status_irq  = MSM_GPIO_TO_INT(GPIO_SDC1_HW_DET),
 	.irq_flags   = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
-#endif
 };
 #endif
 
@@ -2440,25 +2437,6 @@ static struct msm_pm_platform_data msm7x27a_pm_data[MSM_PM_SLEEP_MODE_NR] = {
 	},
 };
 
-u32 msm7627a_power_collapse_latency(enum msm_pm_sleep_mode mode)
-{
-	switch (mode) {
-	case MSM_PM_SLEEP_MODE_POWER_COLLAPSE:
-		return msm7x27a_pm_data
-		[MSM_PM_SLEEP_MODE_POWER_COLLAPSE].latency;
-	case MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN:
-		return msm7x27a_pm_data
-		[MSM_PM_SLEEP_MODE_POWER_COLLAPSE_NO_XO_SHUTDOWN].latency;
-	case MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT:
-		return msm7x27a_pm_data
-		[MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT].latency;
-	case MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT:
-		return msm7x27a_pm_data
-		[MSM_PM_SLEEP_MODE_WAIT_FOR_INTERRUPT].latency;
-	default:
-		return 0;
-	}
-}
 
 static struct msm_pm_boot_platform_data msm_pm_boot_pdata __initdata = {
 	.mode = MSM_PM_BOOT_CONFIG_RESET_VECTOR_PHYS,
@@ -3095,19 +3073,19 @@ static void msm_camera_vreg_config(int vreg_en)
 
 static int config_gpio_table(uint32_t *table, int len)
 {
-	int rc = 0, i = 0;
+        int rc = 0, i = 0;
 
-	for (i = 0; i < len; i++) {
-		rc = gpio_tlmm_config(table[i], GPIO_CFG_ENABLE);
-		if (rc) {
-			pr_err("%s not able to get gpio\n", __func__);
-			for (i--; i >= 0; i--)
-				gpio_tlmm_config(camera_off_gpio_table[i],
-							GPIO_CFG_ENABLE);
-			break;
-		}
-	}
-	return rc;
+        for (i = 0; i < len; i++) {
+                rc = gpio_tlmm_config(table[i], GPIO_CFG_ENABLE);
+                if (rc) {
+                        pr_err("%s not able to get gpio\n", __func__);
+                        for (i--; i >= 0; i--)
+                                gpio_tlmm_config(camera_off_gpio_table[i],
+                                                        GPIO_CFG_ENABLE);
+                        break;
+                }
+        }
+        return rc;
 }
 
 static struct msm_camera_sensor_info msm_camera_sensor_s5k4e1_data;
@@ -3595,6 +3573,7 @@ static struct platform_device *msm7627a_surf_ffa_devices[] __initdata = {
 	&fsa880_i2c_gpio_device,
 	&msm_device_pmic_leds,
 	&msm_vibrator_device,
+	&msm_adsp_device,
 #ifdef CONFIG_SAMSUNG_JACK
 	&sec_device_jack,
 #endif
