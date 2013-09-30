@@ -277,7 +277,6 @@ out:
 struct clk_ops clk_ops_local_pll = {
 	.enable = local_pll_clk_enable,
 	.disable = local_pll_clk_disable,
-	.auto_off = local_pll_clk_disable,
 	.get_parent = local_pll_clk_get_parent,
 };
 
