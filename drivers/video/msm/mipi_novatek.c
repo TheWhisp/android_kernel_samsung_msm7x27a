@@ -435,22 +435,29 @@ struct dcs_cmd_req cmdreq;
 
 static void mipi_novatek_set_backlight(struct msm_fb_data_type *mfd)
 {
+	struct mipi_panel_info *mipi;
+	static int bl_level_old;
+
+	mipi  = &mfd->panel_info.mipi;
+	if (bl_level_old == mfd->bl_level)
+		return;
 
 	if ((mipi_novatek_pdata->enable_wled_bl_ctrl)
 	    && (wled_trigger_initialized)) {
 		led_trigger_event(bkl_led_trigger, mfd->bl_level);
 		return;
 	}
+	/* mdp4_dsi_cmd_busy_wait: will turn on dsi clock also */
+	mdp4_dsi_cmd_dma_busy_wait(mfd);
+	mdp4_dsi_blt_dmap_busy_wait(mfd);
+	mipi_dsi_mdp_busy_wait(mfd);
 
-	led_pwm1[1] = (unsigned char)mfd->bl_level;
-
-	cmdreq.cmds = &backlight_cmd;
-	cmdreq.cmds_cnt = 1;
-	cmdreq.flags = 0;
-	cmdreq.rlen = 0;
-	cmdreq.cb = NULL;
-
-	mipi_dsi_cmdlist_put(&cmdreq);
+	led_pwm1[1] = (unsigned char)(mfd->bl_level);
+	mipi_dsi_cmds_tx(mfd, &novatek_tx_buf, novatek_cmd_backlight_cmds,
+			ARRAY_SIZE(novatek_cmd_backlight_cmds));
+	bl_level_old = mfd->bl_level;
+	mutex_unlock(&mfd->dma->ov_mutex);
+	return;
 }
 
 static int mipi_dsi_3d_barrier_sysfs_register(struct device *dev);
