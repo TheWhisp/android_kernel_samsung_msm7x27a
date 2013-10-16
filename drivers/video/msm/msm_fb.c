@@ -62,6 +62,7 @@ static unsigned char *fbram;
 static unsigned char *fbram_phys;
 static int fbram_size;
 static boolean bf_supported;
+static bool align_buffer = false;
 /* Set backlight on resume after 50 ms after first
  * pan display on the panel. This is to avoid panel specific
  * transients during resume.
@@ -898,6 +899,11 @@ int calc_fb_offset(struct msm_fb_data_type *mfd, struct fb_info *fbi, int bpp)
 {
 	struct msm_panel_info *panel_info = &mfd->panel_info;
 	int remainder, yres, offset;
+
+	if (!align_buffer)
+	{
+		return fbi->var.xoffset * bpp + fbi->var.yoffset * fbi->fix.line_length;
+	}
 
 	if (panel_info->mode2_yres != 0) {
 		yres = panel_info->mode2_yres;
@@ -3887,5 +3893,7 @@ int msm_fb_v4l2_update(void *par,
 #endif
 }
 EXPORT_SYMBOL(msm_fb_v4l2_update);
+
+module_param(align_buffer, bool, 0644);
 
 module_init(msm_fb_init);
