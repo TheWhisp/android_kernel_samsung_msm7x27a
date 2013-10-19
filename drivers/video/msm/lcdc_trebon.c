@@ -38,7 +38,7 @@
 #define DPRINT(x...)
 #endif
 
-/* #define USE_STANDBY_MODE */
+#define USE_STANDBY_MODE
 static int enabled = 0;
 
 static int spi_cs;
@@ -515,8 +515,7 @@ static void trebon_disp_powerup(void)
 
 	if (!disp_state.disp_powered_up && !disp_state.display_on) {
 
-		trebon_vreg_config(VREG_ENABLE);
-/*		msleep(10);*/
+		trebon_regulator_config(REGULATOR_ENABLE);
 		usleep(10000);
 		trebon_disp_reset(0);
 
@@ -533,8 +532,8 @@ static void trebon_disp_powerdown(void)
 					, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
 	gpio_set_value(lcd_reset, 0);
 
-	trebon_vreg_config(VREG_DISABLE);
-	usleep(1000);
+	trebon_regulator_config(REGULATOR_DISABLE);
+	msleep(1);
 
 	disp_state.disp_powered_up = FALSE;
 }
