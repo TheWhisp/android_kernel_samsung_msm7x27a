@@ -419,11 +419,6 @@ config MSM_ADM3
 
 menu "MSM Board Selection"
 
-config MACH_JENA
-        bool "MSM7627A jena platform"
-		depends on ARCH_MSM7X27A
-        default n
-
 config MACH_HALIBUT
 	depends on ARCH_MSM7X01A
 	depends on MSM_STACKED_MEMORY
@@ -917,17 +912,6 @@ config MACH_FSM9XXX_SURF
 	  FFA board.
 
 endmenu
-
-config MACH_JENA_HWREV
-        hex "MSM7x27A JENA HWREV"
-		depends on MACH_JENA
-		default "0x0"
-
-config BQ27425_FUEL_GAUGE
-	bool "CONFIG_BQ27425_FUEL_GAUGE"
-	default n
-	help
-	  Support for ti fuelgague
 
 config MSM_STACKED_MEMORY
 	bool "Stacked Memory"
