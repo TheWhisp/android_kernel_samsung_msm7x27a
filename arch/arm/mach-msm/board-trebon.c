@@ -3146,8 +3146,6 @@ static uint32_t camera_on_gpio_table[] = {
 #ifdef CONFIG_MSM_CAMERA_FLASH
 static struct msm_camera_sensor_flash_src msm_flash_src = {
 	.flash_sr_type = MSM_CAMERA_FLASH_SRC_CURRENT_DRIVER,
-	._fsrc.current_driver_src.led1 = GPIO_CAM_GP_LED_EN1,
-	._fsrc.current_driver_src.led2 = GPIO_CAM_GP_LED_EN2,
 };
 #endif
 
@@ -4336,8 +4334,6 @@ static void __init msm7x2x_init(void)
        msm7x25a_kgsl_3d0_init();
 
 	   //ar6000_prealloc_init();
-
-#endif
 }
 
 static void __init msm7x2x_init_early(void)
