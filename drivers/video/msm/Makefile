@@ -159,6 +159,7 @@ obj-$(CONFIG_FB_MSM_EXT_INTERFACE_COMMON) += external_common.o
 ##################################
 # Lcd driver for Samsung Project #
 ##################################
+obj-$(CONFIG_FB_MSM_LCDC_TREBON_HVGA) += lcdc_trebon.o lcdc_auo_hvga.o lcdc_backlight_ic.o
 obj-$(CONFIG_FB_MSM_LCDC_JENA_HVGA) += lcdc_jena.o lcdc_backlight_ic.o
 
 
