@@ -231,7 +231,7 @@ static struct proccomm_regulator_info msm7x27a_pcom_vreg_info[] = {
 	 * S = supply voltage (uV)
 	 * T = type of regulator (smps, pldo, nldo)
 	 *            name   id  supp  min uV    max uV  R   P  A  B  V  S  T*/
-#ifdef CONFIG_MACH_JENA
+#if defined(CONFIG_MACH_JENA) || (CONFIG_MACH_TREBON)
 	PCOM_VREG_SMP(smps1, 3, NULL, 1100000, 1100000, 0, -1, 0, 1, 0, 0, s),
 	PCOM_VREG_SMP(smps2, 4, NULL, 1100000, 1100000, 0, -1, 0, 0, 0, 0, s),
 	PCOM_VREG_SMP(smps3, 2, NULL, 1800000, 1800000, 0, -1, 1, 1, 0, 0, s),
