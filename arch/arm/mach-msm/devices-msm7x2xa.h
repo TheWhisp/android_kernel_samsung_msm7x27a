@@ -15,6 +15,10 @@
 #define MSM_GSBI0_QUP_I2C_BUS_ID	0
 #define MSM_GSBI1_QUP_I2C_BUS_ID	1
 
+#ifdef CONFIG_ANDROID_RAM_CONSOLE
+#define MSM_RAM_CONSOLE_SIZE 256*1024
+#endif
+
 void __init msm_common_io_init(void);
 void __init msm_init_pmic_vibrator(void);
 void __init msm7x25a_kgsl_3d0_init(void);
@@ -23,5 +27,10 @@ extern struct platform_device msm7x27a_device_vfe;
 extern struct platform_device msm7x27a_device_csic0;
 extern struct platform_device msm7x27a_device_csic1;
 extern struct platform_device msm7x27a_device_clkctl;
-extern int ar6000_prealloc_init(void);
+
+#ifdef CONFIG_ANDROID_RAM_CONSOLE
+extern struct platform_device ram_console_device;
+extern struct resource ram_console_resources[];
+#endif
+
 #endif

@@ -776,6 +776,23 @@ struct platform_device led_pdev = {
 	},
 };
 
+#ifdef CONFIG_ANDROID_RAM_CONSOLE
+struct resource ram_console_resources[] = {
+	{
+		.start  = 0,
+		.end    = 0,
+		.flags  = IORESOURCE_MEM,
+	}
+};
+
+struct platform_device ram_console_device = {
+	.name    = "ram_console",
+	.id    = -1,
+	.num_resources  = ARRAY_SIZE(ram_console_resources),
+	.resource       = ram_console_resources,
+};
+#endif
+
 extern unsigned int kernel_uart_flag;
 
 struct platform_device asoc_msm_pcm = {
