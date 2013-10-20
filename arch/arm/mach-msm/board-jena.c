@@ -4217,8 +4217,6 @@ static void __init msm7x27a_pm_init(void)
 {
 	msm_pm_set_platform_data(msm7x27a_pm_data,
 			ARRAY_SIZE(msm7x27a_pm_data));
-	BUG_ON(msm_pm_boot_init(&msm_pm_boot_pdata));
-
 	msm_pm_register_irqs();
 }
 
