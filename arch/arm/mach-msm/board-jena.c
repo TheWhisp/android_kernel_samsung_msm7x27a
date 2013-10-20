@@ -70,6 +70,7 @@
 
 #define _CONFIG_MACH_JENA // Temporary flag
 #define _CONFIG_MACH_TREBON // Temporary flag
+#define ADSP_RPC_PROG           0x3000000a
 
 #define PMEM_KERNEL_EBI1_SIZE	0x3A000
 #define MSM_PMEM_AUDIO_SIZE	0x1F4000 //0x5B000
@@ -4285,12 +4286,36 @@ static void msm7x27a_enable_regulators(void)
    return;
 }
 
+static void msm_adsp_add_pdev(void)
+{
+	int rc = 0;
+	struct rpc_board_dev *rpc_adsp_pdev;
+
+	rpc_adsp_pdev = kzalloc(sizeof(struct rpc_board_dev), GFP_KERNEL);
+	if (rpc_adsp_pdev == NULL) {
+		pr_err("%s: Memory Allocation failure\n", __func__);
+		return;
+	}
+	rpc_adsp_pdev->prog = ADSP_RPC_PROG;
+
+	if (cpu_is_msm8625())
+		rpc_adsp_pdev->pdev = msm8625_device_adsp;
+	else
+		rpc_adsp_pdev->pdev = msm_adsp_device;
+	rc = msm_rpc_add_board_dev(rpc_adsp_pdev, 1);
+	if (rc < 0) {
+		pr_err("%s: return val: %d\n",	__func__, rc);
+		kfree(rpc_adsp_pdev);
+	}
+}
+
 static void __init msm7x2x_init(void)
 {
     msm7x2x_misc_init();
 
 	/* Initialize the regulators */
 	msm7x27a_init_regulators();
+	msm_adsp_add_pdev();
 
 	/* Enable the Required regulators */
     msm7x27a_enable_regulators();
@@ -4321,8 +4346,6 @@ static void __init msm7x2x_init(void)
 	msm_fb_add_devices();
 	msm7x2x_init_host();
 	msm7x27a_pm_init();
-
-	BUG_ON(msm_pm_boot_init(&msm_pm_boot_pdata));
 
 #if defined(CONFIG_I2C) && defined(CONFIG_GPIO_SX150X)
 	register_i2c_devices();
