@@ -391,7 +391,6 @@ EXPORT_SYMBOL(kernel_console_diable);
 #endif
 unsigned int kernel_uart_flag = 0;
 unsigned int board_hw_revision;
-EXPORT_SYMBOL(board_hw_revision);
 unsigned int in_recovery_mode = 0;
 unsigned int uart_mode = 0;
 EXPORT_SYMBOL(uart_mode);
