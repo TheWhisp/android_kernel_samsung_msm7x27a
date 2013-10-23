@@ -462,7 +462,8 @@ CONFIG_BT_MSM_PINTEST=y
 # CONFIG_MSM_AUDIO_QDSP6V2 is not set
 # CONFIG_MSM_RPC_VIBRATOR is not set
 # CONFIG_MSM_SPM_V1 is not set
-# CONFIG_MSM_SPM_V2 is not set
+CONFIG_MSM_SPM_V2=y
+# CONFIG_MSM_L2_SPM is not set
 # CONFIG_MSM_OCMEM is not set
 # CONFIG_MSM_RTB is not set
 # CONFIG_MSM_EBI_ERP is not set
