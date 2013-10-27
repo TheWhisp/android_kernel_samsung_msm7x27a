@@ -1452,41 +1452,24 @@ static int msm_fb_register(struct msm_fb_data_type *mfd)
 
 #ifdef CONFIG_FB_MSM_LOGO
 	/*draw_rgb888_screen();*/
-#if defined(CONFIG_MACH_TREBON)	
-#if defined(CONFIG_TARGET_LOCALE_EUR_VODA)
-	if (!load_565rle_image("GT-S7509.rle", bf_supported))
-		;
-#else
+#if defined(CONFIG_MACH_TREBON)
 	if (charging_boot != 1)
-		if (!load_565rle_image("GT-S7500.rle", bf_supported))	/* Flip buffer */
-			;
-#endif
-#elif defined(CONFIG_MACH_GEIM)	
-	if (charging_boot != 1)
-		if (!load_565rle_image("SGH-I827.rle", bf_supported))	/* Flip buffer */
-			;
+		if (!load_565rle_image("GT-S7500.rle", bf_supported));
 #elif defined(CONFIG_MACH_JENA)
 	if (charging_boot != 1)
-		if (!load_565rle_image("GT-S6500.rle", bf_supported))	/* Flip buffer */
-			;
-#else
-	if (charging_boot != 1)
-		if (!load_565rle_image("GT-S7500.rle", bf_supported))	/* Flip buffer */
-			;
+		if (!load_565rle_image("GT-S6500.rle", bf_supported));
 #endif
-#if !defined(CONFIG_TARGET_LOCALE_EUR_VODA)
-	/*
-	*Check the LPM Mode
-	*If the value of charging_boot is '1', that is LPM Mode.
+   /*
+	* Check the LPM Mode
+	* If the value of charging_boot is '1', that is LPM Mode.
 	*/
 	if (charging_boot == 1)
 		draw_rgb888_black_screen();
 #endif
-#endif
 	ret = 0;
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
-	if (mfd->panel_info.type != DTV_PANEL) {
+	if (mfd->panel_info.type != DTV_PANEL && !charging_boot) {
 		mfd->early_suspend.suspend = msmfb_early_suspend;
 		mfd->early_suspend.resume = msmfb_early_resume;
 		mfd->early_suspend.level = EARLY_SUSPEND_LEVEL_DISABLE_FB - 2;

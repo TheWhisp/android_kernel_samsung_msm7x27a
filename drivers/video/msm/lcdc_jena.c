@@ -623,14 +623,16 @@ static void trebon_disp_on(void)
 		DPRINT("HW rev is %d, apply %d's init sequence\n" ,
 			board_hw_revision, board_hw_revision);
 
-	if (lcd_device_id == LCD_DEVICE_SMD)
-		spi_cmds_tx(display_on_SMD_cmds,
-		ARRAY_SIZE(display_on_SMD_cmds));
-	else
-		spi_cmds_tx(display_on_cmds, ARRAY_SIZE(display_on_cmds));
-		msleep(30);
-		DPRINT("display on cmd : completed\n");
-		disp_state.display_on = TRUE;
+		if (lcd_device_id == LCD_DEVICE_SMD) {
+			spi_cmds_tx(display_on_SMD_cmds,
+			ARRAY_SIZE(display_on_SMD_cmds));
+			DPRINT("display on cmd : completed\nLCD_DEVICE is SMD");
+		} else {
+			spi_cmds_tx(display_on_cmds, ARRAY_SIZE(display_on_cmds));
+			msleep(30);
+			DPRINT("display on cmd : completed\nLCD_DEVICE is not SMD");
+			disp_state.display_on = TRUE;
+		}
 	}
 }
 
