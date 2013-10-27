@@ -48,6 +48,40 @@ MODULE_PARM_DESC(msm_camera_v4l2_nr, "videoX start number, -1 is autodetect");
 static long msm_server_send_v4l2_evt(void *evt);
 static void msm_cam_server_subdev_notify(struct v4l2_subdev *sd,
 	unsigned int notification, void *arg);
+int msm_camera_antibanding =  CAMERA_ANTIBANDING_50HZ; /*default*/
+
+int msm_camera_antibanding_get (void) {
+	return msm_camera_antibanding;
+}
+
+ssize_t msm_camera_antibanding_show (struct device *dev, struct device_attribute *attr, char *buf) {
+	int count;
+
+	count = sprintf(buf, "%d", msm_camera_antibanding);
+	pr_info("%s : antibanding is %d \n", __func__, msm_camera_antibanding);
+
+	return count;
+}
+
+ssize_t msm_camera_antibanding_store (struct device *dev, struct device_attribute *attr, const char *buf, size_t size) {
+	int tmp = 0;
+
+	sscanf(buf, "%d", &tmp);
+	if ((CAMERA_ANTIBANDING_50HZ == tmp) || (CAMERA_ANTIBANDING_60HZ == tmp)) {
+		msm_camera_antibanding = tmp;
+		pr_info("%s : antibanding is %d\n",__func__, msm_camera_antibanding);
+	}
+
+	return size;
+}
+
+static struct device_attribute msm_camera_antibanding_attr = {
+	.attr = {
+		.name = "anti-banding",
+		.mode = (S_IRUSR|S_IRGRP | S_IWUSR|S_IWGRP)},
+	.show = msm_camera_antibanding_show,
+	.store = msm_camera_antibanding_store
+};
 
 static void msm_queue_init(struct msm_device_queue *queue, const char *name)
 {
@@ -3500,6 +3534,76 @@ failure:
 	return rc;
 }
 EXPORT_SYMBOL(msm_sensor_register);
+
+static ssize_t rear_camera_type_show(struct device *dev,
+    struct device_attribute *attr, char *buf,
+    size_t count)
+{
+#if defined(CONFIG_S5K4ECGX)
+	char cam_type[] = "SLSI_S5K4ECGX\n";
+#elif defined(CONFIG_S5K5CCGX)
+	char cam_type[] = "SLSI_S5K5CCGX\n";
+#elif defined(CONFIG_SR300PC20)
+	char cam_type[] = "SF_SR300PC20\n";
+#else
+	char cam_type[] = "SOC_N\n";
+#endif
+
+	return snprintf(buf, sizeof(cam_type), "%s", cam_type);
+}
+
+static ssize_t front_camera_type_show(struct device *dev,
+    struct device_attribute *attr, char *buf,
+    size_t count)
+{
+#if defined(CONFIG_SR030PC50)
+	char cam_type[] = "SF_SR030PC50\n";
+#elif defined(CONFIG_SR200PC20)
+	char cam_type[] = "SF_SR200PC20";
+#else
+	char cam_type[] = "SOC_N\n";
+#endif
+
+	return snprintf(buf, sizeof(cam_type), "%s", cam_type);
+}
+
+static DEVICE_ATTR(rear_camtype, S_IRUGO, rear_camera_type_show, NULL);
+static DEVICE_ATTR(front_camtype, S_IRUGO, front_camera_type_show, NULL);
+
+static ssize_t rear_camera_firmware_show(struct device *dev,
+    struct device_attribute *attr, char *buf,
+    size_t count)
+{
+#if defined(CONFIG_S5K4ECGX)
+	char cam_fw[] = "SLSI_S5K4ECGX\n";
+#elif defined(CONFIG_S5K5CCGX)
+	char cam_fw[] = "SLSI_S5K5CCGX\n";
+#elif defined(CONFIG_SR300PC20)
+	char cam_fw[] = "SF_SR300PC20\n";
+#else
+	char cam_fw[] = "N\n";
+#endif
+
+	return snprintf(buf, sizeof(cam_fw), "%s", cam_fw);
+}
+
+static ssize_t front_camera_firmware_show(struct device *dev,
+    struct device_attribute *attr, char *buf,
+    size_t count)
+{
+#if defined(CONFIG_SR030PC50)
+	char cam_fw[] = "SF_SR030PC50\n";
+#elif defined(CONFIG_SR200PC20)
+	char cam_fw[] = "SF_SR200PC20\n";
+#else
+	char cam_fw[] = "N\n";
+#endif
+
+	return snprintf(buf, sizeof(cam_fw), "%s", cam_fw);
+}
+
+static DEVICE_ATTR(rear_camfw, 0664, rear_camera_firmware_show, NULL);
+static DEVICE_ATTR(front_camfw, 0664, front_camera_firmware_show, NULL);
 
 static int __devinit msm_camera_probe(struct platform_device *pdev)
 {

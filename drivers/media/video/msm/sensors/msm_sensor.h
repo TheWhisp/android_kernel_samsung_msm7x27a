@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2011-2012, Code Aurora Forum. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -64,6 +64,7 @@ struct msm_sensor_output_reg_addr_t {
 struct msm_sensor_id_info_t {
 	uint16_t sensor_id_reg_addr;
 	uint16_t sensor_id;
+	uint16_t sensor_version;
 };
 
 struct msm_sensor_exp_gain_info_t {
@@ -104,6 +105,7 @@ struct msm_sensor_v4l2_ctrl_info_t {
 	int16_t min;
 	int16_t max;
 	int16_t step;
+	int16_t current_value;
 	struct msm_camera_i2c_enum_conf_array *enum_cfg_settings;
 	int (*s_v4l2_ctrl) (struct msm_sensor_ctrl_t *,
 		struct msm_sensor_v4l2_ctrl_info_t *, int);
@@ -112,6 +114,8 @@ struct msm_sensor_v4l2_ctrl_info_t {
 struct msm_sensor_fn_t {
 	void (*sensor_start_stream) (struct msm_sensor_ctrl_t *);
 	void (*sensor_stop_stream) (struct msm_sensor_ctrl_t *);
+	void (*sensor_preview_mode) (struct msm_sensor_ctrl_t *);
+	void (*sensor_capture_mode) (struct msm_sensor_ctrl_t *);
 	void (*sensor_group_hold_on) (struct msm_sensor_ctrl_t *);
 	void (*sensor_group_hold_off) (struct msm_sensor_ctrl_t *);
 
@@ -140,10 +144,9 @@ struct msm_sensor_fn_t {
 		(struct msm_sensor_ctrl_t *s_ctrl, uint16_t res);
 	int32_t (*sensor_get_csi_params)(struct msm_sensor_ctrl_t *,
 		struct csi_lane_params_t *);
-	int32_t (*sensor_pip_get_mode) (struct msm_sensor_ctrl_t *,
-		int32_t *);
-	int32_t (*sensor_pip_set_mode)(struct msm_sensor_ctrl_t *,
-		int32_t);
+#if defined(CONFIG_S5K4ECGX)
+	int (*sensor_get_flash_status)();
+#endif
 };
 
 struct msm_sensor_csi_info {
@@ -195,7 +198,10 @@ struct msm_sensor_ctrl_t {
 	struct regulator **reg_ptr;
 	struct clk *cam_clk;
 	long clk_rate;
-	enum msm_sensor_state sensor_state;
+
+	uint8_t is_HD_preview;
+	uint32_t need_configuration;
+	uint8_t is_initialized;
 };
 
 void msm_sensor_start_stream(struct msm_sensor_ctrl_t *s_ctrl);
@@ -263,6 +269,18 @@ long msm_sensor_subdev_ioctl(struct v4l2_subdev *sd,
 
 int32_t msm_sensor_get_csi_params(struct msm_sensor_ctrl_t *s_ctrl,
 		struct csi_lane_params_t *sensor_output_info);
+
+int32_t msm_sensor_set_preview_size
+	(struct msm_sensor_ctrl_t *s_ctrl, int index);
+
+int32_t msm_sensor_set_picture_size
+	(struct msm_sensor_ctrl_t *s_ctrl, int index);
+
+int32_t msm_sensor_enable_i2c_mux
+	(struct msm_camera_i2c_conf *i2c_conf);
+
+int32_t msm_sensor_disable_i2c_mux
+	(struct msm_camera_i2c_conf *i2c_conf);
 
 struct msm_sensor_ctrl_t *get_sctrl(struct v4l2_subdev *sd);
 
