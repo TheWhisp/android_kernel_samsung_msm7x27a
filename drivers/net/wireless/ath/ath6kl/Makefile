@@ -22,21 +22,44 @@
 # Author(s): ="Atheros"
 #------------------------------------------------------------------------------
 
-obj-$(CONFIG_ATH6KL) += ath6kl_core.o
-ath6kl_core-y += debug.o
-ath6kl_core-y += hif.o
-ath6kl_core-y += htc.o
-ath6kl_core-y += bmi.o
-ath6kl_core-y += cfg80211.o
-ath6kl_core-y += init.o
-ath6kl_core-y += main.o
-ath6kl_core-y += txrx.o
-ath6kl_core-y += wmi.o
-ath6kl_core-y += core.o
-ath6kl_core-$(CONFIG_NL80211_TESTMODE) += testmode.o
-
-obj-$(CONFIG_ATH6KL_SDIO) += ath6kl_sdio.o
+obj-$(CONFIG_ATH6KL_SDIO) := ath6kl_sdio.o
+ath6kl_sdio-y += debug.o
+ath6kl_sdio-y += debugfs_pri.o
+ath6kl_sdio-y += hif.o
+ath6kl_sdio-y += htc.o
+ath6kl_sdio-y += bmi.o
+ath6kl_sdio-y += cfg80211.o
+ath6kl_sdio-y += cfg80211_btcoex.o
+ath6kl_sdio-y += pm.o
+ath6kl_sdio-y += init.o
+ath6kl_sdio-y += main.o
+ath6kl_sdio-y += txrx.o
+ath6kl_sdio-y += wmi.o
+ath6kl_sdio-y += wmi_btcoex.o
 ath6kl_sdio-y += sdio.o
+ath6kl_sdio-y += platform.o
+ath6kl_sdio-y += softmac.o
+ath6kl_sdio-y += regd.o
+ath6kl_sdio-y += wmiconfig.o
+ath6kl_sdio-y += recovery.o
+ath6kl_sdio-$(CONFIG_NL80211_TESTMODE) += testmode.o
 
 obj-$(CONFIG_ATH6KL_USB) += ath6kl_usb.o
+ath6kl_usb-y += debug.o
+ath6kl_usb-y += hif.o
+ath6kl_usb-y += htc.o
+ath6kl_usb-y += bmi.o
+ath6kl_usb-y += cfg80211.o
+ath6kl_usb-y += cfg80211_btcoex.o
+ath6kl_usb-y += pm.o
+ath6kl_usb-y += init.o
+ath6kl_usb-y += main.o
+ath6kl_usb-y += txrx.o
+ath6kl_usb-y += wmi.o
+ath6kl_usb-y += wmi_btcoex.o
 ath6kl_usb-y += usb.o
+ath6kl_usb-y += wmiconfig.o
+ath6kl_usb-$(CONFIG_NL80211_TESTMODE) += testmode.o
+
+ccflags-y += -D__CHECK_ENDIAN__
+ccflags-y += -DSS_3RD_INTF

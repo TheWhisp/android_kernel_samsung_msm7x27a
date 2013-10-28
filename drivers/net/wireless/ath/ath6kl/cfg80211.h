@@ -22,12 +22,16 @@ enum ath6kl_cfg_suspend_mode {
 	ATH6KL_CFG_SUSPEND_DEEPSLEEP,
 	ATH6KL_CFG_SUSPEND_CUTPOWER,
 	ATH6KL_CFG_SUSPEND_WOW,
-	ATH6KL_CFG_SUSPEND_SCHED_SCAN,
 };
 
 struct net_device *ath6kl_interface_add(struct ath6kl *ar, char *name,
 					enum nl80211_iftype type,
 					u8 fw_vif_idx, u8 nw_type);
+int ath6kl_register_ieee80211_hw(struct ath6kl *ar);
+struct ath6kl *ath6kl_core_alloc(struct device *dev);
+void ath6kl_deinit_ieee80211_hw(struct ath6kl *ar);
+void ath6kl_cfg80211_ch_switch_notify(struct ath6kl_vif *vif, int freq,
+				      enum wmi_phy_mode mode);
 void ath6kl_cfg80211_scan_complete_event(struct ath6kl_vif *vif, bool aborted);
 
 void ath6kl_cfg80211_connect_event(struct ath6kl_vif *vif, u16 channel,
@@ -50,15 +54,16 @@ int ath6kl_cfg80211_suspend(struct ath6kl *ar,
 
 int ath6kl_cfg80211_resume(struct ath6kl *ar);
 
-void ath6kl_cfg80211_vif_cleanup(struct ath6kl_vif *vif);
-
+void ath6kl_cfg80211_start_all(struct ath6kl *ar);
 void ath6kl_cfg80211_stop(struct ath6kl_vif *vif);
 void ath6kl_cfg80211_stop_all(struct ath6kl *ar);
+bool ath6kl_cfg80211_ready(struct ath6kl_vif *vif);
 
-int ath6kl_cfg80211_init(struct ath6kl *ar);
-void ath6kl_cfg80211_cleanup(struct ath6kl *ar);
+/* TODO: remove this once ath6kl_vif_cleanup() is moved to cfg80211.c */
+void ath6kl_cfg80211_sta_bmiss_enhance(struct ath6kl_vif *vif, bool enable);
 
-struct ath6kl *ath6kl_cfg80211_create(void);
-void ath6kl_cfg80211_destroy(struct ath6kl *ar);
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,0,0))
+struct net_device *ath6kl_cfg80211_add_p2p0_iface(struct ath6kl *ar);
+#endif
 
 #endif /* ATH6KL_CFG80211_H */

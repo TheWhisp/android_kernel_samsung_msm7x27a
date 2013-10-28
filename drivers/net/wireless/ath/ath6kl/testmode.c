@@ -17,8 +17,10 @@
 
 #include "testmode.h"
 #include "debug.h"
+#include "cfg80211.h"
 
 #include <net/netlink.h>
+#include "wmiconfig.h"
 
 enum ath6kl_tm_attr {
 	__ATH6KL_TM_ATTR_INVALID	= 0,
@@ -33,6 +35,7 @@ enum ath6kl_tm_attr {
 enum ath6kl_tm_cmd {
 	ATH6KL_TM_CMD_TCMD		= 0,
 	ATH6KL_TM_CMD_RX_REPORT		= 1,	/* not used anymore */
+	ATH6KL_TM_CMD_WMI_CMD		= 0xF000,
 };
 
 #define ATH6KL_TM_DATA_MAX_LEN		5000
@@ -42,6 +45,7 @@ static const struct nla_policy ath6kl_tm_policy[ATH6KL_TM_ATTR_MAX + 1] = {
 	[ATH6KL_TM_ATTR_DATA]		= { .type = NLA_BINARY,
 					    .len = ATH6KL_TM_DATA_MAX_LEN },
 };
+
 
 void ath6kl_tm_rx_event(struct ath6kl *ar, void *buf, size_t buf_len)
 {
@@ -69,8 +73,18 @@ int ath6kl_tm_cmd(struct wiphy *wiphy, void *data, int len)
 {
 	struct ath6kl *ar = wiphy_priv(wiphy);
 	struct nlattr *tb[ATH6KL_TM_ATTR_MAX + 1];
+	struct ath6kl_vif *vif;
 	int err, buf_len;
 	void *buf;
+	u32 wmi_cmd;
+	struct sk_buff *skb;
+
+	vif = ath6kl_vif_first(ar);
+	if (!vif)
+		return -EIO;
+
+	if (!ath6kl_cfg80211_ready(vif))
+		return -EIO;
 
 	err = nla_parse(tb, ATH6KL_TM_ATTR_MAX, data, len,
 			ath6kl_tm_policy);
@@ -81,6 +95,25 @@ int ath6kl_tm_cmd(struct wiphy *wiphy, void *data, int len)
 		return -EINVAL;
 
 	switch (nla_get_u32(tb[ATH6KL_TM_ATTR_CMD])) {
+	case ATH6KL_TM_CMD_WMI_CMD:
+		if (!tb[ATH6KL_TM_ATTR_DATA])
+			return -EINVAL;
+
+		buf = nla_data(tb[ATH6KL_TM_ATTR_DATA]);
+		buf_len = nla_len(tb[ATH6KL_TM_ATTR_DATA]);
+
+		/* First four bytes hold the wmi_cmd and the rest is the data */
+		skb = ath6kl_wmi_get_buf(buf_len-4);
+		if (!skb)
+			return -ENOMEM;
+
+		memcpy(&wmi_cmd, buf, sizeof(wmi_cmd));
+		memcpy(skb->data, (u32 *)buf + 1, buf_len - 4);
+		ath6kl_wmi_cmd_send(ar->wmi, 0, skb, wmi_cmd, NO_SYNC_WMIFLAG);
+
+		return 0;
+
+		break;
 	case ATH6KL_TM_CMD_TCMD:
 		if (!tb[ATH6KL_TM_ATTR_DATA])
 			return -EINVAL;

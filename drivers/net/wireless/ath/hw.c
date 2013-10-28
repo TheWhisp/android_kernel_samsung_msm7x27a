@@ -14,7 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#if 0 // by bbelief
 #include <linux/export.h>
+#endif
 #include <asm/unaligned.h>
 
 #include "ath.h"

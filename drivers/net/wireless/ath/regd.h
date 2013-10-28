@@ -101,7 +101,11 @@ enum CountryCode {
 	CTRY_GERMANY = 276,
 	CTRY_GREECE = 300,
 	CTRY_GREENLAND = 304,
+#if 0 // by bbelief	
 	CTRY_GRENADA = 308,
+#else
+	CTRY_GRENEDA = 308,
+#endif
 	CTRY_GUAM = 316,
 	CTRY_GUATEMALA = 320,
 	CTRY_HAITI = 332,
