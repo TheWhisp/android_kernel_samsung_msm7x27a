@@ -626,11 +626,11 @@ static void trebon_disp_on(void)
 		if (lcd_device_id == LCD_DEVICE_SMD) {
 			spi_cmds_tx(display_on_SMD_cmds,
 			ARRAY_SIZE(display_on_SMD_cmds));
-			DPRINT("display on cmd : completed\nLCD_DEVICE is SMD");
+			DPRINT("display on cmd : completed\nLCD_DEVICE is SMD\n");
 		} else {
 			spi_cmds_tx(display_on_cmds, ARRAY_SIZE(display_on_cmds));
 			msleep(30);
-			DPRINT("display on cmd : completed\nLCD_DEVICE is not SMD");
+			DPRINT("display on cmd : completed\nLCD_DEVICE is not SMD\n");
 			disp_state.display_on = TRUE;
 		}
 	}
