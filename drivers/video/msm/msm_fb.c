@@ -63,11 +63,6 @@ static unsigned char *fbram;
 static unsigned char *fbram_phys;
 static int fbram_size;
 static boolean bf_supported;
-/* Set backlight on resume after 50 ms after first
- * pan display on the panel. This is to avoid panel specific
- * transients during resume.
- */
-unsigned long backlight_duration = (HZ/20);
 
 static struct platform_device *pdev_list[MSM_FB_MAX_DEV_LIST];
 static int pdev_list_cnt;
@@ -118,7 +113,9 @@ static int msm_fb_suspend_sub(struct msm_fb_data_type *mfd);
 static int msm_fb_ioctl(struct fb_info *info, unsigned int cmd,
 			unsigned long arg);
 static int msm_fb_mmap(struct fb_info *info, struct vm_area_struct * vma);
-
+static int mdp_bl_scale_config(struct msm_fb_data_type *mfd,
+						struct mdp_bl_scale_data *data);
+static void msm_fb_scale_bl(__u32 *bl_lvl);
 #ifdef MSM_FB_ENABLE_DBGFS
 
 #define MSM_FB_MAX_DBGFS 1024
@@ -127,6 +124,7 @@ static int msm_fb_mmap(struct fb_info *info, struct vm_area_struct * vma);
 int msm_fb_debugfs_file_index;
 struct dentry *msm_fb_debugfs_root;
 struct dentry *msm_fb_debugfs_file[MSM_FB_MAX_DBGFS];
+static int bl_scale, bl_min_lvl;
 
 DEFINE_MUTEX(msm_fb_notify_update_sem);
 void msmfb_no_update_notify_timer_cb(unsigned long data)
@@ -193,7 +191,7 @@ static void msm_fb_set_bl_brightness(struct led_classdev *led_cdev,
 
 static struct led_classdev backlight_led = {
 	.name		= "lcd-backlight",
-	.brightness	= (MAX_BACKLIGHT_BRIGHTNESS * .75),
+	.brightness	= MAX_BACKLIGHT_BRIGHTNESS,
 	.brightness_set	= msm_fb_set_bl_brightness,
 };
 #endif
@@ -463,7 +461,9 @@ static int msm_fb_probe(struct platform_device *pdev)
 
 	vsync_cntrl.dev = mfd->fbi->dev;
 	mfd->panel_info.frame_count = 0;
-	mfd->bl_level = 0;
+	mfd->bl_level = 255;
+	bl_scale = 1024;
+	bl_min_lvl = 255;
 #ifdef CONFIG_FB_MSM_OVERLAY
 	mfd->overlay_play_enable = 1;
 #endif
@@ -484,10 +484,8 @@ static int msm_fb_probe(struct platform_device *pdev)
 	if (!lcd_backlight_registered) {
 		if (led_classdev_register(&pdev->dev, &backlight_led))
 			printk(KERN_ERR "led_classdev_register failed\n");
-		else {
-			msm_fb_set_bl_brightness(&backlight_led, backlight_led.brightness);
+		else
 			lcd_backlight_registered = 1;
-		}
 	}
 #endif
 
@@ -811,14 +809,67 @@ static struct platform_driver msm_fb_driver = {
 		   },
 };
 
+#if defined(CONFIG_HAS_EARLYSUSPEND) && defined(CONFIG_FB_MSM_MDP303)
+static void memset32_io(u32 __iomem *_ptr, u32 val, size_t count)
+{
+	count >>= 2;
+	while (count--)
+		writel(val, _ptr++);
+}
+#endif
+
 #ifdef CONFIG_HAS_EARLYSUSPEND
+#ifdef CONFIG_FB_MSM_MIPI_DSI_WHITESCREEN
+boolean wakeupflag = TRUE ; 
+#endif
 static void msmfb_early_suspend(struct early_suspend *h)
 {
+#ifdef CONFIG_FB_MSM_MIPI_DSI_WHITESCREEN
+	unsigned int waitcount = 5;
+	unsigned int sleepflag = 0;
+#endif
 	struct msm_fb_data_type *mfd = container_of(h, struct msm_fb_data_type,
 						early_suspend);
 	struct msm_fb_panel_data *pdata = NULL;
 
+#ifdef CONFIG_FB_MSM_MIPI_DSI_WHITESCREEN
+	while(waitcount){
+		if (!mfd->bl_level){
+			sleepflag = 1;
+			break;
+		}
+		msleep(10);
+		waitcount--;
+	}
+	if(sleepflag){
+		msm_fb_suspend_sub(mfd);
+		wakeupflag = TRUE;
+	}
+	else {
+		wakeupflag = FALSE;
+	}
+#else
 	msm_fb_suspend_sub(mfd);
+#endif
+
+#if defined(CONFIG_FB_MSM_MIPI_HX8369B_WVGA_PT_PANEL)
+#if defined(CONFIG_FB_MSM_MDP303)
+	/*
+	* For MDP with overlay, set framebuffer with black pixels
+	* to show black screen on HDMI.
+	*/
+	struct fb_info *fbi = mfd->fbi;
+	switch (mfd->fbi->var.bits_per_pixel) {
+	case 32:
+		memset32_io((void *)fbi->screen_base, 0xFF000000,
+							fbi->fix.smem_len);
+		break;
+	default:
+		memset32_io((void *)fbi->screen_base, 0x00, fbi->fix.smem_len);
+		break;
+	}
+#endif
+#endif
 
 	pdata = (struct msm_fb_panel_data *)mfd->pdev->dev.platform_data;
 	if (hdmi_prim_display &&
@@ -850,20 +901,82 @@ static void msmfb_early_resume(struct early_suspend *h)
 		}
 	}
 
+#ifdef CONFIG_FB_MSM_MIPI_DSI_WHITESCREEN
+	if(wakeupflag)
+#endif
 	msm_fb_resume_sub(mfd);
 }
 #endif
 
+static int unset_bl_level, bl_updated;
+static int bl_level_old;
+static u16 screen_unblanked = 0;
+static u16 panel_initializing = 0;
+
+static int mdp_bl_scale_config(struct msm_fb_data_type *mfd,
+						struct mdp_bl_scale_data *data)
+{
+	int ret = 0;
+	int curr_bl = mfd->bl_level;
+	bl_scale = data->scale;
+	bl_min_lvl = data->min_lvl;
+	pr_debug("%s: update scale = %d, min_lvl = %d\n", __func__, bl_scale,
+								bl_min_lvl);
+
+	return ret;
+}
+
+static void msm_fb_scale_bl(__u32 *bl_lvl)
+{
+	__u32 temp = *bl_lvl;
+	if (temp >= bl_min_lvl) {
+		/* bl_scale is the numerator of scaling fraction (x/1024)*/
+		temp = ((*bl_lvl) * bl_scale) / 1024;
+
+		/*if less than minimum level, use min level*/
+		if (temp < bl_min_lvl)
+			temp = bl_min_lvl;
+	}
+
+	(*bl_lvl) = temp;
+}
+
 void msm_fb_set_backlight(struct msm_fb_data_type *mfd, __u32 bkl_lvl)
 {
 	struct msm_fb_panel_data *pdata;
+	__u32 temp = bkl_lvl;
 
+#if !defined(CONFIG_FB_MSM_MIPI_CMD_PANEL_AVOID_MOSAIC) && !defined(CONFIG_MACH_KYLEPLUS_OPEN)
+	if (!mfd->panel_power_on || !bl_updated) {
+		mfd->bl_level = bkl_lvl;
+		unset_bl_level = bkl_lvl;
+		return;
+	} else {
+		unset_bl_level = 0;
+	}
+#endif
+
+//	msm_fb_scale_bl(&temp);
 	pdata = (struct msm_fb_panel_data *)mfd->pdev->dev.platform_data;
 
 	if ((pdata) && (pdata->set_backlight)) {
 		down(&mfd->sem);
-		mfd->bl_level = bkl_lvl;
+#if defined(CONFIG_FB_MSM_MIPI_CMD_PANEL_AVOID_MOSAIC) || defined(CONFIG_MACH_KYLEPLUS_OPEN)
+		if (panel_initializing) {
+			mfd->bl_level = 0;
+		} else {
+			mfd->bl_level = bkl_lvl;
+		}
+#else		
+		if (bl_level_old == temp) {
+			up(&mfd->sem);
+			return;
+		}
+		mfd->bl_level = temp;
+#endif
 		pdata->set_backlight(mfd);
+		mfd->bl_level = bkl_lvl;
+		bl_level_old = temp;
 		up(&mfd->sem);
 	}
 }
@@ -887,12 +1000,27 @@ static int msm_fb_blank_sub(int blank_mode, struct fb_info *info,
 	switch (blank_mode) {
 	case FB_BLANK_UNBLANK:
 		if (!mfd->panel_power_on) {
+#if defined(CONFIG_FB_MSM_MIPI_CMD_PANEL_AVOID_MOSAIC)  || defined(CONFIG_MACH_KYLEPLUS_OPEN)
+			down(&mfd->sem);
+			panel_initializing = 1;
+			pdata->set_backlight(mfd);
+			up(&mfd->sem);	
+			
+			ret = pdata->on(mfd->pdev);
+			// NOTICE:
+			// it should delay here to avoid flash caused by display_on command
+			// please set it in the pdata->on() according to your LCD
+
+			down(&mfd->sem);
+			panel_initializing = 0;
+			pdata->set_backlight(mfd);
+			up(&mfd->sem);		
+#else
 			msleep(16);
 			ret = pdata->on(mfd->pdev);
+#endif
 			if (ret == 0) {
-				down(&mfd->sem);
 				mfd->panel_power_on = TRUE;
-				up(&mfd->sem);
 
 /* ToDo: possible conflict with android which doesn't expect sw refresher */
 /*
@@ -918,14 +1046,18 @@ static int msm_fb_blank_sub(int blank_mode, struct fb_info *info,
 
 			mfd->op_enable = FALSE;
 			curr_pwr_state = mfd->panel_power_on;
-			down(&mfd->sem);
 			mfd->panel_power_on = FALSE;
+			bl_updated = 0;
 
+			// let screen light off smoothly, because backlight is turning off in another thread now
+			// if need delay more, please set it in the pdata->off()
 			msleep(16);
 			ret = pdata->off(mfd->pdev);
 			if (ret)
 				mfd->panel_power_on = curr_pwr_state;
-
+#if defined(CONFIG_FB_MSM_MIPI_CMD_PANEL_AVOID_MOSAIC) || defined(CONFIG_MACH_KYLEPLUS_OPEN)
+			screen_unblanked = 0;
+#endif
 			mfd->op_enable = TRUE;
 		}
 		break;
@@ -1026,13 +1158,6 @@ static void msm_fb_imageblit(struct fb_info *info, const struct fb_image *image)
 static int msm_fb_blank(int blank_mode, struct fb_info *info)
 {
 	struct msm_fb_data_type *mfd = (struct msm_fb_data_type *)info->par;
-
-	if (blank_mode == FB_BLANK_POWERDOWN) {
-		struct fb_event event;
-		event.info = info;
-		event.data = &blank_mode;
-		fb_notifier_call_chain(FB_EVENT_BLANK, &event);
-	}
 	return msm_fb_blank_sub(blank_mode, info, mfd->op_enable);
 }
 
@@ -1059,20 +1184,22 @@ static int msm_fb_mmap(struct fb_info *info, struct vm_area_struct * vma)
 	u32 len = PAGE_ALIGN((start & ~PAGE_MASK) + info->fix.smem_len);
 	unsigned long off = vma->vm_pgoff << PAGE_SHIFT;
 	struct msm_fb_data_type *mfd = (struct msm_fb_data_type *)info->par;
+	if (off >= len) {
+		/* memory mapped io */
+		off -= len;
+		if (info->var.accel_flags) {
+			mutex_unlock(&info->lock);
+			return -EINVAL;
+		}
+		start = info->fix.mmio_start;
+		len = PAGE_ALIGN((start & ~PAGE_MASK) + info->fix.mmio_len);
+	}
 
-	if (!start)
-		return -EINVAL;
-
-	if ((vma->vm_end <= vma->vm_start) ||
-	    (off >= len) ||
-	    ((vma->vm_end - vma->vm_start) > (len - off)))
-		return -EINVAL;
 	/* Set VM flags. */
 	start &= PAGE_MASK;
-	off += start;
-	if (off < start)
+	if ((vma->vm_end - vma->vm_start + off) > len)
 		return -EINVAL;
-
+	off += start;
 	vma->vm_pgoff = off >> PAGE_SHIFT;
 	/* This is an IO map - tell maydump to skip this VMA */
 	vma->vm_flags |= VM_IO | VM_RESERVED;
@@ -1736,6 +1863,7 @@ static int msm_fb_pan_display(struct fb_var_screeninfo *var,
 	struct mdp_dirty_region dirty;
 	struct mdp_dirty_region *dirtyPtr = NULL;
 	struct msm_fb_data_type *mfd = (struct msm_fb_data_type *)info->par;
+	struct msm_fb_panel_data *pdata;
 
 	/*
 	 * If framebuffer is 2, io pen display is not allowed.
@@ -1812,7 +1940,6 @@ static int msm_fb_pan_display(struct fb_var_screeninfo *var,
 		mdp_set_dma_pan_info(info, NULL, TRUE);
 		if (msm_fb_blank_sub(FB_BLANK_UNBLANK, info, mfd->op_enable)) {
 			pr_err("%s: can't turn on display!\n", __func__);
-			up(&msm_fb_pan_sem);
 			return -EINVAL;
 		}
 	}
@@ -1821,6 +1948,37 @@ static int msm_fb_pan_display(struct fb_var_screeninfo *var,
 			     (var->activate == FB_ACTIVATE_VBL));
 	mdp_dma_pan_update(info);
 	up(&msm_fb_pan_sem);
+	
+#if defined(CONFIG_FB_MSM_MIPI_CMD_PANEL_AVOID_MOSAIC) || defined(CONFIG_MACH_KYLEPLUS_OPEN)
+	if (mfd->panel_power_on && !screen_unblanked) {
+		pdata = (struct msm_fb_panel_data *)mfd->pdev->dev.platform_data;
+		if ((pdata) && (pdata->unblank)) {
+			pdata->unblank(mfd->pdev);
+			screen_unblanked = 1;
+		}
+	}
+
+#else
+	if (unset_bl_level && !bl_updated) {
+		pdata = (struct msm_fb_panel_data *)mfd->pdev->
+			dev.platform_data;
+		if ((pdata) && (pdata->set_backlight)) {
+#if defined(CONFIG_FB_MSM_MIPI_NT35510_CMD_WVGA_PT_PANEL)
+			/* setting brightness for the first time after sleep
+			 * we have to wait for the screen to update itself */
+			msleep(60);
+#elif defined(CONFIG_MACH_JENA)
+			msleep(200);
+#endif
+			down(&mfd->sem);
+			mfd->bl_level = unset_bl_level;
+			pdata->set_backlight(mfd);
+			bl_level_old = unset_bl_level;
+			up(&mfd->sem);
+			bl_updated = 1;
+		}
+	}
+#endif
 	++mfd->panel_info.frame_count;
 	return 0;
 }
@@ -2990,6 +3148,30 @@ static int msmfb_overlay_play(struct fb_info *info, unsigned long *argp)
 
 	ret = mdp4_overlay_play(info, &req);
 
+#if defined(CONFIG_FB_MSM_MIPI_CMD_PANEL_AVOID_MOSAIC) || defined(CONFIG_MACH_KYLEPLUS_OPEN)
+	if (mfd->panel_power_on && !screen_unblanked) {
+		pdata = (struct msm_fb_panel_data *)mfd->pdev->dev.platform_data;
+		if ((pdata) && (pdata->unblank)) {
+			pdata->unblank(mfd->pdev);
+			screen_unblanked = 1;
+		}
+	}
+
+#else
+	if (unset_bl_level && !bl_updated) {
+		pdata = (struct msm_fb_panel_data *)mfd->pdev->
+			dev.platform_data;
+		if ((pdata) && (pdata->set_backlight)) {
+			down(&mfd->sem);
+			mfd->bl_level = unset_bl_level;
+			pdata->set_backlight(mfd);
+			bl_level_old = unset_bl_level;
+			up(&mfd->sem);
+			bl_updated = 1;
+		}
+	}
+#endif
+
 	return ret;
 }
 
@@ -3253,12 +3435,11 @@ static int msmfb_notify_update(struct fb_info *info, unsigned long *argp)
 		ret = wait_for_completion_interruptible_timeout(
 		&mfd->msmfb_no_update_notify, 4*HZ);
 	}
-	if (ret == 0)
-		ret = -ETIMEDOUT;
-	return (ret > 0) ? 0 : ret;
+	return (ret > 0) ? 0 : -1;
 }
 
-static int msmfb_handle_pp_ioctl(struct msmfb_mdp_pp *pp_ptr)
+static int msmfb_handle_pp_ioctl(struct msm_fb_data_type *mfd,
+						struct msmfb_mdp_pp *pp_ptr)
 {
 	int ret = -1;
 
@@ -3303,6 +3484,11 @@ static int msmfb_handle_pp_ioctl(struct msmfb_mdp_pp *pp_ptr)
 						&pp_ptr->data.qseed_cfg_data);
 		break;
 #endif
+	case mdp_bl_scale_cfg:
+		ret = mdp_bl_scale_config(mfd, (struct mdp_bl_scale_data *)
+				&pp_ptr->data.bl_scale_data);
+		break;
+
 	default:
 		pr_warn("Unsupported request to MDP_PP IOCTL.\n");
 		ret = -EINVAL;
@@ -3607,11 +3793,11 @@ static int msm_fb_ioctl(struct fb_info *info, unsigned int cmd,
 		if (ret)
 			return ret;
 
-		ret = msmfb_handle_pp_ioctl(&mdp_pp);
+		ret = msmfb_handle_pp_ioctl(mfd, &mdp_pp);
 		break;
 
 	default:
-		MSM_FB_INFO("MDP: unknown ioctl (cmd=%x) received!\n", cmd);
+//		MSM_FB_INFO("MDP: unknown ioctl (cmd=%x) received!\n", cmd);
 		ret = -EINVAL;
 		break;
 	}
