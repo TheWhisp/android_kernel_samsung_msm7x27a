@@ -431,3 +431,10 @@ extern struct platform_device msm8930_device_acpuclk;
 extern struct platform_device msm8930aa_device_acpuclk;
 extern struct platform_device msm8960_device_acpuclk;
 extern struct platform_device msm9615_device_acpuclk;
+
+#ifdef CONFIG_ANDROID_PERSISTENT_RAM
+void __init add_persistent_ram(void);
+#ifdef CONFIG_ANDROID_RAM_CONSOLE
+extern struct platform_device ram_console_device;
+#endif
+#endif

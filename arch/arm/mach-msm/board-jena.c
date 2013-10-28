@@ -3549,6 +3549,9 @@ static struct platform_device *msm7627a_surf_ffa_devices[] __initdata = {
 	&lcdc_trebon_panel_device,
 	&msm_batt_device,
 	&msm_kgsl_3d0,
+#ifdef CONFIG_ANDROID_RAM_CONSOLE
+    &ram_console_device,
+#endif
 #ifdef CONFIG_ION_MSM
 	&ion_dev,
 #endif
@@ -3775,6 +3778,9 @@ static void __init msm7x27a_reserve(void)
 {
 	reserve_info = &msm7x27a_reserve_info;
 	msm_reserve();
+#ifdef CONFIG_ANDROID_PERSISTENT_RAM
+    add_persistent_ram();
+#endif
 }
 
 static void __init msm_device_i2c_init(void)
