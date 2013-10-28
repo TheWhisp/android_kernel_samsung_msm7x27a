@@ -21,7 +21,7 @@
 #include <linux/lcd.h>
 #include <linux/gpio.h>
 #include <mach/pmic.h>
-#include <mach/vreg.h>
+#include <linux/regulator/consumer.h>
 #include "msm_fb.h"
 
 #ifdef CONFIG_FB_MSM_TRY_MDDI_CATCH_LCDC_PRISM
@@ -39,9 +39,7 @@
 #endif
 
 /* #define USE_STANDBY_MODE */
-
-static int sl_value = 200; // in ms
-static int use_hack = 1;
+static int enabled = 0;
 
 static int spi_cs;
 static int spi_sclk;
@@ -513,42 +511,58 @@ static void spi_standby(void)
 
 }
 
-#define VREG_ENABLE	1
-#define VREG_DISABLE	0
+#define REGULATOR_ENABLE	1
+#define REGULATOR_DISABLE	0
 
-static void trebon_vreg_config(int vreg_en)
+static void trebon_regulator_config(int regulator_en)
 {
 	int rc;
-	struct vreg *vreg_lcd = NULL;
+	struct regulator *regulator_lcd = NULL;
 
-	if (vreg_lcd == NULL) {
-		vreg_lcd = vreg_get(NULL, "vlcd");
+	if (regulator_lcd == NULL) {
+		regulator_lcd = regulator_get(NULL, "vlcd");
 
-		if (IS_ERR(vreg_lcd)) {
-			printk(KERN_ERR "%s: vreg_get(%s) failed (%ld)\n",
-				__func__, "vlcd4", PTR_ERR(vreg_lcd));
+		if (IS_ERR(regulator_lcd)) {
+			printk(KERN_ERR "%s: regulator_get(%s) failed (%ld)\n",
+				__func__, "vlcd4", PTR_ERR(regulator_lcd));
 			return;
 		}
 
-		rc = vreg_set_level(vreg_lcd, 3000);
+		rc = regulator_set_voltage(regulator_lcd, 3000000, 3000000);
 		if (rc) {
-			printk(KERN_ERR "%s: LCD set_level failed (%d)\n",
+			printk(KERN_ERR "%s: LCD powerup: set_voltage failed (%d)\n",
 				__func__, rc);
 		}
 	}
 
-	if (vreg_en) {
-		rc = vreg_enable(vreg_lcd);
-		if (rc) {
-			printk(KERN_ERR "%s: LCD enable failed (%d)\n",
-				 __func__, rc);
-		}
+	if (regulator_en) {
+		printk("[LCDC_JENA] About to turn on\n");
+		if(!enabled) {
+			printk("[LCDC_JENA] Enable regulator\n");
+			enabled = 1;
+			rc = regulator_enable(regulator_lcd);
+			if (rc) {
+				printk(KERN_ERR "%s: LCD regulator enable failed (%d)\n",
+					 __func__, rc);
+			}
+		} else { printk("[LCDC_JENA] Already enabled, how did this happen?\n"); }
 	} else {
-		rc = vreg_disable(vreg_lcd);
-		if (rc) {
-			printk(KERN_ERR "%s: LCD disable failed (%d)\n",
-				 __func__, rc);
-		}
+		printk("[LCDC_JENA] About to turn off\n");
+		if(enabled) {
+			printk("[LCDC_JENA] Disabling regulator\n");
+			enabled = 0;
+			rc = regulator_set_voltage(regulator_lcd, 3000000, 3000000);
+			if (rc) {
+				printk(KERN_ERR "%s: LCD powerdown: set_voltage failed (%d)\n",
+					__func__, rc);
+			}
+
+			rc = regulator_disable(regulator_lcd);
+			if (rc) {
+				printk(KERN_ERR "%s: LCD regulator disable failed (%d)\n",
+					 __func__, rc);
+			}
+		} else { printk("[LCDC_JENA] Already disabled, how did this happen?\n"); }
 	}
 }
 
@@ -576,7 +590,7 @@ static void trebon_disp_powerup(void)
 
 	if (!disp_state.disp_powered_up && !disp_state.display_on) {
 
-		trebon_vreg_config(VREG_ENABLE);
+		trebon_regulator_config(REGULATOR_ENABLE);
 		usleep(10000);
 		trebon_disp_reset(1);
 
@@ -593,12 +607,10 @@ static void trebon_disp_powerdown(void)
 					, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
 	gpio_set_value(lcd_reset, 0);
 
-	trebon_vreg_config(VREG_DISABLE);
+	trebon_regulator_config(REGULATOR_DISABLE);
 	msleep(1);
 
 	disp_state.disp_powered_up = FALSE;
-
-	use_hack = 1;
 }
 
 static void trebon_disp_on(void)
@@ -611,14 +623,16 @@ static void trebon_disp_on(void)
 		DPRINT("HW rev is %d, apply %d's init sequence\n" ,
 			board_hw_revision, board_hw_revision);
 
-	if (lcd_device_id == LCD_DEVICE_SMD)
-		spi_cmds_tx(display_on_SMD_cmds,
-		ARRAY_SIZE(display_on_SMD_cmds));
-	else
-		spi_cmds_tx(display_on_cmds, ARRAY_SIZE(display_on_cmds));
-		msleep(30);
-		DPRINT("display on cmd : completed\n");
-		disp_state.display_on = TRUE;
+		if (lcd_device_id == LCD_DEVICE_SMD) {
+			spi_cmds_tx(display_on_SMD_cmds,
+			ARRAY_SIZE(display_on_SMD_cmds));
+			DPRINT("display on cmd : completed\nLCD_DEVICE is SMD");
+		} else {
+			spi_cmds_tx(display_on_cmds, ARRAY_SIZE(display_on_cmds));
+			msleep(30);
+			DPRINT("display on cmd : completed\nLCD_DEVICE is not SMD");
+			disp_state.display_on = TRUE;
+		}
 	}
 }
 
@@ -750,21 +764,34 @@ static int lcdc_trebon_panel_off(struct platform_device *pdev)
 
 static void lcdc_trebon_set_backlight(struct msm_fb_data_type *mfd)
 {
-	/* 
-		FIXME
-		With updated MDP and FB, there is a white flash after screen is turned on
-		Use this HACK to light up screen a little later so people don't see it
-		Don't forget to fix it properly!
-	*/
-	if(disp_state.disp_powered_up && use_hack == 1){
-		msleep(sl_value);
-		printk("[lcdc_jena - sleeping for %dms\n", sl_value);
-		use_hack = 0;
-	}
-
 	int bl_value = mfd->bl_level;
+	static int lockup_count;
 
-	printk("[BACKLIGHT] : %d\n",bl_value);
+	up(&backlight_sem);
+	DPRINT("[BACKLIGHT] : %d\n", bl_value);
+	if (!bl_value) {
+		/*  Turn off Backlight, don't check disp_initialized value */
+		lcd_prf = 1;
+
+	} else {
+		if (lcd_prf)
+			return;
+
+		while (!disp_state.disp_initialized) {
+			msleep(100);
+			lockup_count++;
+
+			if (lockup_count > 50) {
+				printk(KERN_ERR "Prevent infinite loop(wait for 5s)\n");
+				printk(KERN_ERR "LCD can't initialize with in %d ms\n"
+					, lockup_count*100);
+				lockup_count = 0;
+
+				down(&backlight_sem);
+				return;
+			}
+		}
+	}
 
 	backlight_ic_set_brightness(bl_value);
 }
