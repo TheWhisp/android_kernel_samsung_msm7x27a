@@ -873,4 +873,10 @@ config BACKLIGHT_KTD253
 	help
 	  support for KTD253 backlight IC
 
+config FB_MSM_HAS_WHITESCREEN
+	bool "CONFIG_FB_MSM_HAS_WHITESCREEN"
+	default n
+	help
+	  enable this if the display is blank (white) on wakeup.
+
 endif
