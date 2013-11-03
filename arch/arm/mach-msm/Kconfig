@@ -2053,6 +2053,14 @@ config MSM_L2_SPM
 	  Enabling this driver allows configuring L2 SPM for low power modes
 	  on supported chipsets.
 
+config MACH_TREBON
+        depends on ARCH_MSM7X27A
+        depends on !MSM_STACKED_MEMORY
+        default n
+        bool "MSM7x27A TREBON"
+        help
+          Support for the Qualcomm TREBON 
+
 config MACH_JENA
         bool "JENA platform"
 		depends on ARCH_MSM7X27A

@@ -62,6 +62,7 @@ static unsigned char *fbram;
 static unsigned char *fbram_phys;
 static int fbram_size;
 static boolean bf_supported;
+static bool align_buffer = false;
 /* Set backlight on resume after 50 ms after first
  * pan display on the panel. This is to avoid panel specific
  * transients during resume.
@@ -734,8 +735,15 @@ static void memset32_io(u32 __iomem *_ptr, u32 val, size_t count)
 #endif
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
+#ifdef CONFIG_FB_MSM_HAS_WHITESCREEN
+boolean wakeupflag = 1;
+#endif
 static void msmfb_early_suspend(struct early_suspend *h)
 {
+#ifdef CONFIG_FB_MSM_HAS_WHITESCREEN
+	unsigned int waitcount = 5;
+	unsigned int sleepflag = 0;
+#endif
 	struct msm_fb_data_type *mfd = container_of(h, struct msm_fb_data_type,
 						    early_suspend);
 #if defined(CONFIG_FB_MSM_MDP303)
@@ -754,13 +762,34 @@ static void msmfb_early_suspend(struct early_suspend *h)
 		break;
 	}
 #endif
+#ifdef CONFIG_FB_MSM_HAS_WHITESCREEN
+	while(waitcount) {
+		if (!mfd->bl_level) {
+			sleepflag = 1;
+			break;
+		}
+		msleep(10);
+		waitcount--;
+	}
+	if(sleepflag) {
+		msm_fb_suspend_sub(mfd);
+		wakeupflag = 1;
+	}
+	else {
+		wakeupflag = 0;
+	}
+#else
 	msm_fb_suspend_sub(mfd);
+#endif
 }
 
 static void msmfb_early_resume(struct early_suspend *h)
 {
 	struct msm_fb_data_type *mfd = container_of(h, struct msm_fb_data_type,
 						    early_suspend);
+#ifdef CONFIG_FB_MSM_HAS_WHITESCREEN
+	if(wakeupflag)
+#endif
 	msm_fb_resume_sub(mfd);
 }
 #endif
@@ -898,6 +927,11 @@ int calc_fb_offset(struct msm_fb_data_type *mfd, struct fb_info *fbi, int bpp)
 {
 	struct msm_panel_info *panel_info = &mfd->panel_info;
 	int remainder, yres, offset;
+
+	if (!align_buffer)
+	{
+		return fbi->var.xoffset * bpp + fbi->var.yoffset * fbi->fix.line_length;
+	}
 
 	if (panel_info->mode2_yres != 0) {
 		yres = panel_info->mode2_yres;
@@ -1446,41 +1480,24 @@ static int msm_fb_register(struct msm_fb_data_type *mfd)
 
 #ifdef CONFIG_FB_MSM_LOGO
 	/*draw_rgb888_screen();*/
-#if defined(CONFIG_MACH_TREBON)	
-#if defined(CONFIG_TARGET_LOCALE_EUR_VODA)
-	if (!load_565rle_image("GT-S7509.rle", bf_supported))
-		;
-#else
+#if defined(CONFIG_MACH_TREBON)
 	if (charging_boot != 1)
-		if (!load_565rle_image("GT-S7500.rle", bf_supported))	/* Flip buffer */
-			;
-#endif
-#elif defined(CONFIG_MACH_GEIM)	
-	if (charging_boot != 1)
-		if (!load_565rle_image("SGH-I827.rle", bf_supported))	/* Flip buffer */
-			;
+		if (!load_565rle_image("GT-S7500.rle", bf_supported));
 #elif defined(CONFIG_MACH_JENA)
 	if (charging_boot != 1)
-		if (!load_565rle_image("GT-S6500.rle", bf_supported))	/* Flip buffer */
-			;
-#else
-	if (charging_boot != 1)
-		if (!load_565rle_image("GT-S7500.rle", bf_supported))	/* Flip buffer */
-			;
+		if (!load_565rle_image("GT-S6500.rle", bf_supported));
 #endif
-#if !defined(CONFIG_TARGET_LOCALE_EUR_VODA)
-	/*
-	*Check the LPM Mode
-	*If the value of charging_boot is '1', that is LPM Mode.
+   /*
+	* Check the LPM Mode
+	* If the value of charging_boot is '1', that is LPM Mode.
 	*/
 	if (charging_boot == 1)
 		draw_rgb888_black_screen();
 #endif
-#endif
 	ret = 0;
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
-	if (mfd->panel_info.type != DTV_PANEL) {
+	if (mfd->panel_info.type != DTV_PANEL && !charging_boot) {
 		mfd->early_suspend.suspend = msmfb_early_suspend;
 		mfd->early_suspend.resume = msmfb_early_resume;
 		mfd->early_suspend.level = EARLY_SUSPEND_LEVEL_DISABLE_FB - 2;
@@ -3887,5 +3904,7 @@ int msm_fb_v4l2_update(void *par,
 #endif
 }
 EXPORT_SYMBOL(msm_fb_v4l2_update);
+
+module_param(align_buffer, bool, 0644);
 
 module_init(msm_fb_init);
