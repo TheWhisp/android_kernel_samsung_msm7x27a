@@ -20,6 +20,8 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 #include <linux/wakelock.h>
+#include "../../misc/sec_debug.h"
+#include "../../dpram/dpram.h"
 
 struct gpio_kp {
 	struct gpio_event_input_devs *input_devs;
