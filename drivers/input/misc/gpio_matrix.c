@@ -309,6 +309,9 @@ int gpio_event_matrix_func(struct gpio_event_input_devs *input_devs,
 	int i;
 	int err;
 	int key_count;
+        int wakeup_keys_status;
+        int irq;
+        static int irq_status = 1;
 	struct gpio_kp *kp;
 	struct gpio_event_matrix_info *mi;
 
@@ -316,6 +319,27 @@ int gpio_event_matrix_func(struct gpio_event_input_devs *input_devs,
 	if (func == GPIO_EVENT_FUNC_SUSPEND || func == GPIO_EVENT_FUNC_RESUME) {
 		/* TODO: disable scanning */
 		return 0;
+                wakeup_keys_status = gpio_event_get_wakeup_keys_status() & 0x01;
+
+                if (irq_status != wakeup_keys_status)
+                        irq_status = wakeup_keys_status;
+                else
+                        return 0;
+
+
+                for (i = 0; i < mi->ninputs; i++) {
+                        irq = gpio_to_irq(mi->input_gpios[i]);
+
+                        if (irq_status == 1)
+                                err = enable_irq_wake(irq);
+                        else
+                                err = disable_irq_wake(irq);
+                }
+                /* HOME Key is wakeup source */
+                for (i = 0; i < mi->nwakeups; i++) {
+                        irq = gpio_to_irq(mi->wakeup_gpios[i]);
+                        err = enable_irq_wake(irq);
+                }
 	}
 
 	if (func == GPIO_EVENT_FUNC_INIT) {

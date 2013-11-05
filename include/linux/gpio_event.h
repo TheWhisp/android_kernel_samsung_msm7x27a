@@ -82,6 +82,8 @@ struct gpio_event_matrix_info {
 	unsigned int *output_gpios;
 	unsigned int ninputs;
 	unsigned int noutputs;
+	unsigned int *wakeup_gpios;
+	unsigned int nwakeups;
 	/* time to wait before reading inputs after driving each output */
 	ktime_t settle_time;
 	/* time to wait before scanning the keypad a second time */
@@ -168,3 +170,4 @@ uint16_t gpio_axis_5bit_singletrack_map(
 			struct gpio_event_axis_info *info, uint16_t in);
 
 #endif
+int gpio_event_get_wakeup_keys_status(void);

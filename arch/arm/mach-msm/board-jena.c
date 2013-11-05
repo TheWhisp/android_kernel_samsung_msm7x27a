@@ -4114,17 +4114,17 @@ static void keypad_gpio_init(void)
 }
 
 #define KP_INDEX(row, col) ((row)*ARRAY_SIZE(kp_col_gpios) + (col))
-	static unsigned int kp_row_gpios[] = {36, 37, 39};
-	static unsigned int kp_col_gpios[] = {31};
-	static unsigned int kp_wakeup_gpios[] = {37};
-	static const unsigned short keymap[ARRAY_SIZE(kp_col_gpios) *
-					  ARRAY_SIZE(kp_row_gpios)] = {
-		[KP_INDEX(0, 0)] = KEY_VOLUMEDOWN,
 
-		[KP_INDEX(1, 0)] = KEY_HOME,
+static unsigned int kp_row_gpios[] = {36, 37, 39};
+static unsigned int kp_col_gpios[] = {31};
+static unsigned int kp_wakeup_gpios[] = {37};
 
-		[KP_INDEX(2, 0)] = KEY_VOLUMEUP,
-	};
+static const unsigned short keymap[ARRAY_SIZE(kp_col_gpios) *
+				  ARRAY_SIZE(kp_row_gpios)] = {
+	[KP_INDEX(0, 0)] = KEY_VOLUMEDOWN,
+	[KP_INDEX(1, 0)] = KEY_HOME,
+	[KP_INDEX(2, 0)] = KEY_VOLUMEUP,
+};
 
 /* SURF keypad platform device information */
 static struct gpio_event_matrix_info kp_matrix_info = {
@@ -4134,6 +4134,8 @@ static struct gpio_event_matrix_info kp_matrix_info = {
 	.input_gpios	= kp_row_gpios,
 	.noutputs	= ARRAY_SIZE(kp_col_gpios),
 	.ninputs	= ARRAY_SIZE(kp_row_gpios),
+	.wakeup_gpios	= kp_wakeup_gpios,
+	.nwakeups	= ARRAY_SIZE(kp_wakeup_gpios),
 	.settle_time.tv64 = 40 * NSEC_PER_USEC,
 	.poll_time.tv64 = 20 * NSEC_PER_MSEC,
 	.debounce_delay.tv64 = 20 * NSEC_PER_MSEC,
