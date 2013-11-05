@@ -986,8 +986,6 @@ static int msm_pm_power_collapse
 	msm_pm_boot_config_before_pc(smp_processor_id(),
 			virt_to_phys(msm_pm_collapse_exit));
 
-	*(uint32_t *)(virt_start_ptr + 0x30) = 0x4;
-
 #ifdef CONFIG_VFP
 	if (from_idle)
 		vfp_pm_suspend();
