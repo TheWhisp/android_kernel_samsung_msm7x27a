@@ -170,4 +170,7 @@ uint16_t gpio_axis_5bit_singletrack_map(
 			struct gpio_event_axis_info *info, uint16_t in);
 
 #endif
+
+extern struct class *sec_class;
+
 int gpio_event_get_wakeup_keys_status(void);
