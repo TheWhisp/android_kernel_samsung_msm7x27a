@@ -972,23 +972,14 @@ static struct reserve_info msm7x27a_reserve_info __initdata = {
 static void __init msm7x27a_reserve(void)
 {
 	reserve_info = &msm7x27a_reserve_info;
-	memblock_remove(MSM8625_NON_CACHE_MEM, SZ_2K);
-	memblock_remove(BOOTLOADER_BASE_ADDR, msm_ion_audio_size);
 	msm_reserve();
-#ifdef CONFIG_CMA
-	dma_declare_contiguous(
-			&ion_cma_device.dev,
-			msm_ion_camera_size,
-			CAMERA_HEAP_BASE,
-			0x26000000);
-#endif
 }
 
 static void __init msm8625_reserve(void)
 {
 	memblock_remove(MSM8625_CPU_PHYS, SZ_8);
 	memblock_remove(MSM8625_WARM_BOOT_PHYS, SZ_32);
-	msm7x27a_reserve();
+	memblock_remove(MSM8625_NON_CACHE_MEM, SZ_2K);
 }
 
 static void __init msm7x27a_device_i2c_init(void)
