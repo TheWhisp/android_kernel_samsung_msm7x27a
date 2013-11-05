@@ -19,7 +19,7 @@
 #include <asm/unwind.h>
 #include <asm/hardware/gic.h>
 #include <asm/cacheflush.h>
-#include <mach/irqs.h>
+#include <mach/irqs-8625.h>
 #include <mach/socinfo.h>
 #include <mach/fiq.h>
 #include <mach/msm_iomap.h>
@@ -28,116 +28,44 @@
 
 #define MODULE_NAME "MSM7K_FIQ"
 
-struct msm_watchdog_dump msm_dump_cpu_ctx[NR_CPUS];
+struct msm_watchdog_dump msm_dump_cpu_ctx;
 static int fiq_counter;
 static int msm_fiq_no;
-void *msm7k_fiq_stack[NR_CPUS];
-static spinlock_t msm_fiq_lock;
+void *msm7k_fiq_stack;
 
 /* Called from the FIQ asm handler */
 void msm7k_fiq_handler(void)
 {
+	struct irq_data *d;
+	struct irq_chip *c;
 	struct pt_regs ctx_regs;
-	static cpumask_t fiq_cpu_mask;
-	int this_cpu;
-	unsigned long msm_fiq_flags;
+	unsigned long flags;
 
-	spin_lock_irqsave(&msm_fiq_lock, msm_fiq_flags);
-	this_cpu = smp_processor_id();
+	pr_info("Fiq is received %s\n", __func__);
+	fiq_counter++;
 
-	pr_info("%s: Fiq is received on CPU%d\n", __func__, this_cpu);
-	fiq_counter += 1;
+	local_irq_save(flags);
+	d = irq_get_irq_data(msm_fiq_no);
+	c = irq_data_get_irq_chip(d);
+	c->irq_mask(d);
 
-	ctx_regs.ARM_pc = msm_dump_cpu_ctx[this_cpu].fiq_r14;
-	ctx_regs.ARM_lr = msm_dump_cpu_ctx[this_cpu].svc_r14;
-	ctx_regs.ARM_sp = msm_dump_cpu_ctx[this_cpu].svc_r13;
-	ctx_regs.ARM_fp = msm_dump_cpu_ctx[this_cpu].usr_r11;
+	if (cpu_is_msm8625())
+		/* Clear the IRQ from the ENABLE_SET */
+		gic_clear_irq_pending(msm_fiq_no);
+	else
+		/* Clear the IRQ from the VIC_INT_CLEAR0*/
+		c->irq_ack(d);
+
+	ctx_regs.ARM_pc = msm_dump_cpu_ctx.fiq_r14;
+	ctx_regs.ARM_lr = msm_dump_cpu_ctx.svc_r14;
+	ctx_regs.ARM_sp = msm_dump_cpu_ctx.svc_r13;
+	ctx_regs.ARM_fp = msm_dump_cpu_ctx.usr_r11;
 	unwind_backtrace(&ctx_regs, current);
-
-	if (fiq_counter == 1 && (cpu_is_msm8625() || cpu_is_msm8625q())) {
-		if (cpu_is_msm8625()) {
-			/*
-			 * Dumping MPA5 status registers
-			 */
-			pr_info("MPA5_CFG_CTL_REG = 0x%x\n",
-					__raw_readl(MSM_CFG_CTL_BASE + 0x30));
-			pr_info("MPA5_BOOT_REMAP_ADDR = 0x%x\n",
-					__raw_readl(MSM_CFG_CTL_BASE + 0x34));
-			pr_info("MPA5_GDFS_CNT_VAL = 0x%x\n",
-					__raw_readl(MSM_CFG_CTL_BASE + 0x38));
-			pr_info("MPA5_STATUS_REG = 0x%x\n",
-					__raw_readl(MSM_CFG_CTL_BASE + 0x3c));
-
-			/*
-			 * Dumping SPM registers
-			 */
-			pr_info("SPM0_SAW2_CFG	= 0x%x\n",
-					__raw_readl(MSM_SAW0_BASE + 0x8));
-			pr_info("SPM0_SAW2_STS_0 = 0x%x\n",
-					__raw_readl(MSM_SAW0_BASE + 0xC));
-			pr_info("SPM0_SAW2_CTL = 0x%x\n",
-					__raw_readl(MSM_SAW0_BASE + 0x20));
-			pr_info("SPM1_SAW2_CFG = 0x%x\n",
-					__raw_readl(MSM_SAW1_BASE + 0x8));
-			pr_info("SPM1_SAW2_STS_0 = 0x%x\n",
-					__raw_readl(MSM_SAW1_BASE + 0xC));
-			pr_info("SPM1_SAW2_CTL = 0x%x\n",
-					__raw_readl(MSM_SAW1_BASE + 0x20));
-		} else if (cpu_is_msm8625q()) {
-			/*
-			 * Dumping MPA5 status registers
-			 */
-			pr_info("MPA5_CFG_CTL_REG = 0x%x\n",
-					__raw_readl(MSM_CFG_CTL_BASE + 0x30));
-			pr_info("MPA5_BOOT_REMAP_ADDR = 0x%x\n",
-					__raw_readl(MSM_CFG_CTL_BASE + 0x34));
-			pr_info("MPA5_GDFS_CNT_VAL = 0x%x\n",
-					__raw_readl(MSM_CFG_CTL_BASE + 0x38));
-			pr_info("MPA5_STATUS_REG = 0x%x\n",
-					__raw_readl(MSM_CFG_CTL_BASE + 0x3c));
-			pr_info("MPA5_CFG_CTL_REG1 = 0x%x\n",
-					__raw_readl(MSM_CFG_CTL_BASE + 0x48));
-			pr_info("MPA5_BOOT_REMAP_ADDR1 = 0x%x\n",
-					__raw_readl(MSM_CFG_CTL_BASE + 0x4c));
-			pr_info("MPA5_STATUS_REG1 = 0x%x\n",
-					__raw_readl(MSM_CFG_CTL_BASE + 0x50));
-
-			/*
-			 * Dumping SPM registers
-			 */
-			pr_info("SPM0_SAW2_CFG = 0x%x\n",
-					__raw_readl(MSM_SAW0_BASE + 0x8));
-			pr_info("SPM0_SAW2_STS_0 = 0x%x\n",
-					__raw_readl(MSM_SAW0_BASE + 0xC));
-			pr_info("SPM0_SAW2_CTL = 0x%x\n",
-					__raw_readl(MSM_SAW0_BASE + 0x20));
-			pr_info("SPM1_SAW2_CFG = 0x%x\n",
-					__raw_readl(MSM_SAW1_BASE + 0x8));
-			pr_info("SPM1_SAW2_STS_0 = 0x%x\n",
-					__raw_readl(MSM_SAW1_BASE + 0xC));
-			pr_info("SPM1_SAW2_CTL = 0x%x\n",
-					__raw_readl(MSM_SAW1_BASE + 0x20));
-			pr_info("SPM2_SAW2_CFG = 0x%x\n",
-					__raw_readl(MSM_SAW2_BASE + 0x8));
-			pr_info("SPM2_SAW2_STS_0 = 0x%x\n",
-					__raw_readl(MSM_SAW2_BASE + 0xC));
-			pr_info("SPM2_SAW2_CTL = 0x%x\n",
-					__raw_readl(MSM_SAW2_BASE + 0x20));
-			pr_info("SPM3_SAW2_CFG = 0x%x\n",
-					__raw_readl(MSM_SAW3_BASE + 0x8));
-			pr_info("SPM3_SAW2_STS_0 = 0x%x\n",
-					__raw_readl(MSM_SAW3_BASE + 0xC));
-			pr_info("SPM3_SAW2_CTL = 0x%x\n",
-					__raw_readl(MSM_SAW3_BASE + 0x20));
-		}
-		cpumask_copy(&fiq_cpu_mask, cpu_possible_mask);
-		cpu_clear(this_cpu, fiq_cpu_mask);
-		gic_raise_secure_softirq(&fiq_cpu_mask, GIC_SECURE_SOFT_IRQ);
-	}
+	arch_trigger_all_cpu_backtrace();
+	local_irq_restore(flags);
 
 	flush_cache_all();
 	outer_flush_all();
-	spin_unlock_irqrestore(&msm_fiq_lock, msm_fiq_flags);
 	return;
 }
 
@@ -147,25 +75,14 @@ struct fiq_handler msm7k_fh = {
 
 static int __init msm_setup_fiq_handler(void)
 {
-	int i, ret = 0;
+	int ret = 0;
 
-	spin_lock_init(&msm_fiq_lock);
 	claim_fiq(&msm7k_fh);
 	set_fiq_handler(&msm7k_fiq_start, msm7k_fiq_length);
-
-	for_each_possible_cpu(i) {
-		msm7k_fiq_stack[i] = (void *)__get_free_pages(GFP_KERNEL,
-			THREAD_SIZE_ORDER);
-		if (msm7k_fiq_stack[i] == NULL)
-			break;
-	}
-
-	if (i != nr_cpumask_bits) {
+	msm7k_fiq_stack = (void *)__get_free_pages(GFP_KERNEL,
+				THREAD_SIZE_ORDER);
+	if (msm7k_fiq_stack == NULL) {
 		pr_err("FIQ STACK SETUP IS NOT SUCCESSFUL\n");
-		for (i = 0; i < nr_cpumask_bits && msm7k_fiq_stack[i] != NULL;
-					i++)
-			free_pages((unsigned long)msm7k_fiq_stack[i],
-					THREAD_SIZE_ORDER);
 		return -ENOMEM;
 	}
 
