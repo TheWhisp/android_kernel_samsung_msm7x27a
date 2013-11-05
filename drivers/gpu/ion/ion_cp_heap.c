@@ -1008,6 +1008,14 @@ struct ion_heap *ion_cp_heap_create(struct ion_platform_heap *heap_data)
 
 	mutex_init(&cp_heap->lock);
 
+	cp_heap->pool = gen_pool_create(12, -1);
+	if (!cp_heap->pool)
+		goto free_heap;
+
+	cp_heap->base = heap_data->base;
+	ret = gen_pool_add(cp_heap->pool, cp_heap->base, heap_data->size, -1);
+	if (ret < 0)
+		goto destroy_pool;
 
 	cp_heap->allocated_bytes = 0;
 	cp_heap->umap_count = 0;
@@ -1045,25 +1053,8 @@ struct ion_heap *ion_cp_heap_create(struct ion_platform_heap *heap_data)
 				extra_data->iommu_map_all;
 		cp_heap->iommu_2x_map_domain =
 				extra_data->iommu_2x_map_domain;
-		cp_heap->cma = extra_data->is_cma;
 	}
 
-	if (cp_heap->cma) {
-		cp_heap->pool = NULL;
-		cp_heap->cpu_addr = 0;
-		cp_heap->heap.priv = heap_data->priv;
-	} else {
-		cp_heap->pool = gen_pool_create(12, -1);
-		if (!cp_heap->pool)
-			goto free_heap;
-
-		cp_heap->base = heap_data->base;
-		ret = gen_pool_add(cp_heap->pool, cp_heap->base,
-					heap_data->size, -1);
-		if (ret < 0)
-			goto destroy_pool;
-
-	}
 	return &cp_heap->heap;
 
 destroy_pool:
