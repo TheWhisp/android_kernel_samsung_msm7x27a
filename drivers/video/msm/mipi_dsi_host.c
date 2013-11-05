@@ -814,7 +814,7 @@ static int mipi_dsi_long_read_resp(struct dsi_buf *rp)
 	return len;
 }
 
-void mipi_dsi_host_init(struct mipi_panel_info *pinfo, char dlane_swap)
+void mipi_dsi_host_init(struct mipi_panel_info *pinfo)
 {
 	uint32 dsi_ctrl, intr_ctrl;
 	uint32 data;
@@ -905,7 +905,7 @@ void mipi_dsi_host_init(struct mipi_panel_info *pinfo, char dlane_swap)
 	MIPI_OUTP(MIPI_DSI_BASE + 0x0080, data); /* DSI_TRIG_CTRL */
 
 	/* DSI_LAN_SWAP_CTRL */
-	MIPI_OUTP(MIPI_DSI_BASE + 0x00ac, dlane_swap);
+	MIPI_OUTP(MIPI_DSI_BASE + 0x00ac, pinfo->dlane_swap);
 
 	/* clock out ctrl */
 	data = pinfo->t_clk_post & 0x3f;	/* 6 bits */
@@ -1519,7 +1519,7 @@ void mipi_dsi_cmd_mdp_busy(void)
 {
 	u32 status;
 	unsigned long flags;
-	int need_wait = 0;
+	int need_wait;
 
 	spin_lock_irqsave(&dsi_mdp_lock, flags);
 	status = MIPI_INP(MIPI_DSI_BASE + 0x0004);/* DSI_STATUS */
