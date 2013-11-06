@@ -29,14 +29,6 @@
 
 #define GSL_RB_NOP_SIZEDWORDS				2
 
-/*
- * CP DEBUG settings for all cores:
- * DYNAMIC_CLK_DISABLE [27] - turn off the dynamic clock control
- * PROG_END_PTR_ENABLE [25] - Allow 128 bit writes to the VBIF
- */
-
-#define CP_DEBUG_DEFAULT ((1 << 27) | (1 << 25))
-
 void adreno_ringbuffer_submit(struct adreno_ringbuffer *rb)
 {
 	BUG_ON(rb->wptr == 0);
@@ -526,7 +518,7 @@ adreno_ringbuffer_addcmds(struct adreno_ringbuffer *rb,
 	ringcmds = adreno_ringbuffer_allocspace(rb, total_sizedwords);
 	/* GPU may hang during space allocation, if thats the case the current
 	 * context may have hung the GPU */
-	if (context && context->flags & CTXT_FLAGS_GPU_HANG) {
+	if (context->flags & CTXT_FLAGS_GPU_HANG) {
 		KGSL_CTXT_WARN(rb->device,
 		"Context %p caused a gpu hang. Will not accept commands for context %d\n",
 		context, context->id);

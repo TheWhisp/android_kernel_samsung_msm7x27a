@@ -195,7 +195,6 @@ struct kgsl_device {
 	int pwr_log;
 	struct kgsl_pwrscale pwrscale;
 	struct kobject pwrscale_kobj;
-        struct pm_qos_request pm_qos_req_dma;
 	struct work_struct ts_expired_ws;
 	struct list_head events;
 	s64 on_time;

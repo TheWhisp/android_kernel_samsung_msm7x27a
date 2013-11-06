@@ -30,7 +30,6 @@
 #define KGSL_PWRFLAGS_AXI_ON   2
 #define KGSL_PWRFLAGS_IRQ_ON   3
 
-#define GPU_SWFI_LATENCY        3
 #define UPDATE_BUSY_VAL		1000000
 #define UPDATE_BUSY		50
 
@@ -165,49 +164,48 @@ void kgsl_pwrctrl_pwrlevel_change(struct kgsl_device *device,
 
 EXPORT_SYMBOL(kgsl_pwrctrl_pwrlevel_change);
 
-static int kgsl_pwrctrl_thermal_pwrlevel_store(int max, struct device *dev,
+static int kgsl_pwrctrl_thermal_pwrlevel_store(struct device *dev,
 					 struct device_attribute *attr,
 					 const char *buf, size_t count)
 {
-	int ret, i, delta = 50000001;
-        unsigned long val;
-        struct kgsl_device *device = kgsl_device_from_dev(dev);
-        struct kgsl_pwrctrl *pwr;
+	struct kgsl_device *device = kgsl_device_from_dev(dev);
+	struct kgsl_pwrctrl *pwr;
+	int ret, level;
 
-        if (device == NULL)
-                return 0;
-        pwr = &device->pwrctrl;
+	if (device == NULL)
+		return 0;
 
-        ret = sscanf(buf, "%ld", &val);
-        if (ret != 1)
-                return count;
+	pwr = &device->pwrctrl;
 
-        mutex_lock(&device->mutex);
-        for (i = 0; i < pwr->num_pwrlevels; i++) {
-                if (abs(pwr->pwrlevels[i].gpu_freq - val) < delta) {
-                        if (max)
-                                pwr->thermal_pwrlevel = i;
-                        break;
-                }
-        }
+	ret = sscanf(buf, "%d", &level);
+	if (ret != 1)
+		return count;
 
-        if (i == pwr->num_pwrlevels)
-                goto done;
+	if (level < 0)
+		return count;
 
-        /*
-         * If the current or requested clock speed is greater than the
-         * thermal limit, bump down immediately.
-         */
+	mutex_lock(&device->mutex);
 
-        if (pwr->pwrlevels[pwr->active_pwrlevel].gpu_freq >
-            pwr->pwrlevels[pwr->thermal_pwrlevel].gpu_freq)
-                kgsl_pwrctrl_pwrlevel_change(device, pwr->thermal_pwrlevel);
-        else if (!max || (NULL == device->pwrscale.policy))
-                kgsl_pwrctrl_pwrlevel_change(device, i);
+	if (level > pwr->num_pwrlevels - 2)
+		level = pwr->num_pwrlevels - 2;
 
-done:
-        mutex_unlock(&device->mutex);
-        return count;
+	pwr->thermal_pwrlevel = level;
+
+	/*
+	 * If there is no power policy set the clock to the requested thermal
+	 * level - if thermal now happens to be higher than max, then that will
+	 * be limited by the pwrlevel change function.  Otherwise if there is
+	 * a policy only change the active clock if it is higher then the new
+	 * thermal level
+	 */
+
+	if (device->pwrscale.policy == NULL ||
+		pwr->thermal_pwrlevel > pwr->active_pwrlevel)
+		kgsl_pwrctrl_pwrlevel_change(device, pwr->thermal_pwrlevel);
+
+	mutex_unlock(&device->mutex);
+
+	return count;
 }
 
 static int kgsl_pwrctrl_thermal_pwrlevel_show(struct device *dev,
@@ -902,8 +900,7 @@ int kgsl_pwrctrl_init(struct kgsl_device *device)
 	if (pdata->set_grp_async != NULL)
 		pdata->set_grp_async();
 
-	if (pdata->num_levels > KGSL_MAX_PWRLEVELS ||
-	    pdata->num_levels < 1) {
+	if (pdata->num_levels > KGSL_MAX_PWRLEVELS) {
 		KGSL_PWR_ERR(device, "invalid power level count: %d\n",
 					 pdata->num_levels);
 		result = -EINVAL;
@@ -1292,8 +1289,9 @@ void kgsl_pwrctrl_wake(struct kgsl_device *device)
 		/* Re-enable HW access */
 		mod_timer(&device->idle_timer,
 				jiffies + device->pwrctrl.interval_timeout);
-		pm_qos_update_request(&device->pm_qos_req_dma,
-					GPU_SWFI_LATENCY);
+		if (device->pwrctrl.restore_slumber == false)
+			pm_qos_update_request(&device->pwrctrl.pm_qos_req_dma,
+				device->pwrctrl.pm_qos_latency);
 	case KGSL_STATE_ACTIVE:
 		kgsl_pwrctrl_request_state(device, KGSL_STATE_NONE);
 		break;

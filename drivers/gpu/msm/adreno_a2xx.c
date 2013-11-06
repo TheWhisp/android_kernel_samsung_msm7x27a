@@ -2001,10 +2001,10 @@ static void a2xx_start(struct adreno_device *adreno_dev)
 			0x18000000);
 	}
 
-	if (adreno_is_a20x(adreno_dev))
-		/* For A20X based targets increase number of clocks
-		 * that RBBM will wait before de-asserting Register
-		 * Clock Active signal */
+	if (adreno_is_a203(adreno_dev))
+		/* For A203 increase number of clocks that RBBM
+		 * will wait before de-asserting Register Clock
+		 * Active signal */
 		adreno_regwrite(device, REG_RBBM_CNTL, 0x0000FFFF);
 	else
 		adreno_regwrite(device, REG_RBBM_CNTL, 0x00004442);
@@ -2032,19 +2032,6 @@ static void a2xx_start(struct adreno_device *adreno_dev)
 	a2xx_gmeminit(adreno_dev);
 }
 
-static unsigned int a2xx_irq_pending(struct adreno_device *adreno_dev)
-{
-	struct kgsl_device *device = &adreno_dev->dev;
-	unsigned int rbbm, cp, mh;
-
-	adreno_regread(device, REG_RBBM_INT_CNTL, &rbbm);
-	adreno_regread(device, REG_CP_INT_CNTL, &cp);
-	adreno_regread(device, MH_INTERRUPT_MASK, &mh);
-
-	return ((rbbm & RBBM_INT_MASK) || (cp & CP_INT_MASK) ||
-			(mh & MH_INTERRUPT_MASK)) ? 1 : 0;
-}
-
 /* Defined in adreno_a2xx_snapshot.c */
 void *a2xx_snapshot(struct adreno_device *adreno_dev, void *snapshot,
 	int *remain, int hang);
@@ -2060,7 +2047,6 @@ struct adreno_gpudev adreno_a2xx_gpudev = {
 	.ctxt_draw_workaround = a2xx_drawctxt_draw_workaround,
 	.irq_handler = a2xx_irq_handler,
 	.irq_control = a2xx_irq_control,
-	.irq_pending = a2xx_irq_pending,
 	.snapshot = a2xx_snapshot,
 	.rb_init = a2xx_rb_init,
 	.busy_cycles = a2xx_busy_cycles,
