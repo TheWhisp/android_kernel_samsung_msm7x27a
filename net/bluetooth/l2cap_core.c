@@ -1,6 +1,6 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
-   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation.  All rights reserved.
+   Copyright (c) 2000-2001, 2010-2012 Code Aurora Forum.  All rights reserved.
    Copyright (C) 2009-2010 Gustavo F. Padovan <gustavo@padovan.org>
    Copyright (C) 2010 Google Inc.
 
@@ -90,7 +90,6 @@ static int l2cap_answer_move_poll(struct sock *sk);
 static int l2cap_create_cfm(struct hci_chan *chan, u8 status);
 static int l2cap_deaggregate(struct hci_chan *chan, struct l2cap_pinfo *pi);
 static void l2cap_chan_ready(struct sock *sk);
-static void l2cap_conn_del(struct hci_conn *hcon, int err, u8 is_process);
 static u16 l2cap_get_smallest_flushto(struct l2cap_chan_list *l);
 static void l2cap_set_acl_flushto(struct hci_conn *hcon, u16 flush_to);
 
@@ -1026,7 +1025,6 @@ static void l2cap_le_conn_ready(struct l2cap_conn *conn)
 	write_lock_bh(&list->lock);
 
 	hci_conn_hold(conn->hcon);
-	conn->hcon->disc_timeout = HCI_DISCONN_TIMEOUT;
 
 	l2cap_sock_init(sk, parent);
 	bacpy(&bt_sk(sk)->src, conn->src);
@@ -1048,16 +1046,15 @@ clean:
 
 static void l2cap_conn_ready(struct l2cap_conn *conn)
 {
-	struct l2cap_chan *chan;
-	struct hci_conn *hcon = conn->hcon;
+	struct l2cap_chan_list *l = &conn->chan_list;
+	struct sock *sk;
 
 	BT_DBG("conn %p", conn);
 
-	if (!hcon->out && hcon->type == LE_LINK)
+	if (!conn->hcon->out && conn->hcon->type == LE_LINK)
 		l2cap_le_conn_ready(conn);
 
-	if (hcon->out && hcon->type == LE_LINK)
-		smp_conn_security(hcon, hcon->pending_sec_level);
+	read_lock(&l->lock);
 
 	if (l->head) {
 		for (sk = l->head; sk; sk = l2cap_pi(sk)->next_c) {
@@ -1070,9 +1067,8 @@ static void l2cap_conn_ready(struct l2cap_conn *conn)
 				if (pending_sec > sec_level)
 					sec_level = pending_sec;
 
-		if (hcon->type == LE_LINK) {
-			if (smp_conn_security(hcon, chan->sec_level))
-				l2cap_chan_ready(chan);
+				if (smp_conn_security(conn, sec_level))
+					l2cap_chan_ready(sk);
 
 				hci_conn_put(conn->hcon);
 
@@ -1165,7 +1161,7 @@ static struct l2cap_conn *l2cap_conn_add(struct hci_conn *hcon, u8 status)
 	return conn;
 }
 
-static void l2cap_conn_del(struct hci_conn *hcon, int err, u8 is_process)
+void l2cap_conn_del(struct hci_conn *hcon, int err, u8 is_process)
 {
 	struct l2cap_conn *conn = hcon->l2cap_data;
 	struct sock *sk;
@@ -1425,11 +1421,6 @@ void l2cap_do_send(struct sock *sk, struct sk_buff *skb)
 			kfree_skb(skb);
 	} else {
 		u16 flags;
-
-		if (!(pi->conn)) {
-			kfree_skb(skb);
-			return;
-		}
 
 		bt_cb(skb)->force_active = pi->force_active;
 		BT_DBG("Sending on BR/EDR connection %p", pi->conn->hcon);
@@ -1949,11 +1940,10 @@ static void l2cap_ertm_send_sframe(struct sock *sk,
 		pi->conn_state &= ~L2CAP_CONN_SEND_FBIT;
 	}
 
-	if (conn->mtu < L2CAP_HDR_SIZE + L2CAP_CMD_HDR_SIZE)
-		return NULL;
-
-	len = L2CAP_HDR_SIZE + L2CAP_CMD_HDR_SIZE + dlen;
-	count = min_t(unsigned int, conn->mtu, len);
+	if (control->super == L2CAP_SFRAME_RR)
+		pi->conn_state &= ~L2CAP_CONN_SENT_RNR;
+	else if (control->super == L2CAP_SFRAME_RNR)
+		pi->conn_state |= L2CAP_CONN_SENT_RNR;
 
 	if (control->super != L2CAP_SFRAME_SREJ) {
 		pi->last_acked_seq = control->reqseq;
@@ -2818,6 +2808,9 @@ static struct sk_buff *l2cap_build_cmd(struct l2cap_conn *conn,
 
 	BT_DBG("conn %p, code 0x%2.2x, ident 0x%2.2x, len %d",
 			conn, code, ident, dlen);
+
+	if (conn->mtu < L2CAP_HDR_SIZE + L2CAP_CMD_HDR_SIZE)
+		return NULL;
 
 	len = L2CAP_HDR_SIZE + L2CAP_CMD_HDR_SIZE + dlen;
 	count = min_t(unsigned int, mtu, len);
@@ -4319,13 +4312,235 @@ static inline void set_default_fcs(struct l2cap_pinfo *pi)
 		pi->fcs = L2CAP_FCS_CRC16;
 }
 
-		if (type != L2CAP_CONF_RFC)
-			continue;
+static inline int l2cap_config_req(struct l2cap_conn *conn, struct l2cap_cmd_hdr *cmd, u16 cmd_len, u8 *data)
+{
+	struct l2cap_conf_req *req = (struct l2cap_conf_req *) data;
+	u16 dcid, flags;
+	u8 rspbuf[64];
+	struct l2cap_conf_rsp *rsp = (struct l2cap_conf_rsp *) rspbuf;
+	struct sock *sk;
+	int len;
+	u8 amp_move_reconf = 0;
 
-		if (olen != sizeof(rfc))
+	dcid  = __le16_to_cpu(req->dcid);
+	flags = __le16_to_cpu(req->flags);
+
+	BT_DBG("dcid 0x%4.4x flags 0x%2.2x", dcid, flags);
+
+	sk = l2cap_get_chan_by_scid(&conn->chan_list, dcid);
+	if (!sk)
+		return -ENOENT;
+
+	BT_DBG("sk_state 0x%2.2x rx_state 0x%2.2x "
+		"reconf_state 0x%2.2x amp_id 0x%2.2x amp_move_id 0x%2.2x",
+		sk->sk_state, l2cap_pi(sk)->rx_state,
+		l2cap_pi(sk)->reconf_state, l2cap_pi(sk)->amp_id,
+		l2cap_pi(sk)->amp_move_id);
+
+	/* Detect a reconfig request due to channel move between
+	 * BR/EDR and AMP
+	 */
+	if (sk->sk_state == BT_CONNECTED &&
+		l2cap_pi(sk)->rx_state ==
+			L2CAP_ERTM_RX_STATE_WAIT_P_FLAG_RECONFIGURE)
+		l2cap_pi(sk)->reconf_state = L2CAP_RECONF_ACC;
+
+	if (l2cap_pi(sk)->reconf_state != L2CAP_RECONF_NONE)
+		amp_move_reconf = 1;
+
+	if (sk->sk_state != BT_CONFIG && !amp_move_reconf) {
+		struct l2cap_cmd_rej rej;
+
+		rej.reason = cpu_to_le16(0x0002);
+		l2cap_send_cmd(conn, cmd->ident, L2CAP_COMMAND_REJ,
+				sizeof(rej), &rej);
+		goto unlock;
+	}
+
+	/* Reject if config buffer is too small. */
+	len = cmd_len - sizeof(*req);
+	if (l2cap_pi(sk)->conf_len + len > sizeof(l2cap_pi(sk)->conf_req)) {
+		l2cap_send_cmd(conn, cmd->ident, L2CAP_CONF_RSP,
+				l2cap_build_conf_rsp(sk, rspbuf,
+					L2CAP_CONF_REJECT, flags), rspbuf);
+		goto unlock;
+	}
+
+	/* Store config. */
+	memcpy(l2cap_pi(sk)->conf_req + l2cap_pi(sk)->conf_len, req->data, len);
+	l2cap_pi(sk)->conf_len += len;
+
+	if (flags & 0x0001) {
+		/* Incomplete config. Send empty response. */
+		l2cap_send_cmd(conn, cmd->ident, L2CAP_CONF_RSP,
+				l2cap_build_conf_rsp(sk, rspbuf,
+					L2CAP_CONF_SUCCESS, 0x0001), rspbuf);
+		goto unlock;
+	}
+
+	/* Complete config. */
+	if (!amp_move_reconf)
+		len = l2cap_parse_conf_req(sk, rspbuf);
+	else
+		len = l2cap_parse_amp_move_reconf_req(sk, rspbuf);
+
+	if (len < 0) {
+		l2cap_send_disconn_req(conn, sk, ECONNRESET);
+		goto unlock;
+	}
+
+	l2cap_pi(sk)->conf_ident = cmd->ident;
+	l2cap_send_cmd(conn, cmd->ident, L2CAP_CONF_RSP, len, rspbuf);
+
+	if (l2cap_pi(sk)->conf_state & L2CAP_CONF_LOCKSTEP &&
+			rsp->result == cpu_to_le16(L2CAP_CONF_PENDING) &&
+			!l2cap_pi(sk)->amp_id) {
+		/* Send success response right after pending if using
+		 * lockstep config on BR/EDR
+		 */
+		rsp->result = cpu_to_le16(L2CAP_CONF_SUCCESS);
+		l2cap_pi(sk)->conf_state |= L2CAP_CONF_OUTPUT_DONE;
+		l2cap_send_cmd(conn, cmd->ident, L2CAP_CONF_RSP, len, rspbuf);
+	}
+
+	/* Reset config buffer. */
+	l2cap_pi(sk)->conf_len = 0;
+
+	if (amp_move_reconf)
+		goto unlock;
+
+	l2cap_pi(sk)->num_conf_rsp++;
+
+	if (!(l2cap_pi(sk)->conf_state & L2CAP_CONF_OUTPUT_DONE))
+		goto unlock;
+
+	if (l2cap_pi(sk)->conf_state & L2CAP_CONF_INPUT_DONE) {
+		set_default_fcs(l2cap_pi(sk));
+
+		sk->sk_state = BT_CONNECTED;
+
+		if (l2cap_pi(sk)->mode == L2CAP_MODE_ERTM ||
+			l2cap_pi(sk)->mode == L2CAP_MODE_STREAMING)
+			l2cap_ertm_init(sk);
+
+		l2cap_chan_ready(sk);
+		goto unlock;
+	}
+
+	if (!(l2cap_pi(sk)->conf_state & L2CAP_CONF_REQ_SENT)) {
+		u8 buf[64];
+		l2cap_pi(sk)->conf_state |= L2CAP_CONF_REQ_SENT;
+		l2cap_send_cmd(conn, l2cap_get_ident(conn), L2CAP_CONF_REQ,
+					l2cap_build_conf_req(sk, buf), buf);
+		l2cap_pi(sk)->num_conf_req++;
+	}
+
+unlock:
+	bh_unlock_sock(sk);
+	return 0;
+}
+
+static inline int l2cap_config_rsp(struct l2cap_conn *conn, struct l2cap_cmd_hdr *cmd, u8 *data)
+{
+	struct l2cap_conf_rsp *rsp = (struct l2cap_conf_rsp *)data;
+	u16 scid, flags, result;
+	struct sock *sk;
+	struct l2cap_pinfo *pi;
+	int len = cmd->len - sizeof(*rsp);
+
+	scid   = __le16_to_cpu(rsp->scid);
+	flags  = __le16_to_cpu(rsp->flags);
+	result = __le16_to_cpu(rsp->result);
+
+	BT_DBG("scid 0x%4.4x flags 0x%2.2x result 0x%2.2x",
+			scid, flags, result);
+
+	sk = l2cap_get_chan_by_scid(&conn->chan_list, scid);
+	if (!sk)
+		return 0;
+
+	pi = l2cap_pi(sk);
+
+	if (pi->reconf_state != L2CAP_RECONF_NONE)  {
+		l2cap_amp_move_reconf_rsp(sk, rsp->data, len, result);
+		goto done;
+	}
+
+	switch (result) {
+	case L2CAP_CONF_SUCCESS:
+		if (pi->conf_state & L2CAP_CONF_LOCKSTEP &&
+				!(pi->conf_state & L2CAP_CONF_LOCKSTEP_PEND)) {
+			/* Lockstep procedure requires a pending response
+			 * before success.
+			 */
+			l2cap_send_disconn_req(conn, sk, ECONNRESET);
+			goto done;
+		}
+
+		l2cap_conf_rfc_get(sk, rsp->data, len);
+		break;
+
+	case L2CAP_CONF_PENDING:
+		if (!(pi->conf_state & L2CAP_CONF_LOCKSTEP)) {
+			l2cap_send_disconn_req(conn, sk, ECONNRESET);
+			goto done;
+		}
+
+		l2cap_conf_rfc_get(sk, rsp->data, len);
+
+		pi->conf_state |= L2CAP_CONF_LOCKSTEP_PEND;
+
+		l2cap_conf_ext_fs_get(sk, rsp->data, len);
+
+		if (pi->amp_id && pi->conf_state & L2CAP_CONF_PEND_SENT) {
+			struct hci_chan *chan;
+
+			/* Already sent a 'pending' response, so set up
+			 * the logical link now
+			 */
+			chan = l2cap_chan_admit(pi->amp_id, sk);
+			if (!chan) {
+				l2cap_send_disconn_req(pi->conn, sk,
+							ECONNRESET);
+				goto done;
+			}
+
+			if (chan->state == BT_CONNECTED)
+				l2cap_create_cfm(chan, 0);
+		}
+
+		goto done;
+
+	case L2CAP_CONF_UNACCEPT:
+		if (pi->num_conf_rsp <= L2CAP_CONF_MAX_CONF_RSP) {
+			char req[64];
+
+			if (len > sizeof(req) - sizeof(struct l2cap_conf_req)) {
+				l2cap_send_disconn_req(conn, sk, ECONNRESET);
+				goto done;
+			}
+
+			/* throw out any old stored conf requests */
+			result = L2CAP_CONF_SUCCESS;
+			len = l2cap_parse_conf_rsp(sk, rsp->data,
+							len, req, &result);
+			if (len < 0) {
+				l2cap_send_disconn_req(conn, sk, ECONNRESET);
+				goto done;
+			}
+
+			l2cap_send_cmd(conn, l2cap_get_ident(conn),
+						L2CAP_CONF_REQ, len, req);
+			pi->num_conf_req++;
+			if (result != L2CAP_CONF_SUCCESS)
+				goto done;
 			break;
+		}
 
-		memcpy(&rfc, (void *)val, olen);
+	default:
+		sk->sk_err = ECONNRESET;
+		l2cap_sock_set_timer(sk, HZ * 5);
+		l2cap_send_disconn_req(conn, sk, ECONNRESET);
 		goto done;
 	}
 

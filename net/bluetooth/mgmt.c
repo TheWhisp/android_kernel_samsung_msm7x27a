@@ -1,7 +1,7 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
    Copyright (C) 2010  Nokia Corporation
-   Copyright (c) 2011-2012 The Linux Foundation.  All rights reserved.
+   Copyright (c) 2011-2012 Code Aurora Forum.  All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License version 2 as
@@ -228,6 +228,8 @@ static int read_controller_info(struct sock *sk, u16 index)
 	put_unaligned_le16(hdev->hci_rev, &rp.hci_rev);
 
 	memcpy(rp.name, hdev->dev_name, sizeof(hdev->dev_name));
+
+	rp.le_white_list_size = hdev->le_white_list_size;
 
 	hci_dev_unlock_bh(hdev);
 	hci_dev_put(hdev);
@@ -1450,6 +1452,185 @@ failed:
 	return err;
 }
 
+static int le_add_dev_white_list(struct sock *sk, u16 index,
+					unsigned char *data, u16 len)
+{
+	struct hci_dev *hdev;
+	struct mgmt_cp_le_add_dev_white_list *cp;
+	int err = 0;
+
+	BT_DBG("");
+
+	cp = (void *) data;
+
+	if (len != sizeof(*cp))
+		return cmd_status(sk, index, MGMT_OP_LE_ADD_DEV_WHITE_LIST,
+									EINVAL);
+
+	hdev = hci_dev_get(index);
+	if (!hdev)
+		return cmd_status(sk, index, MGMT_OP_LE_ADD_DEV_WHITE_LIST,
+									ENODEV);
+
+	hci_dev_lock_bh(hdev);
+
+	if (!test_bit(HCI_UP, &hdev->flags)) {
+		err = cmd_status(sk, index, MGMT_OP_LE_ADD_DEV_WHITE_LIST,
+								ENETDOWN);
+		goto failed;
+	}
+
+	hci_le_add_dev_white_list(hdev, &cp->bdaddr);
+
+failed:
+	hci_dev_unlock_bh(hdev);
+	hci_dev_put(hdev);
+
+	return err;
+}
+
+static int le_remove_dev_white_list(struct sock *sk, u16 index,
+					unsigned char *data, u16 len)
+{
+	struct hci_dev *hdev;
+	struct mgmt_cp_le_remove_dev_white_list *cp;
+	int err = 0;
+
+	BT_DBG("");
+
+	cp = (void *) data;
+
+	if (len != sizeof(*cp))
+		return cmd_status(sk, index, MGMT_OP_LE_REMOVE_DEV_WHITE_LIST,
+									EINVAL);
+
+	hdev = hci_dev_get(index);
+	if (!hdev)
+		return cmd_status(sk, index, MGMT_OP_LE_REMOVE_DEV_WHITE_LIST,
+									ENODEV);
+
+	hci_dev_lock_bh(hdev);
+
+	if (!test_bit(HCI_UP, &hdev->flags)) {
+		err = cmd_status(sk, index, MGMT_OP_LE_REMOVE_DEV_WHITE_LIST,
+								ENETDOWN);
+		goto failed;
+	}
+
+	hci_le_remove_dev_white_list(hdev, &cp->bdaddr);
+
+failed:
+	hci_dev_unlock_bh(hdev);
+	hci_dev_put(hdev);
+
+	return err;
+}
+
+static int le_create_conn_white_list(struct sock *sk, u16 index)
+{
+	struct hci_dev *hdev;
+	struct hci_conn *conn;
+	u8 sec_level, auth_type;
+	struct pending_cmd *cmd;
+	bdaddr_t bdaddr;
+	int err = 0;
+
+	BT_DBG("");
+
+	hdev = hci_dev_get(index);
+	if (!hdev)
+		return cmd_status(sk, index, MGMT_OP_LE_CREATE_CONN_WHITE_LIST,
+									ENODEV);
+
+	hci_dev_lock_bh(hdev);
+
+	if (!test_bit(HCI_UP, &hdev->flags)) {
+		err = cmd_status(sk, index, MGMT_OP_LE_CREATE_CONN_WHITE_LIST,
+								ENETDOWN);
+		goto failed;
+	}
+
+	cmd = mgmt_pending_add(sk, MGMT_OP_LE_CREATE_CONN_WHITE_LIST, index,
+								NULL, 0);
+	if (!cmd) {
+		err = -ENOMEM;
+		goto failed;
+	}
+
+	sec_level = BT_SECURITY_MEDIUM;
+	auth_type = HCI_AT_GENERAL_BONDING;
+	memset(&bdaddr, 0, sizeof(bdaddr));
+	conn = hci_le_connect(hdev, 0, BDADDR_ANY, sec_level, auth_type, NULL);
+	if (IS_ERR(conn)) {
+		err = PTR_ERR(conn);
+		mgmt_pending_remove(cmd);
+	}
+
+failed:
+	hci_dev_unlock_bh(hdev);
+	hci_dev_put(hdev);
+
+	return err;
+}
+
+static int le_cancel_create_conn_white_list(struct sock *sk, u16 index)
+{
+	struct hci_dev *hdev;
+	int err = 0;
+
+	BT_DBG("");
+
+	hdev = hci_dev_get(index);
+	if (!hdev)
+		return cmd_status(sk, index,
+			MGMT_OP_LE_CANCEL_CREATE_CONN_WHITE_LIST, ENODEV);
+
+	hci_dev_lock_bh(hdev);
+
+	if (!test_bit(HCI_UP, &hdev->flags)) {
+		err = cmd_status(sk, index,
+			MGMT_OP_LE_CANCEL_CREATE_CONN_WHITE_LIST, ENETDOWN);
+		goto failed;
+	}
+
+	hci_le_cancel_create_connect(hdev, BDADDR_ANY);
+
+failed:
+	hci_dev_unlock_bh(hdev);
+	hci_dev_put(hdev);
+
+	return err;
+}
+
+static int le_clear_white_list(struct sock *sk, u16 index)
+{
+	struct hci_dev *hdev;
+	int err;
+
+	BT_DBG("");
+
+	hdev = hci_dev_get(index);
+	if (!hdev)
+		return cmd_status(sk, index,
+			MGMT_OP_LE_CLEAR_WHITE_LIST, ENODEV);
+
+	hci_dev_lock_bh(hdev);
+
+	if (!test_bit(HCI_UP, &hdev->flags)) {
+		err = cmd_status(sk, index,
+			MGMT_OP_LE_CLEAR_WHITE_LIST, ENETDOWN);
+		goto failed;
+	}
+
+	err = hci_send_cmd(hdev, HCI_OP_LE_CLEAR_WHITE_LIST, 0, NULL);
+
+failed:
+	hci_dev_unlock_bh(hdev);
+	hci_dev_put(hdev);
+
+	return err;
+}
+
 static int set_io_capability(struct sock *sk, u16 index, unsigned char *data,
 									u16 len)
 {
@@ -2466,7 +2647,23 @@ int mgmt_control(struct sock *sk, struct msghdr *msg, size_t msglen)
 	case MGMT_OP_ENCRYPT_LINK:
 		err = encrypt_link(sk, index, buf + sizeof(*hdr), len);
 		break;
-
+	case MGMT_OP_LE_ADD_DEV_WHITE_LIST:
+		err = le_add_dev_white_list(sk, index, buf + sizeof(*hdr),
+									len);
+		break;
+	case MGMT_OP_LE_REMOVE_DEV_WHITE_LIST:
+		err = le_remove_dev_white_list(sk, index, buf + sizeof(*hdr),
+									len);
+		break;
+	case MGMT_OP_LE_CLEAR_WHITE_LIST:
+		err = le_clear_white_list(sk, index);
+		break;
+	case MGMT_OP_LE_CREATE_CONN_WHITE_LIST:
+		err = le_create_conn_white_list(sk, index);
+		break;
+	case MGMT_OP_LE_CANCEL_CREATE_CONN_WHITE_LIST:
+		err = le_cancel_create_conn_white_list(sk, index);
+		break;
 	default:
 		BT_DBG("Unknown op %u", opcode);
 		err = cmd_status(sk, index, opcode, 0x01);
@@ -2546,31 +2743,6 @@ int mgmt_powered(u16 index, u8 powered)
 	if (!powered) {
 		u8 status = ENETDOWN;
 		mgmt_pending_foreach(0, index, cmd_status_rsp, &status);
-		if (scan)
-			hci_send_cmd(hdev, HCI_OP_WRITE_SCAN_ENABLE, 1, &scan);
-
-		if (test_bit(HCI_SSP_ENABLED, &hdev->dev_flags)) {
-			u8 ssp = 1;
-
-			hci_send_cmd(hdev, HCI_OP_WRITE_SSP_MODE, 1, &ssp);
-		}
-
-		if (test_bit(HCI_LE_ENABLED, &hdev->dev_flags)) {
-			struct hci_cp_write_le_host_supported cp;
-
-			cp.le = 1;
-			cp.simul = !!(hdev->features[6] & LMP_SIMUL_LE_BR);
-
-			hci_send_cmd(hdev, HCI_OP_WRITE_LE_HOST_SUPPORTED,
-				     sizeof(cp), &cp);
-		}
-
-		update_class(hdev);
-		update_name(hdev, hdev->dev_name);
-		update_eir(hdev);
-	} else {
-		u8 status = MGMT_STATUS_NOT_POWERED;
-		mgmt_pending_foreach(0, hdev, cmd_status_rsp, &status);
 	}
 
 	ev.val = powered;
@@ -2583,28 +2755,7 @@ int mgmt_powered(u16 index, u8 powered)
 	return ret;
 }
 
-int mgmt_set_powered_failed(struct hci_dev *hdev, int err)
-{
-	struct pending_cmd *cmd;
-	u8 status;
-
-	cmd = mgmt_pending_find(MGMT_OP_SET_POWERED, hdev);
-	if (!cmd)
-		return -ENOENT;
-
-	if (err == -ERFKILL)
-		status = MGMT_STATUS_RFKILLED;
-	else
-		status = MGMT_STATUS_FAILED;
-
-	err = cmd_status(cmd->sk, hdev->id, MGMT_OP_SET_POWERED, status);
-
-	mgmt_pending_remove(cmd);
-
-	return err;
-}
-
-int mgmt_discoverable(struct hci_dev *hdev, u8 discoverable)
+int mgmt_discoverable(u16 index, u8 discoverable)
 {
 	struct mgmt_mode ev;
 	struct cmd_lookup match = { discoverable, NULL };
@@ -2672,9 +2823,24 @@ int mgmt_new_key(u16 index, struct link_key *key, u8 bonded)
 int mgmt_connected(u16 index, bdaddr_t *bdaddr, u8 le)
 {
 	struct mgmt_ev_connected ev;
+	struct pending_cmd *cmd;
+	struct hci_dev *hdev;
+
+	BT_DBG("hci%u", index);
+
+	hdev = hci_dev_get(index);
+
+	if (!hdev)
+		return -ENODEV;
 
 	bacpy(&ev.bdaddr, bdaddr);
 	ev.le = le;
+
+	cmd = mgmt_pending_find(MGMT_OP_LE_CREATE_CONN_WHITE_LIST, index);
+	if (cmd) {
+		BT_ERR("mgmt_connected remove mgmt pending white_list");
+		mgmt_pending_remove(cmd);
+	}
 
 	return mgmt_event(MGMT_EV_CONNECTED, index, &ev, sizeof(ev), NULL);
 }
@@ -2709,20 +2875,21 @@ static void disconnect_rsp(struct pending_cmd *cmd, void *data)
 	mgmt_pending_remove(cmd);
 }
 
-int mgmt_disconnected(u16 index, bdaddr_t *bdaddr)
+int mgmt_disconnected(u16 index, bdaddr_t *bdaddr, u8 reason)
 {
 	struct mgmt_ev_disconnected ev;
 	struct sock *sk = NULL;
 	int err;
 
-	mgmt_pending_foreach(MGMT_OP_DISCONNECT, index, disconnect_rsp, &sk);
-
 	bacpy(&ev.bdaddr, bdaddr);
+	ev.reason = reason;
 
 	err = mgmt_event(MGMT_EV_DISCONNECTED, index, &ev, sizeof(ev), sk);
 
 	if (sk)
 		sock_put(sk);
+
+	mgmt_pending_foreach(MGMT_OP_DISCONNECT, index, disconnect_rsp, &sk);
 
 	return err;
 }
