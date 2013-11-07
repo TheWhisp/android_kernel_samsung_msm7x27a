@@ -1370,7 +1370,7 @@ retry:
 		goto err;
 
 	/* now, wait for the GPU to finish its operations */
-	wait_time = jiffies + ADRENO_IDLE_TIMEOUT;
+	wait_time = jiffies + msecs_to_jiffies(ADRENO_IDLE_TIMEOUT);
 	wait_time_part = jiffies + msecs_to_jiffies(KGSL_TIMEOUT_PART);
 
 	while (time_before(jiffies, wait_time)) {
@@ -1399,7 +1399,7 @@ err:
 	KGSL_DRV_ERR(device, "spun too long waiting for RB to idle\n");
 	if (KGSL_STATE_DUMP_AND_RECOVER != device->state &&
 		!adreno_dump_and_recover(device)) {
-		wait_time = jiffies + ADRENO_IDLE_TIMEOUT;
+		wait_time = jiffies + msecs_to_jiffies(ADRENO_IDLE_TIMEOUT);
 		goto retry;
 	}
 	return -ETIMEDOUT;
@@ -1419,15 +1419,10 @@ static unsigned int adreno_isidle(struct kgsl_device *device)
 		GSL_RB_GET_READPTR(rb, &rb->rptr);
 		if (!device->active_cnt && (rb->rptr == rb->wptr)) {
 			/* Is the core idle? */
-			adreno_regread(device,
-				adreno_dev->gpudev->reg_rbbm_status,
-				&rbbm_status);
-
-			if (adreno_is_a2xx(adreno_dev)) {
+			if (adreno_dev->gpudev->irq_pending(adreno_dev) == 0) {
+				adreno_regread(device, REG_RBBM_STATUS,
+							&rbbm_status);
 				if (rbbm_status == 0x110)
-					status = true;
-			} else {
-				if (!(rbbm_status & 0x80000000))
 					status = true;
 			}
 		}
@@ -1688,13 +1683,9 @@ static int kgsl_check_interrupt_timestamp(struct kgsl_device *device,
 			cmds[0] = cp_type3_packet(CP_NOP, 1);
 			cmds[1] = 0;
 
-			if (adreno_dev->drawctxt_active)
-				adreno_ringbuffer_issuecmds_intr(device,
-						context, &cmds[0], 2);
-			else
-				/* We would never call this function if there
-				 * was no active contexts running */
-				BUG();
+			adreno_ringbuffer_issuecmds(device,
+					adreno_dev->drawctxt_active,
+					KGSL_CMD_FLAGS_NONE, &cmds[0], 2);
 		}
 	}
 unlock:
