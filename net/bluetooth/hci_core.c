@@ -1,6 +1,6 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
-   Copyright (c) 2000-2001, 2010-2012 Code Aurora Forum.  All rights reserved.
+   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation.  All rights reserved.
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -77,7 +77,6 @@ DEFINE_RWLOCK(amp_mgr_cb_list_lock);
 /* HCI protocols */
 #define HCI_MAX_PROTO	2
 struct hci_proto *hci_proto[HCI_MAX_PROTO];
-struct sco_proto *sco_protoc = NULL;
 
 /* HCI notifiers list */
 static ATOMIC_NOTIFIER_HEAD(hci_notifier);
@@ -306,12 +305,6 @@ static void hci_le_init_req(struct hci_dev *hdev, unsigned long opt)
 
 	/* Read LE buffer size */
 	hci_send_cmd(hdev, HCI_OP_LE_READ_BUFFER_SIZE, 0, NULL);
-
-	/* Read LE clear white list */
-	hci_send_cmd(hdev, HCI_OP_LE_CLEAR_WHITE_LIST, 0, NULL);
-
-	/* Read LE white list size */
-	hci_send_cmd(hdev, HCI_OP_LE_READ_WHITE_LIST_SIZE, 0, NULL);
 }
 
 static void hci_scan_req(struct hci_dev *hdev, unsigned long opt)
@@ -638,6 +631,8 @@ static int hci_dev_do_close(struct hci_dev *hdev, u8 is_process)
 	unsigned long keepflags = 0;
 
 	BT_DBG("%s %p", hdev->name, hdev);
+
+	cancel_delayed_work(&hdev->power_off);
 
 	hci_req_cancel(hdev, ENODEV);
 	hci_req_lock(hdev);
@@ -1002,8 +997,10 @@ static void hci_power_on(struct work_struct *work)
 	BT_DBG("%s", hdev->name);
 
 	err = hci_dev_open(hdev->id);
-	if (err && err != -EALREADY)
+	if (err < 0) {
+		mgmt_set_powered_failed(hdev, err);
 		return;
+	}
 
 	if (test_bit(HCI_AUTO_OFF, &hdev->flags) &&
 				hdev->dev_type == HCI_BREDR)
@@ -1919,54 +1916,6 @@ int hci_unregister_amp(struct amp_mgr_cb *cb)
 	return 0;
 }
 EXPORT_SYMBOL(hci_unregister_amp);
-
-/* Register/Unregister protocols. */
-int hci_sco_register_proto(struct sco_proto *sp)
-{
-	int err = 0;
-
-	BT_DBG("sp %p", sp);
-
-	write_lock_bh(&hci_task_lock);
-
-	if (!sco_protoc)
-		sco_protoc = sp;
-	else
-		err = -EEXIST;
-
-	write_unlock_bh(&hci_task_lock);
-
-	return err;
-}
-EXPORT_SYMBOL(hci_sco_register_proto);
-
-int hci_sco_unregister_proto(void)
-{
-	int err = 0;
-
-	write_lock_bh(&hci_task_lock);
-
-	if (sco_protoc)
-		sco_protoc = NULL;
-	else
-		err = -ENOENT;
-
-	write_unlock_bh(&hci_task_lock);
-
-	return err;
-}
-EXPORT_SYMBOL(hci_sco_unregister_proto);
-
-void hci_register_sco_cb(struct sco_cb *cb, bool reg)
-{
-	if (!sco_protoc || !sco_protoc->register_cb || !sco_protoc->unregister_cb)
-		return;
-
-	if (reg)
-		sco_protoc->register_cb(cb);
-	else
-		sco_protoc->unregister_cb(cb);
-}
 
 void hci_amp_cmd_complete(struct hci_dev *hdev, __u16 opcode,
 			struct sk_buff *skb)
