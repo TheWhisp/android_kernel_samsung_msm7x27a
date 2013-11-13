@@ -1,6 +1,6 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
-   Copyright (c) 2000-2001, 2010-2012, Code Aurora Forum. All rights reserved.
+   Copyright (c) 2000-2001, 2010-2012 The Linux Foundation. All rights reserved.
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -424,16 +424,6 @@ static void hci_cc_host_buffer_size(struct hci_dev *hdev, struct sk_buff *skb)
 	BT_DBG("%s status 0x%x", hdev->name, status);
 
 	hci_req_complete(hdev, HCI_OP_HOST_BUFFER_SIZE, status);
-}
-
-static void hci_cc_le_clear_white_list(struct hci_dev *hdev,
-							struct sk_buff *skb)
-{
-	__u8 status = *((__u8 *) skb->data);
-
-	BT_DBG("%s status 0x%x", hdev->name, status);
-
-	hci_req_complete(hdev, HCI_OP_LE_CLEAR_WHITE_LIST, status);
 }
 
 static void hci_cc_read_ssp_mode(struct hci_dev *hdev, struct sk_buff *skb)
@@ -921,23 +911,6 @@ static void hci_cc_le_read_buffer_size(struct hci_dev *hdev,
 	BT_DBG("%s le mtu %d:%d", hdev->name, hdev->le_mtu, hdev->le_pkts);
 
 	hci_req_complete(hdev, HCI_OP_LE_READ_BUFFER_SIZE, rp->status);
-}
-
-static void hci_cc_le_read_white_list_size(struct hci_dev *hdev,
-				       struct sk_buff *skb)
-{
-	struct hci_rp_le_read_white_list_size *rp = (void *) skb->data;
-
-	BT_DBG("%s status 0x%x", hdev->name, rp->status);
-
-	if (rp->status)
-		return;
-
-	hdev->le_white_list_size = rp->size;
-
-	BT_DBG("%s le white list %d", hdev->name, hdev->le_white_list_size);
-
-	hci_req_complete(hdev, HCI_OP_LE_READ_WHITE_LIST_SIZE, rp->status);
 }
 
 static void hci_cc_user_confirm_reply(struct hci_dev *hdev, struct sk_buff *skb)
@@ -1794,7 +1767,7 @@ static inline void hci_disconn_complete_evt(struct hci_dev *hdev, struct sk_buff
 	struct hci_ev_disconn_complete *ev = (void *) skb->data;
 	struct hci_conn *conn;
 
-	BT_DBG("%s status %d reason %d", hdev->name, ev->status, ev->reason);
+	BT_DBG("%s status %d", hdev->name, ev->status);
 
 	if (ev->status) {
 		hci_dev_lock(hdev);
@@ -1812,7 +1785,7 @@ static inline void hci_disconn_complete_evt(struct hci_dev *hdev, struct sk_buff
 	conn->state = BT_CLOSED;
 
 	if (conn->type == ACL_LINK || conn->type == LE_LINK)
-		mgmt_disconnected(hdev->id, &conn->dst, ev->reason);
+		mgmt_disconnected(hdev->id, &conn->dst);
 
 	if (conn->type == LE_LINK)
 		del_timer(&conn->smp_timer);
@@ -1838,6 +1811,13 @@ static inline void hci_auth_complete_evt(struct hci_dev *hdev, struct sk_buff *s
 		if (ev->status == 0x06 && hdev->ssp_mode > 0 &&
 							conn->ssp_mode > 0) {
 			struct hci_cp_auth_requested cp;
+			struct link_key *key;
+			key = hci_find_link_key(hdev, &conn->dst);
+			if (key && key->key_type == 0x05) {
+				BT_INFO("Previous key was authenticated, "
+					"updating the auth type for outgoing connection");
+				conn->auth_type = HCI_AT_DEDICATED_BONDING_MITM;
+			}
 			hci_remove_link_key(hdev, &conn->dst);
 			cp.handle = cpu_to_le16(conn->handle);
 			/*Initiates dedicated bonding as pin or key is missing
@@ -2280,14 +2260,6 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 		hci_cc_le_read_buffer_size(hdev, skb);
 		break;
 
-	case HCI_OP_LE_READ_WHITE_LIST_SIZE:
-		hci_cc_le_read_white_list_size(hdev, skb);
-		break;
-
-	case HCI_OP_LE_CLEAR_WHITE_LIST:
-		hci_cc_le_clear_white_list(hdev, skb);
-		break;
-
 	case HCI_OP_READ_RSSI:
 		hci_cc_read_rssi(hdev, skb);
 		break;
@@ -2320,7 +2292,7 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 	if (ev->opcode != HCI_OP_NOP)
 		del_timer(&hdev->cmd_timer);
 
-	if (ev->ncmd && !test_bit(HCI_RESET, &hdev->flags)) {
+	if (ev->ncmd) {
 		atomic_set(&hdev->cmd_cnt, 1);
 		if (!skb_queue_empty(&hdev->cmd_q))
 			tasklet_schedule(&hdev->cmd_task);
@@ -2675,12 +2647,6 @@ static inline void hci_link_key_request_evt(struct hci_dev *hdev, struct sk_buff
 	if (conn) {
 		BT_DBG("Conn pending sec level is %d, ssp is %d, key len is %d",
 			conn->pending_sec_level, conn->ssp_mode, key->pin_len);
-	}
-	if (conn && (conn->ssp_mode == 0) &&
-		(conn->pending_sec_level == BT_SECURITY_HIGH) &&
-		(key->pin_len != 16)) {
-		BT_DBG("Security is high ignoring this key");
-		goto not_found;
 	}
 
 	if (key->key_type == 0x04 && conn && conn->auth_type != 0xff &&
@@ -3207,22 +3173,10 @@ static inline void hci_le_conn_complete_evt(struct hci_dev *hdev, struct sk_buff
 {
 	struct hci_ev_le_conn_complete *ev = (void *) skb->data;
 	struct hci_conn *conn;
-	u8 white_list;
 
 	BT_DBG("%s status %d", hdev->name, ev->status);
 
 	hci_dev_lock(hdev);
-
-	/* Ignore event for LE cancel create conn whitelist */
-	if (ev->status && !bacmp(&ev->bdaddr, BDADDR_ANY))
-		goto unlock;
-
-	if (hci_conn_hash_lookup_ba(hdev, LE_LINK, BDADDR_ANY))
-		white_list = 1;
-	else
-		white_list = 0;
-
-	BT_DBG("w_list %d", white_list);
 
 	conn = hci_conn_hash_lookup_ba(hdev, LE_LINK, &ev->bdaddr);
 	if (!conn) {
@@ -3255,8 +3209,7 @@ static inline void hci_le_conn_complete_evt(struct hci_dev *hdev, struct sk_buff
 	hci_conn_hold_device(conn);
 	hci_conn_add_sysfs(conn);
 
-	if (!white_list)
-		hci_proto_connect_cfm(conn, ev->status);
+	hci_proto_connect_cfm(conn, ev->status);
 
 unlock:
 	hci_dev_unlock(hdev);

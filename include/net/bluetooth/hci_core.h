@@ -1,6 +1,6 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
-   Copyright (c) 2000-2001, 2010-2012, Code Aurora Forum. All rights reserved.
+   Copyright (c) 2000-2001, 2010-2012, The Linux Foundation. All rights reserved.
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -191,7 +191,6 @@ struct hci_dev {
 	unsigned int	acl_pkts;
 	unsigned int	sco_pkts;
 	unsigned int	le_pkts;
-	unsigned int	le_white_list_size;
 
 	unsigned int	data_block_len;
 
@@ -604,9 +603,6 @@ struct hci_conn *hci_le_connect(struct hci_dev *hdev, __u16 pkt_type,
 					bdaddr_t *dst, __u8 sec_level,
 					__u8 auth_type,
 					struct bt_le_params *le_params);
-void hci_le_add_dev_white_list(struct hci_dev *hdev, bdaddr_t *dst);
-void hci_le_remove_dev_white_list(struct hci_dev *hdev, bdaddr_t *dst);
-void hci_le_cancel_create_connect(struct hci_dev *hdev, bdaddr_t *dst);
 int hci_conn_check_link_mode(struct hci_conn *conn);
 int hci_conn_security(struct hci_conn *conn, __u8 sec_level, __u8 auth_type);
 int hci_conn_change_link_key(struct hci_conn *conn);
@@ -616,7 +612,6 @@ void hci_disconnect_amp(struct hci_conn *conn, __u8 reason);
 
 void hci_conn_enter_active_mode(struct hci_conn *conn, __u8 force_active);
 void hci_conn_enter_sniff_mode(struct hci_conn *conn);
-void hci_conn_update_sniff_lp(struct hci_conn *conn, bool enable);
 
 void hci_conn_hold_device(struct hci_conn *conn);
 void hci_conn_put_device(struct hci_conn *conn);
@@ -779,17 +774,6 @@ struct hci_proto {
 	int (*destroy_cfm)	(struct hci_chan *chan, __u8 status);
 };
 
-struct sco_cb {
-	struct list_head list;
-	char *name;
-	void (*connect_state_changed)	(u8 state);
-};
-
-struct sco_proto {
-	void (*register_cb)	(struct sco_cb *cb);
-	void (*unregister_cb)	(struct sco_cb *cb);
-};
-
 static inline int hci_proto_connect_ind(struct hci_dev *hdev, bdaddr_t *bdaddr, __u8 type)
 {
 	register struct hci_proto *hp;
@@ -923,9 +907,6 @@ static inline void hci_proto_destroy_cfm(struct hci_chan *chan, __u8 status)
 int hci_register_proto(struct hci_proto *hproto);
 int hci_unregister_proto(struct hci_proto *hproto);
 
-int hci_sco_register_proto(struct sco_proto *sp);
-int hci_sco_unregister_proto(void);
-
 /* ----- HCI callbacks ----- */
 struct hci_cb {
 	struct list_head list;
@@ -1031,9 +1012,6 @@ void hci_amp_event_packet(struct hci_dev *hdev, __u8 ev_code,
 int hci_register_amp(struct amp_mgr_cb *acb);
 int hci_unregister_amp(struct amp_mgr_cb *acb);
 
-bool hci_get_sco_status(struct hci_conn *conn);
-void hci_register_sco_cb(struct sco_cb *cb, bool reg);
-
 int hci_send_cmd(struct hci_dev *hdev, __u16 opcode, __u32 plen, void *param);
 void hci_send_acl(struct hci_conn *conn, struct hci_chan *chan,
 		struct sk_buff *skb, __u16 flags);
@@ -1058,7 +1036,7 @@ int mgmt_new_key(u16 index, struct link_key *key, u8 bonded);
 int mgmt_connected(u16 index, bdaddr_t *bdaddr, u8 le);
 int mgmt_le_conn_params(u16 index, bdaddr_t *bdaddr, u16 interval,
 						u16 latency, u16 timeout);
-int mgmt_disconnected(u16 index, bdaddr_t *bdaddr, u8 reason);
+int mgmt_disconnected(u16 index, bdaddr_t *bdaddr);
 int mgmt_disconnect_failed(u16 index);
 int mgmt_connect_failed(u16 index, bdaddr_t *bdaddr, u8 status);
 int mgmt_pin_code_request(u16 index, bdaddr_t *bdaddr);
