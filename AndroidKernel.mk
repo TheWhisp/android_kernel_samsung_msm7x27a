@@ -2,7 +2,7 @@
 
 ifeq ($(TARGET_PREBUILT_KERNEL),)
 
-KERNEL_OUT := $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ
+KERNEL_OUT := $(TARGET_OUT_INTERMEDIATES)/KERNEL_tester
 KERNEL_CONFIG := $(KERNEL_OUT)/.config
 TARGET_PREBUILT_INT_KERNEL := $(KERNEL_OUT)/arch/arm/boot/zImage
 KERNEL_HEADERS_INSTALL := $(KERNEL_OUT)/usr
@@ -11,7 +11,7 @@ KERNEL_MODULES_OUT := $(TARGET_OUT)/lib/modules
 
 ifeq ($(TARGET_USES_UNCOMPRESSED_KERNEL),true)
 $(info Using uncompressed kernel)
-TARGET_PREBUILT_KERNEL := $(KERNEL_OUT)/piggy
+TARGET_PREBUILT_KERNEL := $(KERNEL_OUT)/tester
 else
 TARGET_PREBUILT_KERNEL := $(TARGET_PREBUILT_INT_KERNEL)
 endif
@@ -38,8 +38,8 @@ $(KERNEL_OUT):
 $(KERNEL_CONFIG): $(KERNEL_OUT)
 	$(MAKE) -C kernel O=../$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=arm-eabi- $(KERNEL_DEFCONFIG)
 
-$(KERNEL_OUT)/piggy : $(TARGET_PREBUILT_INT_KERNEL)
-	$(hide) gunzip -c $(KERNEL_OUT)/arch/arm/boot/compressed/piggy.gzip > $(KERNEL_OUT)/piggy
+$(KERNEL_OUT)/tester : $(TARGET_PREBUILT_INT_KERNEL)
+	$(hide) gunzip -c $(KERNEL_OUT)/arch/arm/boot/compressed/tester.gzip > $(KERNEL_OUT)/tester
 
 $(TARGET_PREBUILT_INT_KERNEL): $(KERNEL_OUT) $(KERNEL_CONFIG) $(KERNEL_HEADERS_INSTALL)
 	$(MAKE) -C kernel O=../$(KERNEL_OUT) ARCH=arm CROSS_COMPILE=arm-eabi-
