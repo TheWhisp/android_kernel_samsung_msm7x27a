@@ -1615,6 +1615,11 @@ config MSM_CPU_FREQ_MIN
 	depends on MSM_CPU_FREQ_SET_MIN_MAX
 	default 245760
 
+config MSM7X27A_OVERCLOCK
+	bool "Allow overclock msm7x27a devices above 1008mhz"
+	depends on ARCH_MSM7X27A
+	default n
+
 endif # CPU_FREQ_MSM
 
 config MSM_CPU_AVS
