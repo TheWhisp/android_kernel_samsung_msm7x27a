@@ -381,12 +381,18 @@ static ssize_t skcipher_sendpage(struct socket *sock, struct page *page,
         if (flags & MSG_SENDPAGE_NOTLAST)
                 flags |= MSG_MORE;
 
+<<<<<<< HEAD
         if (flags & MSG_SENDPAGE_NOTLAST)
                 flags |= MSG_MORE;
 
         lock_sock(sk);
         if (!ctx->more && ctx->used)
                 goto unlock;
+=======
+	lock_sock(sk);
+	if (!ctx->more && ctx->used)
+		goto unlock;
+>>>>>>> 15c6df1... Squashed update of kernel from 3.4.74 to 3.4.75
 
         if (!size)
                 goto done;

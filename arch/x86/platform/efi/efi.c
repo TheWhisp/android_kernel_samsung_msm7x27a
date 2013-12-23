@@ -499,11 +499,81 @@ void __init efi_init(void)
 	if (add_efi_memmap)
 		do_add_efi_memmap();
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_32
 	x86_platform.get_wallclock = efi_get_time;
 	x86_platform.set_wallclock = efi_set_rtc_mmss;
 #endif
 
+=======
+	return 0;
+}
+
+void __init efi_init(void)
+{
+	efi_char16_t *c16;
+	char vendor[100] = "unknown";
+	int i = 0;
+	void *tmp;
+
+#ifdef CONFIG_X86_32
+	if (boot_params.efi_info.efi_systab_hi ||
+	    boot_params.efi_info.efi_memmap_hi) {
+		pr_info("Table located above 4GB, disabling EFI.\n");
+		return;
+	}
+	efi_phys.systab = (efi_system_table_t *)boot_params.efi_info.efi_systab;
+#else
+	efi_phys.systab = (efi_system_table_t *)
+			  (boot_params.efi_info.efi_systab |
+			  ((__u64)boot_params.efi_info.efi_systab_hi<<32));
+#endif
+
+	if (efi_systab_init(efi_phys.systab))
+		return;
+
+	set_bit(EFI_SYSTEM_TABLES, &x86_efi_facility);
+
+	/*
+	 * Show what we know for posterity
+	 */
+	c16 = tmp = early_ioremap(efi.systab->fw_vendor, 2);
+	if (c16) {
+		for (i = 0; i < sizeof(vendor) - 1 && *c16; ++i)
+			vendor[i] = *c16++;
+		vendor[i] = '\0';
+	} else
+		pr_err("Could not map the firmware vendor!\n");
+	early_iounmap(tmp, 2);
+
+	pr_info("EFI v%u.%.02u by %s\n",
+		efi.systab->hdr.revision >> 16,
+		efi.systab->hdr.revision & 0xffff, vendor);
+
+	if (efi_config_init(efi.systab->tables, efi.systab->nr_tables))
+		return;
+
+	set_bit(EFI_CONFIG_TABLES, &x86_efi_facility);
+
+	/*
+	 * Note: We currently don't support runtime services on an EFI
+	 * that doesn't match the kernel 32/64-bit mode.
+	 */
+
+	if (!efi_is_native())
+		pr_info("No EFI runtime due to 32/64-bit mismatch with kernel\n");
+	else {
+		if (disable_runtime || efi_runtime_init())
+			return;
+		set_bit(EFI_RUNTIME_SERVICES, &x86_efi_facility);
+	}
+
+	if (efi_memmap_init())
+		return;
+
+	set_bit(EFI_MEMMAP, &x86_efi_facility);
+
+>>>>>>> 15c6df1... Squashed update of kernel from 3.4.74 to 3.4.75
 #if EFI_DEBUG
 	print_efi_memmap();
 #endif

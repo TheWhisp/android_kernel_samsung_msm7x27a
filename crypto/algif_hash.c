@@ -117,12 +117,18 @@ static ssize_t hash_sendpage(struct socket *sock, struct page *page,
         if (flags & MSG_SENDPAGE_NOTLAST)
                 flags |= MSG_MORE;
 
+<<<<<<< HEAD
         if (flags & MSG_SENDPAGE_NOTLAST)
                 flags |= MSG_MORE;
 
         lock_sock(sk);
         sg_init_table(ctx->sgl.sg, 1);
         sg_set_page(ctx->sgl.sg, page, size, offset);
+=======
+	lock_sock(sk);
+	sg_init_table(ctx->sgl.sg, 1);
+	sg_set_page(ctx->sgl.sg, page, size, offset);
+>>>>>>> 15c6df1... Squashed update of kernel from 3.4.74 to 3.4.75
 
         ahash_request_set_crypt(&ctx->req, ctx->sgl.sg, ctx->result, size);
 
