@@ -1651,12 +1651,12 @@ nfsd_export_init(void)
 	int rv;
 	dprintk("nfsd: initializing export module.\n");
 
-	rv = cache_register(&svc_export_cache);
+	rv = cache_register_net(&svc_export_cache, &init_net);
 	if (rv)
 		return rv;
-	rv = cache_register(&svc_expkey_cache);
+        rv = cache_register_net(&svc_expkey_cache, &init_net);
 	if (rv)
-		cache_unregister(&svc_export_cache);
+		cache_unregister_net(&svc_export_cache, &init_net);
 	return rv;
 
 }
