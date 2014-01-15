@@ -1684,8 +1684,8 @@ nfsd_export_shutdown(void)
 
 	exp_writelock();
 
-	cache_unregister(&svc_expkey_cache);
-	cache_unregister(&svc_export_cache);
+        cache_unregister_net(&svc_expkey_cache, &init_net);
+        cache_unregister_net(&svc_export_cache, &init_net);
 	svcauth_unix_purge();
 
 	exp_writeunlock();
