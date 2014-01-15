@@ -245,9 +245,6 @@ do_open_fhandle(struct svc_rqst *rqstp, struct svc_fh *current_fh, struct nfsd4_
 {
 	__be32 status;
 
-	/* Only reclaims from previously confirmed clients are valid */
-	if ((status = nfs4_check_open_reclaim(&open->op_clientid)))
-		return status;
 
 	/* We don't know the target directory, and therefore can not
 	* set the change info
