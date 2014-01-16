@@ -1086,8 +1086,8 @@ CONFIG_RFKILL_PM=y
 # CONFIG_CAIF is not set
 # CONFIG_CEPH_LIB is not set
 CONFIG_NFC=y
-# CONFIG_NFC_NCI is not set
-# CONFIG_NFC_LLCP is not set
+CONFIG_NFC_NCI=y
+CONFIG_NFC_LLCP=y
 
 #
 # Near Field Communication (NFC) devices
@@ -1242,7 +1242,7 @@ CONFIG_FSAXXXX_USBSW=y
 # CONFIG_QFP_FUSE is not set
 CONFIG_SEC_MISC=y
 CONFIG_SEC_DEBUG=y
-# CONFIG_PN544 is not set
+CONFIG_PN544=y
 # CONFIG_C2PORT is not set
 
 #
@@ -2759,10 +2759,6 @@ CONFIG_KEYPAD_TOUCH_BLN=y
 
 #
 # LED Triggers
-#
-
-#
-# Near Field Communication (NFC) devices
 #
 CONFIG_SWITCH=y
 CONFIG_SWITCH_GPIO=y
