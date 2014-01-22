@@ -23,7 +23,7 @@
  */
 
 #include <linux/threads.h>
-#include <asm/reg.h>
+
 #include <asm/page.h>
 #include <asm/mmu.h>
 #include <asm/ppc_asm.h>
