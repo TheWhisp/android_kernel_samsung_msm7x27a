@@ -389,7 +389,6 @@ enum bfqq_state_flags {
 	BFQ_BFQQ_FLAG_coop,		/* bfqq is shared */
 	BFQ_BFQQ_FLAG_split_coop,	/* shared bfqq will be splitted */
 	BFQ_BFQQ_FLAG_some_coop_idle,   /* some cooperator is inactive */
-	BFQ_BFQQ_FLAG_just_split,	/* queue has just been split */
 };
 
 #define BFQ_BFQQ_FNS(name)						\
@@ -417,7 +416,6 @@ BFQ_BFQQ_FNS(budget_new);
 BFQ_BFQQ_FNS(coop);
 BFQ_BFQQ_FNS(split_coop);
 BFQ_BFQQ_FNS(some_coop_idle);
-BFQ_BFQQ_FNS(just_split);
 #undef BFQ_BFQQ_FNS
 
 /* Logging facilities. */

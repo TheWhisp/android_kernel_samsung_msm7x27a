@@ -64,6 +64,12 @@ rollback_snap
 
 	 $ echo <snap-name> > /sys/bus/rbd/devices/<dev-id>/snap_rollback
 
+create_snap
+
+	Create a snapshot:
+
+	 $ echo <snap-name> > /sys/bus/rbd/devices/<dev-id>/snap_create
+
 snap_*
 
 	A directory per each snapshot

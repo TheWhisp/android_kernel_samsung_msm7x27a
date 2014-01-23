@@ -401,7 +401,10 @@ err_init:
 		struct imxdma_channel *imxdmac = &imxdma->channel[i];
 		imx_dma_free(imxdmac->imxdma_channel);
 	}
-
+err_enable:
+	clk_disable_unprepare(imxdma->dma_ipg);
+	clk_disable_unprepare(imxdma->dma_ahb);
+err_clk:
 	kfree(imxdma);
 	return ret;
 }
@@ -419,7 +422,9 @@ static int __exit imxdma_remove(struct platform_device *pdev)
 		 imx_dma_free(imxdmac->imxdma_channel);
 	}
 
-        kfree(imxdma);
+	clk_disable_unprepare(imxdma->dma_ipg);
+	clk_disable_unprepare(imxdma->dma_ahb);
+	kfree(imxdma);
 
         return 0;
 }
