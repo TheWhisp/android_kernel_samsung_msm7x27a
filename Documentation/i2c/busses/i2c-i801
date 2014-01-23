@@ -19,6 +19,7 @@ Supported adapters:
   * Intel 6 Series (PCH)
   * Intel Patsburg (PCH)
   * Intel DH89xxCC (PCH)
+  * Intel Avoton (SOC)
   * Intel Panther Point (PCH)
    Datasheets: Publicly available at the Intel website
 

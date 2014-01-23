@@ -1418,6 +1418,7 @@ int jbd2_journal_destroy(journal_t *journal)
 
 	return err;
 }
+EXPORT_SYMBOL(jbd2_journal_update_sb_errno);
 
 
 /**

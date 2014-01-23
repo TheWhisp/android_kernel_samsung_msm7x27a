@@ -314,7 +314,7 @@ static int _set_clockactivity(struct omap_hwmod *oh, u8 clockact, u32 *v)
 }
 
 /**
- * _set_softreset: set OCP_SYSCONFIG.CLOCKACTIVITY bits in @v
+ * _set_softreset: set OCP_SYSCONFIG.SOFTRESET bit in @v
  * @oh: struct omap_hwmod *
  * @v: pointer to register contents to modify
  *
@@ -1110,6 +1110,36 @@ static int _read_hardreset(struct omap_hwmod *oh, const char *name)
 }
 
 /**
+ * _clear_softreset: clear OCP_SYSCONFIG.SOFTRESET bit in @v
+ * @oh: struct omap_hwmod *
+ * @v: pointer to register contents to modify
+ *
+ * Clear the SOFTRESET bit in @v for hwmod @oh.  Returns -EINVAL upon
+ * error or 0 upon success.
+ */
+static int _clear_softreset(struct omap_hwmod *oh, u32 *v)
+{
+	u32 softrst_mask;
+
+	if (!oh->class->sysc ||
+	    !(oh->class->sysc->sysc_flags & SYSC_HAS_SOFTRESET))
+		return -EINVAL;
+
+	if (!oh->class->sysc->sysc_fields) {
+		WARN(1,
+		     "omap_hwmod: %s: sysc_fields absent for sysconfig class\n",
+		     oh->name);
+		return -EINVAL;
+	}
+
+	softrst_mask = (0x1 << oh->class->sysc->sysc_fields->srst_shift);
+
+	*v &= ~softrst_mask;
+
+	return 0;
+}
+
+/**
  * _ocp_softreset - reset an omap_hwmod via the OCP_SYSCONFIG bit
  * @oh: struct omap_hwmod *
  *
@@ -1152,6 +1182,12 @@ static int _ocp_softreset(struct omap_hwmod *oh)
 	ret = _set_softreset(oh, &v);
 	if (ret)
 		goto dis_opt_clks;
+
+	_write_sysconfig(v, oh);
+	ret = _clear_softreset(oh, &v);
+	if (ret)
+		goto dis_opt_clks;
+
 	_write_sysconfig(v, oh);
 
 	if (oh->class->sysc->sysc_flags & SYSS_HAS_RESET_STATUS)
@@ -1562,6 +1598,41 @@ void omap_hwmod_write(u32 v, struct omap_hwmod *oh, u16 reg_offs)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * omap_hwmod_softreset - reset a module via SYSCONFIG.SOFTRESET bit
+ * @oh: struct omap_hwmod *
+ *
+ * This is a public function exposed to drivers. Some drivers may need to do
+ * some settings before and after resetting the device.  Those drivers after
+ * doing the necessary settings could use this function to start a reset by
+ * setting the SYSCONFIG.SOFTRESET bit.
+ */
+int omap_hwmod_softreset(struct omap_hwmod *oh)
+{
+	u32 v;
+	int ret;
+
+	if (!oh || !(oh->_sysc_cache))
+		return -EINVAL;
+
+	v = oh->_sysc_cache;
+	ret = _set_softreset(oh, &v);
+	if (ret)
+		goto error;
+	_write_sysconfig(v, oh);
+
+	ret = _clear_softreset(oh, &v);
+	if (ret)
+		goto error;
+	_write_sysconfig(v, oh);
+
+error:
+	return ret;
+}
+
+/**
+>>>>>>> 15c6df1... Squashed update of kernel from 3.4.74 to 3.4.75
  * omap_hwmod_set_slave_idlemode - set the hwmod's OCP slave idlemode
  * @oh: struct omap_hwmod *
  * @idlemode: SIDLEMODE field bits (shifted to bit 0)

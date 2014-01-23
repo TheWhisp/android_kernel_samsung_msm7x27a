@@ -1774,7 +1774,10 @@ static sector_t sync_request(mddev_t *mddev, sector_t sector_nr, int *skipped, i
 		/* There is nowhere to write, so all non-sync
 		 * drives must be failed - so we are finished
 		 */
-		sector_t rv = max_sector - sector_nr;
+		sector_t rv;
+		if (min_bad > 0)
+			max_sector = sector_nr + min_bad;
+		rv = max_sector - sector_nr;
 		*skipped = 1;
 		put_buf(r1_bio);
 		return rv;

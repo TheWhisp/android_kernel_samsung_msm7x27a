@@ -240,6 +240,19 @@ svc_preempt:
 	b	1b
 #endif
 
+__und_fault:
+	@ Correct the PC such that it is pointing at the instruction
+	@ which caused the fault.  If the faulting instruction was ARM
+	@ the PC will be pointing at the next instruction, and have to
+	@ subtract 4.  Otherwise, it is Thumb, and the PC will be
+	@ pointing at the second half of the Thumb instruction.  We
+	@ have to subtract 2.
+	ldr	r2, [r0, #S_PC]
+	sub	r2, r2, r1
+	str	r2, [r0, #S_PC]
+	b	do_undefinstr
+ENDPROC(__und_fault)
+
 	.align	5
 __und_svc:
 #ifdef CONFIG_KPROBES
@@ -538,11 +551,12 @@ ENDPROC(__und_usr)
  * NEON handler code.
  *
  * Emulators may wish to make use of the following registers:
- *  r0  = instruction opcode.
- *  r2  = PC+4
+ *  r0  = instruction opcode (32-bit ARM or two 16-bit Thumb)
+ *  r2  = PC value to resume execution after successful emulation
  *  r9  = normal "successful" return address
- *  r10 = this threads thread_info structure.
+ *  r10 = this threads thread_info structure
  *  lr  = unrecognised instruction return address
+ * IRQs disabled, FIQs enabled.
  */
 	@
 	@ Fall-through from Thumb-2 __und_usr
@@ -671,12 +685,17 @@ ENTRY(no_fp)
 	mov	pc, lr
 ENDPROC(no_fp)
 
-__und_usr_unknown:
-	enable_irq
+__und_usr_fault_32:
+	mov	r1, #4
+	b	1f
+__und_usr_fault_16:
+	mov	r1, #2
+1:	enable_irq
 	mov	r0, sp
 	adr	lr, BSYM(ret_from_exception)
-	b	do_undefinstr
-ENDPROC(__und_usr_unknown)
+	b	__und_fault
+ENDPROC(__und_usr_fault_32)
+ENDPROC(__und_usr_fault_16)
 
 	.align	5
 __pabt_usr:

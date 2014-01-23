@@ -150,6 +150,16 @@ config TMPFS_XATTR
 	  You need this for POSIX ACL support on tmpfs.
 
 	  If unsure, say N.
+	  
+	  config NFSD_FAULT_INJECTION
+	bool "NFS server manual fault injection"
+	depends on NFSD_V4 && DEBUG_KERNEL
+	help
+	This option enables support for manually injecting faults
+        into the NFS server.  This is intended to be used for
+        testing error recovery on the NFS client.
+
+           If unsure, say N.
 
 config HUGETLBFS
 	bool "HugeTLB file system support"

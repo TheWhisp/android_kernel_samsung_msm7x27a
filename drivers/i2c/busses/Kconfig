@@ -102,6 +102,7 @@ config I2C_I801
 	    6 Series (PCH)
 	    Patsburg (PCH)
 	    DH89xxCC (PCH)
+	    Avoton (SOC)
 	    Panther Point (PCH)
 
 	  This driver can also be built as a module.  If so, the module

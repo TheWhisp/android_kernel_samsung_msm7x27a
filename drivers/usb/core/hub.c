@@ -1993,6 +1993,22 @@ int usb_new_device(struct usb_device *udev)
 		add_device_randomness(udev->manufacturer,
 				      strlen(udev->manufacturer));
 
+	if (udev->serial)
+		add_device_randomness(udev->serial, strlen(udev->serial));
+	if (udev->product)
+		add_device_randomness(udev->product, strlen(udev->product));
+	if (udev->manufacturer)
+		add_device_randomness(udev->manufacturer,
+				      strlen(udev->manufacturer));
+
+	if (udev->serial)
+		add_device_randomness(udev->serial, strlen(udev->serial));
+	if (udev->product)
+		add_device_randomness(udev->product, strlen(udev->product));
+	if (udev->manufacturer)
+		add_device_randomness(udev->manufacturer,
+				      strlen(udev->manufacturer));
+
 	device_enable_async_suspend(&udev->dev);
 	/* Register the device.  The device driver is responsible
 	 * for configuring the device and invoking the add-device
@@ -3895,7 +3911,24 @@ static void hub_events(void)
 				(portstatus & USB_PORT_STAT_LINK_STATE)
 					== USB_SS_PORT_LS_SS_INACTIVE) {
 				dev_dbg(hub_dev, "warm reset port %d\n", i);
+<<<<<<< HEAD
 				hub_port_warm_reset(hub, i);
+=======
+				if (!udev ||
+				    !(portstatus & USB_PORT_STAT_CONNECTION) ||
+				    udev->state == USB_STATE_NOTATTACHED) {
+					status = hub_port_reset(hub, i,
+							NULL, HUB_BH_RESET_TIME,
+							true);
+					if (status < 0)
+						hub_port_disable(hub, i, 1);
+				} else {
+					usb_lock_device(udev);
+					status = usb_reset_device(udev);
+					usb_unlock_device(udev);
+					connect_change = 0;
+				}
+>>>>>>> 15c6df1... Squashed update of kernel from 3.4.74 to 3.4.75
 			}
 
 			if (connect_change) {

@@ -30,16 +30,20 @@ static inline unsigned long dma_addr_to_virt(struct device *dev,
 }
 
 /*
+ * The affected CPUs below in 'cpu_needs_post_dma_flush()' can
+ * speculatively fill random cachelines with stale data at any time,
+ * requiring an extra flush post-DMA.
+ *
  * Warning on the terminology - Linux calls an uncached area coherent;
  * MIPS terminology calls memory areas with hardware maintained coherency
  * coherent.
  */
-
-static inline int cpu_is_noncoherent_r10000(struct device *dev)
+static inline int cpu_needs_post_dma_flush(struct device *dev)
 {
 	return !plat_device_is_coherent(dev) &&
 	       (current_cpu_type() == CPU_R10000 ||
-	       current_cpu_type() == CPU_R12000);
+		current_cpu_type() == CPU_R12000 ||
+		current_cpu_type() == CPU_BMIPS5000);
 }
 
 static gfp_t massage_gfp_flags(const struct device *dev, gfp_t gfp)
@@ -172,9 +176,15 @@ static inline void __dma_sync(unsigned long addr, size_t size,
 static void mips_dma_unmap_page(struct device *dev, dma_addr_t dma_addr,
 	size_t size, enum dma_data_direction direction, struct dma_attrs *attrs)
 {
+<<<<<<< HEAD
 	if (cpu_is_noncoherent_r10000(dev))
 		__dma_sync(dma_addr_to_virt(dev, dma_addr), size,
 		           direction);
+=======
+	if (cpu_needs_post_dma_flush(dev))
+		__dma_sync(dma_addr_to_page(dev, dma_addr),
+			   dma_addr & ~PAGE_MASK, size, direction);
+>>>>>>> 15c6df1... Squashed update of kernel from 3.4.74 to 3.4.75
 
 	plat_unmap_dma_mem(dev, dma_addr, size, direction);
 }
@@ -232,12 +242,18 @@ static void mips_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
 static void mips_dma_sync_single_for_cpu(struct device *dev,
 	dma_addr_t dma_handle, size_t size, enum dma_data_direction direction)
 {
+<<<<<<< HEAD
 	if (cpu_is_noncoherent_r10000(dev)) {
 		unsigned long addr;
 
 		addr = dma_addr_to_virt(dev, dma_handle);
 		__dma_sync(addr, size, direction);
 	}
+=======
+	if (cpu_needs_post_dma_flush(dev))
+		__dma_sync(dma_addr_to_page(dev, dma_handle),
+			   dma_handle & ~PAGE_MASK, size, direction);
+>>>>>>> 15c6df1... Squashed update of kernel from 3.4.74 to 3.4.75
 }
 
 static void mips_dma_sync_single_for_device(struct device *dev,
@@ -259,9 +275,15 @@ static void mips_dma_sync_sg_for_cpu(struct device *dev,
 
 	/* Make sure that gcc doesn't leave the empty loop body.  */
 	for (i = 0; i < nelems; i++, sg++) {
+<<<<<<< HEAD
 		if (cpu_is_noncoherent_r10000(dev))
 			__dma_sync((unsigned long)page_address(sg_page(sg)),
 			           sg->length, direction);
+=======
+		if (cpu_needs_post_dma_flush(dev))
+			__dma_sync(sg_page(sg), sg->offset, sg->length,
+				   direction);
+>>>>>>> 15c6df1... Squashed update of kernel from 3.4.74 to 3.4.75
 	}
 }
 
